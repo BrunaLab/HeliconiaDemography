@@ -1,0 +1,74 @@
+---
+title: "Heliconia IPM Practice"
+author: "Eric R. Scott"
+date: "2020-08-20"
+output: 
+  html_notebook: 
+    highlight: kate
+    theme: yeti
+    toc: yes
+    toc_float: yes
+    number_sections: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(conflicted)
+library(skimr)
+
+conflict_prefer("lag", "dplyr")
+conflict_prefer("filter", "dplyr")
+```
+
+*Last compiled: `r Sys.Date()`*
+
+# Purpose
+
+Practice constructing an IPM using (a subset of) the [Heliconia demographic data](https://github.com/embruna/HeliconiaDataPaper/tree/master/data_clean).
+
+# Load Data
+
+```{r data, echo=TRUE}
+demog <- read_csv(here("analysis", "data", "raw_data", "Ha_survey_with_Zombies.csv"), col_names = TRUE,
+               cols(plot = col_character(),
+                    bdffp_reserve_no = col_character(),
+                    shts = col_integer(),
+                    year = col_integer(),
+                    infl = col_integer()))
+
+unique(demog$ranch)
+unique(demog$code.notes)
+unique(demog$code2)
+unique(demog$size)
+
+skim(demog)
+```
+
+## Data Dictionary
+
+`demog`: Demography data for *Heliconia acuminatata* experiment at BDFFP
+
+- `plot` (character):
+- `size` (character): fragment size
+- `ranch` (character): "Dimona", "Esteio-Colosso", or "PortoAlegre".  The three ranches that make up BDFFP.
+- `bdffp_reserve_no` (character): Official BDFFP reserve designation
+- `tag_number` (numeric): plant tag# within plot (not unique)
+- `row` (character): spatial location in plot
+- `column` (numeric): spatial location in plot
+- `year` (numeric): year of survey
+- `ht` (numeric): plant height.  Plants not straightened before measurement.
+- `shts` (numeric): number of shoots
+- `infl` (numeric): number of infloresences
+- `code.notes` (character): 
+    - "plant missing" = plant was not found in that survey.  May not be dead, may be found in subsequent surveys.
+    - "dead" = plant lost all above-ground tissue.  May resprout in a subsequent year.
+    - "ULY" = 
+    - "sdlg" = seedling, defined as a year 1 plant.
+    - "tag missing" = ID tag labeling the plant was missing.  Plants were given new tags and researchers did their best to match up new tag and old tag. **(that column isn't in this version though)**
+- `code2` (character): "initial.tag.yr" = marks the first year plant appeard in a survey.  Not necessarily a seedling.
+
+
+# Analysis
+
