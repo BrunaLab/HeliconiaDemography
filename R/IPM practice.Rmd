@@ -193,7 +193,14 @@ Growth & survival:
 
 ## Reproduction
 
-In this particular dataset the only information on reproduction is number of inflorescences per plant and total number of seedlings in a year.
+In this particular dataset the only information on reproduction is number of inflorescences per plant and total number of seedlings in a year.  However, Bruna et al. 2004 has some additional data on reproduction:
+
+- each inflorescence has 20--25 flowers
+- proportion of flowers developing into fruits = 0.30±0.24 (range = 0--0.88)
+- Number of seeds per plant = 4.74±6.10 (range = 0--27)
+- Number of seeds per flower = 0.27±0.33 (range = 0--1)
+
+But the last step, seedlings per seed, isn't there, so I'm not sure if this info is relevant for this IPM, especially if none of the above vital rates is expected to differ by plant size.
 
 ### Probability of flowering
 
