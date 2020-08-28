@@ -18,5 +18,7 @@ Suggests:
     testthat,
     devtools,
     git2r
-Imports: bookdown,
-    here
+Imports: 
+    bookdown,
+    here,
+    matrixcalc
