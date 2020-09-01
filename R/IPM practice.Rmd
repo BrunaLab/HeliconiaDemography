@@ -23,6 +23,7 @@ library(bbmle)
 library(broom)
 library(broom.mixed)
 library(popbio)
+library(janitor)
 
 conflict_prefer("lag", "dplyr")
 conflict_prefer("filter", "dplyr")
@@ -49,12 +50,14 @@ demog <- read_csv(here("analysis", "data", "raw_data", "Ha_survey_with_Zombies.c
                     shts = col_integer(),
                     year = col_integer(),
                     infl = col_integer(),
-                    tag_number = col_character()))
+                    tag_number = col_character(),
+                    HA_ID_Number = col_character())) %>% 
+  clean_names()
 
 unique(demog$ranch)
-unique(demog$code.notes)
+unique(demog$code_notes)
 unique(demog$code2)
-unique(demog$size)
+unique(demog$habitat)
 
 skim(demog)
 ```
@@ -64,9 +67,10 @@ skim(demog)
 `demog`: Demography data for *Heliconia acuminatata* experiment at BDFFP
 
 - `plot` (character):
-- `size` (character): fragment size
-- `ranch` (character): "Dimona", "Esteio-Colosso", or "PortoAlegre".  The three ranches that make up BDFFP.
+- `habitat` (character): fragment size
+- `ranch` (character): "DIM" = Dimona, "EST" = Esteio-Colosso, or "PAL" = PortoAlegre.  The three ranches that make up BDFFP.
 - `bdffp_reserve_no` (character): Official BDFFP reserve designation
+- `ha_id_number` (numeric): A unique ID number for each plant after resolving duplicate tags and such.
 - `tag_number` (numeric): plant tag# within plot (not unique)
 - `row` (character): spatial location in plot
 - `column` (numeric): spatial location in plot
@@ -79,7 +83,7 @@ skim(demog)
     - "dead" = plant lost all above-ground tissue.  May resprout in a subsequent year.
     - "ULY" = 
     - "sdlg" = seedling, defined as a year 1 plant.
-    - "tag missing" = ID tag labeling the plant was missing.  Plants were given new tags and researchers did their best to match up new tag and old tag. **(that column isn't in this version though)**
+    - "tag missing" = ID tag labeling the plant was missing.  Plants were given new tags and researchers did their best to match up new tag and old tag.
 - `code2` (character): "initial.tag.yr" = marks the first year plant appeared in a survey.  Not necessarily a seedling.
 
 
@@ -112,7 +116,7 @@ km41
 When is a plant really dead?  When it's the last non-`NA` value for that particular tag number before the max date.
 
 ```{r}
-km41 %>% group_by(tag_number) %>% summarize(max(year))
+km41 %>% group_by(ha_id_number) %>% summarize(max(year))
 max(km41$year)
 ```
 
@@ -120,7 +124,7 @@ max(km41$year)
 ```{r}
 km41_2 <- 
   km41 %>%
-  group_by(tag_number) %>% 
+  group_by(ha_id_number) %>% 
   # Routine for figuring out last year of data collected
   mutate(x = cumsum(ht > 0 & !is.na(ht))) %>%
   # mutate(x = cumsum(lag(ht) > 0 & !is.na(lag(ht)))) %>%
@@ -141,7 +145,7 @@ km41_2 <-
 ```{r}
 km41_2 %>% count(fate)
 ```
-359 plants died
+362 plants died
 
 ```{r}
 km41_2 <- km41_2 %>% mutate(surv = ifelse(is.na(fate), 1, 0))
@@ -162,7 +166,7 @@ km41_flowered <- km41 %>% filter(infl > 0)
 ```{r}
 km41_2 <-
   km41_2 %>% 
-  group_by(tag_number) %>% 
+  group_by(ha_id_number) %>% 
   mutate(ht_prev = lag(ht))
 ```
 
@@ -198,6 +202,7 @@ In this particular dataset the only information on reproduction is number of inf
 - each inflorescence has 20--25 flowers
 - proportion of flowers developing into fruits = 0.30±0.24 (range = 0--0.88)
 - Number of seeds per plant = 4.74±6.10 (range = 0--27)
+- Number of sees per fruit =  1, 2, or 3 with equal probability.
 - Number of seeds per flower = 0.27±0.33 (range = 0--1)
 
 But the last step, seedlings per seed, isn't there, so I'm not sure if this info is relevant for this IPM, especially if none of the above vital rates is expected to differ by plant size.
@@ -209,12 +214,12 @@ But the last step, seedlings per seed, isn't there, so I'm not sure if this info
 Start with most complex: quadratic response, environmental stochasticity, and random variation among plants.
 
 ```{r}
-meo_pflwr2 <- glmer(flowered ~ ht + I(ht^2) + (1|tag_number) + (1|year), family = binomial, data = km41_2)
+meo_pflwr2 <- glmer(flowered ~ ht + I(ht^2) + (1|ha_id_number) + (1|year), family = binomial, data = km41_2)
 ```
 Check random effects
 
 ```{r}
-mo_pflwr2 <- glmer(flowered ~ ht + I(ht^2) + (1|tag_number), family = binomial, data = km41_2)
+mo_pflwr2 <- glmer(flowered ~ ht + I(ht^2) + (1|ha_id_number), family = binomial, data = km41_2)
 me_pflwr2 <- glmer(flowered ~ ht + I(ht^2) + (1|year), family = binomial, data = km41_2)
 m_pflwr2  <-   glm(flowered ~ ht + I(ht^2), family = binomial, data = km41_2)
 AICtab(meo_pflwr2, me_pflwr2, mo_pflwr2, m_pflwr2)
@@ -224,7 +229,7 @@ Keep both random effects.
 Check quadratic
 
 ```{r}
-meo_pflwr <- glmer(flowered ~ ht + (1|tag_number) + (1|year), family = binomial, data = km41_2)
+meo_pflwr <- glmer(flowered ~ ht + (1|ha_id_number) + (1|year), family = binomial, data = km41_2)
 AICtab(meo_pflwr, meo_pflwr2)
 ```
 
@@ -268,11 +273,11 @@ p_bz <- function(z) {
 #### Model
 
 ```{r}
-meo_flwrs2 <- glmer(infl ~ ht + I(ht^2) + (1|tag_number) + (1|year), family = poisson, data = km41_flowered)
+meo_flwrs2 <- glmer(infl ~ ht + I(ht^2) + (1|ha_id_number) + (1|year), family = poisson, data = km41_flowered)
 ```
 ```{r}
 me_flwrs2 <- glmer(infl ~ ht + I(ht^2) + (1|year), family = poisson, data = km41_flowered)
-mo_flwrs2 <- glmer(infl ~ ht + I(ht^2) + (1|tag_number), family = poisson, data = km41_flowered)
+mo_flwrs2 <- glmer(infl ~ ht + I(ht^2) + (1|ha_id_number), family = poisson, data = km41_flowered)
 m_flwrs2 <- glm(infl ~ ht + I(ht^2), family = poisson, data = km41_flowered)
 AICtab(meo_flwrs2, me_flwrs2, mo_flwrs2, m_flwrs2)
 ```
@@ -316,7 +321,7 @@ Estimated as number of recruits / number of inflorescences in year prev. year
 km41_rec_sum <- 
   km41 %>%
   group_by(year) %>% 
-  summarize(recruits = sum(code.notes == "sdlg (1)", na.rm = TRUE),
+  summarize(recruits = sum(code_notes == "sdlg (1)", na.rm = TRUE),
             seeds_est = sum(lag(infl), na.rm = TRUE)) %>% 
   filter(year > 1998)
 km41_rec_sum
@@ -343,7 +348,7 @@ So like 1.64 seedlings per inflorescence
 recruitment size
 
 ```{r}
-km41_rec <- km41 %>% filter(code.notes == "sdlg (1)")
+km41_rec <- km41 %>% filter(code_notes == "sdlg (1)")
 m_rec <- lm(ht ~ 1, data = km41_rec)
 ```
 
@@ -370,13 +375,13 @@ c_0z1 <- function(z1) {
 
 Try modeling growth as height_t+1 ~ height_t.  Needs a random effect of tag_number, I think?
 ```{r}
-meo_grow2 <- lmer(ht ~ ht_prev + I(ht_prev^2) + (1|tag_number) + (1|year), data = km41_2)
+meo_grow2 <- lmer(ht ~ ht_prev + I(ht_prev^2) + (1|ha_id_number) + (1|year), data = km41_2)
 ```
 Test random effects
 
 ```{r}
 me_grow2 <- lmer(ht ~ ht_prev + I(ht_prev^2) + (1|year), data = km41_2)
-mo_grow2 <- lmer(ht ~ ht_prev + I(ht_prev^2) + (1|tag_number), data = km41_2)
+mo_grow2 <- lmer(ht ~ ht_prev + I(ht_prev^2) + (1|ha_id_number), data = km41_2)
 m_grow2 <- lm(ht ~ ht_prev + I(ht_prev^2), data = km41_2)
 AICtab(meo_grow2, me_grow2, mo_grow2, m_grow2)
 ```
@@ -431,11 +436,11 @@ G_z1z <- function(z1, z) {
 
 ### Model
 ```{r}
-meo_surv2 <- glmer(surv ~ ht + I(ht^2) + (1|tag_number) + (1|year), family = binomial, data = km41_2)
+meo_surv2 <- glmer(surv ~ ht + I(ht^2) + (1|ha_id_number) + (1|year), family = binomial, data = km41_2)
 ```
 ```{r}
 me_surv2 <- glmer(surv ~ ht + I(ht^2) + (1|year), family = binomial, data = km41_2)
-mo_surv2 <- glmer(surv ~ ht + I(ht^2) + (1|tag_number), family = binomial, data = km41_2)
+mo_surv2 <- glmer(surv ~ ht + I(ht^2) + (1|ha_id_number), family = binomial, data = km41_2)
 m_surv2 <- glm(surv ~ ht + I(ht^2), family = binomial, data = km41_2)
 AICtab(meo_surv2, me_surv2, mo_surv2, m_surv2)
 ```
@@ -520,7 +525,6 @@ hist(km41$ht[km41$ht>0])
 
 ```{r}
 mk_K <- function(m, L, U) {
-
 	# mesh points 
 	h <- (U - L)/m
 	meshpts <- L + ((1:m) - 1/2) * h
@@ -553,7 +557,14 @@ sens <- sensitivity(out$K)
 
 rownames(sens) <- out$meshpts
 colnames(sens) <- out$meshpts
-matplot2(sens)
+matplot2(sens, xlab = "Height")
 ```
 
 Can't remember how to interpret this
+
+```{r}
+elas <- elasticity(out$K)
+rownames(elas) <- colnames(elas) <- out$meshpts
+matplot2(elas, xlab = "Height")
+```
+
