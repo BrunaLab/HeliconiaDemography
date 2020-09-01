@@ -1,0 +1,120 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Use `popbio` to make a projection matrix
+
+```{r}
+library(tidyverse)
+library(popbio)
+```
+
+One year at a time.  Good. That's what I want
+
+```{r}
+trans01 <- subset(merge(test.census, test.census, by = "plant", sort =FALSE),
+                    year.x==2001 & year.y==2002 )
+test.census %>% filter(year == 2002)
+```
+
+
+Add individual fertilities using "anonymous reproduction"  based on the proportional reproductive outputs of flowering plants and the total number of seedlings at the end of the projection interval
+
+```{r}
+# trans01$seedferts <- trans01$fruits.x / sum(trans01$fruits.x) * 5 #5 = number of seedlings in 2002.
+trans01 <-
+  trans01 %>% 
+  mutate(seedferts = fruits.x / sum(fruits.x) * 5)
+
+trans01
+```
+```{r}
+stages <- c("seedling", "vegetative", "reproductive")
+```
+
+One way to specify columns:
+
+```{r}
+projection.matrix(trans01, stage.x, stage.y, seedferts, stages)
+```
+
+BEST to use column default (fertility column (seedling) now matches stage class name) AND order stages in dataframe
+
+```{r}
+# names(trans01)[c(3, 6, 8)] <- c("stage", "fate", "seedling")
+# trans01$stage <- ordered(trans01$stage, stages)
+trans01 <-
+  rename(trans01, stage = stage.x, fate = stage.y, seedling = seedferts) %>% 
+  mutate(stage = ordered(stage, c("seedling", "vegetative", "reproductive")))
+
+
+trans01
+```
+Names in `stage` and `fate` have to match.  `stage` is ordinal. `seedling` column matches first stage to indicate fertility rates.
+
+```{r}
+projection.matrix(trans01)
+```
+
+# Try for every year
+
+```{r}
+census_wide <-
+  test.census %>% 
+  pivot_wider(names_from = year, values_from = c(stage, fruits))
+```
+
+
+```{r}
+census_wide %>% 
+  #need fertility columns for each year
+  # mutate(fert_2001 = fruits_2001 / sum(fruits_2001, na.rm = TRUE) * sum(str_detect(stage_2002, "seedling"), na.rm = TRUE))
+  mutate(across(starts_with("fruits"), ~ . / sum(., na.rm = TRUE), .names = "{col}.tot"))
+```
+```{r}
+#complete data frame with all plant IDs.  Necessary for lags to work right.
+full.census <-
+  left_join(
+    test.census %>% 
+      expand(plant = 1:18, year) %>% 
+      arrange(year),
+    test.census
+  )
+
+
+full.census <-
+  full.census %>%
+  # generate transitions
+  group_by(plant) %>% 
+  mutate(transition = paste0(year, "-", lead(year))) %>% 
+  mutate(fate = lead(stage)) %>% 
+  # calculate anonymous reproduction
+  group_by(year) %>% 
+  mutate(num_seedling = sum(str_detect(fate, "seedling"), na.rm = TRUE)) %>% 
+  mutate(seedling = fruits / sum(fruits, na.rm = TRUE) * num_seedling) %>% 
+  # remove plants that started off a transition dead
+  filter(stage != "dead", !is.na(fate)) %>% 
+  mutate(stage = ordered(stage, c("seedling", "vegetative", "reproductive")))
+```
+
+```{r}
+testyr <- full.census %>% filter(year == 2001)
+projection.matrix(as.data.frame(testyr), stage = stage, fate = fate, fertility = seedling)
+projection.matrix(trans01, stage = stage, fate = fate, fertility = seedling)
+projection.matrix(full.census %>% as.data.frame())
+```
+
+Get lambda for every transition
+
+```{r}
+full.census %>% 
+  as.data.frame() %>%  
+  group_by(transition) %>% 
+  nest() %>% 
+  mutate(K = map(data,
+                 ~projection.matrix(as.data.frame(.x))
+  )) %>% #projection.matrix() doesn't work with tibbles for some reason
+  mutate(lambda = map_dbl(K, ~ lambda(.x)))
+```
+
