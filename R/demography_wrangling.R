@@ -39,4 +39,21 @@ demog <-
 
 # count(demog, surv) # 2230 dead plants over course of study
 
+# add lagged height
+
+demog <- 
+  demog %>% 
+  group_by(ha_id_number) %>% 
+  mutate(ht_prev = lag(ht),
+         shts_prev = lag(shts)) %>% 
+  ungroup()
+
+# arrange columns
+demog <- 
+  demog %>%
+  select(ranch, bdffp_reserve_no, plot, habitat, #site level
+         row, column,ha_id_number, tag_number, #plot level
+         year,
+         ht, ht_prev, shts, shts_prev, infl, surv, code_notes, code2) #plant level
+
 write_rds(demog, here("analysis", "data", "derived_data", "ha_survey.rds"))
