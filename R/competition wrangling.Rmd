@@ -18,6 +18,8 @@ library(here)
 library(conflicted)
 library(glue)
 library(car)
+library(skimr)
+
 source(here("R", "utils.R"))
 
 conflict_prefer("lag", "dplyr")
@@ -39,9 +41,6 @@ I want to use the `row` and `colunn` to figure out how many neighbors each plant
 ha <- read_rds(here("analysis", "data", "derived_data", "ha_survey.rds"))
 ```
 
-```{r}
-ha
-```
 Make numeric row and column numbers for easier data handling later.
 
 ```{r}
@@ -53,14 +52,19 @@ ha <-
   filter(row != "L") # just get rid of the few plants in a row "L".--only affects one plot
 ```
 
+```{r}
+skim(ha)
+```
 
-Start with one plot
+# Calculating density at different distances
+
+## Start with one plot
 
 ```{r}
 ha_test <- ha %>% filter(plot == first(plot))
 ```
 
-To calculate neigbors at a certain distance I first calculate the number of plants in each grid cell, as a matrix using the `xtabs()` function.  I do this for each year separately, and eventually will apply this to every year x plot combination.
+To calculate neighbors at a certain distance I first calculate the number of plants in each grid cell, as a matrix using the `xtabs()` function.  I do this for each year separately, and eventually will apply this to every year x plot combination.
 
 ```{r}
 ha_g <- 
@@ -101,17 +105,116 @@ Then, I can join this with the original data frame
 ha_test <- left_join(ha_test, n_plants_1, by = c("row_number" = "row", "column", "year"))
 ```
 
+## Scaling up
 
-
-# Model effects of density
-## growth
+One difficulty is that the size of plots varies:
 
 ```{r}
-m <- glm(ht ~ ht_prev * n_plants_1, family = gaussian(link = "identity"), data = ha_test)
-summary(m)
-car::Anova(m)
+ha %>% 
+  group_by(plot) %>% 
+  summarize(nrows = max(row_number), ncols = max(column))
 ```
+This means there has to be a different list of masking matrices for each plot, in addition to a different density matrix for each plot:year. 
+
+Also, occasionally the density matrix `neighbors` isn't consistent from year to year.  E.g. a column has no plants in it in one year and has a plant in it the next year.
+
+So, It might be easiest to split by plot, do this stuff on each plot, then re-join?
+
 ```{r}
-ha %>% count(plot, year, row, column)
+ha_plots <- ha %>% group_by(plot) %>% group_split()
+```
+
+```{r}
+#function to calculate neighbor density for a single plot (every year).
+df_plot <- ha_plots[[4]]
+calc_dens_neighbor <-
+  function(df_plot, D) {
+  ha_g <- 
+    df_plot %>% 
+    add_column(plant = 1) %>% 
+    group_by(year)
+  
+  neighbors <-
+    ha_g %>% 
+    group_split() %>% 
+    map(~xtabs(plant ~ row + column, .x)) %>% 
+    set_names(group_keys(ha_g)$year)
+  
+  I <- mat_rect(
+    D = D,
+    nrow = max(df_plot$row_number),
+    ncol = max(df_plot$column)
+  )
+  
+  n_plants <-
+    map_df(neighbors,
+           function(x) map_dbl(I, ~ sum(x * .x)) %>%
+             enframe(value = glue::glue("n_plants_{D}")) %>%
+             separate(name, into = c("row", "column"), sep = ",", convert = TRUE),
+           .id = "year"
+    ) %>%
+    mutate(year = as.integer(year))
+    
+  out <- left_join(df_plot, n_plants, by = c("row_number" = "row", "column", "year"))
+  return(out)
+}
+```
+
+For one plot:
+
+```{r}
+calc_dens_neighbor(ha_plots[[1]], D = 3)
+```
+
+But, doesn't work when a plot has empty rows or columns in some years but not others.
+
+```{r}
+calc_dens_neighbor(ha_plots[[4]], D = 3)
+```
+
+Alternative with list columns
+
+
+```{r}
+calc_dens_neighbor <-
+  function(df_plot, D) {
+    
+    calc_dens <- function(neighbors, I, D) {
+      out <- map_dbl(I, ~ sum(neighbors * .x)) %>%
+        enframe(value = glue::glue("n_plants_{D}")) %>%
+        separate(name, into = c("row_number", "column"), sep = ",", convert = TRUE)
+      return(out)
+    }
+    
+    df_nested <-
+      df_plot %>% 
+      add_column(plant = 1) %>% 
+      group_nest(year) %>% 
+      mutate(neighbors = map(data, ~xtabs(plant ~ row + column, .x))) %>% 
+      mutate(I = map(neighbors, ~{
+        mat_rect(
+          D = D,
+          nrow = nrow(.x),
+          ncol = ncol(.x)
+        )
+      }))
+    
+    out_nested <- 
+      df_nested %>% 
+      mutate(n_plants = map2(neighbors, I, ~calc_dens(.x, .y, D)))
+    
+    out_joined <- out_nested %>%
+      mutate(d = map2(data, n_plants,
+                      ~left_join(.x, .y, by = c("row_number", "column"))))
+
+    out <- out_joined$d %>% bind_rows()
+    return(out)
+  }
+```
+
+
+
+```{r}
+ha_plots %>% map_df(~calc_dens_neighbor(.x, 2))
 ```
 
