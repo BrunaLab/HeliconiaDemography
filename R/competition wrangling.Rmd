@@ -1,0 +1,117 @@
+---
+title: "Competition"
+author: "Eric R. Scott"
+date: "2020-09-09"
+output: 
+  html_notebook: 
+    highlight: kate
+    theme: yeti
+    toc: yes
+    toc_float: yes
+    number_sections: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(conflicted)
+library(glue)
+library(car)
+source(here("R", "utils.R"))
+
+conflict_prefer("lag", "dplyr")
+conflict_prefer("filter", "dplyr")
+conflict_prefer("select", "dplyr")
+```
+
+*Last compiled: `r Sys.Date()`*
+
+# Purpose
+
+Competition kernel. Teller et al.
+
+I want to use the `row` and `colunn` to figure out how many neighbors each plant has. I should exclude plants on edges, because I don't know about their neighbors outside of the plot.
+
+# Load Data
+
+```{r data, echo=TRUE}
+ha <- read_rds(here("analysis", "data", "derived_data", "ha_survey.rds"))
+```
+
+```{r}
+ha
+```
+Make numeric row and column numbers for easier data handling later.
+
+```{r}
+# as.factor(ha$row) #levels are alphabetical order by default, which is perfect.  Except for row "L", not sure what that's about.
+ha <- 
+  ha %>% 
+  mutate(row_number = as.integer(as.factor(row)), .after = row,
+         column = as.integer(column)) %>% 
+  filter(row != "L") # just get rid of the few plants in a row "L".--only affects one plot
+```
+
+
+Start with one plot
+
+```{r}
+ha_test <- ha %>% filter(plot == first(plot))
+```
+
+To calculate neigbors at a certain distance I first calculate the number of plants in each grid cell, as a matrix using the `xtabs()` function.  I do this for each year separately, and eventually will apply this to every year x plot combination.
+
+```{r}
+ha_g <- 
+  ha_test %>% 
+  add_column(plant = 1) %>% 
+  group_by(year)
+
+neighbors <-
+  ha_g %>% 
+  group_split() %>% 
+  map(~xtabs(plant ~ row + column, .x)) %>% 
+  set_names(group_keys(ha_g)$year)
+head(neighbors, 3)
+```
+
+Then, for every grid cell, I create a masking matrix using a custom function, `mat_rect()`, in utils.R.
+
+```{r}
+I1 <- mat_rect(D = 0, nrow = 5, ncol = 10)
+```
+
+Then for each year in `neighbors`, I multiply the xtabs matrix by the masking matrix and take the sum to get the number of plants in that distance around each focal plant.
+
+```{r}
+n_plants_1 <-
+  map_df(neighbors,
+  function(x) map_dbl(I1, ~ sum(x * .x)) %>% 
+    enframe(value = "n_plants_1") %>% 
+    separate(name, into = c("row", "column"), sep = ",", convert = TRUE),
+  .id = "year"
+) %>% 
+  mutate(year = as.integer(year)) #for joining later
+n_plants_1
+```
+Then, I can join this with the original data frame
+
+```{r}
+ha_test <- left_join(ha_test, n_plants_1, by = c("row_number" = "row", "column", "year"))
+```
+
+
+
+# Model effects of density
+## growth
+
+```{r}
+m <- glm(ht ~ ht_prev * n_plants_1, family = gaussian(link = "identity"), data = ha_test)
+summary(m)
+car::Anova(m)
+```
+```{r}
+ha %>% count(plot, year, row, column)
+```
+

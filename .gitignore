@@ -41,3 +41,5 @@ vignettes/*.pdf
 
 # Data
 /analysis/data/raw_data/
+
+/notes
