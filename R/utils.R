@@ -72,6 +72,70 @@ mat_rect <- function(D, nrow, ncol) {
   return(mlist[-1])
 }
 
+#' Create masking matrices with diamonds
+#' 
+#' Creates a list of matrices with all 0's except for a diamond of 1's around a
+#' focal "cell". Here, each "1" has Manhattan distance D from the focal cell.
+#' Used for figuring out how many neighboring plants each plant has.
+#'
+#' @param D Manhattan distance from focal cell to create mask
+#' @param nrow number of rows of matrix
+#' @param ncol number of columns of matrix
+#'
+#' @return a list of matrices
+#' @author Lyndsay Troyer
+#' @export
+#' @import glue
+#'
+#' @examples
+#' x <- mat_diamond(D=2, nrow = 10, ncol = 10)
+#' x$`5, 5`
+mat_diamond <- function(D, nrow, ncol) {
+  mlist <- vector("list", 1)
+  for(r in 1:nrow) {
+    for(c in 1:ncol) {
+      m <- matrix(0, ncol = ncol, nrow = nrow)
+      
+      n <- r - (0:D)
+      s <- r + (0:D)
+      e <- c + (D:0)
+      w <- c - (D:0)
+      
+      #southwest side
+      r1f <- s[s <= nrow & w > 0 & w <= ncol]
+      c1f <- w[s <= nrow & w > 0 & w <= ncol]
+      for(i in 1:length(r1f)) {
+        m[r1f[i], c1f[i]] <- 1
+      }
+      
+      #northeast side
+      r2f <- n[n > 0 & e <= ncol]
+      c2f <- e[n > 0 & e <= ncol]
+      for(i in 1:length(r2f)) {
+        m[r2f[i], c2f[i]] <- 1
+      }
+
+      #southeast side
+      r3f <- s[s <=nrow & e <= ncol]
+      c3f <- e[s <=nrow & e <= ncol]
+      for(i in 1:length(r3f)) {
+        m[r3f[i], c3f[i]] <- 1
+      }
+      
+      #northwest side
+      r4f <- n[n > 0 & w > 0]
+      c4f <- w[n > 0 & w > 0]
+      for(i in 1:length(r4f)) {
+        m[r4f[i], c4f[i]] <- 1
+      }
+      
+      m <- list(m)
+      names(m) <- glue::glue("{r}, {c}")
+      mlist <- c(mlist, m)
+    }
+  }
+  return(mlist[-1])
+}
 
 # WIP: function to get data for plotting results from GAM with crossbasis smooth.
 # 
