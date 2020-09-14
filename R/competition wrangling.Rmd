@@ -266,3 +266,11 @@ library(naniar)
 vis_miss(ha_new %>% select(starts_with("density")))
 ```
 The furthest distance I can estimate density for all plants is 60m.  Past that, in order to estimate effects of density, I would have to drop plants.  Even for closer plants though, the estimates may be biased because they do not include plants outside of the plot. That is, neighbor density for plants near the edges is based on a smaller sample than for plants near the center.
+
+
+# Write to cleaned data
+
+```{r}
+write_rds(ha_new, here("analysis", "data", "derived_data", "ha_density.rds"))
+```
+
