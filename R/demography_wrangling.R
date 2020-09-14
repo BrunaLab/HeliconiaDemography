@@ -1,6 +1,9 @@
 library(tidyverse)
 library(here)
 library(janitor)
+library(conflicted)
+conflict_prefer("filter", "dplyr")
+
 demog <- 
   read_csv(here("analysis", "data", "raw_data", "Ha_survey_with_Zombies.csv"), col_names = TRUE,
            cols(plot = col_character(),
