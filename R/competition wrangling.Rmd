@@ -57,164 +57,212 @@ skim(ha)
 ```
 
 # Calculating density at different distances
-
-## Start with one plot
-
+First, a small example as proof of concept:
 ```{r}
-ha_test <- ha %>% filter(plot == first(plot))
+ha_test <-
+  ha %>%
+  filter(plot == first(plot)) %>%
+  filter(year == first(year)) %>%
+  filter(row_number <=3, column <=3) %>% 
+  add_column(plant = 1) #just a dummy indicator column for use later
+ha_test
 ```
 
-To calculate neighbors at a certain distance I first calculate the number of plants in each grid cell, as a matrix using the `xtabs()` function.  I do this for each year separately, and eventually will apply this to every year x plot combination.
+I'll make use of `expand_grid()` to create every combination of row and column (cell), and `dist()` to calculate the distance between every cell and every other cell.
 
 ```{r}
-ha_g <- 
+#all possible combination of row and column ID
+grid_coords <- expand_grid(row = 1:3, col = 1:3) %>% as.matrix() 
+
+#calculate distrance from every coord to every other coord
+d <- dist(grid_coords*10, #because each grid cell is 10m x 10m
+          diag = FALSE,
+          upper = TRUE) %>% 
+  as.matrix()
+
+rownames(d) <- colnames(d) <- paste(grid_coords[ , 1], grid_coords[ , 2], sep = ",")
+d
+```
+
+Now I can turn this into a tidy/long format. This shows the distance from (`row_from`, `column_from`) to (`row_to`, `column_to`).
+
+```{r}
+dist_df <-
+  as.data.frame(d) %>% 
+  rownames_to_column(var = "from") %>% 
+  pivot_longer(-from, names_to = "to", values_to = "dist") %>% 
+  separate(from, into = c("row_from", "column_from")) %>% 
+  separate(to, into = c("row_to", "column_to")) %>% 
+  mutate(across(where(is.character), as.integer))
+head(dist_df)
+```
+
+Then we can summarize the real data to figure out how many plants are in each grid cell.  Here, I'm just using a small subset that corresponds to a single 3x3 plot
+
+```{r}
+plant_summary <-
   ha_test %>% 
-  add_column(plant = 1) %>% 
-  group_by(year)
-
-neighbors <-
-  ha_g %>% 
-  group_split() %>% 
-  map(~xtabs(plant ~ row + column, .x)) %>% 
-  set_names(group_keys(ha_g)$year)
-head(neighbors, 3)
+  group_by(row_number, column) %>% 
+  summarize(n_plants = n()) %>% 
+  rename(row = row_number)
+plant_summary
 ```
-
-Then, for every grid cell, I create a masking matrix using a custom function, `mat_rect()`, in utils.R.
+Now I can join these two data frames.
 
 ```{r}
-I1 <- mat_rect(D = 0, nrow = 5, ncol = 10)
+dist_full <- full_join(dist_df, plant_summary, by = c("row_to" = "row", "column_to" = "column"))
+head(dist_full)
 ```
+The way to read this is for a plant in [1,1] the cell [1,1] is 0m away and has 3 plants in it.  For a plant in [1,1], cell [1,2] is 10m away and there is 1 plant in it.  For a plant in [1,1], cell [2,3] is 22.36m away and there are 9 plants in it, etc.
 
-Then for each year in `neighbors`, I multiply the xtabs matrix by the masking matrix and take the sum to get the number of plants in that distance around each focal plant.
+Here's another way to visualize this using `xtabs()`:
 
 ```{r}
-n_plants_1 <-
-  map_df(neighbors,
-  function(x) map_dbl(I1, ~ sum(x * .x)) %>% 
-    enframe(value = "n_plants_1") %>% 
-    separate(name, into = c("row", "column"), sep = ",", convert = TRUE),
-  .id = "year"
-) %>% 
-  mutate(year = as.integer(year)) #for joining later
-n_plants_1
+xtabs(plant ~ row_number + column, ha_test)
 ```
-Then, I can join this with the original data frame
+
+So now I can filter this and summarize to calculate neighbor density at arbitrary distances for every grid cell.
 
 ```{r}
-ha_test <- left_join(ha_test, n_plants_1, by = c("row_number" = "row", "column", "year"))
+#density between 5m and 15m away
+dist_5_15<-
+  dist_full %>% 
+  filter(dist >=5, dist <15) %>% 
+  group_by(row_from, column_from) %>% 
+  summarize(n_neighbors_5_15 = sum(n_plants, na.rm = TRUE),
+            n_cells = n(),
+            density_5_15 = n_neighbors_5_15/n_cells)
+```
+So at [1,1] there are only 3 cells between 5 and 15m away, there are a total of 6 plants in those cells, so the conspecific density at that distance is 2.0 plants / 100m^2
+
+Then I can join that back to the original data set
+
+```{r}
+full_test <- full_join(ha_test, dist_5_15, by = c("row_number" = "row_from", "column" = "column_from"))
+head(full_test)
 ```
 
 ## Scaling up
 
-One difficulty is that the size of plots varies:
+I'm going to scale up using a nested dataframe and the magic of list-columns!  The advantage of this over splitting the one dataframe into a dataframe for every plot:year combo and using a for-loop or `map()` is that it keeps the plot and year structure intact and I don't have to figure out how to re-join the data at the end.
+
+First, nest the dataframe by plot and year.
 
 ```{r}
-ha %>% 
-  group_by(plot) %>% 
-  summarize(nrows = max(row_number), ncols = max(column))
-```
-This means there has to be a different list of masking matrices for each plot, in addition to a different density matrix for each plot:year. 
-
-Also, occasionally the density matrix `neighbors` isn't consistent from year to year.  E.g. a column has no plants in it in one year and has a plant in it the next year.
-
-So, It might be easiest to split by plot, do this stuff on each plot, then re-join?
-
-```{r}
-ha_plots <- ha %>% group_by(plot) %>% group_split()
+ha_nest <-
+  ha %>% 
+  group_by(plot, year) %>% 
+  group_nest()
 ```
 
-```{r}
-#function to calculate neighbor density for a single plot (every year).
-df_plot <- ha_plots[[4]]
-calc_dens_neighbor <-
-  function(df_plot, D) {
-  ha_g <- 
-    df_plot %>% 
-    add_column(plant = 1) %>% 
-    group_by(year)
-  
-  neighbors <-
-    ha_g %>% 
-    group_split() %>% 
-    map(~xtabs(plant ~ row + column, .x)) %>% 
-    set_names(group_keys(ha_g)$year)
-  
-  I <- mat_rect(
-    D = D,
-    nrow = max(df_plot$row_number),
-    ncol = max(df_plot$column)
-  )
-  
-  n_plants <-
-    map_df(neighbors,
-           function(x) map_dbl(I, ~ sum(x * .x)) %>%
-             enframe(value = glue::glue("n_plants_{D}")) %>%
-             separate(name, into = c("row", "column"), sep = ",", convert = TRUE),
-           .id = "year"
-    ) %>%
-    mutate(year = as.integer(year))
-    
-  out <- left_join(df_plot, n_plants, by = c("row_number" = "row", "column", "year"))
-  return(out)
-}
-```
-
-For one plot:
+Then, do the setup by calculating the `grid_coords` and `d` for every plot:year combo.
 
 ```{r}
-calc_dens_neighbor(ha_plots[[1]], D = 3)
-```
-
-But, doesn't work when a plot has empty rows or columns in some years but not others.
-
-```{r}
-calc_dens_neighbor(ha_plots[[4]], D = 3)
-```
-
-Alternative with list columns
-
-
-```{r}
-calc_dens_neighbor <-
-  function(df_plot, D) {
-    
-    calc_dens <- function(neighbors, I, D) {
-      out <- map_dbl(I, ~ sum(neighbors * .x)) %>%
-        enframe(value = glue::glue("n_plants_{D}")) %>%
-        separate(name, into = c("row_number", "column"), sep = ",", convert = TRUE)
-      return(out)
+ha_nest_dist <- 
+  ha_nest %>% 
+  #every combination of row and column:
+  mutate(grid_coords = map(
+    data, 
+    ~expand_grid(row = min(.x$row_number):max(.x$row_number),
+                 col = min(.x$column):max(.x$column)) %>% as.matrix()
+    )) %>% 
+  #matrix describing euclidean distance from every point to every other point:
+  mutate(d = map(
+    grid_coords,
+    ~{
+      d <- dist(.x * 10, #because each grid cell is 10m x 10m
+                diag = FALSE,
+                upper = TRUE) %>% 
+        as.matrix()
+       colnames(d) <- rownames(d) <- paste(.x[,1], .x[,2], sep = ",")
+      d
     }
-    
-    df_nested <-
-      df_plot %>% 
-      add_column(plant = 1) %>% 
-      group_nest(year) %>% 
-      mutate(neighbors = map(data, ~xtabs(plant ~ row + column, .x))) %>% 
-      mutate(I = map(neighbors, ~{
-        mat_rect(
-          D = D,
-          nrow = nrow(.x),
-          ncol = ncol(.x)
-        )
-      }))
-    
-    out_nested <- 
-      df_nested %>% 
-      mutate(n_plants = map2(neighbors, I, ~calc_dens(.x, .y, D)))
-    
-    out_joined <- out_nested %>%
-      mutate(d = map2(data, n_plants,
-                      ~left_join(.x, .y, by = c("row_number", "column"))))
-
-    out <- out_joined$d %>% bind_rows()
-    return(out)
+    )) %>% 
+  #tidy data frame version of d
+  mutate(dist_df = map(d, ~{
+    as.data.frame(.x) %>% 
+      rownames_to_column(var = "from") %>% 
+      pivot_longer(-from, names_to = "to", values_to = "dist") %>% 
+      separate(from, into = c("row_from", "column_from")) %>% 
+      separate(to, into = c("row_to", "column_to")) %>% 
+      mutate(across(where(is.character), as.integer))
   }
+  ))
 ```
 
-
+Now, create that summary tibble counting the number of plants in each grid cell for every plot:year combo, join, and unnest.
 
 ```{r}
-ha_plots %>% map_df(~calc_dens_neighbor(.x, 2))
+ha_dist <-
+  ha_nest_dist %>% 
+  #summarize each year:plot to count number of plants in each grid cell
+  mutate(n_plants_sum = map(data, ~{
+    .x %>% 
+      add_column(plant = 1) %>% 
+      group_by(row_number, column) %>% 
+      summarize(n_plants = n()) %>% 
+      rename(row = row_number)
+  }
+  )) %>% 
+  #join with tidied distance matrix to get dataframe for distance from every row
+  #and column to every other row and column
+  mutate(dist_full = map2(dist_df, n_plants_sum, ~{
+    full_join(.x, .y, by = c("row_to" = "row", "column_to" = "column"))
+  } 
+  )) %>% 
+  select(plot, year, dist_full) %>% 
+  unnest(dist_full)
+
+ha_dist
 ```
 
+Now, with `ha_dist`, I can filter by distance, calculate a density, and the join to the original data.
+
+```{r}
+dens_0_10 <-
+  ha_dist %>% 
+  filter(dist>0 & dist <=10) %>% 
+  group_by(plot, year, row_from, column_from) %>% 
+  summarize(density_0_10 = sum(n_plants, na.rm = TRUE)/n())
+left_join(ha, dens_0_10, by = c("plot", "year", "row_number" = "row_from", "column" = "column_from")) %>% 
+  arrange(plot, year, row_number, column)
+```
+
+I'll do this for different distances programmatically.
+
+```{r}
+width <- 10 #meters
+max <- 100 #meters
+L <- seq(0, max-width, by = width)
+U <- seq(0 + width, max, by = width)
+
+out <- 
+  map2(L, U, ~{
+  ha_dist %>%
+    filter(dist >= .x & dist < .y) %>% 
+    group_by(plot, year, row_from, column_from) %>%
+    summarize(!!glue::glue("density_{.x}_{.y}") := sum(n_plants, na.rm = TRUE)/n())
+})
+
+x <- out[[1]]
+for (i in 2:length(out)) {
+  x <- full_join(x, out[[i]], by = c("plot", "year",  "row_from", "column_from"))
+}  
+x
+```
+
+Join to original data
+
+```{r}
+ha_new <- 
+  left_join(ha, x,
+          by = c("plot", "year", "row_number" = "row_from", "column" = "column_from")) %>% 
+  arrange(plot, year, row_number, column)
+ha_new
+```
+
+```{r}
+library(naniar)
+vis_miss(ha_new %>% select(starts_with("density")))
+```
+The furthest distance I can estimate density for all plants is 60m.  Past that, in order to estimate effects of density, I would have to drop plants.  Even for closer plants though, the estimates may be biased because they do not include plants outside of the plot. That is, neighbor density for plants near the edges is based on a smaller sample than for plants near the center.
