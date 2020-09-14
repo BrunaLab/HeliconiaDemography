@@ -8,7 +8,7 @@ on:
     branches:
       - master
 
-name: R-CMD-check
+name: run-tests
 
 jobs:
   R-CMD-check:
@@ -18,9 +18,9 @@ jobs:
       - uses: r-lib/actions/setup-r@master
       - name: Install dependencies
         run: |
-          install.packages(c("remotes", "rcmdcheck"))
-          remotes::install_deps(dependencies = TRUE)
+          install.packages("renv")
+          renv::restore()
         shell: Rscript {0}
-      - name: Check
-        run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
+      - name: Test
+        run: source("tests/testthat.R")
         shell: Rscript {0}
