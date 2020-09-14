@@ -11,7 +11,7 @@ on:
 name: run-tests
 
 jobs:
-  R-CMD-check:
+  test:
     runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v2
