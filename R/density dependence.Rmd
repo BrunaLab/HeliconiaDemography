@@ -150,28 +150,30 @@ Apparently not! Weird! It is highly significant when I was accidentally modeling
 
 # Survival
 
+Should this be a function of `log_shts` or `log_shts_prev`?  Think about how you've coded survival.
+
 ```{r}
-m_surv <- glmer(surv ~ log_shts_prev + density_0_10 + density_10_20 + (1|plot) + (1|ha_id_number) + (1|year), 
+m_surv <- glmer(surv ~ log_shts + density_0_10 + density_10_20 + (1|plot) + (1|ha_id_number) + (1|year), 
                 family = binomial, data = ha_cf)
 ```
 
 ## Random effects
 
 ```{r}
-m_surv2 <- glmer(surv ~ log_shts_prev + density_0_10 + density_10_20 + (1|plot) + (1|year), 
+m_surv2 <- glmer(surv ~ log_shts + density_0_10 + density_10_20 + (1|plot) + (1|year), 
                 family = binomial, data = ha_cf)
 AICtab(m_surv, m_surv2)
 ```
 Can remove plant ID
 ```{r}
-m_surv3 <- glmer(surv ~ log_shts_prev + density_0_10 + density_10_20 + (1|year), 
+m_surv3 <- glmer(surv ~ log_shts + density_0_10 + density_10_20 + (1|year), 
                 family = binomial, data = ha_cf)
 AICtab(m_surv2, m_surv3)
 ```
 Can't remove plot
 
 ```{r}
-m_surv4 <- glmer(surv ~ log_shts_prev + density_0_10 + density_10_20 + (1|plot), 
+m_surv4 <- glmer(surv ~ log_shts + density_0_10 + density_10_20 + (1|plot), 
                 family = binomial, data = ha_cf)
 AICtab(m_surv2, m_surv4)
 ```
@@ -181,12 +183,65 @@ Can't remove year.
 
 ```{r}
 Anova(m_surv2)
+fixef(m_surv2) %>% plogis()
 ```
 
-Yes, but only immediate grid cell
+Marginal, and only immediate grid cell.  Density has positive affect on survival.  So, probably just good patches.
+
+# Flowering probability
+
+```{r}
+ggplot(ha_cf, aes(infl)) + geom_histogram()
+```
+Make a binary column
+
+```{r}
+ha_cf <- 
+  ha_cf %>% 
+  mutate(flwr = as.integer(infl>0), .before = infl)
+
+#the way suvival is currently coded, a plant can flower and then not survive in the same year, so no need to filter out dead plants.
+ha_cf %>% filter(surv == 0)
+```
+
+```{r}
+m_flwr <- glmer(flwr ~ log_shts_prev + density_0_10 + density_10_20 + (1|ha_id_number) + (1|plot) + (1|year), family = binomial, data = ha_cf)
+```
+
+## Random effects
+
+```{r}
+m_flwr2 <- glmer(flwr ~ log_shts_prev + density_0_10 + density_10_20 + (1|ha_id_number) + (1|year), family = binomial, data = ha_cf)
+AICtab(m_flwr, m_flwr2)
+```
+can get rid of plot ID
+
+```{r}
+m_flwr3 <- glmer(flwr ~ log_shts_prev + density_0_10 + density_10_20 + (1|year), family = binomial, data = ha_cf)
+AICtab(m_flwr, m_flwr2, m_flwr3)
+```
+keep plant ID
+
+```{r}
+m_flwr4 <- glmer(flwr ~ log_shts_prev + density_0_10 + density_10_20 + (1|ha_id_number), family = binomial, data = ha_cf)
+AICtab(m_flwr, m_flwr2, m_flwr3, m_flwr4)
+```
+
+keep year
+
+## Density dependence?
+
+```{r}
+Anova(m_flwr2)
+fixef(m_flwr2) %>% plogis()
+```
+
+Ok, there's an effect, but oddly only past 20m.  Again, positive density dependence.
 
 # TODO: 
 
+- Check number of inflorescencesa given flowered?
+- check that survival is coded right so that it is a function of `ht_prev`
 - try negative binomial distribution for shoot number
 - ~~Density should be total shoot number~~
 - ~~Should actually be density in previous year~~
