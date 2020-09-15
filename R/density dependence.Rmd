@@ -21,6 +21,7 @@ library(bbmle)
 library(car)
 library(broom)
 library(broom.mixed)
+library(patchwork)
 
 conflict_prefer("lag", "dplyr")
 conflict_prefer("filter", "dplyr")
@@ -38,7 +39,9 @@ Start by looking for density dependence on growth, survival, and reproduction in
 ha <- read_rds(here("analysis", "data", "derived_data", "ha_density.rds"))
 ha
 ```
+
 Filter to just continuous forest
+
 ```{r}
 ha_cf <- 
   ha %>% 
@@ -48,99 +51,98 @@ ha_cf <-
 ```
 
 I don't know what a height of 0 means...
+Height of 0 probably means it was knocked over, or very small, or dead.
+
+Scale year
 
 ```{r}
-ha_cf <- ha_cf %>% filter(ht > 0, ht_prev > 0)
+ha_cf <- 
+  ha_cf %>% 
+  ungroup() %>% 
+  mutate(year_post = year - min(year))
 ```
 
 
 # Growth
 
+For this I'm going to use shoot number. Very closely related to height, but better behaved distribution and not sensitive to plants being knocked over.
+
 ```{r}
-m <- lmer(log_ht ~ log_ht_prev + density_0_10 + (1|year) + (1|plot), data = ha_cf)
-summary(m)
-m2 <- lmer(log_ht ~ log_ht_prev + density_0_10 + (1|year), data = ha_cf)
-m3 <- lmer(log_ht ~ log_ht_prev + density_0_10 + (1|plot), data = ha_cf)
-m4 <- lm(log_ht ~ log_ht_prev + density_0_10, data = ha_cf)
-AICtab(m, m2, m3, m4)
+mpois <- glm(shts ~ log(shts_prev) * density_0_10,
+             family = poisson(link = "log"),
+             data = ha_cf)
+lm <- lm(shts ~ log(shts_prev) * density_0_10,
+         data = ha_cf)
+mnorm <- glm(shts ~ log(shts_prev) * density_0_10,
+             family = gaussian(link = "log"),
+             data = ha_cf)
+mpois2 <- glmer(shts ~ log(shts_prev) * density_0_10 + (1|ha_id_number) + (1|year_post) + (1|plot),
+                family = poisson(link = "log"),
+                data = ha_cf)
+
+mnorm2 <- glmer(shts ~ log(shts_prev) * density_0_10 + (1|ha_id_number) + (1|year_post) + (1|plot),
+                family = gaussian(link = "log"),
+                data = ha_cf)
+
+AICtab(mpois, mnorm, lm, mpois2, mnorm2)
 ```
 
-keep both random effects, possibly remove random effect of plot.
+Lognormal distribution fits best, even after attempting to account of overdispersion with random effects.  I guess despite being discrete, this isn't really "count" data *per se*.
+
+Model doesn't converge though.
+
 
 ```{r}
-m <- lmer(log_ht ~ log_ht_prev + density_0_10 + (1|year) + (1|plot), data = ha_cf)
-Anova(m)
+mnorm3 <- glmer(shts ~ log(shts_prev) * density_0_10 + (1|ha_id_number) + (1|year_post),
+               family = gaussian(link = "log"),
+               data = ha_cf)
+
+AICtab(mnorm2, mnorm3)
 ```
 
-Density matters?
+Can remove plot ID.
 
 ```{r}
-augment(m) %>% 
+mnorm4 <- glmer(shts ~ log(shts_prev) * density_0_10 + (1|year_post),
+               family = gaussian(link = "log"),
+               data = ha_cf)
+AICtab(mnorm3, mnorm4)
+```
+
+Keep plant ID as a random effect.
+
+```{r}
+mnorm5 <- glmer(shts ~ log(shts_prev) * density_0_10 + (1|ha_id_number),
+               family = gaussian(link = "log"),
+               data = ha_cf)
+AICtab(mnorm3, mnorm4, mnorm5)
+```
+
+Can't remove year as random effect.  
+
+Inspect residuals:
+
+```{r}
+h <- augment(mnorm2) %>% 
   ggplot(aes(.resid)) +
-  geom_histogram()
-```
+  geom_histogram() 
 
-residuals look leptokurtic.
-
-```{r}
-augment(m) %>% 
+qq <- augment(mnorm2) %>% 
   ggplot(aes(sample = .resid)) +
-  geom_qq() + geom_qq_line()
+  geom_qq() + geom_qq_line() 
+
+resid<- augment(mnorm2) %>% 
+  ggplot(aes(x = .fitted, y = .resid)) + geom_point() 
+h/(qq|resid)
 ```
-
-Try scaled T distribution
-
-```{r}
-library(mgcv)
-library(gamm4)
-m <- gamm4(log_ht ~ log_ht_prev + density_0_10, random = ~ (1|year) + (1|plot), family = scat, data = ha_cf)
-m <- gam(log_ht ~ log_ht_prev + density_0_10, family = scat, data = ha_cf)
-coef(m)
-augment(m) %>% 
-  ggplot(aes(.resid)) +
-  geom_histogram()
-
-augment(m) %>% 
-  ggplot(aes(sample = .resid)) +
-  geom_qq() + geom_qq_line()
-```
-
-Maybe something like a gamma distribution on un-transformed values?  Or use shoots..
-
-```{r}
-m <- lmer(log(shts) ~ log(shts_prev) + density_0_10 + (1|year) + (1|plot), data = ha_cf)
-Anova(m)
-augment(m) %>% 
-  ggplot(aes(.resid)) +
-  geom_histogram()
-
-augment(m) %>% 
-  ggplot(aes(sample = .resid)) +
-  geom_qq() + geom_qq_line()
-```
-Ok, yeah.  That's a good reason to use # of shoots maybe?
-
-```{r}
-Anova(m)
-```
-
-Density matters!
-
-```{r}
-m <- lmer(log(shts) ~ log(shts_prev) * density_0_10 + (1|year) + (1|plot), data = ha_cf)
-fixef(m)
-Anova(m)
-```
-
-Interaction doesn't! (bless)
-
-```{r}
-m <- lmer(log(shts) ~ log(shts_prev) + density_0_10 + density_10_20 + density_20_30 + (1|year) + (1|plot), data = ha_cf)
-fixef(m)
-Anova(m)
-```
-
-Ah, density further away matters as well.  Collinearity, probably, so don't trust p-values!
+I don't love this, but it is a better fit than a poisson distribution.
 
 
-Ok, gotta do GAMs I guess!
+
+# TODO: 
+
+- Density should be total shoot number
+- Should actually be density in previous year
+- ~~Shoots should be poisson distribution, not log-transformed?~~
+- incorporate 1-ha fragments and use habitat type as a predictor.
+- Implement FLM approach to density dependence.

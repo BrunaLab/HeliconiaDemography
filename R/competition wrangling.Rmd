@@ -58,6 +58,7 @@ skim(ha)
 
 # Calculating density at different distances
 First, a small example as proof of concept:
+
 ```{r}
 ha_test <-
   ha %>%
@@ -103,7 +104,8 @@ Then we can summarize the real data to figure out how many plants are in each gr
 plant_summary <-
   ha_test %>% 
   group_by(row_number, column) %>% 
-  summarize(n_plants = n()) %>% 
+  summarize(n_plants = n(),
+            n_shts = sum(shts)) %>% 
   rename(row = row_number)
 plant_summary
 ```
@@ -125,15 +127,16 @@ So now I can filter this and summarize to calculate neighbor density at arbitrar
 
 ```{r}
 #density between 5m and 15m away
-dist_5_15<-
+dist_5_15 <-
   dist_full %>% 
   filter(dist >=5, dist <15) %>% 
   group_by(row_from, column_from) %>% 
   summarize(n_neighbors_5_15 = sum(n_plants, na.rm = TRUE),
             n_cells = n(),
-            density_5_15 = n_neighbors_5_15/n_cells)
+            density_5_15 = n_neighbors_5_15/n_cells,
+            shtsper_5_15 = sum(n_shts, na.rm = TRUE)/n())
 ```
-So at [1,1] there are only 3 cells between 5 and 15m away, there are a total of 6 plants in those cells, so the conspecific density at that distance is 2.0 plants / 100m^2
+So at [1,1] there are only 3 cells between 5 and 15m away, there are a total of 6 plants in those cells, so the conspecific density at that distance is 2.0 plants / 100m^2 or 3.66 shoots / 100m^2
 
 Then I can join that back to the original data set
 
@@ -190,23 +193,23 @@ ha_nest_dist <-
   ))
 ```
 
-Now, create that summary tibble counting the number of plants in each grid cell for every plot:year combo, join, and unnest.
+Now, create that summary tibble counting the number of shoots in each grid cell for every plot:year combo, join, and unnest.
 
 ```{r}
 ha_dist <-
   ha_nest_dist %>% 
   #summarize each year:plot to count number of plants in each grid cell
-  mutate(n_plants_sum = map(data, ~{
+  mutate(n_shts_sum = map(data, ~{
     .x %>% 
-      add_column(plant = 1) %>% 
+      # add_column(plant = 1) %>% 
       group_by(row_number, column) %>% 
-      summarize(n_plants = n()) %>% 
+      summarize(n_shts = sum(shts)) %>% 
       rename(row = row_number)
   }
   )) %>% 
   #join with tidied distance matrix to get dataframe for distance from every row
   #and column to every other row and column
-  mutate(dist_full = map2(dist_df, n_plants_sum, ~{
+  mutate(dist_full = map2(dist_df, n_shts_sum, ~{
     full_join(.x, .y, by = c("row_to" = "row", "column_to" = "column"))
   } 
   )) %>% 
@@ -223,7 +226,7 @@ dens_0_10 <-
   ha_dist %>% 
   filter(dist>0 & dist <=10) %>% 
   group_by(plot, year, row_from, column_from) %>% 
-  summarize(density_0_10 = sum(n_plants, na.rm = TRUE)/n())
+  summarize(density_0_10 = sum(n_shts, na.rm = TRUE)/n())
 left_join(ha, dens_0_10, by = c("plot", "year", "row_number" = "row_from", "column" = "column_from")) %>% 
   arrange(plot, year, row_number, column)
 ```
@@ -241,7 +244,7 @@ out <-
   ha_dist %>%
     filter(dist >= .x & dist < .y) %>% 
     group_by(plot, year, row_from, column_from) %>%
-    summarize(!!glue::glue("density_{.x}_{.y}") := sum(n_plants, na.rm = TRUE)/n())
+    summarize(!!glue::glue("density_{.x}_{.y}") := sum(n_shts, na.rm = TRUE)/n())
 })
 
 x <- out[[1]]
