@@ -39,6 +39,18 @@ Start by looking for density dependence on growth, survival, and reproduction in
 ha <- read_rds(here("analysis", "data", "derived_data", "ha_density.rds"))
 ha
 ```
+Actually interested in density in the previous year
+
+```{r}
+ha <-
+  ha %>% 
+  group_by(ha_id_number) %>% 
+  arrange(ha_id_number, year) %>% 
+  mutate(across(starts_with("density"), lag)) %>% 
+  ungroup() %>% 
+  #scale year
+  mutate(year_post = year - min(year))
+```
 
 Filter to just continuous forest
 
@@ -52,15 +64,6 @@ ha_cf <-
 
 I don't know what a height of 0 means...
 Height of 0 probably means it was knocked over, or very small, or dead.
-
-Scale year
-
-```{r}
-ha_cf <- 
-  ha_cf %>% 
-  ungroup() %>% 
-  mutate(year_post = year - min(year))
-```
 
 
 # Growth
@@ -100,22 +103,22 @@ mnorm3 <- glmer(shts ~ log(shts_prev) * density_0_10 + (1|ha_id_number) + (1|yea
 AICtab(mnorm2, mnorm3)
 ```
 
-Can remove plot ID.
+Can't remove plot ID.
 
 ```{r}
-mnorm4 <- glmer(shts ~ log(shts_prev) * density_0_10 + (1|year_post),
+mnorm4 <- glmer(shts ~ log(shts_prev) * density_0_10 + (1|year_post) + (1|plot),
                family = gaussian(link = "log"),
                data = ha_cf)
-AICtab(mnorm3, mnorm4)
+AICtab(mnorm2, mnorm4)
 ```
 
-Keep plant ID as a random effect.
+Can't remove plant ID
 
 ```{r}
-mnorm5 <- glmer(shts ~ log(shts_prev) * density_0_10 + (1|ha_id_number),
+mnorm5 <- glmer(shts ~ log(shts_prev) * density_0_10 + (1|ha_id_number) + (1|plot),
                family = gaussian(link = "log"),
                data = ha_cf)
-AICtab(mnorm3, mnorm4, mnorm5)
+AICtab(mnorm2, mnorm3, mnorm4, mnorm5)
 ```
 
 Can't remove year as random effect.  
@@ -123,16 +126,17 @@ Can't remove year as random effect.
 Inspect residuals:
 
 ```{r}
-h <- augment(mnorm2) %>% 
-  ggplot(aes(.resid)) +
+ha_aug <- augment(mnorm2)
+h <-
+  ggplot(ha_aug, aes(.resid)) +
   geom_histogram() 
 
-qq <- augment(mnorm2) %>% 
-  ggplot(aes(sample = .resid)) +
+qq <-
+  ggplot(ha_aug, aes(sample = .resid)) +
   geom_qq() + geom_qq_line() 
 
-resid<- augment(mnorm2) %>% 
-  ggplot(aes(x = .fitted, y = .resid)) + geom_point() 
+resid<- 
+  ggplot(ha_aug, aes(x = .fitted, y = .resid)) + geom_point() 
 h/(qq|resid)
 ```
 I don't love this, but it is a better fit than a poisson distribution.
@@ -141,8 +145,8 @@ I don't love this, but it is a better fit than a poisson distribution.
 
 # TODO: 
 
-- Density should be total shoot number
-- Should actually be density in previous year
+- ~~Density should be total shoot number~~
+- ~~Should actually be density in previous year~~
 - ~~Shoots should be poisson distribution, not log-transformed?~~
 - incorporate 1-ha fragments and use habitat type as a predictor.
 - Implement FLM approach to density dependence.
