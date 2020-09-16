@@ -40,17 +40,13 @@ Start by looking for density dependence on growth, survival, and reproduction in
 ha <- read_rds(here("analysis", "data", "derived_data", "ha_density.rds"))
 ha
 ```
-Actually interested in density in the previous year
 
 ```{r}
 ha <-
   ha %>% 
   group_by(ha_id_number) %>% 
   arrange(ha_id_number, year) %>% 
-  # mutate(across(starts_with("density"), lag, .names = "prev_{col}")) %>%
-  mutate(across(starts_with("density"), lag)) %>% 
   ungroup() %>% 
-  # filter(!is.na(prev_density_0_10)) %>% 
   #scale year
   mutate(year_post = year - min(year))
 ```
@@ -62,12 +58,33 @@ ha_cf <-
   ha %>% 
   filter(habitat == "CF") %>% 
   mutate(log_shts = log(shts),
-         log_shts_prev = log(shts_prev))
-
+         log_shts_next = log(shts_next))
 ```
+
+Or filter to just 1-ha and cf
+
+```{r}
+ha_sub <-
+  ha %>% 
+  filter(habitat %in% c("CF", "1-ha")) %>% 
+  mutate(log_shts = log(shts),
+         log_shts_next = log(shts_next),
+         habitat = as.factor(habitat))
+```
+
 
 I don't know what a height of 0 means...
 Height of 0 probably means it was knocked over, or very small, or dead.
+
+# General model structure
+
+For each vital rate I'll include the number of shoots and habitat as fixed effects and plant ID and year as random effects.  I'm not including plot since there are few plots in each habitat type, and preliminary modeling shows the variance for plot is the lowest of those three random effects.
+
+```{r}
+ha_sub %>% 
+  group_by(habitat) %>% 
+  summarize(length(unique(plot)))
+```
 
 
 # Growth
@@ -79,103 +96,100 @@ For this I'm going to use shoot number. Very closely related to height, but bett
 Number of shoots is discrete, but not *really* count data.  I'll try a poisson distribution and a lognormal distribution.
 
 ```{r}
-mpois <- glm(shts ~ log_shts_prev + density_0_10 + density_10_20,
-             family = poisson(link = "log"),
-             data = ha_cf)
-lm <- lm(shts ~ log_shts_prev + density_0_10 + density_10_20,
-         data = ha_cf)
-mnorm <- glm(shts ~ log_shts_prev + density_0_10 + density_10_20,
-             family = gaussian(link = "log"),
-             data = ha_cf)
-mpois2 <- glmer(shts ~ log_shts_prev + density_0_10 + density_10_20 + (1|ha_id_number) + (1|year_post) + (1|plot),
+mpois <- glmer(shts_next ~ log_shts + habitat + density_0_10 + density_10_20 + (1|ha_id_number) + (1|year_post),
                 family = poisson(link = "log"),
-                data = ha_cf)
+                data = ha_sub)
 
 check_overdispersion(mpois2) #actually underdispersed
 
-mnorm2 <- glmer(shts ~ log_shts_prev + density_0_10 + density_10_20 + (1|ha_id_number) + (1|year_post) + (1|plot),
+mnorm <- glmer(shts_next ~ log_shts + habitat + density_0_10 + density_10_20 + (1|ha_id_number) + (1|year_post),
                 family = gaussian(link = "log"),
-                data = ha_cf)
-
-AICtab(mpois, mnorm, lm, mpois2, mnorm2)
-compare_performance(mpois, mnorm, mpois2, mnorm2, rank = TRUE)
+                data = ha_sub)
 ```
 
-Lognormal distribution fits best according to AIC, although poisson has lower RMSE.  I guess despite being discrete, this isn't really "count" data *per se*.  The lognormal model doesn't problems with singularity that the poisson model has.  Both have problems with heteroscedasticity.
+But how bad is this convergence failure?
+
+Is the max|grad| calculation correct?
 
 ```{r}
-check_convergence(mnorm2)
-check_singularity(mpois2)
-check_singularity(mnorm2)
-x<-check_heteroscedasticity(mnorm2)
+derivs1 <- mnorm@optinfo$derivs
+sc_grad1 <- with(derivs1, solve(Hessian, gradient))
+max(abs(sc_grad1))
+```
+No, it's actually a lot smaller than `tol`, so nothing to worry about
+
+
+```{r}
+AICtab(mpois, mnorm)
+compare_performance(mpois, mnorm, rank = TRUE)
+```
+
+Lognormal distribution fits best according to AIC, although poisson has lower RMSE.  I guess despite being discrete, this isn't really "count" data *per se*.  The lognormal model doesn't have problems with singularity that the poisson model has.  Both have problems with heteroscedasticity.  I'll go with log-normal.
+
+```{r}
+m_growth <- mnorm
+```
+
+```{r}
+x<-check_heteroscedasticity(m_growth)
 plot(x)
 ```
 
 ## Random effects
 
 ```{r}
-mnorm3 <- glmer(shts ~ log_shts_prev * density_0_10 + (1|ha_id_number) + (1|year_post),
+m_growth2 <- glmer(shts_next ~ log_shts + habitat + density_0_10 + density_10_20 + (1|year_post),
                family = gaussian(link = "log"),
-               data = ha_cf)
-
-AICtab(mnorm2, mnorm3)
-```
-
-Can't remove plot ID.
-
-```{r}
-mnorm4 <- glmer(shts ~ log_shts_prev * density_0_10 + (1|year_post) + (1|plot),
-               family = gaussian(link = "log"),
-               data = ha_cf)
-AICtab(mnorm2, mnorm4)
+               data = ha_sub)
+AICtab(m_growth, m_growth2)
 ```
 
 Can't remove plant ID
 
 ```{r}
-mnorm5 <- glmer(shts ~ log_shts_prev * density_0_10 + (1|ha_id_number) + (1|plot),
+m_growth3 <- glmer(shts_next ~ log_shts + habitat + density_0_10 + density_10_20 + (1|ha_id_number),
                family = gaussian(link = "log"),
-               data = ha_cf)
-AICtab(mnorm2, mnorm3, mnorm4, mnorm5)
+               data = ha_sub)
+AICtab(m_growth, m_growth2, m_growth3)
 ```
 
 ## Does density matter beyond immediate surroundings?
 
 ```{r}
-Anova(mnorm2)
+Anova(m_growth)
 ```
 
+Odd, density further out is significant, but density close is not.
 
-Apparently not! Weird! It is highly significant when I was accidentally modeling density in the same year. This is not due to removing rows from the first year either.  This is somewhat concerning!
+```{r}
+fixef(m_growth) %>% exp()
+```
+
+Both weakly positive density dependence
 
 # Survival
 
-Should this be a function of `log_shts` or `log_shts_prev`?  Think about how you've coded survival.
+Pre-reproductive census, so plants live/die in same year as `shts` and `ht`
 
 ```{r}
-m_surv <- glmer(surv ~ log_shts + density_0_10 + density_10_20 + (1|plot) + (1|ha_id_number) + (1|year), 
-                family = binomial, data = ha_cf)
+m_surv <- glmer(surv ~ log_shts + habitat + density_0_10 + density_10_20 + (1|ha_id_number) + (1|year), 
+                family = binomial, data = ha_sub)
 ```
 
 ## Random effects
 
 ```{r}
-m_surv2 <- glmer(surv ~ log_shts + density_0_10 + density_10_20 + (1|plot) + (1|year), 
-                family = binomial, data = ha_cf)
+m_surv2 <- glmer(surv ~ log_shts + habitat + density_0_10 + density_10_20 + (1|year), 
+                family = binomial, data = ha_sub)
 AICtab(m_surv, m_surv2)
 ```
-Can remove plant ID
-```{r}
-m_surv3 <- glmer(surv ~ log_shts + density_0_10 + density_10_20 + (1|year), 
-                family = binomial, data = ha_cf)
-AICtab(m_surv2, m_surv3)
-```
-Can't remove plot
+
+Close to equivalent, so remove plant ID.  This makes sense, as plants only die once!
 
 ```{r}
-m_surv4 <- glmer(surv ~ log_shts + density_0_10 + density_10_20 + (1|plot), 
-                family = binomial, data = ha_cf)
-AICtab(m_surv2, m_surv4)
+m_surv3 <- glm(surv ~ log_shts + habitat + density_0_10 + density_10_20, 
+                family = binomial, data = ha_sub)
+AICtab(m_surv2, m_surv3)
 ```
 Can't remove year.
 
@@ -191,49 +205,47 @@ Marginal, and only immediate grid cell.  Density has positive affect on survival
 # Flowering probability
 
 ```{r}
-ggplot(ha_cf, aes(infl)) + geom_histogram()
+ggplot(ha_sub, aes(infl)) + geom_histogram()
 ```
 Make a binary column
 
 ```{r}
-ha_cf <- 
-  ha_cf %>% 
+ha_sub <- 
+  ha_sub %>% 
   mutate(flwr = as.integer(infl>0), .before = infl)
 
 #the way suvival is currently coded, a plant can flower and then not survive in the same year, so no need to filter out dead plants.
-ha_cf %>% filter(surv == 0)
+ha_sub %>% filter(surv == 0 & flwr == 1)
 ```
 
 ```{r}
-m_flwr <- glmer(flwr ~ log_shts_prev + density_0_10 + density_10_20 + (1|ha_id_number) + (1|plot) + (1|year), family = binomial, data = ha_cf)
+m_flwr <- glmer(flwr ~ log_shts + habitat + density_0_10 + density_10_20 + (1|ha_id_number) + (1|year),
+                family = binomial, data = ha_sub)
 ```
 
 ## Random effects
 
 ```{r}
-m_flwr2 <- glmer(flwr ~ log_shts_prev + density_0_10 + density_10_20 + (1|ha_id_number) + (1|year), family = binomial, data = ha_cf)
+m_flwr2 <- glmer(flwr ~ log_shts + habitat + density_0_10 + density_10_20 + (1|year),
+                 family = binomial, data = ha_sub)
 AICtab(m_flwr, m_flwr2)
 ```
-can get rid of plot ID
+Can't remove plant ID.
+
 
 ```{r}
-m_flwr3 <- glmer(flwr ~ log_shts_prev + density_0_10 + density_10_20 + (1|year), family = binomial, data = ha_cf)
+m_flwr3 <- glmer(flwr ~ log_shts + habitat + density_0_10 + density_10_20 + (1|ha_id_number),
+                 family = binomial, data = ha_sub)
 AICtab(m_flwr, m_flwr2, m_flwr3)
 ```
-keep plant ID
 
-```{r}
-m_flwr4 <- glmer(flwr ~ log_shts_prev + density_0_10 + density_10_20 + (1|ha_id_number), family = binomial, data = ha_cf)
-AICtab(m_flwr, m_flwr2, m_flwr3, m_flwr4)
-```
-
-keep year
+Can't remove year
 
 ## Density dependence?
 
 ```{r}
-Anova(m_flwr2)
-fixef(m_flwr2) %>% plogis()
+Anova(m_flwr)
+fixef(m_flwr) %>% plogis()
 ```
 
 Ok, there's an effect, but oddly only past 20m.  Again, positive density dependence.
@@ -241,10 +253,10 @@ Ok, there's an effect, but oddly only past 20m.  Again, positive density depende
 # TODO: 
 
 - Check number of inflorescencesa given flowered?
-- check that survival is coded right so that it is a function of `ht_prev`
+- ~~check that survival is coded right so that it is a function of `ht_prev`~~
 - try negative binomial distribution for shoot number
 - ~~Density should be total shoot number~~
 - ~~Should actually be density in previous year~~
 - ~~Shoots should be poisson distribution, not log-transformed?~~
-- incorporate 1-ha fragments and use habitat type as a predictor.
+- ~~incorporate 1-ha fragments and use habitat type as a predictor.~~
 - Implement FLM approach to density dependence.
