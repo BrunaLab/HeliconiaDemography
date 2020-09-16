@@ -34,6 +34,9 @@ conflict_prefer("select", "dplyr")
 Competition kernel. Teller et al.
 
 I want to use the `row` and `colunn` to figure out how many neighbors each plant has. I should exclude plants on edges, because I don't know about their neighbors outside of the plot.
+# TODO:
+
+- density at distance 0 shouldn't include the focal plant
 
 # Load Data
 
@@ -126,23 +129,34 @@ xtabs(plant ~ row_number + column, ha_test)
 So now I can filter this and summarize to calculate neighbor density at arbitrary distances for every grid cell.
 
 ```{r}
-#density between 5m and 15m away
-dist_5_15 <-
+#density between 0m and 10m away
+dist_0_10 <-
   dist_full %>% 
-  filter(dist >=5, dist <15) %>% 
+  filter(dist >=0, dist <10) %>% 
   group_by(row_from, column_from) %>% 
-  summarize(n_neighbors_5_15 = sum(n_plants, na.rm = TRUE),
+  summarize(n_neighbors_0_10 = sum(n_plants, na.rm = TRUE),
             n_cells = n(),
-            density_5_15 = n_neighbors_5_15/n_cells,
-            shtsper_5_15 = sum(n_shts, na.rm = TRUE)/n())
+            density_0_10 = n_neighbors_0_10/n_cells,
+            shtsper_0_10 = sum(n_shts, na.rm = TRUE)/n())
 ```
 So at [1,1] there are only 3 cells between 5 and 15m away, there are a total of 6 plants in those cells, so the conspecific density at that distance is 2.0 plants / 100m^2 or 3.66 shoots / 100m^2
 
 Then I can join that back to the original data set
 
 ```{r}
-full_test <- full_join(ha_test, dist_5_15, by = c("row_number" = "row_from", "column" = "column_from"))
+full_test <- full_join(ha_test, dist_0_10, by = c("row_number" = "row_from", "column" = "column_from"))
 head(full_test)
+```
+For the nearest distances (0-10m), I need to subtract the number of shoots in the focal plant.
+
+```{r}
+full_test %>% 
+  # mutate(shtsper_0_10 = shtsper_0_10 - shts) %>% 
+  arrange(row, column)
+
+full_test %>% 
+  group_by(row, column) %>% 
+  summarize(n = n(), n_shts = sum(shts))
 ```
 
 ## Scaling up
@@ -224,7 +238,7 @@ Now, with `ha_dist`, I can filter by distance, calculate a density, and the join
 ```{r}
 dens_0_10 <-
   ha_dist %>% 
-  filter(dist>0 & dist <=10) %>% 
+  filter(dist>=0 & dist <10) %>% 
   group_by(plot, year, row_from, column_from) %>% 
   summarize(density_0_10 = sum(n_shts, na.rm = TRUE)/n())
 left_join(ha, dens_0_10, by = c("plot", "year", "row_number" = "row_from", "column" = "column_from")) %>% 
@@ -262,6 +276,11 @@ ha_new <-
           by = c("plot", "year", "row_number" = "row_from", "column" = "column_from")) %>% 
   arrange(plot, year, row_number, column)
 ha_new
+```
+Finally, I need to correct the closest density by subtracting shoots of the focal plant.
+
+```{r}
+ha_new <- ha_new %>% mutate(density_0_10 = density_0_10 - shts)
 ```
 
 ```{r}
