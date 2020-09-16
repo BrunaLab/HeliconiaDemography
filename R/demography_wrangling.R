@@ -3,6 +3,7 @@ library(here)
 library(janitor)
 library(conflicted)
 conflict_prefer("filter", "dplyr")
+conflict_prefer("select", "dplyr")
 
 demog <- 
   read_csv(here("analysis", "data", "raw_data", "Ha_survey_with_Zombies.csv"), col_names = TRUE,
@@ -42,13 +43,13 @@ demog <-
 
 # count(demog, surv) # 2230 dead plants over course of study
 
-# add lagged height
+# add height and number shoots in the next year
 
 demog <- 
   demog %>% 
   group_by(ha_id_number) %>% 
-  mutate(ht_prev = lag(ht),
-         shts_prev = lag(shts)) %>% 
+  mutate(ht_next = lead(ht),
+         shts_next = lead(shts)) %>% 
   ungroup()
 
 # arrange columns
@@ -57,6 +58,6 @@ demog <-
   select(ranch, bdffp_reserve_no, plot, habitat, #site level
          row, column,ha_id_number, tag_number, #plot level
          year,
-         ht, ht_prev, shts, shts_prev, infl, surv, code_notes, code2) #plant level
+         ht, ht_next, shts, shts_next, infl, surv, code_notes, code2) #plant level
 
 write_rds(demog, here("analysis", "data", "derived_data", "ha_survey.rds"))
