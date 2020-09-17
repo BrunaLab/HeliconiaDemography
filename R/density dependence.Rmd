@@ -26,6 +26,7 @@ library(performance)
 
 conflict_prefer("lag", "dplyr")
 conflict_prefer("filter", "dplyr")
+conflict_prefer("select", "dplyr")
 ```
 
 *Last compiled: `r Sys.Date()`*
@@ -86,7 +87,6 @@ ha_sub %>%
   summarize(length(unique(plot)))
 ```
 
-
 # Growth
 
 For this I'm going to use shoot number. Very closely related to height, but better behaved distribution and not sensitive to plants being knocked over.
@@ -100,7 +100,7 @@ mpois <- glmer(shts_next ~ log_shts + habitat + density_0_10 + density_10_20 + (
                 family = poisson(link = "log"),
                 data = ha_sub)
 
-check_overdispersion(mpois2) #actually underdispersed
+check_overdispersion(mpois) #actually underdispersed
 
 mnorm <- glmer(shts_next ~ log_shts + habitat + density_0_10 + density_10_20 + (1|ha_id_number) + (1|year_post),
                 family = gaussian(link = "log"),
@@ -162,7 +162,7 @@ Anova(m_growth)
 Odd, density further out is significant, but density close is not.
 
 ```{r}
-fixef(m_growth) %>% exp()
+fixef(m_growth)
 ```
 
 Both weakly positive density dependence
@@ -197,10 +197,10 @@ Can't remove year.
 
 ```{r}
 Anova(m_surv2)
-fixef(m_surv2) %>% plogis()
+fixef(m_surv2)
 ```
 
-Marginal, and only immediate grid cell.  Density has positive affect on survival.  So, probably just good patches.
+Marginal effects on survival.
 
 # Flowering probability
 
@@ -245,14 +245,136 @@ Can't remove year
 
 ```{r}
 Anova(m_flwr)
-fixef(m_flwr) %>% plogis()
+fixef(m_flwr)
 ```
 
 Ok, there's an effect, but oddly only past 20m.  Again, positive density dependence.
 
+Probability of flowering increases with size and is lower in continuous forest
+
+# Kernel approach
+
+So it seems like there are effect of density at least out to 20m.  I'd like to take the approach in Teller et al. 2016, but the code is so convoluted that it is not adaptable. I want to start by trying to adapt the `dlnm` approach instead.
+
+## Set up the crossbasis
+
+```{r}
+Q <-
+  ha_sub %>%
+  select(density_0_10:density_50_60) %>% 
+  as.matrix()
+
+L <-
+  matrix(seq(5, 55, length.out = 6),
+         nrow = nrow(Q), 
+         ncol = 6,
+         byrow = TRUE)
+```
+
+## GAM
+
+```{r}
+library(dlnm)
+library(mgcv)
+
+# Q_log <- log(Q+1)
+g_growth <-
+  gam(shts_next ~ s(log_shts) +
+        habitat +
+        s(Q, L,
+          bs = "cb",
+          k = c(5, 4),
+          xt = list(bs = "cr")),
+      family = gaussian(link = "log"),
+      data = ha_sub,
+      method = "REML")
+```
+
+## Predict
+
+```{r}
+x <- crosspred("Q", model = g_growth, cumul = TRUE)
+summary(x)
+```
+
+## Plot crossbasis
+
+### Contour plot
+
+```{r}
+plot.crosspred(x,
+               ptype = "contour",
+               xlab = "#shoots/100m^2",
+               ylab = "distance (m)",
+               cumul = FALSE)
+```
+So this shows negative density dependence that seems to be strongest at about 40-50 m away from the focal plant.
+
+### Slices
+
+We can also plot slices through the contour plot at different distances or different shoot densities
+
+```{r}
+plot.crosspred(x, ptype = "slice", var = 100, xlab = "distance (m)", main = "Effect of 100 shoots/100m^2")
+plot.crosspred(x, ptype = "slice", var = 10, xlab = "distance (m)", main = "Effect of 10 shoots/100m^2")
+```
+
+### Cumulative
+
+I think this shows the cumulative effect of density summed/integrated over all distances.  So, for example, a plant with about 30 shoots/100m^2 surrounding it out to the maximum distance (60m) would have the largest number of shoots, on average.
+
+```{r}
+plot(x, ptype = "overall", xlab = "density (shoots/100m^2)", cumul = TRUE)
+```
+
+There is no built-in function to get cumulative effects of density over all distances.
+
+## Other shapes
+
+It is odd that the strength of competition seems to be increasing with distance.  I'd like to be able to force the distance dimension to be monotonically decreasing as was done in Teller et al (I think?).  Teller does this *after* fitting a spline using `mk_dist_wts()`, which is a function that takes the spline coefficients, and predicted values from the spline, and transforms it into a non-negative, monotonic decreasing function.
+
+You can override one of the dimensions of the cross basis with any custom function.
+
+
+```{r}
+#use arglag to override lag dimension of crossbasis, use argvar to override plant density dimension.
+lin <- dlnm:::lin
+xt <- list(bs = "cr", arglag = list(fun = "lin"))
+
+g_growth <- 
+  gam(shts_next ~ s(log_shts) +
+        habitat +
+        s(Q, L,
+          bs = "cb",
+          k = c(5, 4),
+          fx = c(F, T), #turns off penalization for the lag dimension
+          xt = xt),
+      family = gaussian(link = "log"),
+      data = ha_sub,
+      gamma = 1.5)
+
+gam.check(g_growth)
+```
+
+```{r}
+x <- crosspred("Q", model = g_growth)
+plot.crosspred(x, ptype = "contour", xlab = "#shoots/100m^2", ylab = "distance (m)")
+
+plot.crosspred(x, ptype = "slice", var = 100)
+plot.crosspred(x, ptype = "slice", var = 10)
+```
+Now the kernel is the same shape at every value of density.  However, this relationship doesn't make any sense.  Fewer knots?  More penalty?  Custom function?
+
+```{r}
+anova(g_growth)
+```
+
+
 # TODO: 
 
-- Check number of inflorescencesa given flowered?
+- ~~is density at 0 distance including the focal plant?  It shouldn't.~~
+- Check number of inflorescences given flowered?
+- ~~log-transform density (nah, not right now.  DOesn't help with convergence)~~
 - ~~check that survival is coded right so that it is a function of `ht_prev`~~
 - try negative binomial distribution for shoot number
 - ~~Density should be total shoot number~~
