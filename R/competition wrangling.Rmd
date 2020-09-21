@@ -67,7 +67,7 @@ ha_test <-
   ha %>%
   filter(plot == first(plot)) %>%
   filter(year == first(year)) %>%
-  filter(row_number <=3, column <=3) %>% 
+  filter(row_number <= 3, column <= 3) %>% 
   add_column(plant = 1) #just a dummy indicator column for use later
 ha_test
 ```
@@ -132,7 +132,7 @@ So now I can filter this and summarize to calculate neighbor density at arbitrar
 #density between 0m and 10m away
 dist_0_10 <-
   dist_full %>% 
-  filter(dist >=0, dist <10) %>% 
+  filter(dist >= 0, dist < 10) %>% 
   group_by(row_from, column_from) %>% 
   summarize(n_neighbors_0_10 = sum(n_plants, na.rm = TRUE),
             n_cells = n(),
@@ -238,7 +238,7 @@ Now, with `ha_dist`, I can filter by distance, calculate a density, and the join
 ```{r}
 dens_0_10 <-
   ha_dist %>% 
-  filter(dist>=0 & dist <10) %>% 
+  filter(dist>= 0 & dist < 10) %>% 
   group_by(plot, year, row_from, column_from) %>% 
   summarize(density_0_10 = sum(n_shts, na.rm = TRUE)/n())
 left_join(ha, dens_0_10, by = c("plot", "year", "row_number" = "row_from", "column" = "column_from")) %>% 
@@ -250,7 +250,7 @@ I'll do this for different distances programmatically.
 ```{r}
 width <- 10 #meters
 max <- 100 #meters
-L <- seq(0, max-width, by = width)
+L <- seq(0, max - width, by = width)
 U <- seq(0 + width, max, by = width)
 
 out <- 
@@ -296,3 +296,137 @@ The furthest distance I can estimate density for all plants is 60m.  Past that, 
 write_rds(ha_new, here("analysis", "data", "derived_data", "ha_density.rds"))
 ```
 
+# Using exact x, y coords
+```{r}
+library(furrr)
+plan(multisession)
+```
+
+For a subset of plants in 2009, exact x,y coords in the plot were taken.  Use these to estimate density.
+
+```{r}
+ha_xy <-
+  ha_new %>% 
+  filter(!is.na(x_09) & !is.na(y_09))
+ha_xy
+```
+It looks like the x, y coords are *within* each grid cell (e.g. A1).  Need to offset them to get relative coords for entire plot.  I'll make A1 = 0,0
+
+```{r}
+ha_xy <-
+  ha_xy %>% 
+  mutate(x_adj = x_09 + ((column - 1) * 10),
+         y_adj = y_09 + ((row_number - 1) * 10),
+         .after = y_09)
+```
+
+
+```{r}
+ha_xy_s <-
+  ha_xy %>% 
+  group_by(ha_id_number) %>% 
+  summarize(x = mean(x_adj),
+            y = mean(y_adj))
+#down to 3,571--still too big to do dist(), I think?
+
+test <- ha_xy_s %>% select(x, y) %>% as.matrix()
+rownames(test) <- paste(test[,1], test[,2], sep = ",")
+head(test)
+dist(test[1:5,])
+
+```
+Might not be the best approach
+
+```{r}
+eu_dist <- function(p1, p2) {
+  sqrt(sum((p1 - p2)^2))
+}
+x = c(0,0)
+y = c(3,3)
+eu_dist(x, y)
+```
+
+For every ha_id_number, find only plants within 0-10 m, sum the number of shoots.
+
+```{r}
+ha_xy %>% 
+  group_by(ha_id_number) %>% 
+  rowwise() %>% 
+  filter(eu_dist(
+    c(first(cur_data()$x_adj), first(cur_data()$y_adj)),
+    c(x_adj, y_adj)) < 10)
+```
+
+Nope
+
+Start with single plot
+
+```{r}
+y1p1 <- ha_xy %>% 
+  filter(year == first(year),
+         plot == first(plot))
+y1p1
+```
+
+```{r}
+add_density_cols <- function(df, L, U, by, verbose = FALSE) {
+  
+  eu_dist <- function(p1, p2) {
+    sqrt(sum((p1 - p2)^2))
+  }
+    
+  d <- seq(L, U, by = by)
+
+  df_out <- 
+    future_map_dfr(1:nrow(df), function(r) { #loop through rows/plants
+      #get coordinates for that plant
+      focal_plant <- t(df[r, c("x_adj", "y_adj")])
+      
+      #calculate distance to every other plant
+      focal_df <-
+        df %>%
+        rowwise() %>%
+        mutate(dist = eu_dist(focal_plant, c(x_adj, y_adj)))
+      
+      #get total number of shoots at every ring
+      future_map2_dfc(lag(d)[-1], d[-1],
+               ~ transmute(focal_df,
+                           !!glue("shts_{.x}_{.y}") := shts * (dist > .x & dist <= .y))) %>%
+        ungroup() %>% 
+        summarize(across(everything(), ~sum(., na.rm = TRUE)))
+    })
+  
+  df_out <- bind_cols(df, df_out) #join to original data
+  return(df_out)
+}
+# tic()
+# add_density_cols(y1p1, L = 0, U = 10, by = 5)
+# toc()
+```
+
+
+
+
+If I want this to be in units of shoots/m^2, then I need to calculate the area of the donut:
+
+$$
+A = \pi(U^2 - L^2)
+$$
+But also, like, truncate that donut if it passes outside of the plot.  I don't know how to do that.
+
+
+```{r}
+tic()
+ha_xy2 <-
+  ha_xy %>% 
+  group_by(plot, year) %>% 
+  group_split() %>% 
+  head() %>% #test with 6 df to see how long it will take.
+  future_map(~{
+      add_density_cols(.x, L = 0, U = 10, by = 5) 
+    })
+toc()
+
+```
+
+Uggggh only works for first plot???
