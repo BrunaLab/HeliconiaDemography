@@ -56,7 +56,7 @@ demog <-
 demog <- 
   demog %>%
   select(ranch, bdffp_reserve_no, plot, habitat, #site level
-         row, column,ha_id_number, tag_number, #plot level
+         row, column, x_09, y_09, ha_id_number, tag_number, #plot level
          year,
          ht, ht_next, shts, shts_next, infl, surv, code_notes, code2) #plant level
 
