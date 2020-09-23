@@ -19,6 +19,8 @@ library(conflicted)
 library(glue)
 library(car)
 library(skimr)
+library(furrr)
+library(janitor)
 
 source(here("R", "utils.R"))
 
@@ -31,334 +33,119 @@ conflict_prefer("select", "dplyr")
 
 # Purpose
 
-Competition kernel. Teller et al.
-
-I want to use the `row` and `colunn` to figure out how many neighbors each plant has. I should exclude plants on edges, because I don't know about their neighbors outside of the plot.
 
 # TODO:
-- Fix x,y coords correctly.  Move this code to demography_wrangling.R?
+
 - filter out focal plants where donut goes out of plot. (filter(distance_to_edge > outer_circle_radius))
+- Using all years is not estimating density accurately. Focal plants are not moving, but in other years there are neighbors without known coordinates. Solution: only use the three transitions where we know the coords of every plant?  Or assume births and deaths don't change density significantly?
 
 # Load Data
 
 ```{r data, echo=TRUE}
+# demographic data
 ha <- read_rds(here("analysis", "data", "derived_data", "ha_survey.rds"))
+# data from previous study: Uriarte M, Bruna EM, Rubim P, et al (2010) Effects
+# of forest fragmentation on the seedling recruitment of a tropical herb:
+# assessing seed vs. safe-site limitation. Ecology 91:1317–1328.
+# https://doi.org/10.1890/09-0785.1
+
+coords <-
+  read.table(here("analysis", "data", "raw_data", "adults0607_light.txt")) %>%
+  as_tibble() %>%
+  clean_names()
 ```
 
-Make numeric row and column numbers for easier data handling later.
+`ha` contains x and y coords for each plant from 2009 *within each grid cell*.  `coords` contains x and y coordinates for each plant in 2006 and 2007 relative to the entire plot.  I need to join these data sources and offset the coordinates in the `ha` dataset correctly.  I'm going to remove `year` from the `coords` dataset and assume that plants aren't moving.
+
+# Join data
+
+Getting things to match up:
 
 ```{r}
-# as.factor(ha$row) #levels are alphabetical order by default, which is perfect.  Except for row "L", not sure what that's about.
-ha <- 
-  ha %>% 
-  mutate(row_number = as.integer(as.factor(row)), .after = row,
-         column = as.integer(column)) %>% 
-  filter(row != "L") # just get rid of the few plants in a row "L".--only affects one plot
+coords2 <- 
+  coords %>% 
+  select(plot = site, tag_number, row, column, plot_x, plot_y, x, y) %>% 
+  mutate(plot = case_when(
+    plot == "Cabo Frio" ~ "CaboFrio-CF",
+    plot == "Dimona CF" ~ "Dimona-CF",
+    plot == "Florestal" ~ "Florestal-CF",
+    plot == "PA-CF" ~ "PortoAlegre-CF",
+    TRUE ~ plot
+  )) 
 ```
 
-```{r}
-skim(ha)
-```
-
-# Calculating density at different distances
-First, a small example as proof of concept:
+Summarize so there is only one set of coordinates per plant. Averaging as I'm assuming any difference in coordinates between '06 and '07 is not because the plant moved.
 
 ```{r}
-ha_test <-
-  ha %>%
-  filter(plot == first(plot)) %>%
-  filter(year == first(year)) %>%
-  filter(row_number <= 3, column <= 3) %>% 
-  add_column(plant = 1) #just a dummy indicator column for use later
-ha_test
-```
-
-I'll make use of `expand_grid()` to create every combination of row and column (cell), and `dist()` to calculate the distance between every cell and every other cell.
-
-```{r}
-#all possible combination of row and column ID
-grid_coords <- expand_grid(row = 1:3, col = 1:3) %>% as.matrix() 
-
-#calculate distrance from every coord to every other coord
-d <- dist(grid_coords*10, #because each grid cell is 10m x 10m
-          diag = FALSE,
-          upper = TRUE) %>% 
-  as.matrix()
-
-rownames(d) <- colnames(d) <- paste(grid_coords[ , 1], grid_coords[ , 2], sep = ",")
-d
-```
-
-Now I can turn this into a tidy/long format. This shows the distance from (`row_from`, `column_from`) to (`row_to`, `column_to`).
-
-```{r}
-dist_df <-
-  as.data.frame(d) %>% 
-  rownames_to_column(var = "from") %>% 
-  pivot_longer(-from, names_to = "to", values_to = "dist") %>% 
-  separate(from, into = c("row_from", "column_from")) %>% 
-  separate(to, into = c("row_to", "column_to")) %>% 
-  mutate(across(where(is.character), as.integer))
-head(dist_df)
-```
-
-Then we can summarize the real data to figure out how many plants are in each grid cell.  Here, I'm just using a small subset that corresponds to a single 3x3 plot
-
-```{r}
-plant_summary <-
-  ha_test %>% 
-  group_by(row_number, column) %>% 
-  summarize(n_plants = n(),
-            n_shts = sum(shts)) %>% 
-  rename(row = row_number)
-plant_summary
-```
-Now I can join these two data frames.
-
-```{r}
-dist_full <- full_join(dist_df, plant_summary, by = c("row_to" = "row", "column_to" = "column"))
-head(dist_full)
-```
-The way to read this is for a plant in [1,1] the cell [1,1] is 0m away and has 3 plants in it.  For a plant in [1,1], cell [1,2] is 10m away and there is 1 plant in it.  For a plant in [1,1], cell [2,3] is 22.36m away and there are 9 plants in it, etc.
-
-Here's another way to visualize this using `xtabs()`:
-
-```{r}
-xtabs(plant ~ row_number + column, ha_test)
-```
-
-So now I can filter this and summarize to calculate neighbor density at arbitrary distances for every grid cell.
-
-```{r}
-#density between 0m and 10m away
-dist_0_10 <-
-  dist_full %>% 
-  filter(dist >= 0, dist < 10) %>% 
-  group_by(row_from, column_from) %>% 
-  summarize(n_neighbors_0_10 = sum(n_plants, na.rm = TRUE),
-            n_cells = n(),
-            density_0_10 = n_neighbors_0_10/n_cells,
-            shtsper_0_10 = sum(n_shts, na.rm = TRUE)/n())
-```
-So at [1,1] there are only 3 cells between 5 and 15m away, there are a total of 6 plants in those cells, so the conspecific density at that distance is 2.0 plants / 100m^2 or 3.66 shoots / 100m^2
-
-Then I can join that back to the original data set
-
-```{r}
-full_test <- full_join(ha_test, dist_0_10, by = c("row_number" = "row_from", "column" = "column_from"))
-head(full_test)
-```
-For the nearest distances (0-10m), I need to subtract the number of shoots in the focal plant.
-
-```{r}
-full_test %>% 
-  # mutate(shtsper_0_10 = shtsper_0_10 - shts) %>% 
-  arrange(row, column)
-
-full_test %>% 
-  group_by(row, column) %>% 
-  summarize(n = n(), n_shts = sum(shts))
-```
-
-## Scaling up
-
-I'm going to scale up using a nested dataframe and the magic of list-columns!  The advantage of this over splitting the one dataframe into a dataframe for every plot:year combo and using a for-loop or `map()` is that it keeps the plot and year structure intact and I don't have to figure out how to re-join the data at the end.
-
-First, nest the dataframe by plot and year.
-
-```{r}
-ha_nest <-
-  ha %>% 
-  group_by(plot, year) %>% 
-  group_nest()
-```
-
-Then, do the setup by calculating the `grid_coords` and `d` for every plot:year combo.
-
-```{r}
-ha_nest_dist <- 
-  ha_nest %>% 
-  #every combination of row and column:
-  mutate(grid_coords = map(
-    data, 
-    ~expand_grid(row = min(.x$row_number):max(.x$row_number),
-                 col = min(.x$column):max(.x$column)) %>% as.matrix()
-    )) %>% 
-  #matrix describing euclidean distance from every point to every other point:
-  mutate(d = map(
-    grid_coords,
-    ~{
-      d <- dist(.x * 10, #because each grid cell is 10m x 10m
-                diag = FALSE,
-                upper = TRUE) %>% 
-        as.matrix()
-       colnames(d) <- rownames(d) <- paste(.x[,1], .x[,2], sep = ",")
-      d
-    }
-    )) %>% 
-  #tidy data frame version of d
-  mutate(dist_df = map(d, ~{
-    as.data.frame(.x) %>% 
-      rownames_to_column(var = "from") %>% 
-      pivot_longer(-from, names_to = "to", values_to = "dist") %>% 
-      separate(from, into = c("row_from", "column_from")) %>% 
-      separate(to, into = c("row_to", "column_to")) %>% 
-      mutate(across(where(is.character), as.integer))
-  }
-  ))
-```
-
-Now, create that summary tibble counting the number of shoots in each grid cell for every plot:year combo, join, and unnest.
-
-```{r}
-ha_dist <-
-  ha_nest_dist %>% 
-  #summarize each year:plot to count number of plants in each grid cell
-  mutate(n_shts_sum = map(data, ~{
-    .x %>% 
-      # add_column(plant = 1) %>% 
-      group_by(row_number, column) %>% 
-      summarize(n_shts = sum(shts)) %>% 
-      rename(row = row_number)
-  }
-  )) %>% 
-  #join with tidied distance matrix to get dataframe for distance from every row
-  #and column to every other row and column
-  mutate(dist_full = map2(dist_df, n_shts_sum, ~{
-    full_join(.x, .y, by = c("row_to" = "row", "column_to" = "column"))
-  } 
-  )) %>% 
-  select(plot, year, dist_full) %>% 
-  unnest(dist_full)
-
-ha_dist
-```
-
-Now, with `ha_dist`, I can filter by distance, calculate a density, and the join to the original data.
-
-```{r}
-dens_0_10 <-
-  ha_dist %>% 
-  filter(dist>= 0 & dist < 10) %>% 
-  group_by(plot, year, row_from, column_from) %>% 
-  summarize(density_0_10 = sum(n_shts, na.rm = TRUE)/n())
-left_join(ha, dens_0_10, by = c("plot", "year", "row_number" = "row_from", "column" = "column_from")) %>% 
-  arrange(plot, year, row_number, column)
-```
-
-I'll do this for different distances programmatically.
-
-```{r}
-width <- 10 #meters
-max <- 100 #meters
-L <- seq(0, max - width, by = width)
-U <- seq(0 + width, max, by = width)
-
-out <- 
-  map2(L, U, ~{
-  ha_dist %>%
-    filter(dist >= .x & dist < .y) %>% 
-    group_by(plot, year, row_from, column_from) %>%
-    summarize(!!glue::glue("density_{.x}_{.y}") := sum(n_shts, na.rm = TRUE)/n())
-})
-
-x <- out[[1]]
-for (i in 2:length(out)) {
-  x <- full_join(x, out[[i]], by = c("plot", "year",  "row_from", "column_from"))
-}  
-x
-```
-
-Join to original data
-
-```{r}
-ha_new <- 
-  left_join(ha, x,
-          by = c("plot", "year", "row_number" = "row_from", "column" = "column_from")) %>% 
-  arrange(plot, year, row_number, column)
-ha_new
-```
-Finally, I need to correct the closest density by subtracting shoots of the focal plant.
-
-```{r}
-ha_new <- ha_new %>% mutate(density_0_10 = density_0_10 - shts)
+coords3 <-
+  coords2 %>%
+  group_by(plot, tag_number) %>% 
+  # rowwise() %>% 
+  summarize(across(where(is.character), first),
+            across(where(is.numeric), mean)) %>% 
+  rename(x_07 = x,
+         y_07 = y)
 ```
 
 ```{r}
-library(naniar)
-vis_miss(ha_new %>% select(starts_with("density")))
+ha_coords <- left_join(ha, coords3, by = c("plot", "row", "column", "tag_number"))
 ```
-The furthest distance I can estimate density for all plants is 60m.  Past that, in order to estimate effects of density, I would have to drop plants.  Even for closer plants though, the estimates may be biased because they do not include plants outside of the plot. That is, neighbor density for plants near the edges is based on a smaller sample than for plants near the center.
+# Tidy
 
-
-# Write to cleaned data
+Now, use the plot_x and plot_y variables to correctly offset the x and y coords from 2009.
 
 ```{r}
-write_rds(ha_new, here("analysis", "data", "derived_data", "ha_density.rds"))
-```
-
-# Using exact x, y coords
-```{r}
-library(furrr)
-plan(multisession)
-```
-
-For a subset of plants in 2009, exact x,y coords in the plot were taken.  Use these to estimate density.
-
-```{r}
-ha_xy <-
-  ha_new %>% 
-  filter(!is.na(x_09) & !is.na(y_09))
-ha_xy
-```
-It looks like the x, y coords are *within* each grid cell (e.g. A1).  Need to offset them to get relative coords for entire plot.  I'll make A1 = 0,0
-
-```{r}
-ha_xy <-
-  ha_xy %>% 
-  mutate(x_adj = x_09 + ((column - 1) * 10),
-         y_adj = y_09 + ((row_number - 1) * 10),
+ha_coords2 <- 
+  ha_coords %>% 
+  mutate(x_adj = x_09 + ((plot_x - 1) * 10),
+         y_adj = y_09 + ((plot_y - 1) * 10),
          .after = y_09)
 ```
 
+Now, I'll just average across the three years and assume that any differences are measurement error and not because plants moved.
 
 ```{r}
-ha_xy_s <-
-  ha_xy %>% 
-  group_by(ha_id_number) %>% 
-  summarize(x = mean(x_adj),
-            y = mean(y_adj))
-#down to 3,571--still too big to do dist(), I think?
-
-test <- ha_xy_s %>% select(x, y) %>% as.matrix()
-rownames(test) <- paste(test[,1], test[,2], sep = ",")
-head(test)
-dist(test[1:5,])
-
+ha_coords3 <-
+  ha_coords2 %>% 
+  rowwise() %>% 
+  mutate(x = mean(c(x_adj, x_07), na.rm = TRUE),
+         y = mean(c(y_adj, y_07), na.rm = TRUE)) %>% 
+  #replace NaN's generated when mean of only NAs is taken
+  mutate(across(c(x, y), ~ifelse(is.nan(.), NA, .))) %>% 
+  #remove intermediate coordinates
+  select(ranch, bdffp_reserve_no, plot, habitat,
+         ha_id_number, tag_number, row, column,
+         x, y, year, ht, ht_next, shts, shts_next,
+         infl, surv, code_notes, code2)
 ```
-Might not be the best approach
+
+# Filter
+
+To model the effect of density, I'm only going to use the subset of plants that I have coordinates for.
+
+**NOTE:** There is a **problem** with this.  By using all the years and filtering the data to just include plants with coordinates from 2006, 2007, and 2009, I am not estimating density accurately.
+```{r}
+ha_xy <-
+  ha_coords3 %>% 
+  filter(!is.na(x), !is.na(y)) %>% 
+  ungroup()
+```
+
+# Calculate density
+
+Now the challenge is to calculate the density of surrounding shoots for every focal plant at different distances.
 
 ```{r}
+# function to calculate euclidean distance between two points
 eu_dist <- function(p1, p2) {
   sqrt(sum((p1 - p2)^2))
 }
-x = c(0,0)
-y = c(3,3)
-eu_dist(x, y)
+# x = c(0,0)
+# y = c(3,3)
+# eu_dist(x, y)
 ```
 
-For every ha_id_number, find only plants within 0-10 m, sum the number of shoots.
-
-```{r}
-ha_xy %>% 
-  group_by(ha_id_number) %>% 
-  rowwise() %>% 
-  filter(eu_dist(
-    c(first(cur_data()$x_adj), first(cur_data()$y_adj)),
-    c(x_adj, y_adj)) < 10)
-```
-
-Nope
+## Proof of concept
 
 Start with single plot
 
@@ -381,13 +168,13 @@ add_density_cols <- function(df, L, U, by, verbose = FALSE) {
   df_out <- 
     future_map_dfr(1:nrow(df), function(r) { #loop through rows/plants
       #get coordinates for that plant
-      focal_plant <- t(df[r, c("x_adj", "y_adj")])
+      focal_plant <- t(df[r, c("x", "y")])
       
       #calculate distance to every other plant
       focal_df <-
         df %>%
         rowwise() %>%
-        mutate(dist = eu_dist(focal_plant, c(x_adj, y_adj)))
+        mutate(dist = eu_dist(focal_plant, c(x, y)))
       
       #get total number of shoots at every ring
       future_map2_dfc(lag(d)[-1], d[-1],
@@ -400,13 +187,10 @@ add_density_cols <- function(df, L, U, by, verbose = FALSE) {
   df_out <- bind_cols(df, df_out) #join to original data
   return(df_out)
 }
-# tic()
-# add_density_cols(y1p1, L = 0, U = 10, by = 5)
-# toc()
+
+add_density_cols(y1p1, L = 0, U = 10, by = 5)
+
 ```
-
-
-
 
 If I want this to be in units of shoots/m^2, then I need to calculate the area of the donut:
 
@@ -415,19 +199,37 @@ A = \pi(U^2 - L^2)
 $$
 But also, like, truncate that donut if it passes outside of the plot.  I don't know how to do that.
 
+```{r}
+plan(multiprocess)
+```
+
+## Apply to entire dataset
 
 ```{r}
-tic()
 ha_xy2 <-
   ha_xy %>% 
   group_by(plot, year) %>% 
   group_split() %>% 
-  head() %>% #test with 6 df to see how long it will take.
+  # head() %>% #test with 6 df to see how long it will take.
   future_map(~{
       add_density_cols(.x, L = 0, U = 10, by = 5) 
-    })
-toc()
+    }) %>% 
+  bind_rows()
+beepr::beep(4)
+```
+```{r}
+ha_xy2
+```
+
+Yay! It worked! And it didn't even run that long!
+
+## Remove plants on edge
+
+I should remove plants on the edge because the entire "donut" isn't included for them.  I can do this by finding the distance to the nearest edge, then checking if that distance is greater than the outer radius for the donuts, and if so, setting that density value to NA.
+
+To do this, I think I need to know how big the plots are.  Should have kept the plot_x and plot_y variables, maybe.
+
+```{r}
 
 ```
 
-Uggggh only works for first plot???
