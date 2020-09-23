@@ -225,11 +225,35 @@ Yay! It worked! And it didn't even run that long!
 
 ## Remove plants on edge
 
-I should remove plants on the edge because the entire "donut" isn't included for them.  I can do this by finding the distance to the nearest edge, then checking if that distance is greater than the outer radius for the donuts, and if so, setting that density value to NA.
+I should remove plants on the edge because the entire "donut" isn't included for them.  I can do this by finding the distance to the nearest edge, then checking if that distance is greater than the outer radius for the donuts, and if so, setting that density value to `NA`.
 
-To do this, I think I need to know how big the plots are.  Should have kept the plot_x and plot_y variables, maybe.
+Plots are 10 columns by 5 rows so the x should range from 0--100 and the y should range from 0--50.
 
 ```{r}
+# example plant at 94, 45
+# min(c(94, 100 - 94, 45, 50 - 45))
 
+ha_density <-
+  ha_xy2 %>% 
+  rowwise() %>% 
+  mutate(
+    dist_to_edge = min(x, 100 - x, y, 50 - y),
+    shts_0_5 = ifelse(
+      dist_to_edge < 5,
+      NA,
+      shts_0_5
+    ),
+    shts_5_10 = ifelse(
+      dist_to_edge < 10,
+      NA,
+      shts_5_10
+    ))
+
+ha_density
+```
+# Write to file
+
+```{r}
+write_rds(ha_density, here("analysis", "data", "derived_data", "ha_density.rds"))
 ```
 
