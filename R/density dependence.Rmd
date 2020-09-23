@@ -73,9 +73,14 @@ ha_sub <-
          habitat = as.factor(habitat))
 ```
 
+Technically, the density data are only for 2006, 2007, and 2009, so I should really only use those three transition years.  This might still not be 100% correct.
 
-I don't know what a height of 0 means...
-Height of 0 probably means it was knocked over, or very small, or dead.
+```{r}
+ha_sub_sub <-
+  ha_sub %>% 
+  filter(year %in% c(2006, 2007, 2009))
+```
+
 
 # General model structure
 
@@ -96,13 +101,13 @@ For this I'm going to use shoot number. Very closely related to height, but bett
 Number of shoots is discrete, but not *really* count data.  I'll try a poisson distribution and a lognormal distribution.
 
 ```{r}
-mpois <- glmer(shts_next ~ log_shts + habitat + density_0_10 + density_10_20 + (1|ha_id_number) + (1|year_post),
+mpois <- glmer(shts_next ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number) + (1|year_post),
                 family = poisson(link = "log"),
                 data = ha_sub)
 
 check_overdispersion(mpois) #actually underdispersed
 
-mnorm <- glmer(shts_next ~ log_shts + habitat + density_0_10 + density_10_20 + (1|ha_id_number) + (1|year_post),
+mnorm <- glmer(shts_next ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number) + (1|year_post),
                 family = gaussian(link = "log"),
                 data = ha_sub)
 ```
@@ -131,14 +136,14 @@ m_growth <- mnorm
 ```
 
 ```{r}
-x<-check_heteroscedasticity(m_growth)
+x <- check_heteroscedasticity(m_growth)
 plot(x)
 ```
 
 ## Random effects
 
 ```{r}
-m_growth2 <- glmer(shts_next ~ log_shts + habitat + density_0_10 + density_10_20 + (1|year_post),
+m_growth2 <- glmer(shts_next ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|year_post),
                family = gaussian(link = "log"),
                data = ha_sub)
 AICtab(m_growth, m_growth2)
@@ -147,7 +152,7 @@ AICtab(m_growth, m_growth2)
 Can't remove plant ID
 
 ```{r}
-m_growth3 <- glmer(shts_next ~ log_shts + habitat + density_0_10 + density_10_20 + (1|ha_id_number),
+m_growth3 <- glmer(shts_next ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number),
                family = gaussian(link = "log"),
                data = ha_sub)
 AICtab(m_growth, m_growth2, m_growth3)
@@ -157,29 +162,35 @@ AICtab(m_growth, m_growth2, m_growth3)
 
 ```{r}
 Anova(m_growth)
-```
-
-Odd, density further out is significant, but density close is not.
-
-```{r}
 fixef(m_growth)
 ```
 
-Both weakly positive density dependence
+Positive density dependence at 0--5 meters
+
+Same for 3-year subset?
+
+```{r}
+mgrowth_sub <- glmer(shts_next ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number) + (1|year_post),
+                family = gaussian(link = "log"),
+                data = ha_sub_sub)
+Anova(mgrowth_sub)
+```
+
+No longer significant.
 
 # Survival
 
 Pre-reproductive census, so plants live/die in same year as `shts` and `ht`
 
 ```{r}
-m_surv <- glmer(surv ~ log_shts + habitat + density_0_10 + density_10_20 + (1|ha_id_number) + (1|year), 
+m_surv <- glmer(surv ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number) + (1|year), 
                 family = binomial, data = ha_sub)
 ```
 
 ## Random effects
 
 ```{r}
-m_surv2 <- glmer(surv ~ log_shts + habitat + density_0_10 + density_10_20 + (1|year), 
+m_surv2 <- glmer(surv ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|year), 
                 family = binomial, data = ha_sub)
 AICtab(m_surv, m_surv2)
 ```
@@ -187,7 +198,7 @@ AICtab(m_surv, m_surv2)
 Close to equivalent, so remove plant ID.  This makes sense, as plants only die once!
 
 ```{r}
-m_surv3 <- glm(surv ~ log_shts + habitat + density_0_10 + density_10_20, 
+m_surv3 <- glm(surv ~ log_shts + habitat + shts_0_5 + shts_5_10, 
                 family = binomial, data = ha_sub)
 AICtab(m_surv2, m_surv3)
 ```
@@ -202,6 +213,16 @@ fixef(m_surv2)
 
 Marginal effects on survival.
 
+Does this hold for the 3-year subset?
+
+```{r}
+m_surv2_sub <- glmer(surv ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|year), 
+                family = binomial, data = ha_sub_sub)
+Anova(m_surv2_sub)
+```
+
+No longer significant
+
 # Flowering probability
 
 ```{r}
@@ -212,21 +233,21 @@ Make a binary column
 ```{r}
 ha_sub <- 
   ha_sub %>% 
-  mutate(flwr = as.integer(infl>0), .before = infl)
+  mutate(flwr = as.integer(infl > 0), .before = infl)
 
 #the way suvival is currently coded, a plant can flower and then not survive in the same year, so no need to filter out dead plants.
 ha_sub %>% filter(surv == 0 & flwr == 1)
 ```
 
 ```{r}
-m_flwr <- glmer(flwr ~ log_shts + habitat + density_0_10 + density_10_20 + (1|ha_id_number) + (1|year),
+m_flwr <- glmer(flwr ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number) + (1|year),
                 family = binomial, data = ha_sub)
 ```
 
 ## Random effects
 
 ```{r}
-m_flwr2 <- glmer(flwr ~ log_shts + habitat + density_0_10 + density_10_20 + (1|year),
+m_flwr2 <- glmer(flwr ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|year),
                  family = binomial, data = ha_sub)
 AICtab(m_flwr, m_flwr2)
 ```
@@ -234,7 +255,7 @@ Can't remove plant ID.
 
 
 ```{r}
-m_flwr3 <- glmer(flwr ~ log_shts + habitat + density_0_10 + density_10_20 + (1|ha_id_number),
+m_flwr3 <- glmer(flwr ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number),
                  family = binomial, data = ha_sub)
 AICtab(m_flwr, m_flwr2, m_flwr3)
 ```
@@ -248,32 +269,36 @@ Anova(m_flwr)
 fixef(m_flwr)
 ```
 
-Ok, there's an effect, but oddly only past 20m.  Again, positive density dependence.
+Ok, there's an effect, but oddly only at the further distance.  Again, positive density dependence.
 
 Probability of flowering increases with size and is lower in continuous forest
 
+No flowering data for 2006, 2007, and 2009.  These models won't run if the data are subset to only include these years.
+
 # Kernel approach
+
+**Not working yet**
 
 So it seems like there are effect of density at least out to 20m.  I'd like to take the approach in Teller et al. 2016, but the code is so convoluted that it is not adaptable. I want to start by trying to adapt the `dlnm` approach instead.
 
 ## Set up the crossbasis
 
-```{r}
+```{r eval=FALSE}
 Q <-
   ha_sub %>%
-  select(density_0_10:density_50_60) %>% 
+  select(density_0_10:density_50_60) %>%
   as.matrix()
 
 L <-
   matrix(seq(5, 55, length.out = 6),
-         nrow = nrow(Q), 
+         nrow = nrow(Q),
          ncol = 6,
          byrow = TRUE)
 ```
 
 ## GAM
 
-```{r}
+```{r eval=FALSE}
 library(dlnm)
 library(mgcv)
 
@@ -290,9 +315,23 @@ g_growth <-
       method = "REML")
 ```
 
+```{r eval=FALSE}
+g_surv <-
+  gam(surv ~ s(log_shts) +
+        habitat +
+        s(Q, L,
+          bs = "cb",
+          k = c(5, 4),
+          xt = list(bs = "cr")),
+      family = binomial,
+      data = ha_sub,
+      method = "REML")
+```
+
 ## Predict
 
-```{r}
+```{r eval=FALSE}
+# x <- crosspred("Q", model = g_surv, cumul = TRUE)
 x <- crosspred("Q", model = g_growth, cumul = TRUE)
 summary(x)
 ```
@@ -301,20 +340,20 @@ summary(x)
 
 ### Contour plot
 
-```{r}
+```{r eval=FALSE}
 plot.crosspred(x,
                ptype = "contour",
                xlab = "#shoots/100m^2",
                ylab = "distance (m)",
                cumul = FALSE)
 ```
-So this shows negative density dependence that seems to be strongest at about 40-50 m away from the focal plant.
+So this shows negative density dependence on growth that seems to be strongest at about 40-50 m away from the focal plant.
 
 ### Slices
 
 We can also plot slices through the contour plot at different distances or different shoot densities
 
-```{r}
+```{r eval=FALSE}
 plot.crosspred(x, ptype = "slice", var = 100, xlab = "distance (m)", main = "Effect of 100 shoots/100m^2")
 plot.crosspred(x, ptype = "slice", var = 10, xlab = "distance (m)", main = "Effect of 10 shoots/100m^2")
 ```
@@ -323,7 +362,7 @@ plot.crosspred(x, ptype = "slice", var = 10, xlab = "distance (m)", main = "Effe
 
 I think this shows the cumulative effect of density summed/integrated over all distances.  So, for example, a plant with about 30 shoots/100m^2 surrounding it out to the maximum distance (60m) would have the largest number of shoots, on average.
 
-```{r}
+```{r eval=FALSE}
 plot(x, ptype = "overall", xlab = "density (shoots/100m^2)", cumul = TRUE)
 ```
 
@@ -336,7 +375,7 @@ It is odd that the strength of competition seems to be increasing with distance.
 You can override one of the dimensions of the cross basis with any custom function.
 
 
-```{r}
+```{r eval=FALSE}
 #use arglag to override lag dimension of crossbasis, use argvar to override plant density dimension.
 lin <- dlnm:::lin
 xt <- list(bs = "cr", arglag = list(fun = "lin"))
@@ -356,7 +395,7 @@ g_growth <-
 gam.check(g_growth)
 ```
 
-```{r}
+```{r eval=FALSE}
 x <- crosspred("Q", model = g_growth)
 plot.crosspred(x, ptype = "contour", xlab = "#shoots/100m^2", ylab = "distance (m)")
 
@@ -365,7 +404,7 @@ plot.crosspred(x, ptype = "slice", var = 10)
 ```
 Now the kernel is the same shape at every value of density.  However, this relationship doesn't make any sense.  Fewer knots?  More penalty?  Custom function?
 
-```{r}
+```{r eval=FALSE}
 anova(g_growth)
 ```
 
