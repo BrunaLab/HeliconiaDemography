@@ -179,7 +179,8 @@ add_density_cols <- function(df, L, U, by, verbose = FALSE) {
       #get total number of shoots at every ring
       future_map2_dfc(lag(d)[-1], d[-1],
                ~ transmute(focal_df,
-                           !!glue("shts_{.x}_{.y}") := shts * (dist > .x & dist <= .y))) %>%
+                           !!glue("shts_{.x}_{.y}") := shts * (dist > .x & dist <= .y))) %>% 
+        #excludes focal plant with dist == 0
         ungroup() %>% 
         summarize(across(everything(), ~sum(., na.rm = TRUE)))
     })
@@ -216,8 +217,6 @@ ha_xy2 <-
     }) %>% 
   bind_rows()
 beepr::beep(4)
-```
-```{r}
 ha_xy2
 ```
 
