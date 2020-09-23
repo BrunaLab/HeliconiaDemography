@@ -157,7 +157,11 @@ y1p1
 ```
 
 ```{r}
-add_density_cols <- function(df, L, U, by, verbose = FALSE) {
+# df <- y1p1
+# L = 0
+# U = 10
+# by = 0.5
+add_density_cols <- function(df, L, U, by, na_edges = TRUE) {
   
   eu_dist <- function(p1, p2) {
     sqrt(sum((p1 - p2)^2))
@@ -169,25 +173,46 @@ add_density_cols <- function(df, L, U, by, verbose = FALSE) {
     future_map_dfr(1:nrow(df), function(r) { #loop through rows/plants
       #get coordinates for that plant
       focal_plant <- t(df[r, c("x", "y")])
+      # focal_plant <- c(0,0)
+      
+      if (na_edges) {
+        #don't do calculations for rings that go outside the plot
+        edge_dist <- min(c(focal_plant, c(100, 50) - focal_plant))
+        d2 <- d[which(d < edge_dist)]
+      } else {
+        d2 <- d
+      }
       
       #calculate distance to every other plant
       focal_df <-
         df %>%
         rowwise() %>%
-        mutate(dist = eu_dist(focal_plant, c(x, y)))
+        mutate(dist = eu_dist(focal_plant, c(x, y))) %>% 
+        ungroup()
+      
+      # If plant is near edge, return NAs
       
       #get total number of shoots at every ring
-      future_map2_dfc(lag(d)[-1], d[-1],
-               ~ transmute(focal_df,
-                           !!glue("shts_{.x}_{.y}") := shts * (dist > .x & dist <= .y))) %>% 
-        #excludes focal plant with dist == 0
-        ungroup() %>% 
-        summarize(across(everything(), ~sum(., na.rm = TRUE)))
+      if (length(d2) > 1) {
+        future_map2_dfc(lag(d2)[-1], d2[-1],
+                        ~ transmute(
+                          focal_df,
+                          !!glue("shts_{.x}_{.y}") :=
+                            shts * (dist > .x & dist <= .y)
+                        )
+        ) %>% 
+          #excludes focal plant with dist == 0
+          summarize(across(everything(), ~sum(., na.rm = TRUE)), .groups = "drop")
+      } else {
+        # if all the rings go outside the plot, then return an empty row
+        tibble_row()
+      }
     })
   
   df_out <- bind_cols(df, df_out) #join to original data
   return(df_out)
 }
+
 
 add_density_cols(y1p1, L = 0, U = 10, by = 5)
 
@@ -213,43 +238,27 @@ ha_xy2 <-
   group_split() %>% 
   # head() %>% #test with 6 df to see how long it will take.
   future_map(~{
-      add_density_cols(.x, L = 0, U = 10, by = 5) 
+      add_density_cols(.x, L = 0, U = 10, by = 0.5) 
     }) %>% 
   bind_rows()
 beepr::beep(4)
-ha_xy2
+```
+
+Aggregate some of the distances for simpler modeling.
+
+```{r}
+ha_xy3 <-
+  ha_xy2 %>% 
+  rowwise() %>%
+  mutate(shts_0_5 = sum(c_across(shts_0_0.5:shts_4.5_5)),
+         shts_5_10 = sum(c_across(shts_5_5.5:shts_9.5_10)))
+
+ha_density <- ha_xy3
 ```
 
 Yay! It worked! And it didn't even run that long!
 
-## Remove plants on edge
 
-I should remove plants on the edge because the entire "donut" isn't included for them.  I can do this by finding the distance to the nearest edge, then checking if that distance is greater than the outer radius for the donuts, and if so, setting that density value to `NA`.
-
-Plots are 10 columns by 5 rows so the x should range from 0--100 and the y should range from 0--50.
-
-```{r}
-# example plant at 94, 45
-# min(c(94, 100 - 94, 45, 50 - 45))
-
-ha_density <-
-  ha_xy2 %>% 
-  rowwise() %>% 
-  mutate(
-    dist_to_edge = min(x, 100 - x, y, 50 - y),
-    shts_0_5 = ifelse(
-      dist_to_edge < 5,
-      NA,
-      shts_0_5
-    ),
-    shts_5_10 = ifelse(
-      dist_to_edge < 10,
-      NA,
-      shts_5_10
-    ))
-
-ha_density
-```
 # Write to file
 
 ```{r}
