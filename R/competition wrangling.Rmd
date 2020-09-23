@@ -34,9 +34,10 @@ conflict_prefer("select", "dplyr")
 Competition kernel. Teller et al.
 
 I want to use the `row` and `colunn` to figure out how many neighbors each plant has. I should exclude plants on edges, because I don't know about their neighbors outside of the plot.
-# TODO:
 
-- density at distance 0 shouldn't include the focal plant
+# TODO:
+- Fix x,y coords correctly.  Move this code to demography_wrangling.R?
+- filter out focal plants where donut goes out of plot. (filter(distance_to_edge > outer_circle_radius))
 
 # Load Data
 
