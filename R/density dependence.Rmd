@@ -171,7 +171,7 @@ No longer significant.
 Pre-reproductive census, so plants live/die in same year as `shts` and `ht`
 
 ```{r}
-m_surv <- glmer(surv ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number) + (1|year), 
+m_surv <- glmer(surv ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number) + (1|year_post), 
                 family = binomial, data = ha_sub)
 ```
 
@@ -302,7 +302,8 @@ g_growth <-
         s(Q, L,
           bs = "cb",
           # k = c(10, 10),
-          xt = list(bs = "cr")),
+          xt = list(bs = "cr")) +
+        s(year_post, bs = "re"),
       family = gaussian(link = "log"),
       data = ha_sub,
       method = "REML")
@@ -314,32 +315,34 @@ Marginally significant effect of conspecific density on growth
 
 ```{r eval=FALSE}
 g_surv <-
-  gam(surv ~ s(log_shts, k = 12) +
+  gam(surv ~ s(log_shts) +
         habitat +
         s(Q, L,
           bs = "cb",
           # k = c(10, 10),
-          xt = list(bs = "cr")),
+          xt = list(bs = "cr")) +
+        s(year_post, bs = "re"),
       family = binomial,
       data = ha_sub,
       method = "REML")
 gam.check(g_surv)
 anova(g_surv)
 ```
-No significant effect of density
+Marginally significant effect of density on survival
 
 
 ## Predict
 
+Growth:
 ```{r eval=FALSE}
 hist(Q)
 pred_growth <- crosspred("Q", model = g_growth, cumul = TRUE, cen = mean(Q, na.rm = T), from = 0, to = 8)
-summary(pred_growth)
+pred_surv <- crosspred("Q", model = g_surv, cumul = TRUE, cen = mean(Q, na.rm = T), from = 0, to = 8)
+# 
+# summary(pred_growth)
 ```
 
-## Plot crossbasis
-
-### Contour plot
+## Plot Growth
 
 ```{r}
 plot.crosspred(pred_growth,
@@ -369,6 +372,17 @@ plot.crosspred(pred_growth, ptype = "slice", lag = 3.25, xlab = "density (shoots
 plot.crosspred(pred_growth, ptype = "slice", lag = 4.25, xlab = "density (shoots/m^2)", main = "4.25m", ylim = c(0.9,1.1))
 ```
 
+## Plot Survival
+
+```{r}
+plot.crosspred(pred_surv,
+               ptype = "contour",
+               xlab = "#shoots/m^2",
+               ylab = "distance (m)",
+               cumul = FALSE,
+               main = "Relative to mean competition")
+```
+Postive density dependence that drops off steeply after 1m
 
 ## Other shapes
 
