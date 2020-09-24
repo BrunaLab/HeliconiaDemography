@@ -36,7 +36,8 @@ conflict_prefer("select", "dplyr")
 
 # TODO:
 
-- filter out focal plants where donut goes out of plot. (filter(distance_to_edge > outer_circle_radius))
+- ~~filter out focal plants where donut goes out of plot. (filter(distance_to_edge > outer_circle_radius))~~
+- Do I need to divide by area of donut?
 - Using all years is not estimating density accurately. Focal plants are not moving, but in other years there are neighbors without known coordinates. Solution: only use the three transitions where we know the coords of every plant?  Or assume births and deaths don't change density significantly?
 
 # Load Data
@@ -161,7 +162,7 @@ y1p1
 # L = 0
 # U = 10
 # by = 0.5
-add_density_cols <- function(df, L, U, by, na_edges = TRUE) {
+add_density_cols <- function(df, L, U, by, na_edges = TRUE, per_area = TRUE) {
   
   eu_dist <- function(p1, p2) {
     sqrt(sum((p1 - p2)^2))
@@ -194,7 +195,7 @@ add_density_cols <- function(df, L, U, by, na_edges = TRUE) {
       
       #get total number of shoots at every ring
       if (length(d2) > 1) {
-        future_map2_dfc(lag(d2)[-1], d2[-1],
+          future_map2_dfc(lag(d2)[-1], d2[-1],
                         ~ transmute(
                           focal_df,
                           !!glue("shts_{.x}_{.y}") :=
@@ -203,12 +204,20 @@ add_density_cols <- function(df, L, U, by, na_edges = TRUE) {
         ) %>% 
           #excludes focal plant with dist == 0
           summarize(across(everything(), ~sum(., na.rm = TRUE)), .groups = "drop")
+        
       } else {
         # if all the rings go outside the plot, then return an empty row
         tibble_row()
       }
     })
   
+  if (per_area) {
+    # Divide by areas of donuts to get shoots/m^2
+    d3 <- d[1:(ncol(df_out) + 1)] #in case largest radii are outside of plot for every plant
+    A <- pi * (d3[-1]^2 - lag(d3)[-1]^2) #area of donut
+    df_out <- map2_dfc(df_out, A, ~.x/.y) #divide each column by each area
+  }
+
   df_out <- bind_cols(df, df_out) #join to original data
   return(df_out)
 }
@@ -218,12 +227,6 @@ add_density_cols(y1p1, L = 0, U = 10, by = 5)
 
 ```
 
-If I want this to be in units of shoots/m^2, then I need to calculate the area of the donut:
-
-$$
-A = \pi(U^2 - L^2)
-$$
-But also, like, truncate that donut if it passes outside of the plot.  I don't know how to do that.
 
 ```{r}
 plan(multiprocess)
