@@ -112,17 +112,6 @@ mnorm <- glmer(shts_next ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_
                 data = ha_sub)
 ```
 
-But how bad is this convergence failure?
-
-Is the max|grad| calculation correct?
-
-```{r}
-derivs1 <- mnorm@optinfo$derivs
-sc_grad1 <- with(derivs1, solve(Hessian, gradient))
-max(abs(sc_grad1))
-```
-No, it's actually a lot smaller than `tol`, so nothing to worry about
-
 
 ```{r}
 AICtab(mpois, mnorm)
@@ -142,21 +131,22 @@ plot(x)
 
 ## Random effects
 
+Plant ID:
+
 ```{r}
-m_growth2 <- glmer(shts_next ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|year_post),
-               family = gaussian(link = "log"),
-               data = ha_sub)
+m_growth2 <- update(m_growth, .~. - (1|ha_id_number))
 AICtab(m_growth, m_growth2)
 ```
 
 Can't remove plant ID
 
+Year:
+
 ```{r}
-m_growth3 <- glmer(shts_next ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number),
-               family = gaussian(link = "log"),
-               data = ha_sub)
+m_growth3 <- update(m_growth, .~. - (1|year_post))
 AICtab(m_growth, m_growth2, m_growth3)
 ```
+Can't remove year
 
 ## Does density matter beyond immediate surroundings?
 
@@ -170,9 +160,7 @@ Positive density dependence at 0--5 meters
 Same for 3-year subset?
 
 ```{r}
-mgrowth_sub <- glmer(shts_next ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number) + (1|year_post),
-                family = gaussian(link = "log"),
-                data = ha_sub_sub)
+mgrowth_sub <- update(m_growth, data = ha_sub_sub)
 Anova(mgrowth_sub)
 ```
 
@@ -189,13 +177,16 @@ m_surv <- glmer(surv ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_numb
 
 ## Random effects
 
+Plant ID:
+
 ```{r}
-m_surv2 <- glmer(surv ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|year), 
-                family = binomial, data = ha_sub)
+m_surv2 <- update(m_surv, .~. - (1|ha_id_number))
 AICtab(m_surv, m_surv2)
 ```
 
 Close to equivalent, so remove plant ID.  This makes sense, as plants only die once!
+
+Year: 
 
 ```{r}
 m_surv3 <- glm(surv ~ log_shts + habitat + shts_0_5 + shts_5_10, 
@@ -211,17 +202,18 @@ Anova(m_surv2)
 fixef(m_surv2)
 ```
 
-Marginal effects on survival.
+Positive density dependence for survival.
+
 
 Does this hold for the 3-year subset?
 
 ```{r}
-m_surv2_sub <- glmer(surv ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|year), 
-                family = binomial, data = ha_sub_sub)
+m_surv2_sub <- update(m_surv2, data = ha_sub_sub)
 Anova(m_surv2_sub)
+fixef(m_surv2_sub)
 ```
 
-No longer significant
+Yes, nearly identical coefs.
 
 # Flowering probability
 
@@ -240,23 +232,24 @@ ha_sub %>% filter(surv == 0 & flwr == 1)
 ```
 
 ```{r}
-m_flwr <- glmer(flwr ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number) + (1|year),
+m_flwr <- glmer(flwr ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number) + (1|year_post),
                 family = binomial, data = ha_sub)
 ```
 
 ## Random effects
 
+Plant ID:
+
 ```{r}
-m_flwr2 <- glmer(flwr ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|year),
-                 family = binomial, data = ha_sub)
+m_flwr2 <- update(m_flwr, .~. - (1|ha_id_number))
 AICtab(m_flwr, m_flwr2)
 ```
 Can't remove plant ID.
 
+Year:
 
 ```{r}
-m_flwr3 <- glmer(flwr ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number),
-                 family = binomial, data = ha_sub)
+m_flwr3 <- update(m_flwr, .~. - (1|year_post))
 AICtab(m_flwr, m_flwr2, m_flwr3)
 ```
 
@@ -286,13 +279,13 @@ So it seems like there are effect of density at least out to 20m.  I'd like to t
 ```{r eval=FALSE}
 Q <-
   ha_sub %>%
-  select(density_0_10:density_50_60) %>%
+  select(shts_0_0.5:shts_4.5_5) %>%
   as.matrix()
 
 L <-
-  matrix(seq(5, 55, length.out = 6),
+  matrix(seq(0.25, 4.75, by = 0.5), #use midpoint of r1 and r2
          nrow = nrow(Q),
-         ncol = 6,
+         ncol = ncol(Q),
          byrow = TRUE)
 ```
 
@@ -308,65 +301,74 @@ g_growth <-
         habitat +
         s(Q, L,
           bs = "cb",
-          k = c(5, 4),
+          # k = c(10, 10),
           xt = list(bs = "cr")),
       family = gaussian(link = "log"),
       data = ha_sub,
       method = "REML")
+gam.check(g_growth)
+anova(g_growth)
 ```
+
+Marginally significant effect of conspecific density on growth
 
 ```{r eval=FALSE}
 g_surv <-
-  gam(surv ~ s(log_shts) +
+  gam(surv ~ s(log_shts, k = 12) +
         habitat +
         s(Q, L,
           bs = "cb",
-          k = c(5, 4),
+          # k = c(10, 10),
           xt = list(bs = "cr")),
       family = binomial,
       data = ha_sub,
       method = "REML")
+gam.check(g_surv)
+anova(g_surv)
 ```
+No significant effect of density
+
 
 ## Predict
 
 ```{r eval=FALSE}
-# x <- crosspred("Q", model = g_surv, cumul = TRUE)
-x <- crosspred("Q", model = g_growth, cumul = TRUE)
-summary(x)
+hist(Q)
+pred_growth <- crosspred("Q", model = g_growth, cumul = TRUE, cen = mean(Q, na.rm = T), from = 0, to = 8)
+summary(pred_growth)
 ```
 
 ## Plot crossbasis
 
 ### Contour plot
 
-```{r eval=FALSE}
-plot.crosspred(x,
+```{r}
+plot.crosspred(pred_growth,
                ptype = "contour",
-               xlab = "#shoots/100m^2",
+               xlab = "#shoots/m^2",
                ylab = "distance (m)",
-               cumul = FALSE)
+               cumul = FALSE,
+               main = "Relative to mean competition")
 ```
-So this shows negative density dependence on growth that seems to be strongest at about 40-50 m away from the focal plant.
+Non-monotonic density dependence that decays steeply beyond 1m
 
 ### Slices
 
 We can also plot slices through the contour plot at different distances or different shoot densities
 
 ```{r eval=FALSE}
-plot.crosspred(x, ptype = "slice", var = 100, xlab = "distance (m)", main = "Effect of 100 shoots/100m^2")
-plot.crosspred(x, ptype = "slice", var = 10, xlab = "distance (m)", main = "Effect of 10 shoots/100m^2")
+plot.crosspred(pred_growth, ptype = "slice", var = 0.2, xlab = "distance (m)", main = "0.2 shoots/m^2", ylim = c(0.9,1.1))
+plot.crosspred(pred_growth, ptype = "slice", var = 1, xlab = "distance (m)", main = "1 shoots/m^2", ylim = c(0.9,1.1))
+plot.crosspred(pred_growth, ptype = "slice", var = 2, xlab = "distance (m)", main = "2 shoots/m^2", ylim = c(0.9,1.1))
+plot.crosspred(pred_growth, ptype = "slice", var = 8, xlab = "distance (m)", main = "8 shoots/m^2", ylim = c(0.9,1.1))
 ```
 
-### Cumulative
-
-I think this shows the cumulative effect of density summed/integrated over all distances.  So, for example, a plant with about 30 shoots/100m^2 surrounding it out to the maximum distance (60m) would have the largest number of shoots, on average.
-
-```{r eval=FALSE}
-plot(x, ptype = "overall", xlab = "density (shoots/100m^2)", cumul = TRUE)
+```{r}
+plot.crosspred(pred_growth, ptype = "slice", lag = 0.25, xlab = "density (shoots/m^2)", main = "0.25m", ylim = c(0.9,1.1))
+plot.crosspred(pred_growth, ptype = "slice", lag = 1.25, xlab = "density (shoots/m^2)", main = "1.25m", ylim = c(0.9,1.1))
+plot.crosspred(pred_growth, ptype = "slice", lag = 3.25, xlab = "density (shoots/m^2)", main = "3.25m", ylim = c(0.9,1.1))
+plot.crosspred(pred_growth, ptype = "slice", lag = 4.25, xlab = "density (shoots/m^2)", main = "4.25m", ylim = c(0.9,1.1))
 ```
 
-There is no built-in function to get cumulative effects of density over all distances.
 
 ## Other shapes
 
