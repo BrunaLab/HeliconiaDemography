@@ -31,6 +31,10 @@ conflict_prefer("select", "dplyr")
 
 *Last compiled: `r Sys.Date()`*
 
+# TODO
+
+- Get confidence intervals for cross-basis predictions.  Plot slices with confidence bands.
+
 # Purpose
 
 Start by looking for density dependence on growth, survival, and reproduction in continuous forests using the number of plants in the same grid-cell as a metric for density.
@@ -41,28 +45,22 @@ Start by looking for density dependence on growth, survival, and reproduction in
 ha <- read_rds(here("analysis", "data", "derived_data", "ha_density.rds"))
 ha
 ```
+This is the main *Heliconia* dataset, but with densities of conspecifics (shoots/m^2^) at different rings with inner and outer radii in meters.  So, for example, the `shts_8_8.5` column is the number of *Heliconia* shoots/m^2^ in a ring 8 to 8.5 m around the focal plant.
+
+The `x` and `y` coordinates are averages of data from 2006, 2007, and 2009, but joined to the full range of the dataset--assuming that plants don't move.
+
+## Tidying and subsetting
 
 ```{r}
 ha <-
-  ha %>% 
-  group_by(ha_id_number) %>% 
-  arrange(ha_id_number, year) %>% 
+  ha %>%
   ungroup() %>% 
-  #scale year
-  mutate(year_post = year - min(year))
+  arrange(ha_id_number, year) %>% 
+  #scale year, and convert to factor since I'll be using as random effect
+  mutate(year_post = as_factor(year - min(year)))
 ```
 
-Filter to just continuous forest
-
-```{r}
-ha_cf <- 
-  ha %>% 
-  filter(habitat == "CF") %>% 
-  mutate(log_shts = log(shts),
-         log_shts_next = log(shts_next))
-```
-
-Or filter to just 1-ha and cf
+Use just 1-ha and cf
 
 ```{r}
 ha_sub <-
@@ -70,21 +68,18 @@ ha_sub <-
   filter(habitat %in% c("CF", "1-ha")) %>% 
   mutate(log_shts = log(shts),
          log_shts_next = log(shts_next),
-         habitat = as.factor(habitat))
-```
-
-Technically, the density data are only for 2006, 2007, and 2009, so I should really only use those three transition years.  This might still not be 100% correct.
-
-```{r}
-ha_sub_sub <-
-  ha_sub %>% 
-  filter(year %in% c(2006, 2007, 2009))
+         habitat = as.factor(habitat),
+         ha_id_number = as.factor(ha_id_number))
 ```
 
 
 # General model structure
 
-For each vital rate I'll include the number of shoots and habitat as fixed effects and plant ID and year as random effects.  I'm not including plot since there are few plots in each habitat type, and preliminary modeling shows the variance for plot is the lowest of those three random effects.
+For each vital rate I'll include the number of shoots and habitat as fixed effects and plant ID and year as random effects. For the mixed effects models I'll use density at just two rings (0--5m and 5--10m) as fixed effects. There are probably too few plots (4 1-ha and 6CF) to use plot as a random effect, but I don't know how to code it as a fixed effect right now.
+
+```
+vital_rate ~ log(shts) + habitat + shts_0_2.5 + shts_2.5_5 + (1|year) + (1|ha_id_number) + (1|habitat:plot)
+```
 
 ```{r}
 ha_sub %>% 
@@ -101,15 +96,23 @@ For this I'm going to use shoot number. Very closely related to height, but bett
 Number of shoots is discrete, but not *really* count data.  I'll try a poisson distribution and a lognormal distribution.
 
 ```{r}
-mpois <- glmer(shts_next ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number) + (1|year_post),
-                family = poisson(link = "log"),
-                data = ha_sub)
+mpois <-
+  glmer(
+    shts_next ~ log_shts + habitat + shts_0_2.5 + shts_2.5_5 +
+      (1|ha_id_number) + (1|year_post) + (1|habitat:plot),
+    family = poisson(link = "log"),
+    data = ha_sub
+  )
 
 check_overdispersion(mpois) #actually underdispersed
 
-mnorm <- glmer(shts_next ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number) + (1|year_post),
-                family = gaussian(link = "log"),
-                data = ha_sub)
+mnorm <-
+  glmer(
+    shts_next ~ log_shts + habitat + shts_0_2.5 + shts_2.5_5 +
+      (1|ha_id_number) + (1|year_post) + (1|habitat:plot),
+    family = gaussian(link = "log"),
+    data = ha_sub
+  )
 ```
 
 
@@ -118,7 +121,7 @@ AICtab(mpois, mnorm)
 compare_performance(mpois, mnorm, rank = TRUE)
 ```
 
-Lognormal distribution fits best according to AIC, although poisson has lower RMSE.  I guess despite being discrete, this isn't really "count" data *per se*.  The lognormal model doesn't have problems with singularity that the poisson model has.  Both have problems with heteroscedasticity.  I'll go with log-normal.
+Lognormal distribution fits best according to AIC, although poisson has lower RMSE.  I guess despite being discrete, this isn't really "count" data *per se*.  The lognormal model doesn't have problems with singularity that the poisson model has.  Both have problems with heteroscedasticity. A log-transformation of the response doesn't fix the heteroscedatsticyt either. I'll go with log-normal.
 
 ```{r}
 m_growth <- mnorm
@@ -129,13 +132,21 @@ x <- check_heteroscedasticity(m_growth)
 plot(x)
 ```
 
+
 ## Random effects
+
+Plot:
+
+```{r}
+m_growth2 <- update(m_growth, .~. - (1|habitat:plot))
+AICtab(m_growth, m_growth2)
+```
 
 Plant ID:
 
 ```{r}
-m_growth2 <- update(m_growth, .~. - (1|ha_id_number))
-AICtab(m_growth, m_growth2)
+m_growth3 <- update(m_growth2, .~. - (1|ha_id_number))
+AICtab(m_growth2, m_growth3)
 ```
 
 Can't remove plant ID
@@ -143,45 +154,47 @@ Can't remove plant ID
 Year:
 
 ```{r}
-m_growth3 <- update(m_growth, .~. - (1|year_post))
-AICtab(m_growth, m_growth2, m_growth3)
+m_growth4 <- update(m_growth2, .~. - (1|year_post))
+AICtab(m_growth, m_growth2, m_growth3, m_growth4)
 ```
-Can't remove year
+Can remove year
 
 ## Does density matter beyond immediate surroundings?
 
 ```{r}
-Anova(m_growth)
-fixef(m_growth)
+Anova(m_growth4)
+fixef(m_growth4)
 ```
 
-Positive density dependence at 0--5 meters
-
-Same for 3-year subset?
-
-```{r}
-mgrowth_sub <- update(m_growth, data = ha_sub_sub)
-Anova(mgrowth_sub)
-```
-
-No longer significant.
+No density dependence
 
 # Survival
 
 Pre-reproductive census, so plants live/die in same year as `shts` and `ht`
 
 ```{r}
-m_surv <- glmer(surv ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number) + (1|year_post), 
-                family = binomial, data = ha_sub)
+m_surv <-
+  glmer(
+    surv ~ log_shts + habitat + shts_0_2.5 + shts_2.5_5 +
+      (1|ha_id_number) + (1|year_post) + (1|habitat:plot), 
+    family = binomial, data = ha_sub
+  )
 ```
 
 ## Random effects
 
+Plot:
+
+```{r}
+m_surv2 <- update(m_surv, .~. - (1|habitat:plot))
+AICtab(m_surv, m_surv2)
+```
+
 Plant ID:
 
 ```{r}
-m_surv2 <- update(m_surv, .~. - (1|ha_id_number))
-AICtab(m_surv, m_surv2)
+m_surv3 <- update(m_surv2, .~. - (1|ha_id_number))
+AICtab(m_surv2, m_surv3)
 ```
 
 Close to equivalent, so remove plant ID.  This makes sense, as plants only die once!
@@ -189,37 +202,24 @@ Close to equivalent, so remove plant ID.  This makes sense, as plants only die o
 Year: 
 
 ```{r}
-m_surv3 <- glm(surv ~ log_shts + habitat + shts_0_5 + shts_5_10, 
+m_surv4 <- glm(surv ~ log_shts + habitat + shts_0_2.5 + shts_2.5_5, 
                 family = binomial, data = ha_sub)
-AICtab(m_surv2, m_surv3)
+AICtab(m_surv4, m_surv3)
 ```
-Can't remove year.
+glm is best
 
 ## Density dependence?
 
 ```{r}
-Anova(m_surv2)
-fixef(m_surv2)
+Anova(m_surv4)
+coef(m_surv4)
 ```
 
 Positive density dependence for survival.
 
 
-Does this hold for the 3-year subset?
-
-```{r}
-m_surv2_sub <- update(m_surv2, data = ha_sub_sub)
-Anova(m_surv2_sub)
-fixef(m_surv2_sub)
-```
-
-Yes, nearly identical coefs.
-
 # Flowering probability
 
-```{r}
-ggplot(ha_sub, aes(infl)) + geom_histogram()
-```
 Make a binary column
 
 ```{r}
@@ -227,56 +227,27 @@ ha_sub <-
   ha_sub %>% 
   mutate(flwr = as.integer(infl > 0), .before = infl)
 
-#the way suvival is currently coded, a plant can flower and then not survive in the same year, so no need to filter out dead plants.
-ha_sub %>% filter(surv == 0 & flwr == 1)
+unique(ha_sub$flwr)
 ```
 
-```{r}
-m_flwr <- glmer(flwr ~ log_shts + habitat + shts_0_5 + shts_5_10 + (1|ha_id_number) + (1|year_post),
-                family = binomial, data = ha_sub)
+Can't do this model because no variation in flowering.
+
+```{r eval=FALSE}
+m_flwr <-
+  glmer(
+    flwr ~ log_shts + habitat + shts_0_2.5 + shts_2.5_5 +
+      (1|ha_id_number) + (1|year_post) + (1|habitat:plot),
+    family = binomial, data = ha_sub
+  )
 ```
-
-## Random effects
-
-Plant ID:
-
-```{r}
-m_flwr2 <- update(m_flwr, .~. - (1|ha_id_number))
-AICtab(m_flwr, m_flwr2)
-```
-Can't remove plant ID.
-
-Year:
-
-```{r}
-m_flwr3 <- update(m_flwr, .~. - (1|year_post))
-AICtab(m_flwr, m_flwr2, m_flwr3)
-```
-
-Can't remove year
-
-## Density dependence?
-
-```{r}
-Anova(m_flwr)
-fixef(m_flwr)
-```
-
-Ok, there's an effect, but oddly only at the further distance.  Again, positive density dependence.
-
-Probability of flowering increases with size and is lower in continuous forest
-
-No flowering data for 2006, 2007, and 2009.  These models won't run if the data are subset to only include these years.
 
 # Kernel approach
 
-**Not working yet**
-
-So it seems like there are effect of density at least out to 20m.  I'd like to take the approach in Teller et al. 2016, but the code is so convoluted that it is not adaptable. I want to start by trying to adapt the `dlnm` approach instead.
+I'd like to take the approach in Teller et al. 2016, but the code is so convoluted that it is not adaptable. Instead, I'll start by trying to adapt the `dlnm` approach.
 
 ## Set up the crossbasis
 
-```{r eval=FALSE}
+```{r}
 Q <-
   ha_sub %>%
   select(shts_0_0.5:shts_4.5_5) %>%
@@ -289,151 +260,93 @@ L <-
          byrow = TRUE)
 ```
 
-## GAM
 
-```{r eval=FALSE}
+```{r}
 library(dlnm)
 library(mgcv)
+library(visibly) # better diagnostic visulazations.  one of several packages for this.
+source(here("R", "utils.R"))
+```
 
-# Q_log <- log(Q+1)
+## Growth
+
+```{r}
 g_growth <-
-  gam(shts_next ~ s(log_shts) +
+  gam(shts_next ~ 
+        s(log_shts) + #Essentially linear, could replace with parametric
         habitat +
         s(Q, L,
           bs = "cb",
-          # k = c(10, 10),
-          xt = list(bs = "cr")) +
-        s(year_post, bs = "re"),
+          xt = list(bs = "cr")), #+
+        # s(ha_id_number, bs = "re"), #this takes waaay too long to converge
       family = gaussian(link = "log"),
       data = ha_sub,
       method = "REML")
-gam.check(g_growth)
+```
+
+
+```{r}
+plot_gam_check(g_growth)
+```
+
+
+```{r}
 anova(g_growth)
 ```
 
-Marginally significant effect of conspecific density on growth
+Effect of size on size(t+1):
 
-```{r eval=FALSE}
+```{r}
+plot(g_growth, pages = 1)
+```
+
+Effects of density:
+
+```{r}
+pred_growth <- pred_cb(Q, L, g_growth)
+ggplot(pred_growth, aes(x = x, y = lag, z = fitted, fill = fitted)) +
+  geom_raster(interpolate = TRUE) +
+  geom_contour(color = "grey50", size = 0.4) + 
+  scale_y_continuous("distance (m)", expand = c(0,0)) +
+  scale_x_continuous("conspecific density (shoots/m^2)", expand = c(0,0)) +
+  scale_fill_viridis_c("#shoots (t+1)", option = "A")
+```
+
+## Survival
+
+```{r}
 g_surv <-
-  gam(surv ~ s(log_shts) +
+  gam(surv ~
+        s(log_shts) +
         habitat +
         s(Q, L,
           bs = "cb",
           # k = c(10, 10),
-          xt = list(bs = "cr")) +
-        s(year_post, bs = "re"),
+          xt = list(bs = "cr")),
       family = binomial,
       data = ha_sub,
       method = "REML")
-gam.check(g_surv)
+```
+
+```{r}
+# plot_gam_check(g_surv)
 anova(g_surv)
 ```
-Marginally significant effect of density on survival
 
-
-## Predict
-
-Growth:
-```{r eval=FALSE}
-hist(Q)
-pred_growth <- crosspred("Q", model = g_growth, cumul = TRUE, cen = mean(Q, na.rm = T), from = 0, to = 8)
-pred_surv <- crosspred("Q", model = g_surv, cumul = TRUE, cen = mean(Q, na.rm = T), from = 0, to = 8)
-# 
-# summary(pred_growth)
-```
-
-## Plot Growth
+Effect of size on survival:
 
 ```{r}
-plot.crosspred(pred_growth,
-               ptype = "contour",
-               xlab = "#shoots/m^2",
-               ylab = "distance (m)",
-               cumul = FALSE,
-               main = "Relative to mean competition")
+plot(g_surv, pages = 1)
 ```
-Non-monotonic density dependence that decays steeply beyond 1m
 
-### Slices
-
-We can also plot slices through the contour plot at different distances or different shoot densities
-
-```{r eval=FALSE}
-plot.crosspred(pred_growth, ptype = "slice", var = 0.2, xlab = "distance (m)", main = "0.2 shoots/m^2", ylim = c(0.9,1.1))
-plot.crosspred(pred_growth, ptype = "slice", var = 1, xlab = "distance (m)", main = "1 shoots/m^2", ylim = c(0.9,1.1))
-plot.crosspred(pred_growth, ptype = "slice", var = 2, xlab = "distance (m)", main = "2 shoots/m^2", ylim = c(0.9,1.1))
-plot.crosspred(pred_growth, ptype = "slice", var = 8, xlab = "distance (m)", main = "8 shoots/m^2", ylim = c(0.9,1.1))
-```
 
 ```{r}
-plot.crosspred(pred_growth, ptype = "slice", lag = 0.25, xlab = "density (shoots/m^2)", main = "0.25m", ylim = c(0.9,1.1))
-plot.crosspred(pred_growth, ptype = "slice", lag = 1.25, xlab = "density (shoots/m^2)", main = "1.25m", ylim = c(0.9,1.1))
-plot.crosspred(pred_growth, ptype = "slice", lag = 3.25, xlab = "density (shoots/m^2)", main = "3.25m", ylim = c(0.9,1.1))
-plot.crosspred(pred_growth, ptype = "slice", lag = 4.25, xlab = "density (shoots/m^2)", main = "4.25m", ylim = c(0.9,1.1))
+pred_surv <- pred_cb(Q, L, g_surv)
+ggplot(pred_surv, aes(x = x, y = lag, z = fitted, fill = fitted)) +
+  geom_raster(interpolate = TRUE) +
+  geom_contour(color = "grey50", size = 0.4) + 
+  scale_y_continuous("distance (m)", expand = c(0,0)) +
+  scale_x_continuous("conspecific density (shoots/m^2)", expand = c(0,0)) +
+  scale_fill_viridis_c("P(survival)", option = "A")
 ```
 
-## Plot Survival
-
-```{r}
-plot.crosspred(pred_surv,
-               ptype = "contour",
-               xlab = "#shoots/m^2",
-               ylab = "distance (m)",
-               cumul = FALSE,
-               main = "Relative to mean competition")
-```
-Postive density dependence that drops off steeply after 1m
-
-## Other shapes
-
-It is odd that the strength of competition seems to be increasing with distance.  I'd like to be able to force the distance dimension to be monotonically decreasing as was done in Teller et al (I think?).  Teller does this *after* fitting a spline using `mk_dist_wts()`, which is a function that takes the spline coefficients, and predicted values from the spline, and transforms it into a non-negative, monotonic decreasing function.
-
-You can override one of the dimensions of the cross basis with any custom function.
-
-
-```{r eval=FALSE}
-#use arglag to override lag dimension of crossbasis, use argvar to override plant density dimension.
-lin <- dlnm:::lin
-xt <- list(bs = "cr", arglag = list(fun = "lin"))
-
-g_growth <- 
-  gam(shts_next ~ s(log_shts) +
-        habitat +
-        s(Q, L,
-          bs = "cb",
-          k = c(5, 4),
-          fx = c(F, T), #turns off penalization for the lag dimension
-          xt = xt),
-      family = gaussian(link = "log"),
-      data = ha_sub,
-      gamma = 1.5)
-
-gam.check(g_growth)
-```
-
-```{r eval=FALSE}
-x <- crosspred("Q", model = g_growth)
-plot.crosspred(x, ptype = "contour", xlab = "#shoots/100m^2", ylab = "distance (m)")
-
-plot.crosspred(x, ptype = "slice", var = 100)
-plot.crosspred(x, ptype = "slice", var = 10)
-```
-Now the kernel is the same shape at every value of density.  However, this relationship doesn't make any sense.  Fewer knots?  More penalty?  Custom function?
-
-```{r eval=FALSE}
-anova(g_growth)
-```
-
-
-# TODO: 
-
-- ~~is density at 0 distance including the focal plant?  It shouldn't.~~
-- Check number of inflorescences given flowered?
-- ~~log-transform density (nah, not right now.  DOesn't help with convergence)~~
-- ~~check that survival is coded right so that it is a function of `ht_prev`~~
-- try negative binomial distribution for shoot number
-- ~~Density should be total shoot number~~
-- ~~Should actually be density in previous year~~
-- ~~Shoots should be poisson distribution, not log-transformed?~~
-- ~~incorporate 1-ha fragments and use habitat type as a predictor.~~
-- Implement FLM approach to density dependence.
