@@ -138,53 +138,71 @@ mat_diamond <- function(D, nrow, ncol) {
 }
 
 # WIP: function to get data for plotting results from GAM with crossbasis smooth.
-# 
-# library(rlang)
-# pred_cb <- function(Q, L, model) {
-#   Q_name <- enquo(Q)
-#   L_name <- enquo(L)
-#   df <- model$model
-#   
-#   testvals <- seq(min(Q), max(Q), length.out = 200)
-#   Q_new <- matrix(mean(Q), nrow = length(testvals), ncol = lag)
-#   L_new <- matrix(1:ncol(L), nrow = nrow(Q_new), ncol = ncol(L), byrow = TRUE)
-#   
-#   #keep all other numeric terms constant and make new levels for factors
-#   #TODO: Figure out how to predict marginal effect with fixed effects.
-#   newdata <-
-#     df %>% 
-#     summarize(
-#       across(c(-!!L_name, -!!Q_name) & where(is.numeric), mean),
-#       across(where(is.factor), ~factor(".newdata"))
-#       # across(where(is.factor), ~factor("1-ha"))
-#     ) 
-#   newdata <- uncount(newdata, 200) %>% add_column(!!L_name := L_new)
-#   
-#   resp <- array(dim = c(length(testvals), ncol(Q_new)))
-#   rownames(resp) <- testvals
-#   
-#   #loop through columns of matrix, replace with testvals, predict fitted.
-#   for(i in 1:ncol(Q_new)) {
-#     P1_i <- Q_new
-#     P1_i[, i] <- testvals
-#     resp[, i] <-
-#       suppressWarnings( #new levels of random effects are on purpose
-#         predict(
-#           model,
-#           newdata = newdata %>% add_column(!!Q_name := P1_i),
-#           type = "response"
-#         )
-#       )
-#   }
-#   out <-
-#     resp %>%
-#     as_tibble(rownames = "x") %>%
-#     pivot_longer(
-#       cols = starts_with("V"),
-#       names_to = "lag",
-#       names_prefix = "V",
-#       values_to = "fitted"
-#     ) %>%
-#     mutate(lag = as.double(lag), x = as.double(x)) 
-#   return(out)
-# }
+library(rlang)
+pred_cb <- 
+  function(Q, L, model) {
+  # Q_name <- quo(Q)
+  # L_name <- quo(L)
+  Q_name <- enquo(Q)
+  L_name <- enquo(L)
+  df <- model$model
+
+  testvals <- seq(min(Q, na.rm = TRUE), max(Q, na.rm = TRUE), length.out = 200)
+  Q_new <- matrix(mean(Q, na.rm = TRUE), nrow = length(testvals), ncol = ncol(L))
+  lvals <- seq(min(L), max(L), length.out = ncol(L))
+  L_new <- matrix(lvals, nrow = nrow(Q_new), ncol = ncol(L), byrow = TRUE)
+  
+  # For newdata, keep everything constant except varying Q (i.e. the density of conspecifics).
+  # Keep numeric values constant at mean.
+  # Set random effects to a new level to "trick" predict().
+  # Set parametric factors to reference level.
+  terms_raneff <-
+    model$smooth %>% 
+    map_if(~inherits(.x, "random.effect"),
+           ~pluck(.x, "term"),
+           .else = function(x) return(NULL)) %>%
+    compact() %>% 
+    as_vector()
+  
+  terms_fac <- names(model$xlevels)
+  
+  #TODO newdata columns must be the same class as the model data.  I think this
+  #breaks if there is a fixed-effect factor put in as a character vector.
+  newdata <-
+    df %>%
+    summarize(
+      across(c(-!!L_name, -!!Q_name) & where(is.numeric), mean),
+      across(all_of(terms_raneff) & where(is.factor), ~factor(".newdata")),
+      across(all_of(terms_fac) & where(is.factor), ~factor(levels(.x)[1], levels = levels(.x)))
+    )
+  newdata <- uncount(newdata, 200) %>% add_column(!!L_name := L_new)
+
+  resp <- array(dim = c(length(testvals), ncol(Q_new)))
+  rownames(resp) <- testvals
+  colnames(resp) <- lvals
+
+  #loop through columns of matrix representing different lags/distances, replace
+  #with testvals, predict response.
+  for (i in 1:ncol(Q_new)) {
+    P1_i <- Q_new
+    P1_i[, i] <- testvals
+    resp[, i] <-
+      suppressWarnings( #new levels of random effects are on purpose
+        predict(
+          model,
+          newdata = newdata %>% add_column(!!Q_name := P1_i),
+          type = "response"
+        )
+      )
+  }
+  out <-
+    resp %>%
+    as_tibble(rownames = "x", .name_repair = "unique") %>%
+    pivot_longer(
+      cols = -x,
+      names_to = "lag",
+      values_to = "fitted"
+    ) %>%
+    mutate(lag = as.double(lag), x = as.double(x))
+  return(out)
+}
