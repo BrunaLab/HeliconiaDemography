@@ -312,8 +312,11 @@ ha_density <-
   group_split() %>% 
   # head() %>% #test with 6 df to see how long it will take.
   future_map(~{
-      add_density_cols(.x, L = 0, U = 5, by = 0.5) 
-    }) %>% 
+    add_density_cols(.x, L = 0, U = 5, by = 0.5)
+  }) %>% 
+  future_map(~{
+    add_density_cols(.x, L = 0, U = 5, by = 2.5)
+  }) %>% 
   bind_rows()
 beepr::beep(4)
 ```
