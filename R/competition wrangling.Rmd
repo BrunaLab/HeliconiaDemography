@@ -31,14 +31,12 @@ conflict_prefer("select", "dplyr")
 
 *Last compiled: `r Sys.Date()`*
 
-# Purpose
-
-
 # TODO:
+ - move main function to .R file and document
+ 
+# Summary
 
-- ~~filter out focal plants where donut goes out of plot. (filter(distance_to_edge > outer_circle_radius))~~
-- Do I need to divide by area of donut?
-- Using all years is not estimating density accurately. Focal plants are not moving, but in other years there are neighbors without known coordinates. Solution: only use the three transitions where we know the coords of every plant?  Or assume births and deaths don't change density significantly?
+In order to test for density dependence, we used data from three surveys where exact coordinates (to the nearest 0.1m) of each plant relative to the plot were recorded. THe 2009 survey was to assess the effects of safe-site limitation on recruitment (Bruna et al. 2010) and the 2006 and 2007 surveys were for ____ (unpublished data). For each plot and year, we calculated the density of conspecific shoots in annuli at varying distances from focal plants, as in Teller et al. (date). Density was calculated for 5 annuli ranging from an inner radius of 0m and an outer radius of 0.5m (i.e. a circle of radius 0.5m) to an inner radius of 4.5m and and outer radius of 5m. If an annulus intersected with the edge of the plot, the density for that particular plant and annulus was considered as a missing value.  Conspecific density was estimated as the number of *H. acuminata* shoots per m^2^. We used the three transition years for which we had density data to model the effects of conspecific density on survival, growth, and reproduction of *H. acuminata* (in a separate .Rmd file).
 
 # Load Data
 
@@ -50,22 +48,23 @@ ha <- read_rds(here("analysis", "data", "derived_data", "ha_survey.rds"))
 # assessing seed vs. safe-site limitation. Ecology 91:1317–1328.
 # https://doi.org/10.1890/09-0785.1
 
-coords <-
+coords_0607 <-
   read.table(here("analysis", "data", "raw_data", "adults0607_light.txt")) %>%
   as_tibble() %>%
   clean_names()
 ```
 
-`ha` contains x and y coords for each plant from 2009 *within each grid cell*.  `coords` contains x and y coordinates for each plant in 2006 and 2007 relative to the entire plot.  I need to join these data sources and offset the coordinates in the `ha` dataset correctly.  I'm going to remove `year` from the `coords` dataset and assume that plants aren't moving.
+
+`ha` contains x and y coords for each plant from 2009 *within each grid cell*.  `coords` contains x and y coordinates for each plant in 2006 and 2007 relative to the entire plot.  I need to join these data sources and offset the coordinates in the `ha` dataset correctly.
 
 # Join data
 
 Getting things to match up:
 
 ```{r}
-coords2 <- 
-  coords %>% 
-  select(plot = site, tag_number, row, column, plot_x, plot_y, x, y) %>% 
+coords_0607 <- 
+  coords_0607 %>% 
+  select(year = yr, plot = site, tag_number, row, column, plot_x, plot_y, x, y) %>% 
   mutate(plot = case_when(
     plot == "Cabo Frio" ~ "CaboFrio-CF",
     plot == "Dimona CF" ~ "Dimona-CF",
@@ -73,63 +72,135 @@ coords2 <-
     plot == "PA-CF" ~ "PortoAlegre-CF",
     TRUE ~ plot
   )) 
-```
-
-Summarize so there is only one set of coordinates per plant. Averaging as I'm assuming any difference in coordinates between '06 and '07 is not because the plant moved.
-
-```{r}
-coords3 <-
-  coords2 %>%
-  group_by(plot, tag_number) %>% 
-  # rowwise() %>% 
-  summarize(across(where(is.character), first),
-            across(where(is.numeric), mean)) %>% 
-  rename(x_07 = x,
-         y_07 = y)
+# filter(coords_0607, is.na(x))
 ```
 
 ```{r}
-ha_coords <- left_join(ha, coords3, by = c("plot", "row", "column", "tag_number"))
+coords_09 <-
+  ha %>% 
+  filter(year == 2009, !is.na(x_09), !is.na(y_09))
+# filter(coords_09, is.na(x_09))
 ```
-# Tidy
 
+Adjust x and y coords to be for entire plot and not just within row/col cell
+
+```{r}
+coord_adj <-
+  bind_rows(
+  expand_grid(
+    tibble(row = LETTERS[1:5],
+           plot_y = 5:1),
+    tibble(column = 1:10,
+           plot_x = 1:10)
+  ) %>% add_column(plot = "2107"),
+  
+  expand_grid(
+    tibble(row = LETTERS[1:5],
+           plot_y = 1:5),
+    tibble(column = 1:10,
+           plot_x = 10:1)
+  ) %>% add_column(plot = "2108"),
+  
+  expand_grid(
+    tibble(row = LETTERS[1:5],
+           plot_y = 1:5),
+    tibble(column = 1:10,
+           plot_x = 1:10)
+  ) %>% add_column(plot = "Dimona-CF"),
+  
+  expand_grid(
+    tibble(row = LETTERS[1:5],
+           plot_y = 5:1),
+    tibble(column = 1:10,
+           plot_x = 1:10)
+  ) %>% add_column(plot = "5753"),
+
+  expand_grid(
+    tibble(row = LETTERS[1:5],
+           plot_y = 1:5),
+    tibble(column = 1:10,
+           plot_x = 10:1)
+  ) %>% add_column(plot = "PortoAlegre-CF"),
+
+  expand_grid(
+    tibble(row = LETTERS[1:5],
+           plot_y = 1:5),
+    tibble(column = 1:10,
+           plot_x = 1:10)
+  ) %>% add_column(plot = "CaboFrio-CF"),
+
+  expand_grid(
+    tibble(row = LETTERS[1:5],
+           plot_y = 1:5),
+    tibble(column = 1:10,
+           plot_x = 10:1)
+  ) %>% add_column(plot = "5751"),
+
+  expand_grid(
+    tibble(row = LETTERS[1:5],
+           plot_y = 1:5),
+    tibble(column = 1:10,
+           plot_x = 10:1)
+  ) %>% add_column(plot = "Florestal-CF"),
+
+  expand_grid(
+    tibble(row = LETTERS[1:10],
+           plot_y = 10:1),
+    tibble(column = 6:10,
+           plot_x = 5:1)
+  ) %>% add_column(plot = "5750"),
+
+  expand_grid(
+    tibble(row = LETTERS[1:5],
+           plot_y = 1:5),
+    tibble(column = 1:10,
+           plot_x = 1:10)
+  ) %>% add_column(plot = "5756")
+)
+```
+
+
+Get the `plot_x` and `plot_y` variables into the 2009 data to adjust the coordinates correctly.
+
+```{r}
+coords_09.2 <- left_join(coords_09, coord_adj, by = c("plot", "row", "column"))
+```
+
+There are still plants with row/column combinations that I wouldn't expect:
+
+```{r}
+coords_09.2 %>% filter(is.na(plot_x)) %>% 
+  select(plot, row, column, ha_id_number)
+```
 Now, use the plot_x and plot_y variables to correctly offset the x and y coords from 2009.
 
 ```{r}
-ha_coords2 <- 
-  ha_coords %>% 
+coords_09.3 <- 
+  coords_09.2 %>% 
   mutate(x_adj = x_09 + ((plot_x - 1) * 10),
          y_adj = y_09 + ((plot_y - 1) * 10),
          .after = y_09)
 ```
 
-Now, I'll just average across the three years and assume that any differences are measurement error and not because plants moved.
+# Bind rows to combine data
 
 ```{r}
-ha_coords3 <-
-  ha_coords2 %>% 
-  rowwise() %>% 
-  mutate(x = mean(c(x_adj, x_07), na.rm = TRUE),
-         y = mean(c(y_adj, y_07), na.rm = TRUE)) %>% 
-  #replace NaN's generated when mean of only NAs is taken
-  mutate(across(c(x, y), ~ifelse(is.nan(.), NA, .))) %>% 
-  #remove intermediate coordinates
-  select(ranch, bdffp_reserve_no, plot, habitat,
-         ha_id_number, tag_number, row, column,
-         x, y, year, ht, ht_next, shts, shts_next,
-         infl, surv, code_notes, code2)
+ha_coords <-
+  bind_rows(
+  coords_09.3 %>% 
+  select(year, plot, tag_number, row, column, x = x_adj, y = y_adj),
+  coords_0607 %>% select(-plot_x, -plot_y)
+)
+ha_coords
 ```
 
-# Filter
+
+# Join to demography data 
 
 To model the effect of density, I'm only going to use the subset of plants that I have coordinates for.
 
-**NOTE:** There is a **problem** with this.  By using all the years and filtering the data to just include plants with coordinates from 2006, 2007, and 2009, I am not estimating density accurately.
 ```{r}
-ha_xy <-
-  ha_coords3 %>% 
-  filter(!is.na(x), !is.na(y)) %>% 
-  ungroup()
+ha_xy <- right_join(ha %>% select(-x_09, -y_09), ha_coords, by = c("plot", "row", "column", "tag_number", "year"))
 ```
 
 # Calculate density
@@ -223,7 +294,7 @@ add_density_cols <- function(df, L, U, by, na_edges = TRUE, per_area = TRUE) {
 }
 
 
-add_density_cols(y1p1, L = 0, U = 10, by = 5)
+add_density_cols(y1p1, L = 0, U = 5, by = 0.5)
 
 ```
 
@@ -235,31 +306,17 @@ plan(multiprocess)
 ## Apply to entire dataset
 
 ```{r}
-ha_xy2 <-
+ha_density <-
   ha_xy %>% 
   group_by(plot, year) %>% 
   group_split() %>% 
   # head() %>% #test with 6 df to see how long it will take.
   future_map(~{
-      add_density_cols(.x, L = 0, U = 10, by = 0.5) 
+      add_density_cols(.x, L = 0, U = 5, by = 0.5) 
     }) %>% 
   bind_rows()
 beepr::beep(4)
 ```
-
-Aggregate some of the distances for simpler modeling.
-
-```{r}
-ha_xy3 <-
-  ha_xy2 %>% 
-  rowwise() %>%
-  mutate(shts_0_5 = sum(c_across(shts_0_0.5:shts_4.5_5)),
-         shts_5_10 = sum(c_across(shts_5_5.5:shts_9.5_10)))
-
-ha_density <- ha_xy3
-```
-
-Yay! It worked! And it didn't even run that long!
 
 
 # Write to file
