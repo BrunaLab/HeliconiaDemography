@@ -15,7 +15,14 @@ demog <-
                 tag_number = col_character(),
                 HA_ID_Number = col_character())) %>% 
   clean_names()
-
+# one plant's x-coordinate entered with a comma.
+demog <- 
+  demog %>%
+  mutate(x_09 = ifelse(
+    ha_id_number == 5800,
+    2.0,
+    x_09
+  ))
 
 # When is a plant really dead?  It "dies" after the last non-`NA` value for ht.
 
