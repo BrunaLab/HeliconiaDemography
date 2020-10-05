@@ -152,6 +152,7 @@ library(rlang)
 #' @import purrr
 #' @import dplyr
 #' @import mgcv
+#' @import tidyr
 #'
 #' @examples
 pred_cb <- 
@@ -162,8 +163,8 @@ pred_cb <-
   if (!inherits(model, "gam")) {
     abort("This is only for GAMs made with the `mgcv` package including cross-basis smooths from the `dlnm` package.")
   } 
-  Q_name <- enquo(Q)
-  L_name <- enquo(L)
+  Q_name <- rlang::enquo(Q)
+  L_name <- rlang::enquo(L)
   df <- model$model
 
   testvals <- seq(min(Q, na.rm = TRUE), max(Q, na.rm = TRUE), length.out = 200)
@@ -218,23 +219,23 @@ pred_cb <-
   }
   fitted <-
     resp %>%
-    as_tibble(rownames = "x", .name_repair = "unique") %>%
-    pivot_longer(
+    dplyr::as_tibble(rownames = "x", .name_repair = "unique") %>%
+    tidyr::pivot_longer(
       cols = -x,
       names_to = "lag",
       values_to = "fitted"
     ) %>%
-    mutate(lag = as.double(lag), x = as.double(x))
+    dplyr::mutate(lag = as.double(lag), x = as.double(x))
   
   se.fitted <-
     se %>%
-    as_tibble(rownames = "x", .name_repair = "unique") %>%
-    pivot_longer(
+    dplyr::as_tibble(rownames = "x", .name_repair = "unique") %>%
+    tidyr::pivot_longer(
       cols = -x,
       names_to = "lag",
       values_to = "se.fit"
     ) %>%
-    mutate(lag = as.double(lag), x = as.double(x))
+    dplyr::mutate(lag = as.double(lag), x = as.double(x))
   
   out <- full_join(fitted, se.fitted, by = c("x", "lag"))
   

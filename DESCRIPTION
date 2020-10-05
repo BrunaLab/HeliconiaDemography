@@ -21,4 +21,9 @@ Suggests:
 Imports: 
     bookdown,
     here,
-    matrixcalc
+    matrixcalc,
+    dplyr,
+    purrr,
+    rlang,
+    mgcv,
+    tidyr
