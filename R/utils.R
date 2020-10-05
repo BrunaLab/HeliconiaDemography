@@ -139,10 +139,29 @@ mat_diamond <- function(D, nrow, ncol) {
 
 # WIP: function to get data for plotting results from GAM with crossbasis smooth.
 library(rlang)
+#TODO: change name of function to something that indicates marginal effects.
+#' Title
+#'
+#' @param Q 
+#' @param L 
+#' @param model 
+#'
+#' @return
+#' @export
+#' @import rlang
+#' @import purrr
+#' @import dplyr
+#' @import mgcv
+#'
+#' @examples
 pred_cb <- 
   function(Q, L, model) {
   # Q_name <- quo(Q)
   # L_name <- quo(L)
+    
+  if (!inherits(model, "gam")) {
+    abort("This is only for GAMs made with the `mgcv` package including cross-basis smooths from the `dlnm` package.")
+  } 
   Q_name <- enquo(Q)
   L_name <- enquo(L)
   df <- model$model
@@ -158,11 +177,11 @@ pred_cb <-
   # Set parametric factors to reference level.
   terms_raneff <-
     model$smooth %>% 
-    map_if(~inherits(.x, "random.effect"),
-           ~pluck(.x, "term"),
-           .else = function(x) return(NULL)) %>%
-    compact() %>% 
-    as_vector()
+    purrr::map_if(~inherits(.x, "random.effect"),
+                  ~pluck(.x, "term"),
+                  .else = function(x) return(NULL)) %>%
+    purrr::compact() %>% 
+    purrr::as_vector()
   
   terms_fac <- names(model$xlevels)
   
@@ -170,7 +189,7 @@ pred_cb <-
   #breaks if there is a fixed-effect factor put in as a character vector.
   newdata <-
     df %>%
-    summarize(
+    dplyr::summarize(
       across(c(-!!L_name, -!!Q_name) & where(is.numeric), mean),
       across(all_of(terms_raneff) & where(is.factor), ~factor(".newdata")),
       across(all_of(terms_fac) & where(is.factor), ~factor(levels(.x)[1], levels = levels(.x)))
@@ -180,22 +199,24 @@ pred_cb <-
   resp <- array(dim = c(length(testvals), ncol(Q_new)))
   rownames(resp) <- testvals
   colnames(resp) <- lvals
-
+  se <- resp
   #loop through columns of matrix representing different lags/distances, replace
   #with testvals, predict response.
   for (i in 1:ncol(Q_new)) {
     P1_i <- Q_new
     P1_i[, i] <- testvals
-    resp[, i] <-
-      suppressWarnings( #new levels of random effects are on purpose
-        predict(
-          model,
-          newdata = newdata %>% add_column(!!Q_name := P1_i),
-          type = "response"
-        )
+    p <- suppressWarnings( #new levels of random effects are on purpose
+      predict(
+        model,
+        newdata = newdata %>% add_column(!!Q_name := P1_i),
+        se.fit = TRUE,
+        type = "link"
       )
+    )
+    resp[, i] <- p$fit
+    se[, i] <- p$se.fit
   }
-  out <-
+  fitted <-
     resp %>%
     as_tibble(rownames = "x", .name_repair = "unique") %>%
     pivot_longer(
@@ -204,5 +225,27 @@ pred_cb <-
       values_to = "fitted"
     ) %>%
     mutate(lag = as.double(lag), x = as.double(x))
+  
+  se.fitted <-
+    se %>%
+    as_tibble(rownames = "x", .name_repair = "unique") %>%
+    pivot_longer(
+      cols = -x,
+      names_to = "lag",
+      values_to = "se.fit"
+    ) %>%
+    mutate(lag = as.double(lag), x = as.double(x))
+  
+  out <- full_join(fitted, se.fitted, by = c("x", "lag"))
+  
   return(out)
 }
+
+
+# function to calculate euclidean distance between two points
+eu_dist <- function(p1, p2) {
+  sqrt(sum((p1 - p2)^2))
+}
+# x = c(0,0)
+# y = c(3,3)
+# eu_dist(x, y)

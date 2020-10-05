@@ -207,15 +207,6 @@ ha_xy <- right_join(ha %>% select(-x_09, -y_09), ha_coords, by = c("plot", "row"
 
 Now the challenge is to calculate the density of surrounding shoots for every focal plant at different distances.
 
-```{r}
-# function to calculate euclidean distance between two points
-eu_dist <- function(p1, p2) {
-  sqrt(sum((p1 - p2)^2))
-}
-# x = c(0,0)
-# y = c(3,3)
-# eu_dist(x, y)
-```
 
 ## Proof of concept
 
