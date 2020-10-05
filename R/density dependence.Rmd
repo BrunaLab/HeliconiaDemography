@@ -57,21 +57,46 @@ ha <-
   ungroup() %>% 
   arrange(ha_id_number, year) %>% 
   #scale year, and convert to factor since I'll be using as random effect
-  mutate(year_post = as_factor(year - min(year)))
-```
-
-Use just 1-ha and cf
-
-```{r}
-ha_sub <-
-  ha %>% 
-  filter(habitat %in% c("CF", "1-ha")) %>% 
-  mutate(log_shts = log(shts),
+  mutate(year_post = as_factor(year - min(year)),
+         log_shts = log(shts),
          log_shts_next = log(shts_next),
          habitat = as.factor(habitat),
-         ha_id_number = as.factor(ha_id_number))
+         ha_id_number = as.factor(ha_id_number),
+         plot = as.factor(plot))
 ```
 
+Emilio suggested starting with a couple of small subsets of data to make sure I'm getting things right.  
+
+1. Just continuous forest
+2. Just a single plot (e.g. 5750)
+3. Just plants with the median # of shoots (e.g. 3)
+
+```{r}
+# ha_sub <-
+#   ha %>%
+#   filter(habitat %in% c("CF", "1-ha"))
+
+# ha_sub <-
+#   ha %>%
+#   filter(habitat == "CF")
+
+# ha_sub <-
+#   ha %>%
+#   filter(plot == 5750)
+
+# ha_sub <-
+#   ha %>%
+#   filter(shts == median(shts, na.rm = TRUE))
+
+ha_sub <- ha
+```
+
+```{r}
+ha_sub %>% 
+  group_by(year, plot) %>% 
+  summarize(n_distinct(row), n_distinct(column))
+```
+There's something funky going on in 2009 with row and column positions. I opened an issue and this will get fixed eventually.
 
 # General model structure
 
@@ -98,8 +123,13 @@ Number of shoots is discrete, but not *really* count data.  I'll try a poisson d
 ```{r}
 mpois <-
   glmer(
-    shts_next ~ log_shts + habitat + shts_0_2.5 + shts_2.5_5 +
-      (1|ha_id_number) + (1|year_post) + (1|habitat:plot),
+    shts_next ~
+      log_shts + 
+      habitat +
+      shts_0_2.5 + shts_2.5_5 +
+      (1|ha_id_number) +
+      (1|plot) +
+      (1|year_post),
     family = poisson(link = "log"),
     data = ha_sub
   )
@@ -108,8 +138,13 @@ check_overdispersion(mpois) #actually underdispersed
 
 mnorm <-
   glmer(
-    shts_next ~ log_shts + habitat + shts_0_2.5 + shts_2.5_5 +
-      (1|ha_id_number) + (1|year_post) + (1|habitat:plot),
+    shts_next ~ 
+      log_shts +
+      habitat +
+      shts_0_2.5 + shts_2.5_5 +
+      (1|ha_id_number) +
+      (1|plot) +
+      (1|year_post),
     family = gaussian(link = "log"),
     data = ha_sub
   )
@@ -138,7 +173,7 @@ plot(x)
 Plot:
 
 ```{r}
-m_growth2 <- update(m_growth, .~. - (1|habitat:plot))
+m_growth2 <- update(m_growth, .~. - (1|plot))
 AICtab(m_growth, m_growth2)
 ```
 
@@ -166,7 +201,10 @@ Anova(m_growth4)
 fixef(m_growth4)
 ```
 
-No density dependence
+- Just 5750: marginaly significant negative density dependence at 2.5--5m
+- Only CF: no significant effect of density dependence
+- Only 3-shoot plants: no significant effect of density dependence
+- Full dataset: No density dependence
 
 # Survival
 
@@ -175,8 +213,13 @@ Pre-reproductive census, so plants live/die in same year as `shts` and `ht`
 ```{r}
 m_surv <-
   glmer(
-    surv ~ log_shts + habitat + shts_0_2.5 + shts_2.5_5 +
-      (1|ha_id_number) + (1|year_post) + (1|habitat:plot), 
+    surv ~
+      log_shts +
+      habitat +
+      shts_0_2.5 + shts_2.5_5 +
+      (1|ha_id_number) +
+      (1|plot) +
+      (1|year_post), 
     family = binomial, data = ha_sub
   )
 ```
@@ -186,7 +229,7 @@ m_surv <-
 Plot:
 
 ```{r}
-m_surv2 <- update(m_surv, .~. - (1|habitat:plot))
+m_surv2 <- update(m_surv, .~. - (1|plot))
 AICtab(m_surv, m_surv2)
 ```
 
@@ -202,7 +245,10 @@ Close to equivalent, so remove plant ID.  This makes sense, as plants only die o
 Year: 
 
 ```{r}
-m_surv4 <- glm(surv ~ log_shts + habitat + shts_0_2.5 + shts_2.5_5, 
+m_surv4 <- glm(surv ~ 
+                 log_shts +
+                 habitat +
+                 shts_0_2.5 + shts_2.5_5, 
                 family = binomial, data = ha_sub)
 AICtab(m_surv4, m_surv3)
 ```
@@ -215,7 +261,10 @@ Anova(m_surv4)
 coef(m_surv4)
 ```
 
-Positive density dependence for survival.
+- Just 5750: no density dependence
+- Only CF: no density dependence
+- Only 3-shoot plants: Marginally significant density dependence.  Negative at 0--2.5m, positive at 2.5--5m
+- Full dataset: no density dependence
 
 
 # Flowering probability
@@ -273,12 +322,13 @@ source(here("R", "utils.R"))
 ```{r}
 g_growth <-
   gam(shts_next ~ 
-        s(log_shts) + #Essentially linear, could replace with parametric
+        # s(ha_id_number, bs = "re") + #this takes waaay too long to converge
+        s(plot, bs = "re") +
+        log_shts + #when modeled as a spline, edf is essentially a line
         habitat +
         s(Q, L,
           bs = "cb",
-          xt = list(bs = "cr")), #+
-        # s(ha_id_number, bs = "re"), #this takes waaay too long to converge
+          xt = list(bs = "cr")),
       family = gaussian(link = "log"),
       data = ha_sub,
       method = "REML")
@@ -302,9 +352,78 @@ plot(g_growth, pages = 1)
 
 Effects of density:
 
+
 ```{r}
 pred_growth <- pred_cb(Q, L, g_growth)
-ggplot(pred_growth, aes(x = x, y = lag, z = fitted, fill = fitted)) +
+```
+
+Which predicted values are too far from data to sensibly plot?  (this is modeled after `mgcv::exclude.too.far`, which does not work for these models)
+
+```{r}
+dat <-
+  ha_sub %>%
+  select(shts_0.5_1:shts_4.5_5) %>% 
+  pivot_longer(everything(),
+               names_prefix = "shts_",
+               names_sep = "_",
+               names_to = c("inner", "outer"),
+               names_transform = list(inner = as.numeric, outer = as.numeric),
+               values_to = "x") %>% 
+  mutate(lag = (inner + outer) / 2)
+
+
+which.too.far <- function(grid, data, x, y, dist = 0.1) { 
+  x <- enquo(x)
+  y <- enquo(y)
+  # x <- quo(x)
+  # y <- quo(lag)
+  
+  grid1 <-
+    grid %>% 
+    mutate(min_g_x = min(!!x, na.rm = TRUE),
+           min_g_y = min(!!y, na.rm = TRUE),
+           g_x = !!x - min_g_x,
+           g_y = !!y - min_g_y) %>% 
+    mutate(max_g_x = max(g_x, na.rm = TRUE),
+           max_g_y = max(g_y, na.rm = TRUE),
+           g_x = g_x / max_g_x,
+           g_y = g_y / max_g_y)
+  
+  data1 <-
+    data %>% 
+    mutate(d_x = (!!x - first(grid1$min_g_x)) / first(grid1$max_g_x),
+           d_y = (!!y - first(grid1$min_g_y)) / first(grid1$max_g_y))
+  
+ 
+  if (dist < 0)
+    stop("supplied dist negative")
+  
+  #where dat is a 2-column matrix of x and y coords of the true data used to build the model
+  min_dist <- function(g_x, g_y, dat) {
+    dat[,1] <- dat[,1] - g_x
+    dat[,2] <- dat[,2] - g_y
+    min(
+      sqrt(
+        (dat[,1]^2 + dat[,2]^2)
+      ), na.rm = TRUE
+    )
+  }
+  o <- 
+    grid1 %>%
+    rowwise() %>%
+    mutate(min_dist = min_dist(g_x, g_y, cbind(data1$d_x, data1$d_y)),
+           too.far = min_dist > dist) %>% 
+    select(-g_x, -g_y, -max_g_x, -max_g_y, -min_g_x, -min_g_y)
+  return(o)
+}
+
+pred_growth <- which.too.far(pred_growth, dat, x = x, y = lag)
+```
+
+
+```{r}
+ggplot(pred_growth %>% filter(min_dist < 0.1),
+       aes(x = x, y = lag, z = exp(fitted), fill = exp(fitted))) +
   geom_raster(interpolate = TRUE) +
   geom_contour(color = "grey50", size = 0.4) + 
   scale_y_continuous("distance (m)", expand = c(0,0)) +
@@ -312,16 +431,39 @@ ggplot(pred_growth, aes(x = x, y = lag, z = fitted, fill = fitted)) +
   scale_fill_viridis_c("#shoots (t+1)", option = "A")
 ```
 
+
+
+
+
+Plot a "slice" through 5m
+
+```{r}
+ggplot(pred_growth %>% filter(lag == 0.75),
+       aes(x = x, y = exp(fitted), ymin = exp(fitted - 1.96*se.fit), ymax = exp(fitted + 1.96*se.fit))) +
+  geom_line() + 
+  geom_ribbon(alpha = 0.3) +
+  geom_point(data = ha_sub, aes(x = shts_0.5_1, y = shts_next), inherit.aes = FALSE) +
+  coord_cartesian(ylim = c(0,20))
+```
+
+
+- TODO: Try with Florestal (really huge plants there)
+- 5750 only: essentially flat surface, except for positive density dependence at 5m.  Seems spurious, would want to see CI.
+- CF only: similar.  Essentially flat except for impossibly large positive density dependence at 5 m (expected value of 200+ shoots at highest conspecific density)
+- 3-shoot plants only: No significant effect of density.
+- Full dataset: Significant, but same pattern.  Large effects only at 5m.  Probably driven by a few extreme values of high-density plots.
+
+
 ## Survival
 
 ```{r}
 g_surv <-
   gam(surv ~
+        s(plot, bs = "re") +
         s(log_shts) +
         habitat +
         s(Q, L,
           bs = "cb",
-          # k = c(10, 10),
           xt = list(bs = "cr")),
       family = binomial,
       data = ha_sub,
@@ -342,7 +484,7 @@ plot(g_surv, pages = 1)
 
 ```{r}
 pred_surv <- pred_cb(Q, L, g_surv)
-ggplot(pred_surv, aes(x = x, y = lag, z = fitted, fill = fitted)) +
+ggplot(pred_surv, aes(x = x, y = lag, z = plogis(fitted), fill = plogis(fitted))) +
   geom_raster(interpolate = TRUE) +
   geom_contour(color = "grey50", size = 0.4) + 
   scale_y_continuous("distance (m)", expand = c(0,0)) +
@@ -350,3 +492,7 @@ ggplot(pred_surv, aes(x = x, y = lag, z = fitted, fill = fitted)) +
   scale_fill_viridis_c("P(survival)", option = "A")
 ```
 
+- 5750 only: No significant density dependence
+- CF only: Also not significant.
+- 3-shoot plants only: no significant density dependence
+- Full dataset: no significant effect of density dependence.
