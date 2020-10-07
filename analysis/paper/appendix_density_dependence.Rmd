@@ -19,17 +19,18 @@ knitr::opts_chunk$set(inclue = FALSE)
 library(tidyverse)
 library(here)
 library(conflicted)
-library(lme4)
 library(bbmle)
-library(car)
-library(broom)
-library(broom.mixed)
-# library(patchwork)
-# library(performance)
 library(dlnm)
 library(mgcv)
-# library(visibly) # better diagnostic visulazations.  one of several packages for this.
-source(here("R", "utils.R"))
+
+# library(lme4)
+
+# library(car)
+# library(broom)
+# library(broom.mixed)
+
+
+source(here("R", "crossbasis.R"))
 
 conflict_prefer("lag", "dplyr")
 conflict_prefer("filter", "dplyr")
@@ -40,11 +41,9 @@ conflict_prefer("select", "dplyr")
 
 # TODO:
 
--   Remove unecessary dependencies
+-   Remove unnecessary dependencies
 
--   Move functions to .R file
-
--   Rearrange analysis with GAM first
+-   Rearrange analysis with GAM first (i.e. finish adding `glmer()` code)
 
 # Methods
 
@@ -159,72 +158,7 @@ plot(g_growth, pages = 1)
 Number of shoots in the current year had a significant effect on size in year t + 1 (F = 353.8, edf = 5.2, P \< 0.0001). The relationship between $log(shoots_{t+1})$ and $log(shoots_t)$ was essentially linear for all but the largest size classes \@ref(fig:growth-plot). There were no significant differences between habitat types (F = 0.012, df = 1, P = 0.912). The cross-basis smooth describing the effects of conspecific density on growth was significant (F = 2.78, edf = 18.4, P \< 0.001).
 
 ```{r}
-pred_growth <- pred_cb(Q, L, g_growth)
-```
-
-```{r}
-#TODO:
-# - marginal_cb() function should add the min_dist column.
-# - plot_marginal_cb() function should do ggplot stuff and include a too.far argument
-# - All this moved into a .R file that is source()d
-dat <-
-  ha %>%
-  select(shts_0.5_1:shts_4.5_5) %>% 
-  pivot_longer(everything(),
-               names_prefix = "shts_",
-               names_sep = "_",
-               names_to = c("inner", "outer"),
-               names_transform = list(inner = as.numeric, outer = as.numeric),
-               values_to = "x") %>% 
-  mutate(lag = (inner + outer) / 2)
-
-
-which.too.far <- function(grid, data, x, y, dist = 0.1) { 
-  x <- enquo(x)
-  y <- enquo(y)
-  # x <- quo(x)
-  # y <- quo(lag)
-  
-  grid1 <-
-    grid %>% 
-    mutate(min_g_x = min(!!x, na.rm = TRUE),
-           min_g_y = min(!!y, na.rm = TRUE),
-           g_x = !!x - min_g_x,
-           g_y = !!y - min_g_y) %>% 
-    mutate(max_g_x = max(g_x, na.rm = TRUE),
-           max_g_y = max(g_y, na.rm = TRUE),
-           g_x = g_x / max_g_x,
-           g_y = g_y / max_g_y)
-  
-  data1 <-
-    data %>% 
-    mutate(d_x = (!!x - first(grid1$min_g_x)) / first(grid1$max_g_x),
-           d_y = (!!y - first(grid1$min_g_y)) / first(grid1$max_g_y))
-  
- 
-  if (dist < 0)
-    stop("supplied dist negative")
-  
-  #where dat is a 2-column matrix of x and y coords of the true data used to build the model
-  min_dist <- function(g_x, g_y, dat) {
-    dat[,1] <- dat[,1] - g_x
-    dat[,2] <- dat[,2] - g_y
-    min(
-      sqrt(
-        (dat[,1]^2 + dat[,2]^2)
-      ), na.rm = TRUE
-    )
-  }
-  o <- 
-    grid1 %>%
-    rowwise() %>%
-    mutate(min_dist = min_dist(g_x, g_y, cbind(data1$d_x, data1$d_y)),
-           too.far = min_dist > dist) %>% 
-    select(-g_x, -g_y, -max_g_x, -max_g_y, -min_g_x, -min_g_y)
-  return(o)
-}
-
-pred_growth <- which.too.far(pred_growth, dat, x = x, y = lag)
+pred_growth <- cb_margeff(Q, L, g_growth)
 ```
 
 ```{r growth-cb, echo=FALSE, include=TRUE}
