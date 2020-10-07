@@ -34,6 +34,7 @@ conflict_prefer("select", "dplyr")
 # TODO
 
 - Get confidence intervals for cross-basis predictions.  Plot slices with confidence bands.
+- Try with just Florestal (really huge plants there)
 
 # Purpose
 
@@ -328,6 +329,7 @@ g_growth <-
         habitat +
         s(Q, L,
           bs = "cb",
+          k = c(2,2),
           xt = list(bs = "cr")),
       family = gaussian(link = "log"),
       data = ha_sub,
@@ -422,8 +424,9 @@ pred_growth <- which.too.far(pred_growth, dat, x = x, y = lag)
 
 
 ```{r}
-ggplot(pred_growth %>% filter(min_dist < 0.1),
-       aes(x = x, y = lag, z = exp(fitted), fill = exp(fitted))) +
+pred_growth %>%
+  filter(min_dist < 0.1) %>%
+  ggplot(aes(x = x, y = lag, z = exp(fitted), fill = exp(fitted))) +
   geom_raster(interpolate = TRUE) +
   geom_contour(color = "grey50", size = 0.4) + 
   scale_y_continuous("distance (m)", expand = c(0,0)) +
@@ -438,16 +441,17 @@ ggplot(pred_growth %>% filter(min_dist < 0.1),
 Plot a "slice" through 5m
 
 ```{r}
-ggplot(pred_growth %>% filter(lag == 0.75),
-       aes(x = x, y = exp(fitted), ymin = exp(fitted - 1.96*se.fit), ymax = exp(fitted + 1.96*se.fit))) +
+pred_growth %>%
+  filter(min_dist < 0.1) %>% 
+  filter(lag == 0.75) %>% 
+  ggplot(aes(x = x, y = exp(fitted), ymin = exp(fitted - 1.96*se.fit), ymax = exp(fitted + 1.96*se.fit))) +
   geom_line() + 
   geom_ribbon(alpha = 0.3) +
-  geom_point(data = ha_sub, aes(x = shts_0.5_1, y = shts_next), inherit.aes = FALSE) +
+  geom_point(data = ha_sub, aes(x = shts_0_0.5, y = shts_next), inherit.aes = FALSE) +
   coord_cartesian(ylim = c(0,20))
 ```
 
 
-- TODO: Try with Florestal (really huge plants there)
 - 5750 only: essentially flat surface, except for positive density dependence at 5m.  Seems spurious, would want to see CI.
 - CF only: similar.  Essentially flat except for impossibly large positive density dependence at 5 m (expected value of 200+ shoots at highest conspecific density)
 - 3-shoot plants only: No significant effect of density.

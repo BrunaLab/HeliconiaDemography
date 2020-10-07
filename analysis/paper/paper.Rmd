@@ -1,17 +1,27 @@
 ---
 title: "Title Goes Here"
 author:
-  - Myfirstname Mylastname:
-      email: fl@oneplace.edu
-      institute: [UofO]
+  - Eric R. Scott:
+      email: scottericr@gmail.com
+      institute: [UF]
       correspondence: true
-  - Yourfirstname Yourlastname:
-      email: fl@another.edu
-      institute: [UofA]
+  - Paulo Rubim:
+      email: rubimpaulo@gmail.com
+      institute: [UFSC]
       correspondence: false
+  - Maria Uriarte:
+      email: mu2126@columbia.edu
+      institute: [Columbia]
+      correspondence: false
+  - Emilio M. Bruna:
+      email: embruna@ufl.edu
+      intitute: [UF]
+      correspondence: false
+  
 institute:
-  - UofO: University of One Place
-  - UofA: University of Another Place
+  - UF: Department of Wildlife Ecology and Conservation, University of Florida, Gainesville, Florida 32611-0430
+  - UFSC: Departamento do Botânica, Universidade Federal de São Carlos, CP 676, CEP 13565-905, São Carlos, SP, Brazil
+  - Columbia: Department of Ecology, Evolution and Environmental Biology, Columbia University 1200 Amsterdam Avenue, New York, New York 10027 USA
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
     bookdown::word_document2:
@@ -26,9 +36,9 @@ csl: "../templates/journal-of-archaeological-science.csl" # Insert path for the 
 abstract: |
   Text of abstract
 keywords: |
-  keyword 1; keyword 2; keyword 3
+  density dependence; vital rates; *Heliconia acuminata*
 highlights: |
-  These are the highlights. 
+  These are the highlights
 ---
 
 <!-- This is the format for text comments that will be ignored during renderings. Do not put R code in these comments because it will not be ignored. -->
@@ -57,11 +67,25 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-Here is a citation [@Marwick2017]
-
 # Background
 
 # Methods
+
+*Heliconia acuminata* (Heliconiaceae) is a perennial, self-incompatible understory monocot native to the nonflooded rainforests of central Amazonia. *Heliconia* are rhizomatious, but clonal reproduction via underground runners is rare in *H. acuminata*, unlike other congeners [@bruna2004]. Vegetative shoots grow from the rhizome as well as one or more flowering shoots when plants reproduce. Each flowering shoot has a single inflorescence of 20--25 flowers [@bruna2002]. Flowers are pollinated nearly exclusively by two species of hummingbirds at this site <!--# species? -->. Pollinated ovaries develop into fleshy fruits containing a maximum of 3 seeds which are dispersed exclusively by birds [@uriarte2011].
+
+## Site
+
+-   All field data were collected at the Biological Dynamics of Forest Fragments Project (BDFFP)---a long term experimental site located about 80km north of Manaus (2º30' S, 60ºW) [@laurance2011; @laurance2002; @bierregaard1992]. The experimental plots are located in BDFFP reserves in nonflooded tropical lowland rainforest with nutrient-poor, well-draining, xanthic ferrosols.
+
+-   Something about seasonality
+
+-   BDFFP is comprised of replicated forest fragments of 1, 10, and 100ha as well as continuous forest plots that were established between 1980 and 1984. Fragments were maintained by clearing secondary growth around fragments occasionally <!--# Best reference for this? -->. Demographic plots ($50 \times 100$m) were established in <!--# year --> to track the growth, reproduction, and survival of *Heliconia acuminata*. Six of these plots were established in continuous forest, four were in 1-ha fragments, and three were in 10-ha fragments. The plots in continuous forest were established at haphazardly chosen locations 500--4000m from any mature forest borders, plots in 1-ha fragments were established on a randomly selected half of the fragment, and plots in 10-ha fragments were established in the center.
+
+## Data collection
+
+The exact coordinates (to the nearest 0.1m) of each plant relative to the plot were recorded for a subset of plots in three years <!--# methods for collecting these data? -->. In 2006 and 2007, surveys were conducted to \_\_\_\_\_\_\_\_\_ . In 2009 a similar survey was conducted to assess the effects of safe-site limitation on recruitment [@uriarte2010]. For each plot and year, we calculated the density of conspecific shoots in annuli at varying distances from focal plants, as in Teller et al. [-@teller2016]. Density was calculated for 5 annuli ranging from an inner radius of 0m and an outer radius of 0.5m (i.e. a circle of radius 0.5m) to an inner radius of 4.5m and and outer radius of 5m. If an annulus intersected with the edge of the plot, the density for that particular plant and annulus was considered as a missing value. Conspecific density was estimated as the number of *H. acuminata* shoots per m^2^ in each annulus. Number of shoots was used as a measure of plant size rather than height as it is less error prone to measure, is not affected by plants being knocked over, and is strongly correlated with plant height and leaf area in *H. acuminata* [@bruna2002; @brunaEffectsForestFragmentation2002].
+
+We used the three transition years for which we had density data to model the effects of conspecific density on survival, growth, and reproduction of *H. acuminata*. The collection of demographic data is described elsewhere [DATA PAPER], but briefly...
 
 # Results
 
@@ -82,7 +106,7 @@ Figure \@ref(fig:demo-plot) shows how we can have a caption and cross-reference 
 x <- round(pi, 2)
 ```
 
-Here is an example of inline code `r x` in the middle of a sentence. 
+Here is an example of inline code `r x` in the middle of a sentence.
 
 # Discussion
 
@@ -94,17 +118,18 @@ Here is an example of inline code `r x` in the middle of a sentence.
 
 \newpage
 
-# References 
+# References
 
 <!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
 
-<div id="refs"></div>
+::: {#refs}
+:::
 
 \newpage
 
 ### Colophon
 
-This report was generated on `r Sys.time()` using the following computational environment and dependencies: 
+This report was generated on `r Sys.time()` using the following computational environment and dependencies:
 
 ```{r colophon, cache = FALSE}
 # which R packages and versions?
