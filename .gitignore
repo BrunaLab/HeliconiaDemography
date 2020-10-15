@@ -43,3 +43,8 @@ vignettes/*.pdf
 /analysis/data/raw_data/
 
 /notes
+
+# Figures and documents
+*.png
+*.docx
+*.nb.html
