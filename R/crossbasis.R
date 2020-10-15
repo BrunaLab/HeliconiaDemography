@@ -175,7 +175,8 @@ add_min_dist <- function(df, Q_name, L, pred) {
     grid %>% 
     rowwise() %>% 
     mutate(min_dist = min_dist(g_x, g_y, cbind(d$d_x, d$d_y))) %>% 
-    select(-g_x, -g_y, -max_g_x, -max_g_y, -min_g_x, -min_g_y)
+    select(-g_x, -g_y, -max_g_x, -max_g_y, -min_g_x, -min_g_y) %>% 
+    ungroup()
   
   return(out)
 }
