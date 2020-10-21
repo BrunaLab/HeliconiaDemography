@@ -64,7 +64,7 @@ We used the three transition years for which we had density data to test for eff
 
 ```{r data}
 ha <- read_rds(here("analysis", "data", "derived_data", "ha_density.rds"))
-# ha
+ha$year %>% range()
 ```
 
 ```{r tidy}
@@ -103,17 +103,15 @@ g_growth <-
   gam(shts_next ~ 
         # s(ha_id_number, bs = "re") + #this doesn't seem to converge
         s(plot, bs = "re") +
-        s(log_shts, bs = "cs") + #when modeled as a spline, edf is essentially a line
-        # s(log_shts, bs = "cs", by = habitat) + #kind of like an interaction.
-        habitat +
+        # s(log_shts, bs = "cr", by = habitat) + #prelim modeling shows this is a linear relationship (edf ~ 1)
+        habitat * log_shts +
         s(Q, L,
           bs = "cb",
           # k = c(3,3),
-          xt = list(bs = "cr")),
+          xt = list(bs = c("cr"))),
       family = gaussian(link = "log"),
       data = ha,
       method = "REML")
-g_growth$smooth
 ```
 
 Growth was modeled as: (still not sure how to do this. Summation is from Gasparini et al, but also written as simply as $s(\textbf{q}_{i,t})$
@@ -122,11 +120,12 @@ $$
 size_{t+1} = \sum_{d=d_0}^D f \cdot w(x_{i,d}, d)
 $$
 
-Where $f \cdot w(x, d)$ is a two dimensional crossbasis smooth composed of two marginal functions: $f(x)$, the effect of conspecific density, $x$ , on growth, and the additional distance response function $w(d)$ that models the effect of density at different annuli, $d$, equal to the midpoint of the inner and outer radius of the 5 annuli for which density was calculated. Each dimension was modeled with 10 knots. With a penalized spline, the number of knots is not very important as ... <!--# finish thought and cite (maybe Colin Edwards?) --> Habitat is a parametric fixed effect with two levels (1-ha and continuous forest), $s(log(shts_t))$ is a penalized cubic spline describing the growth from year t to year t + 1, and a random effect of plot, nested within habitat. We did not include a random effect of plant ID, as the model did not converge. Although the response, shoot number in year t+1, is a discrete variable, a log-normal distribution was used as it was a better fit than a poisson distribution ($\Delta$AIC = 527.2).
+Where $f \cdot w(x, d)$ is a two dimensional crossbasis smooth composed of two marginal functions: $f(x)$, the effect of conspecific density, $x$ , on growth, and the additional distance response function $w(d)$ that models the effect of density at different annuli, $d$, equal to the midpoint of the inner and outer radius of the 5 annuli for which density was calculated. Each dimension was modeled with 10 knots. With a penalized spline, the number of knots is not very important as ... <!--# finish thought and cite (maybe Colin Edwards?) --> Habitat is a parametric fixed effect with two levels (1-ha and continuous forest), $s(log(shts_t))$ is a penalized cubic spline describing the growth from year t to year t + 1, and a random effect of plot, nested within habitat. We did not include a random effect of plant ID, as the model did not converge. Although the response, shoot number in year t+1, is a discrete variable, a scaled t distribution with a log-link was used as it was a better fit than a poisson distribution ($\Delta$AIC = 810.5) and a log-normal distribution ($\Delta$AIC = 294).
 
 ```{r}
 g_growth_pois <- update(g_growth, family = poisson(link = "log"))
-AICtab(g_growth, g_growth_pois)
+g_growth_scat <- update(g_growth, family = scat(link = "log")) #because residuals are leptokurtic with gaussian
+AICtab(g_growth, g_growth_pois, g_growth_scat)
 ```
 
 Survival was modeled using the same predictors as for growth, but with a binomial family error distribution.
@@ -135,7 +134,7 @@ Survival was modeled using the same predictors as for growth, but with a binomia
 g_surv <-
   gam(surv ~
         s(plot, bs = "re") +
-        s(log_shts) +
+        s(log_shts, bs = "cr", by = habitat) +
         habitat +
         s(Q, L,
           bs = "cb",
@@ -143,6 +142,7 @@ g_surv <-
       family = binomial,
       data = ha,
       method = "REML")
+# plot(g_surv)
 ```
 
 Because the DLNM approach does not allow for modeling an interaction between conspecific density and habitat type, we used the outputs of these cross-basis smooths to fit generalized linear mixed-effects models with interaction terms. By inspecting the marginal effects plots from the cross-basis smooths, we identified a range of distances over which conspecific density had the greatest effect and used density over that distance as a predictor in the GLMMs. <!--# revise and also talk more about what interactions and random effects included -->
@@ -157,7 +157,8 @@ Because the DLNM approach does not allow for modeling an interaction between con
 # g_growth3 <- update(g_growth, ~-s(log_shts) + log_shts)
 # AICtab(g_growth, g_growth2, g_growth3)
 # Best model:
-anova(g_growth)
+anova(g_growth_scat)
+# plot(g_growth_scat)
 ```
 
 ```{r growth-plot, include=TRUE, fig.cap="this is a figure"}
