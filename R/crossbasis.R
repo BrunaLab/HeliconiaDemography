@@ -30,7 +30,7 @@
 #'
 #' @examples
 cb_margeff <- 
-  function(Q, L, model, meshpts = 200, calc_dist = TRUE) {
+  function(Q, L, model, meshpts = c(50, 50), calc_dist = TRUE) {
     # Q_name <- quo(Q)
     # L_name <- quo(L)
     
@@ -42,10 +42,10 @@ cb_margeff <-
     L_name <- rlang::enquo(L)
     df <- model$model
     
-    testvals <- seq(min(Q, na.rm = TRUE), max(Q, na.rm = TRUE), length.out = meshpts)
-    Q_new <- matrix(mean(Q, na.rm = TRUE), nrow = length(testvals), ncol = ncol(L))
-    lvals <- seq(min(L), max(L), length.out = ncol(L))
-    L_new <- matrix(lvals, nrow = nrow(Q_new), ncol = ncol(L), byrow = TRUE)
+    testvals <- seq(min(Q, na.rm = TRUE), max(Q, na.rm = TRUE), length.out = meshpts[1])
+    Q_new <- matrix(mean(Q, na.rm = TRUE), nrow = meshpts[1], ncol = meshpts[2])
+    lvals <- seq(min(L), max(L), length.out = meshpts[2])
+    L_new <- matrix(lvals, nrow = meshpts[1], ncol = meshpts[2], byrow = TRUE)
     
     # For newdata, keep everything constant except varying Q.
     # Keep numeric values constant at mean.
@@ -70,7 +70,7 @@ cb_margeff <-
         across(all_of(terms_raneff) & where(is.factor), ~factor(".newdata")),
         across(all_of(terms_fac) & where(is.factor), ~factor(levels(.x)[1], levels = levels(.x)))
       )
-    newdata <- uncount(newdata, 200) %>% add_column(!!L_name := L_new)
+    newdata <- uncount(newdata, meshpts[1]) %>% add_column(!!L_name := L_new)
     
     resp <- array(dim = c(length(testvals), ncol(Q_new)))
     rownames(resp) <- testvals
