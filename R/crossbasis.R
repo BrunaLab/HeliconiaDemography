@@ -8,14 +8,14 @@
 #' @param Q The matrix of predictor values used to generate a crossbasis smooth
 #' @param L The matrix of lags used to generate a crossbasis smooth
 #' @param model a gam with a crossbasis smooth
-#' @param meshpts The number of meshpoints for values of Q to use to generate
-#'   fitted values
+#' @param meshpts vector of length 2; The number of meshpoints for values of Q
+#'   and L, respectively, to use to generate fitted values
 #' @param calc_dist logical; Calculate distance between predicted values and
 #'   actual data points?  This is inspired by the `too.far` argument of
 #'   `plot.gam()`.  If `TRUE` (default), it adds the column `min_dist` which is
 #'   useful for filtering data before plotting because "smooths tend to go wild
-#'   away from data".
-#'
+#'   away from data". This step takes a long time, so if you don't need it,
+#'   consider setting to `FALSE`
 #' @return a tibble suitable for plotting marginal effects as a heatmap or
 #'   contour plot.  `x` is the meshpoint values across the range of the
 #'   predictor, `Q`; `lag` is the values of `L`; `fitted` and `se.fit` are the
