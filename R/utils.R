@@ -30,3 +30,18 @@ eu_dist <- function(p1, p2) {
   sqrt(sum((p1 - p2)^2))
 }
 
+#' Which element(s) of a vector is (are) nearest to some value?
+#' 
+#' For use in dplyr::filter() to get all the rows with the value closest to some target value.
+#'
+#' @param x a numeric vector
+#' @param val a numeric scalar
+#' @seealso dplyr::near()
+#'
+#' @return a logical vector
+#' @export
+#'
+#' @examples
+nearest <- function(x, val) {
+  abs(x - val) == min(abs(x - val))
+}
