@@ -89,7 +89,7 @@ ha <-
 
 ## Statistical Modeling
 
-We modeled density dependence using a penalized distributed lag non-linear model (DLNM) approach with the `dlnm` package in R [@gasparriniPenalizedFrameworkDistributed2017; @gasparriniDistributedLagLinear2011; @rcoreteamLanguageEnvironmentStatistical2020]. This approach is similar to that of [-@teller2016], in that it makes no assumptions about the shape of the competition kernel. Instead, it fits a two-dimensional spline allowing for a non-linear response to the intensity of conspecific density as well as the distance of conspecifics. We implemented this in a generalized additive model (GAM) framework taking advantage of the penalization features of the `mgcv` package [@woodGeneralizedAdditiveModels2017].
+We modeled density dependence using a penalized distributed lag non-linear model (DLNM) approach with the `dlnm` package in R [@gasparriniPenalizedFrameworkDistributed2017; @gasparriniDistributedLagLinear2011; @rcoreteamLanguageEnvironmentStatistical2020]. This approach is similar to that of Teller et al. [-@teller2016], in that it makes no assumptions about the shape of the competition kernel. Instead, it fits a two-dimensional spline allowing for a non-linear response to the intensity of conspecific density as well as the distance of conspecifics. We implemented this in a generalized additive model (GAM) framework taking advantage of the penalization features of the `mgcv` package [@woodGeneralizedAdditiveModels2017].
 
 ```{r}
 Q <-
@@ -170,7 +170,7 @@ anova(g_growth_scat)
 
 ```{r growth-plot, include=TRUE, fig.cap="this is a figure"}
 Q_new <- 
-  g_growth$model %>% 
+  g_growth_scat$model %>% 
   pull(Q) %>%
   as_tibble() %>% 
   summarize(across(everything(), mean)) %>%
@@ -179,7 +179,13 @@ L_new <- L[1,, drop = FALSE]
 
 newdata <- tibble(log_shts = seq(0, 2.565, length.out = 100), habitat = "1-ha", plot = "new", Q = Q_new, L = L_new)
 
-fitted <- augment(g_growth, newdata = newdata, se_fit = TRUE, conf.level = 0.95)
+fitted <-
+  augment(
+    g_growth_scat,
+    newdata = newdata,
+    se_fit = TRUE,
+    conf.level = 0.95
+  )
 ggplot(fitted, aes(x = exp(log_shts), y = exp(.fitted))) +
   geom_jitter(data = ha %>%
                 filter(across(shts_0.5_1:shts_4.5_5, ~!is.na(.))),
@@ -194,7 +200,7 @@ ggplot(fitted, aes(x = exp(log_shts), y = exp(.fitted))) +
 Number of shoots in the current year had a significant effect on size in year t + 1 ($\chi^2$ = 796.8, df = 1, P \< 0.0001) (Figure \@ref(fig:growth-plot)). There was no significant effect of habitat or the interaction between habitat and size on size in year t + 1. The cross-basis smooth describing the effects of conspecific density on growth was significant ($\chi^2$ = 23.2, edf = 6.4, P = 0.004).
 
 ```{r}
-pred_growth <- cb_margeff(Q, L, g_growth)
+pred_growth <- cb_margeff(Q, L, g_growth_scat)
 ```
 
 ```{r growth-cb, include=TRUE, fig.cap="this is a figure"}
@@ -239,7 +245,7 @@ In that annulus, conspecific density showed no effect (i.e. a flat line) below a
 anova(g_surv)
 ```
 
-Plant size had a significant, nearly quadratic (on a logit scale), effect on survival in continuous forest ($\chi^2$ = 112.2, edf = 2.1, P \< 0.001), but a linear (on a logit scale) effect in 1 ha fragments ($\chi^2$ = 15.63, edf = 1, P \< 0.001) (Figure \@ref(fig:surv-plot)). However, there were no significant effects of habitat ($\chi^2$ = 0.002, df = 1, P = 0.964) or conspecific density ($\chi^2$ = 5.326, edf = 2, P = 0.0699) on survival.
+Plant size had a significant, nearly quadratic (on a logit scale), effect on survival in continuous forest ($\chi^2$ = 112.2, edf = 2.1, P \< 0.001), but a linear (on a logit scale) effect in 1 ha fragments ($\chi^2$ = 15.63, edf = 1, P \< 0.001), but their 95% confidence intervals overlap (Figure \@ref(fig:surv-plot)). However, there were no significant effects of habitat ($\chi^2$ = 0.002, df = 1, P = 0.964) or conspecific density ($\chi^2$ = 5.326, edf = 2, P = 0.0699) on survival.
 
 ```{r surv-plot, include=TRUE, fig.cap="this is a figure"}
 Q_new <- 
