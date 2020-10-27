@@ -8,6 +8,9 @@
 #' @param Q The matrix of predictor values used to generate a crossbasis smooth
 #' @param L The matrix of lags used to generate a crossbasis smooth
 #' @param model a gam with a crossbasis smooth
+#' @param ref_data reference data passed to the `newdata` argument of `predict`
+#'   (optional). This one-row data frame should contain values for all model
+#'   terms **except** `Q` and `L`.
 #' @param meshpts vector of length 2; The number of meshpoints for values of Q
 #'   and L, respectively, to use to generate fitted values
 #' @param calc_dist logical; Calculate distance between predicted values and
@@ -30,7 +33,7 @@
 #'
 #' @examples
 cb_margeff <- 
-  function(Q, L, model, meshpts = c(50, 50), calc_dist = TRUE) {
+  function(Q, L, model, ref_data = NULL, meshpts = c(50, 50), calc_dist = TRUE) {
     # Q_name <- quo(Q)
     # L_name <- quo(L)
     
@@ -61,17 +64,19 @@ cb_margeff <-
     
     terms_fac <- names(model$xlevels)
     
-    #TODO newdata columns must be the same class as the model data.  I think this
-    #breaks if there is a fixed-effect factor put in as a character vector.
-    newdata <-
-      df %>%
-      dplyr::summarize(
-        across(c(-!!L_name, -!!Q_name) & where(is.numeric), mean),
-        across(all_of(terms_raneff) & where(is.factor), ~factor(".newdata")),
-        across(all_of(terms_fac) & where(is.factor), ~factor(levels(.x)[1], levels = levels(.x)))
-      )
-    newdata <- uncount(newdata, meshpts[1]) %>% add_column(!!L_name := L_new)
     
+    if (is.null(ref_data)) {
+      #TODO newdata columns must be the same class as the model data.  I think this
+      #breaks if there is a fixed-effect factor put in as a character vector.
+      ref_data <-
+        df %>%
+        dplyr::summarize(
+          across(c(-!!L_name, -!!Q_name) & where(is.numeric), mean),
+          across(all_of(terms_raneff) & where(is.factor), ~factor(".newdata")),
+          across(all_of(terms_fac) & where(is.factor), ~factor(levels(.x)[1], levels = levels(.x)))
+        )
+    }
+    newdata <- uncount(ref_data, meshpts[1]) %>% add_column(!!L_name := L_new)
     resp <- array(dim = c(length(testvals), ncol(Q_new)))
     rownames(resp) <- testvals
     colnames(resp) <- lvals
@@ -79,6 +84,7 @@ cb_margeff <-
     #loop through columns of matrix representing different lags/distances, replace
     #with testvals, predict response.
     for (i in 1:ncol(Q_new)) {
+      # is there some way I can use outer() or rbind() to just make one big matrix instead of this loop?
       P1_i <- Q_new
       P1_i[, i] <- testvals
       p <- suppressWarnings( #new levels of random effects are on purpose
