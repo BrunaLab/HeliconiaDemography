@@ -617,10 +617,19 @@ s_df %>%
   stat_summary_bin(data = demog_post %>% filter(habitat %in% c("1-ha", "CF")),
                    geom = "point",
                    fun = mean,
-                   bins = 7,
+                   bins = 20,
                    aes(y = surv, x = shts)) +
   theme_bw() +
   plot_annotation(caption = "Note: these are from two separate models, not a size–habitat interaction!")
+
+demog_full %>% ggplot(aes(shts)) + geom_histogram(bins = 20)
+hist(demog_full$shts)
+```
+```{r}
+demog_full %>% 
+  filter(shts >= 15)
+demog_full %>% 
+  filter(ha_id_number == 5310) %>% View()
 ```
 
 

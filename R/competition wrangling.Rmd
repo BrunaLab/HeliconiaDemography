@@ -306,7 +306,7 @@ ha_density <-
     add_density_cols(.x, L = 0, U = 5, by = 0.5)
   }) %>% 
   future_map(~{
-    add_density_cols(.x, L = 0, U = 3, by = 3)
+    add_density_cols(.x, L = 0, U = 1, by = 1) #first meter seems most important
   }) %>% 
   bind_rows()
 beepr::beep(4)

@@ -55,7 +55,7 @@ conflict_prefer("select", "dplyr")
 
 -   Explain why heatmap is missing a chunk (search literature for other 2d gam papers that use `too.far` argument?)
 
--   Remove saplings and update stats
+-   Update stats in writing
 
 # Methods
 
@@ -130,9 +130,9 @@ $$
 Where $f \cdot w(x, d)$ is a two dimensional crossbasis smooth composed of two marginal functions: $f(x)$, the effect of conspecific density, $x$ , on growth, and the additional distance response function $w(d)$ that models the effect of density at different annuli, $d$, equal to the midpoint of the inner and outer radius of the 5 annuli for which density was calculated. Each dimension was modeled with 10 knots. With a penalized spline, the number of knots is not very important as ... <!--# finish thought and cite (maybe Noam Ross) --> Habitat is a parametric fixed effect with two levels (1-ha and continuous forest), $s(log(shts_t))$ is a penalized cubic spline describing the growth from year t to year t + 1, and a random effect of plot, nested within habitat. We did not include a random effect of plant ID, as the model did not converge. Although the response, shoot number in year t+1, is a discrete variable, a scaled t distribution with a log-link was used as it was a better fit than a poisson distribution ($\Delta$AIC = 810.5) and a log-normal distribution ($\Delta$AIC = 294).
 
 ```{r eval=FALSE, include=FALSE}
-g_growth_pois <- update(g_growth, family = poisson(link = "log"))
-g_growth_norm <- update(g_growth, family = gaussian(link = "log")) #residuals are leptokurtic with gaussian
-AICtab(g_growth, g_growth_pois, g_growth_scat)
+g_growth_pois <- update(g_growth_scat, family = poisson(link = "log"))
+g_growth_norm <- update(g_growth_scat, family = gaussian(link = "log")) #residuals are leptokurtic with gaussian
+AICtab(g_growth_norm, g_growth_pois, g_growth_scat)
 ```
 
 Survival was modeled using the same predictors as for growth, but with a binomial family error distribution.
@@ -215,22 +215,22 @@ pred_growth %>%
   theme_bw()
 ```
 
-Plants had a greater number of shoots in year t+1 as conspecific density increased, all else being average. The effects of conspecific density were strongest around 1.5 -- 2 meters from the focal plant (Figure \@ref(fig:growth-cb)).
+Plants had a greater number of shoots in year t+1 as conspecific density increased, all else being average. The effects of conspecific density were strongest around 0--1 meters from the focal plant (Figure \@ref(fig:growth-cb)).
 
 ```{r growth-slice, include=TRUE, fig.cap="this is a figure"}
 pred_growth %>%
   filter(min_dist < 0.1) %>%
-  filter(nearest(lag, 2)) %>% 
+  filter(nearest(lag, 0.5)) %>% 
   ggplot(aes(x = x, y = exp(fitted), ymin = exp(fitted - 1.96*se.fit), ymax = exp(fitted + 1.96*se.fit))) +
   geom_jitter(data = ha %>%
                 filter(across(shts_0.5_1:shts_4.5_5, ~!is.na(.))),
-              aes(x = shts_1.5_2, y = shts_next),
+              aes(x = shts_0_0.5, y = shts_next),
               alpha = 0.2,
               inherit.aes = FALSE) +
   geom_line(color = "blue") + 
   geom_ribbon(alpha = 0.4) +
   
-  labs(title = "Near 2m from focal plant", 
+  labs(title = "Near 0.5m from focal plant", 
        x = "conspecific density (shoots/m^2)",
        y = "#shoots (t+1)") +
   theme_bw()
@@ -245,7 +245,7 @@ In that annulus, conspecific density showed no effect (i.e. a flat line) below a
 anova(g_surv)
 ```
 
-Plant size had a significant, nearly quadratic (on a logit scale), effect on survival in continuous forest ($\chi^2$ = 112.2, edf = 2.1, P \< 0.001), but a linear (on a logit scale) effect in 1 ha fragments ($\chi^2$ = 15.63, edf = 1, P \< 0.001), but their 95% confidence intervals overlap (Figure \@ref(fig:surv-plot)). However, there were no significant effects of habitat ($\chi^2$ = 0.002, df = 1, P = 0.964) or conspecific density ($\chi^2$ = 5.326, edf = 2, P = 0.0699) on survival.
+Plant size had a significant, nearly quadratic (on a logit scale), effect on survival in continuous forest ($\chi^2$ = 112.2, edf = 2.1, P \< 0.001), but a linear (on a logit scale) effect in 1 ha fragments ($\chi^2$ = 15.63, edf = 1, P \< 0.001), but their 95% confidence intervals overlap (Figure \@ref(fig:surv-plot)). However, there were no significant effects of habitat ($\chi^2$ = 0.002, df = 1, P = 0.964) or conspecific density ($\chi^2$ = 5.36, edf = 2, P = 0.0688) on survival.
 
 ```{r surv-plot, include=TRUE, fig.cap="this is a figure"}
 Q_new <- 
@@ -309,33 +309,13 @@ ggplot(fitted, aes(x = exp(log_shts), y = plogis(.fitted), color = habitat)) +
 
 Because the DLNM approach does not allow for interaction terms and did not converge with the inclusion of certain random effects, we repeated the analysis using a more standard generalized linear mixed effects model approach. Because the effects of conspecific density dropped off steeply beyond 3m from the focal plant (Figure \@ref(fig:growth-cb)), we re-calculated conspecific shoot density within a radius of 3m and used this as a predictor. We used AIC comparisons to test for significance of random effects, then interactions, then used a marginal hypothesis test to test for significance of main effects of log(shoot number), habitat, and conspecific density. Marginal hypothesis tests were conducted with the `Anova` function from the `car` package [@foxCompanionAppliedRegression2019].
 
-```{r eval=FALSE, include=FALSE}
-pred_growth %>%
-  filter(min_dist < 0.1) %>% 
-  filter(nearest(x, 5)) %>% 
-  ggplot(aes(x = lag, y = exp(fitted), ymin = exp(fitted - 1.96*se.fit), ymax = exp(fitted + 1.96*se.fit))) +
-  # geom_jitter(data = ha %>%
-  #               filter(across(shts_0.5_1:shts_4.5_5, ~!is.na(.))),
-  #             aes(x = shts_1.5_2, y = shts_next),
-  #             alpha = 0.2,
-  #             inherit.aes = FALSE) +
-  # geom_smooth(color = "blue", se = FALSE) + 
-  geom_line(color = "blue") +
-  geom_ribbon(alpha = 0.4) +
-  
-  labs(title = "Conspecific density of 5 shoots/m^2", 
-       x = "Midpoint distance from focal plant (m)",
-       y = "#shoots (t+1)") +
-  theme_bw()
-```
-
 ```{r}
 mnorm <-
   glmer(
     shts_next ~ 
       log_shts *
       habitat *
-      shts_0_3 +
+      shts_0_1 +
       (1|ha_id_number) +
       (1|plot) +
       (1|year_post),
@@ -351,38 +331,40 @@ mnorm4 <- update(mnorm3, .~.-(1|year_post)) #remove year
 AICtab(mnorm, mnorm2, mnorm3, mnorm4)
 
 # Interactions
-mnorm5 <- update(mnorm4, .~. - log_shts:habitat:shts_0_3)
+mnorm5 <- update(mnorm4, .~. - log_shts:habitat:shts_0_1)
 AICtab(mnorm4, mnorm5) #good to remove 3-way interaction
 mnorm6 <- update(mnorm5, .~. -log_shts:habitat)
-mnorm7 <- update(mnorm5, .~. -log_shts:shts_0_3)
-mnorm8 <- update(mnorm5, .~. -habitat:shts_0_3)
-mnorm9 <- update(mnorm5, .~. -habitat:shts_0_3 -log_shts:shts_0_3)
-mnorm10 <- update(mnorm5, .~. -habitat:shts_0_3 -log_shts:habitat)
-mnorm11 <- update(mnorm5, .~. -habitat:shts_0_3 -log_shts:habitat -log_shts:shts_0_3)
-AICtab(mnorm5, mnorm6, mnorm7, mnorm8, mnorm9, mnorm10, mnorm11) #good to remove all interactions
+mnorm7 <- update(mnorm5, .~. -log_shts:shts_0_1)
+mnorm8 <- update(mnorm5, .~. -habitat:shts_0_1)
+mnorm9 <- update(mnorm5, .~. -habitat:shts_0_1 -log_shts:shts_0_1)
+mnorm10 <- update(mnorm5, .~. -habitat:shts_0_1 -log_shts:habitat)
+mnorm11 <- update(mnorm5, .~. -habitat:shts_0_1 -log_shts:habitat -log_shts:shts_0_1)
+AICtab(mnorm5, mnorm6, mnorm7, mnorm8, mnorm9, mnorm10, mnorm11) #good to remove all interactions except size by density
 
-Anova(mnorm11)
-fixef(mnorm11)
+Anova(mnorm10)
+fixef(mnorm10)
 ```
 
 **No longer significant**
+
+marginally significant size x conspecific density interaction (p = 0.046). No significant main effect of density.
 
 In the GLMM, only plant ID number was retained as a random effect. Plant size (log(shoot number)) was a significant predictor of plant size in the next year ($\chi^2$ = 1422.4, df = 1, P \< 0.001). Conspecific density within 3m of the focal plant did not have a significant effect of plant size in the next year ($\chi^2$ = 1.26, df = 1, P = 0.2623).
 
 ```{r glmer-plot, fig.cap="this"}
 
-ha_sub <- ha %>% filter(!is.na(shts_0_3), !is.na(log_shts))
+ha_sub <- ha %>% filter(!is.na(shts_0_1), !is.na(log_shts))
 newdata <-
   tibble(log_shts = mean(ha_sub$log_shts),
          habitat = "1-ha", 
          ha_id_number = "new",
-         shts_0_3 = seq(min(ha_sub$shts_0_3, na.rm = TRUE),
-                          max(ha_sub$shts_0_3, na.rm = TRUE),
+         shts_0_1 = seq(min(ha_sub$shts_0_1, na.rm = TRUE),
+                          max(ha_sub$shts_0_1, na.rm = TRUE),
                           length.out = 50))
 
 augment(mnorm11, newdata = newdata, re.form = NA) %>% 
-  ggplot(aes(x = shts_0_3, y = exp(.fitted))) +
-  geom_jitter(data = ha_sub, aes(x = shts_0_3, y = shts_next), alpha = 0.2) +
+  ggplot(aes(x = shts_0_1, y = exp(.fitted))) +
+  geom_jitter(data = ha_sub, aes(x = shts_0_1, y = shts_next), alpha = 0.2) +
   geom_line(color = "blue") +
   # geom_ribbon() + #don't have CI yet.  Need to do something like bootMer to get them with bootstrapping.
   labs(x = "shoot density within 3m (shoots/m^2)", y = "shoots (t+1)") +
