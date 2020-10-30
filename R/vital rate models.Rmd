@@ -35,18 +35,19 @@ source(here("R", "utils.R"))
 
 # TODO:
 
-- ~~Take out saplings~~
-- Separate models for CF and fragment
-- Separate plots (models) for 2 shoots, 5 shoots
-- Make presentation that describes DLNM for Maria
-- Add random effects
+- ~~Remove seedlings from dataset, for now~~
+- ~~Separate models for CF and fragment, for now~~
+- Add model for probability of reproduction and other vital rates
+- Model seedlings separately?
+- Add random effects, interactions, other complexities
+- Explore FGAM as alternative to DLNM (seems like they are doing the same thing, but maybe FGAM allows modeling of interactions?)
 
 
 - Start building IPM for subset of Heliconia data (in separate file)
 
 # Purpose
 
-Take a crack at modeling height as a function of previous height and lagged, non-linear, SPEI.
+Take a crack at modeling vital rates as a function of previous height and lagged, non-linear, SPEI.
 
 # Load Data
 
@@ -557,11 +558,11 @@ g_df %>%
   theme_bw() +
   plot_annotation(caption = "Note: these are from two separate models, not a size–habitat interaction!")
 ```
-Plants don't grow much
+Plants don't grow much.
 
 ```{r}
-# anova(g_post_cf)
-# anova(g_post_1ha)
+anova(g_post_cf)
+anova(g_post_1ha)
 ```
 
 There's a significant effect of lagged drought on number of shoots in the next year.
@@ -621,21 +622,12 @@ s_df %>%
                    aes(y = surv, x = shts)) +
   theme_bw() +
   plot_annotation(caption = "Note: these are from two separate models, not a size–habitat interaction!")
-
-demog_full %>% ggplot(aes(shts)) + geom_histogram(bins = 20)
-hist(demog_full$shts)
-```
-```{r}
-demog_full %>% 
-  filter(shts >= 15)
-demog_full %>% 
-  filter(ha_id_number == 5310) %>% View()
 ```
 
 
 ```{r}
-# anova(s_post_cf)
-# anova(s_post_1ha)
+anova(s_post_cf)
+anova(s_post_1ha)
 ```
 
 Drought also has a significant effect on survival in both habitat types.
@@ -646,21 +638,7 @@ Drought also has a significant effect on survival in both habitat types.
   plot_layout(guides = "collect")
 ```
 
-I'm doubting things now because this makes it seem like the survival of an averaged sized plant (~2.3 shoots) is higher in fragments than in continuous forest.  I should really use an average sized plant in both habitats combined to get marginal effects.  Either way, the surface for 1-ha fragments is basically flat except for a slight *positive* effect of recent drought on survival.  In continuous forest, drought in the previous February and March has a negative impact on survival.  Wet conditions in the previous April–October have a positive effect on survival.
-
-```{r}
-demog_post %>% 
-  ggplot(aes(surv)) +
-  geom_bar(aes(y = stat(prop))) +
-  facet_wrap(~habitat)
-
-demog_post %>% 
-  group_by(habitat) %>% 
-  summarize(survived = sum(surv == 1, na.rm = TRUE),
-            dead = sum(surv == 0, na.rm = TRUE),
-            mean_shts = mean(shts, na.rm = TRUE)) %>% 
-  mutate(p.surv = survived / (survived + dead))
-```
+The surface for 1-ha fragments is basically flat except for a slight *negative* effect of recent wet weather on survival.  In continuous forest, drought in the previous February and March has a negative impact on survival.  Wet conditions or very dry conditions in the previous August–October have a positive effect on survival.
 
 
 Here's a slice through SPEI = -1.5 (severe drought)
