@@ -18,7 +18,7 @@ Title <- "Title of your paper goes here"
 
 <!-- badges: start -->
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/BrunaLab/HeliconiaDemography/master?urlpath=rstudio)
-[![R build status](https://github.com/BrunaLab/HeliconiaDemography/workflows/run-tests/badge.svg)](https://github.com/BrunaLab/HeliconiaDemography/actions)
+[![R build status](https://github.com/BrunaLab/HeliconiaDemography/workflows/R-CMD-check/badge.svg)](https://github.com/BrunaLab/HeliconiaDemography/actions)
 <!-- badges: end -->
 
 This repository contains the data and code for our paper:

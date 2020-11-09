@@ -7,7 +7,7 @@
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/BrunaLab/HeliconiaDemography/master?urlpath=rstudio)
 [![R build
-status](https://github.com/BrunaLab/HeliconiaDemography/workflows/run-tests/badge.svg)](https://github.com/BrunaLab/HeliconiaDemography/actions)
+status](https://github.com/BrunaLab/HeliconiaDemography/workflows/R-CMD-check/badge.svg)](https://github.com/BrunaLab/HeliconiaDemography/actions)
 <!-- badges: end -->
 
 This repository contains the data and code for our paper:
@@ -18,7 +18,7 @@ This repository contains the data and code for our paper:
 Our pre-print is online here:
 
 > Authors, (YYYY). *Title of your paper goes here*. Name of
-> journal/book, Accessed 09 Nov 2020. Online at
+> journal/book, Accessed 20 Aug 2020. Online at
 > <https://doi.org/xxx/xxx>
 
 ### How to cite
@@ -26,7 +26,7 @@ Our pre-print is online here:
 Please cite this compendium as:
 
 > Authors, (2020). *Compendium of R code and data for Title of your
-> paper goes here*. Accessed 09 Nov 2020. Online at
+> paper goes here*. Accessed 20 Aug 2020. Online at
 > <https://doi.org/xxx/xxx>
 
 ## Contents
