@@ -27,8 +27,7 @@ conflict_prefer("lag", "dplyr")
 conflict_prefer("filter", "dplyr")
 conflict_prefer("slice", "dplyr")
 
-source(here("R", "crossbasis.R"))
-source(here("R", "utils.R"))
+library(HeliconiaDemography) #load functions in this compendium
 ```
 
 *Last compiled: `r Sys.Date()`*

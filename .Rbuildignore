@@ -7,4 +7,6 @@
 ^CONDUCT\.md$
 ^CONTRIBUTING\.md$
 ^\.github$
-analysis
+
+^analysis$
+^notes$

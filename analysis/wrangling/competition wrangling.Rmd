@@ -22,7 +22,7 @@ library(skimr)
 library(furrr)
 library(janitor)
 
-source(here("R", "utils.R"))
+library(HeliconiaDemography) #load functions in this compendium
 
 conflict_prefer("lag", "dplyr")
 conflict_prefer("filter", "dplyr")
