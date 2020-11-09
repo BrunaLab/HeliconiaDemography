@@ -1,14 +1,19 @@
 #' Matrix iteration operator
-#'
+#' 
+#' A wrapper around [matrixcalc::matrix.power]. A%^%k multiplies matrix A by itself k times.
+#' 
+#' @rdname matrix_power_operator
 #' @param x a matrix
 #' @param k a power
 #' 
 #' @importFrom matrixcalc matrix.power
-#' @return
+#' @return a matrix
 #' @export
 #'
 #' @examples
 #' A <- matrix(1:9, nrow = 3)
+#' B <- A %^% 3
+#' B == A %*% A %*% A
 `%^%` <- function(x, k) {
   matrixcalc::matrix.power(x, k)
 }
@@ -42,6 +47,8 @@ eu_dist <- function(p1, p2) {
 #' @export
 #'
 #' @examples
+#' x <- seq(1, 10, 0.3)
+#' nearest(x, 5)
 nearest <- function(x, val) {
   abs(x - val) == min(abs(x - val))
 }

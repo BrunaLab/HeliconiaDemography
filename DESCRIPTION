@@ -17,13 +17,14 @@ RoxygenNote: 7.1.1
 Suggests:
     testthat,
     devtools,
-    git2r
+    git2r,
+    tsModel
 Imports: 
     bookdown,
     here,
     matrixcalc,
     dplyr,
-    purrr,
     rlang,
+    purrr,
     mgcv,
     tidyr

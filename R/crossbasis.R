@@ -32,6 +32,21 @@
 #' @import tidyr
 #'
 #' @examples
+#' \dontrun{
+#' library(dlnm)
+#' library(mgcv)
+#' library(tsModel)
+#' data("chicagoNMMAPS")
+#' Q <- Lag(chicagoNMMAPS$temp, 0:25) #temperature data, lagged
+#' L <- matrix(0:25,nrow(Q),ncol(Q),byrow=TRUE) #matrix of 0-25
+#' # Fit DLNM model
+#' gam1 <- gam(death ~ s(Q, L, bs="cb", k=10) + s(pm10) + dow,
+#'             family=quasipoisson(), 
+#'             data = chicagoNMMAPS,
+#'             method='REML')
+#' # Calculate marginal effect of lagged temperature, all else being held average.
+#' cb_margeff(Q, L, gam1)
+#' }
 cb_margeff <- 
   function(Q, L, model, ref_data = NULL, meshpts = c(50, 50), calc_dist = TRUE) {
     # Q_name <- quo(Q)
@@ -118,7 +133,7 @@ cb_margeff <-
       ) %>%
       dplyr::mutate(lag = as.double(lag), x = as.double(x))
     
-    pred <- full_join(fitted, se.fitted, by = c("x", "lag"))
+    pred <- dplyr::full_join(fitted, se.fitted, by = c("x", "lag"))
     if (isTRUE(calc_dist)) {
       out <- add_min_dist(df, Q_name, L, pred)
     } else {
