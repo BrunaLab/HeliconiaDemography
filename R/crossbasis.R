@@ -25,7 +25,7 @@
 #'   results of `predict.gam()`; min_dist is the euclidean distance on the unit
 #'   square from the fitted values to the actual data used to fit the model.
 #' @export
-#' @import rlang
+#' @importFrom rlang enquo
 #' @import purrr
 #' @import dplyr
 #' @import mgcv
@@ -152,6 +152,8 @@ cb_margeff <-
 #' @param Q_name quosure; the name for the Q matrix
 #' @param L matrix; the actual L matrix
 #' @param pred data frame; the predicted values
+#' @import purrr
+#' 
 #'
 #' @return a tibble
 add_min_dist <- function(df, Q_name, L, pred) {
@@ -159,7 +161,7 @@ add_min_dist <- function(df, Q_name, L, pred) {
     df %>%
     pull(!!Q_name) %>% 
     as_tibble() %>% 
-    set_names(L[1, ]) %>% 
+    purrr::set_names(L[1, ]) %>% 
     pivot_longer(everything(),
                  names_to = "lag",
                  names_transform = list(lag = as.numeric),
