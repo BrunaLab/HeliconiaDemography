@@ -19,6 +19,9 @@ df_spei <-
          yearmonth = yearmonth(date)) %>% 
   select(date, year, month, yearmonth, site, spei)
 
+# An alternative way of doing lags that might be useful in the future.
+# df_spei %>% 
+#   mutate(Q = tsModel::Lag(spei, 1:24))
 
 df_wide <- 
   df_spei %>% 
@@ -39,3 +42,32 @@ spei_lag
 #spei_1 is Jan, spei_2, is Dec of the previous year, spei_3 is Nov of the previous year, etc.
 
 write_csv(spei_lag, here("analysis", "data", "derived_data", "spei_lags.csv"))
+
+# Repeat with gridded data from Xavier et al.
+xa <- read_csv(here("analysis", "data", "raw_data", "xavier_daily_0.25x0.25.csv"))
+library(SPEI)
+library(tsModel)
+xa_spei <-
+  xa %>% 
+  unite(latlon, lat, lon) %>% 
+  mutate(yearmonth = yearmonth(date)) %>% 
+  group_by(latlon, yearmonth) %>% 
+  summarize(precip = sum(precip), eto = sum(eto)) %>% 
+  mutate(cb = precip - eto) %>% 
+  as_tsibble(index = yearmonth, key = latlon) %>% 
+  mutate(spei = as.numeric(spei(cb, scale = 3)$fitted))
+
+
+xa_spei_lags <-
+  xa_spei %>%
+  mutate(Q_spei = Lag(spei, 1:24)) 
+
+# p <-
+#   ggplot(xa_spei_lags, aes(x = yearmonth, y = spei, color = latlon)) +
+#   geom_line() +
+#   facet_wrap(~year(yearmonth), scales = "free_x")
+
+# annotate_spei(p)  
+
+write_rds(xa_spei_lags, here("analysis", "data", "derived_data", "xa_spei_lags.rds"))
+read_rds(here("analysis", "data", "derived_data", "xa_spei_lags.rds"))

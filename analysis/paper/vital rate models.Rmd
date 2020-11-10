@@ -21,28 +21,29 @@ library(bbmle)
 library(lubridate)
 library(glue)
 library(patchwork)
+library(sf)
 
 library(conflicted)
 conflict_prefer("lag", "dplyr")
 conflict_prefer("filter", "dplyr")
 conflict_prefer("slice", "dplyr")
 
-library(HeliconiaDemography) #load functions in this compendium
+# library(HeliconiaDemography) #load functions in this compendium
+load_all()
 ```
 
 *Last compiled: `r Sys.Date()`*
 
 # TODO:
 
+- 
 - ~~Remove seedlings from dataset, for now~~
 - ~~Separate models for CF and fragment, for now~~
 - Add model for probability of reproduction and other vital rates
 - Model seedlings separately?
 - Add random effects, interactions, other complexities
-- Explore FGAM as alternative to DLNM (seems like they are doing the same thing, but maybe FGAM allows modeling of interactions?)
+- Match SPEI data to demographic plots programtically by lat lon data
 
-
-- Start building IPM for subset of Heliconia data (in separate file)
 
 # Purpose
 
@@ -52,40 +53,41 @@ Take a crack at modeling vital rates as a function of previous height and lagged
 
 ```{r data, echo=TRUE}
 spei <- read_csv(here("analysis", "data", "derived_data", "spei_lags.csv"))
+xa <- read_rds(here("analysis", "data", "derived_data", "xa_spei_lags.rds"))
 demog <- read_rds(here("analysis", "data", "derived_data", "ha_survey.rds"))
+plot_coords <- read_csv(here("analysis", "data", "raw_data", "plot_coords.csv"))
+```
+# Join data sets
+
+## Gridded data
+Get only rows for february (the month of the census), and year for joining
+
+```{r}
+xa2 <- 
+  xa %>%
+  filter(month(yearmonth) == 2) %>% 
+  mutate(year = year(yearmonth), .after =yearmonth) %>% 
+  separate(latlon, into = c("lat", "lon"), sep = "_")
+
 ```
 
-## Data Dictionary
+Now, for the demography data, get year and plot coords
 
-`spei`: lagged SPEI for each site cluster
+```{r}
+# demog$plot %>% unique() %>% sort()
+# plot_coords$plot %>% unique() %>% sort()
+demog <-
+  right_join(plot_coords %>% select(plot, lon, lat),
+             demog,
+             by = "plot") %>% 
+  select(-x_09, -y_09) #remove to avoid confusion since i'm not using here.
+```
 
-- `site` (character): site cluster, one of "colosso_clust", "dimona", "km_clust", or "porto_alegre"
-- `census_year` (numeric): the census year to join with.  
-- `spei_1` (numeric): SPEI value for January of the census year
-- `spei_2` (numeric): SPEI value for December of the previous year
-- `spei_3` (numeric): SPEI value for November of the previous year
-- `spei_4`-- `spei_24`: ... and so on out to January of 2 years prior.
-
-`demog`: demographic surveys of *Heliconia acuminata*
-
-- `plot` (character): either `bdffp_reserve_no` or continuous forest indicated by "-CF"
-- `habitat` (character): either 1-ha, 10-ha fragments or continuous forest "CF"
-- `ranch` (character): DIM = Dimona, EST = Estaciao, PAL = Porto Alegre
-- `bdffp_reserve_no` (character): Official bdffp reserve number, when there is one.
-- `ha_id_number` (character): Unique plant ID
-- `tag_number` (character): Plant ID within plot:year.  May have changed over lifetime of plant.
-- `row` (character): Location in plot
-- `column` (numeric): Location in plot
-- `year` (integer): Survey year
-- `ht` (numeric): plant height
-- `shts` (integer): number of shoots
-- `infl` (integer): number of inflorescences
-- `code_notes` (character): Important ones: "sdlg (1)" = seedling, "dead (2)" = dead
-- `code2` (character): "initial.yr.tag" = first year that plant is in the study.  May not necessarily be a seedling.
-- `surv` (integer): did the plant survive to the next year? 1 = survived, 0 = died, NA = last year of data, fate unknown.
+Now join by year and whether plot is in grid cell or not.  Probably need to construct `sf` object for grid cells (knowing that the lat lon are the centers and the resolution is 0.25º) and then use some `sf_` function to check if a point is inside of a grid cell.  See: https://stackoverflow.com/questions/59766153/left-join-based-on-closest-lat-lon-in-r
 
 
-# Join data sets
+
+## Imputed data:
 
 `demog$year` = `spei$census_year`
 
