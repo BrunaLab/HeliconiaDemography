@@ -48,7 +48,7 @@
 #' cb_margeff(Q, L, gam1)
 #' }
 cb_margeff <- 
-  function(Q, L, model, ref_data = NULL, meshpts = c(50, 50), calc_dist = TRUE) {
+  function(model, Q, L, ref_data = NULL, meshpts = c(50, 50), calc_dist = TRUE) {
     # Q_name <- quo(Q)
     # L_name <- quo(L)
     
@@ -59,6 +59,10 @@ cb_margeff <-
     Q_name <- rlang::enquo(Q)
     L_name <- rlang::enquo(L)
     df <- model$model
+    
+    # Get the Q and L matrices from the model dataframe
+    Q <- dplyr::pull(df, !!Q_name)
+    L <- dplyr::pull(df, !!L_name)
     
     testvals <- seq(min(Q, na.rm = TRUE), max(Q, na.rm = TRUE), length.out = meshpts[1])
     Q_new <- matrix(mean(Q, na.rm = TRUE), nrow = meshpts[1], ncol = meshpts[2])
@@ -135,7 +139,7 @@ cb_margeff <-
     
     pred <- dplyr::full_join(fitted, se.fitted, by = c("x", "lag"))
     if (isTRUE(calc_dist)) {
-      out <- add_min_dist(df, Q_name, L, pred)
+      out <- add_min_dist(df, Q_name, L_name, pred)
     } else {
       out <- pred
     }
@@ -150,18 +154,17 @@ cb_margeff <-
 #'
 #' @param df data frame; model data
 #' @param Q_name quosure; the name for the Q matrix
-#' @param L matrix; the actual L matrix
+#' @param L_name quosure; the name for the L matrix
 #' @param pred data frame; the predicted values
 #' @import purrr
 #' 
 #'
 #' @return a tibble
-add_min_dist <- function(df, Q_name, L, pred) {
+add_min_dist <- function(df, Q_name, L_name, pred) {
   d <-
     df %>%
     pull(!!Q_name) %>% 
-    as_tibble() %>% 
-    purrr::set_names(L[1, ]) %>% 
+    as_tibble(.name_repair = ~as.character(pull(df, !!L_name)[1, ])) %>% 
     pivot_longer(everything(),
                  names_to = "lag",
                  names_transform = list(lag = as.numeric),
