@@ -67,7 +67,29 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-## Habitat fragmentation
+1.  Little is known about how organisms respond to multiple anthropogenic stresses simultaneously <!--# (see Lakeman-Fraser and Ewers 2014)  -->
+
+2.  The Amazon Basin, an important place, has been fragmented, and although deforestation has slowed in recent years, it is continuing.
+
+    1.  fragmentation is bad because...
+
+3.  Simultaneously, there is a drying trend in the Amazon and also increasing intensity and frequency of droughts caused by ENSO (wet-season) and sea surface warming (dry-season).
+
+    1.  Drought is bad because...
+
+4.  The effects of drought and fragmentation could be additive, or interactive.
+
+    1.  The effects of drought could be more severe in fragments because of reduced microclimate buffering.
+
+    2.  Alternatively, plants in fragmented habitats could be more resilient to drought because the individuals surviving in fragmented forests are already resilient in the face of a relatively dry and variable climate, even in non-drought years.
+
+    3.  Fragmentation affects plant size (in *Heliconia* [@brunaDemographicEffectsHabitat2005] and trees [@schwartz2019]). Smaller/larger plants might be more susceptible to drought. So differential effects of drought in fragments and continuous forest could be due to an interaction between drought and plant size. <!--# this paragraph might be better in conclusion.  Depends on if it makes sense without introducing the study system. BUT, I feel like there should be some justification for looking for interaction with plant size (if that's something we can even do). -->
+
+5.  We investigated the effects of drought on the growth, survival, reproduction, and recruitment of an understory plant in an experimentally fragmented landscape.
+
+6.  Specifically, we want to know 1) Does drought have different impacts on plants in forest fragments compared to intact forest? 2) Do the magnitudes and directions of these effects differ among vital rates? 3) Do the effects of drought, fragmentation, and their interaction vary with plant size
+
+# Notes for Introduction (first attempt at outline):
 
 Habitat fragmentation is bad, pervasive, and getting worse
 
@@ -117,7 +139,7 @@ Habitat fragmentation is bad, pervasive, and getting worse
 
 ## This experiment
 
--   The "fragmentation drought hypothesis" expects drought to have stronger impacts on forest fragments since fragments less buffered from changes in humidity and more sensitive to desiccation. Under this hypothesis we would expect drought to reduce growth, survival, reproduction and recruitment more in fragmented landscapes compared to intact forest.
+-   The "fragmentation drought hypothesis" expects drought to have stronger impacts on forest fragments because of reduced microclimate buffering. Under this hypothesis we would expect drought to reduce growth, survival, reproduction and recruitment more in fragmented landscapes compared to intact forest.
 
 -   It's also possible that plants in fragments have already been filtered such that the survivors are already adapted to more variable and desiccating conditions associated with forest edges [@schwartz2019]. This may result in drought having a less noticeable impact on plants in fragments, although we would expect fragmentation to still have an impact on survival, growth, and reproduction.
 
