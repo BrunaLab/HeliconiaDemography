@@ -11,7 +11,7 @@ output:
       - --lua-filter=../templates/author-info-blocks.lua
       - --lua-filter=../templates/pagebreak.lua
 bibliography: references.bib
-csl: "../templates/journal-of-archaeological-science.csl" # Insert path for the bib-style
+csl: "../templates/ecology.csl" # Insert path for the bib-style
 ---
 
 ```{r setup, include=FALSE, echo=FALSE}
@@ -55,6 +55,8 @@ conflict_prefer("select", "dplyr")
 -   Explain why heatmap is missing a chunk (search literature for other 2d gam papers that use `too.far` argument?)
 
 -   Update stats in writing
+
+-   Cite [@bruna2004] (reproductive success is independent of local floral density. Not sure if scales are comparable though, need to read paper first)
 
 # Methods
 
