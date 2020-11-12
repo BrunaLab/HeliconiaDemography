@@ -12,7 +12,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, paged.print=FALSE)
 library(tidyverse)
 library(here)
 library(mgcv)
@@ -22,6 +22,7 @@ library(lubridate)
 library(glue)
 library(patchwork)
 library(sf)
+library(tsibble)
 
 library(conflicted)
 conflict_prefer("lag", "dplyr")
@@ -29,7 +30,7 @@ conflict_prefer("filter", "dplyr")
 conflict_prefer("slice", "dplyr")
 
 # library(HeliconiaDemography) #load functions in this compendium
-load_all()
+# devtools::load_all()
 ```
 
 *Last compiled: `r Sys.Date()`*
@@ -52,7 +53,7 @@ Take a crack at modeling vital rates as a function of previous height and lagged
 # Load Data
 
 ```{r data, echo=TRUE}
-spei <- read_csv(here("analysis", "data", "derived_data", "spei_lags.csv"))
+spei <- read_rds(here("analysis", "data", "derived_data", "spei_lags.rds"))
 xa <- read_rds(here("analysis", "data", "derived_data", "xa_spei_lags.rds"))
 demog <- read_rds(here("analysis", "data", "derived_data", "ha_survey.rds"))
 plot_coords <- read_csv(here("analysis", "data", "raw_data", "plot_coords.csv"))
@@ -68,7 +69,7 @@ xa2 <-
   filter(month(yearmonth) == 2) %>% 
   mutate(year = year(yearmonth), .after =yearmonth) %>% 
   separate(latlon, into = c("lat", "lon"), sep = "_")
-
+xa2
 ```
 
 Now, for the demography data, get year and plot coords
@@ -97,8 +98,6 @@ Getting site to match up will take more work.
 unique(demog$plot)
 unique(demog$bdffp_reserve_no)
 unique(spei$site)
-
-demog %>% filter(code_notes ==  "dead (2)", year == 2009)
 ```
 
 km41 = 1501
@@ -127,10 +126,24 @@ demog <-
   ))
 ```
 
+Get SPEI history only for census months (assuming all censuses done in February)
+
+```{r}
+spei_census <- 
+  spei %>% 
+  filter(month(yearmonth) == 2) %>% 
+  mutate(year = year(yearmonth), .before = site) %>% 
+  select(-yearmonth)
+```
+
+Join
+
 ```{r}
 demog_full <-
-  left_join(demog, spei, by = c("rain_site" = "site", "year" = "census_year")) %>% 
+  left_join(demog, spei_census, by = c("rain_site" = "site", "year")) %>% 
   mutate(log_shts = log(shts), .after = shts)
+
+# demog_full %>% select(spei, spei_history)
 ```
 
 `gam` wants factors!
@@ -172,42 +185,6 @@ demog_sdlg_1ha <-
 ```
 
 
-```{r}
-Q_post_cf <-
-  demog_post_cf %>% 
-  select(starts_with("spei_")) %>% 
-  as.matrix()
-
-Q_post_1ha <-
-  demog_post_1ha %>% 
-  select(starts_with("spei_")) %>% 
-  as.matrix()
-
-Q_sdlg_cf <-
-  demog_sdlg_cf %>% 
-  select(starts_with("spei_")) %>% 
-  as.matrix()
-
-Q_sdlg_1ha <-
-  demog_sdlg_1ha %>% 
-  select(starts_with("spei_")) %>% 
-  as.matrix()
-
-L <-
-  matrix(1:24,
-         nrow = nrow(demog_full),
-         ncol = 24,
-         byrow = TRUE)
-
-colnames(L) <- paste0("L_", 1:24)
-
-L_post_cf <- L[1:nrow(Q_post_cf), ]
-L_post_1ha <- L[1:nrow(Q_post_1ha), ]
-L_sdlg_cf <- L[1:nrow(Q_sdlg_cf), ]
-L_sdlg_1ha <- L[1:nrow(Q_sdlg_1ha), ]
-```
-
-
 ## Growth
 
 Start with no random effects
@@ -221,11 +198,11 @@ Fit the GAM with crossbasis smooth for lagged drought
 ```{r}
 g_post_cf <-
   gam(shts_next ~ 
-        s(log_shts) + #does this need to be log # shoots?
+        s(log_shts) + #does this *need* to be log # shoots?
         # s(shts) +
-        s(Q_post_cf, L_post_cf,
+        s(spei_history, L,
           bs = "cb",
-          k = c(3, 24),  #cubic response (at most) to drought, one knot per month lag.
+          k = c(3, 25),  #cubic response (at most) to drought, one knot per month lag.
           xt = list(bs = "cr")),
       family = scat(link = "log"),
       data = demog_post_cf,
@@ -244,9 +221,9 @@ anova(g_post_cf)
 g_post_1ha <-
   gam(shts_next ~ 
         s(log_shts) +
-        s(Q_post_1ha, L_post_1ha,
+        s(spei_history, L,
           bs = "cb",
-          k = c(3, 24),  #cubic response (at most) to drought, one knot per month lag.
+          k = c(3, 25),  #cubic response (at most) to drought, one knot per month lag.
           xt = list(bs = "cr")),
       family = scat(link = "log"),
       data = demog_post_1ha,
@@ -273,15 +250,15 @@ ref_data <-
 
 
 ```{r}
-pred_g_post_cf <- cb_margeff(Q_post_cf, L_post_cf, g_post_cf, ref_data = ref_data)
-pred_g_post_1ha <- cb_margeff(Q_post_1ha, L_post_1ha, g_post_1ha, ref_data = ref_data)
+pred_g_post_cf  <- cb_margeff(g_post_cf, Q = spei_history, L = L, ref_data = ref_data)
+pred_g_post_1ha <- cb_margeff(g_post_1ha, Q = spei_history, L = L, ref_data = ref_data)
 ```
 
 Lag labels
 
 ```{r}
-# spei_1 is january
-labs <- c("Jan", paste0(month(12:1, label = TRUE), " (y-1)"), paste0(month(12:2, label = TRUE), " (y-2)"))
+# first column is February, the month of the census
+labs <- c("Feb", "Jan", paste0(month(12:1, label = TRUE), " (y-1)"), paste0(month(12:2, label = TRUE), " (y-2)"))
 ```
 
 Shared color bar limits so scales can be combined.
@@ -301,12 +278,12 @@ p_growth_cf <-
   filter(min_dist < 0.1) %>%
   ggplot(aes(x = x, y = lag, z = exp(fitted), fill = exp(fitted))) +
   geom_raster(interpolate = TRUE) +
-  scale_y_continuous("lag (months)", breaks = 1:24, labels = labs, expand = c(0,0)) +
+  scale_y_continuous("lag (months)", breaks = 0:24, labels = labs, expand = c(0,0)) +
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("#shoots (t+1)", option = "A", limits = exp(shoot_lim)) +
   labs(title = "Continuous Forest") +
   theme_bw()
-# p_growth_cf
+p_growth_cf
 ```
 
 ```{r}
@@ -315,12 +292,12 @@ p_growth_1ha <-
   filter(min_dist < 0.1) %>%
   ggplot(aes(x = x, y = lag, z = exp(fitted), fill = exp(fitted))) +
   geom_raster(interpolate = TRUE) +
-  scale_y_continuous("lag (months)", breaks = 1:24, labels = labs, expand = c(0,0)) +
+  scale_y_continuous("lag (months)", breaks = 0:24, labels = labs, expand = c(0,0)) +
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("#shoots (t+1)", option = "A", limits = exp(shoot_lim)) +
   labs(title = "1-ha Fragments") +
   theme_bw()
-# p_growth_1ha
+p_growth_1ha
 ```
 
 
@@ -336,11 +313,11 @@ p_growth_cf_slice <-
     ymax = exp(fitted + se.fit * 1.96)
   ), alpha = 0.3)+
   geom_line() +
-  scale_x_continuous("", breaks = 1:24, labels = labs) +
+  scale_x_continuous("", breaks = 0:24, labels = labs) +
   labs(title = "Continuous Forest", y = "shoots (t+1)") +
   theme_linedraw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-# p_growth_cf_slice
+p_growth_cf_slice
 ```
 
 
@@ -354,11 +331,11 @@ p_growth_1ha_slice <-
     ymax = exp(fitted + se.fit * 1.96)
   ), alpha = 0.3)+
   geom_line() +
-  scale_x_continuous("", breaks = 1:24, labels = labs) +
+  scale_x_continuous("", breaks = 0:24, labels = labs) +
   labs(title = "1-ha Fragments", y = "shoots (t+1)") +
   theme_linedraw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-# p_growth_1ha_slice
+p_growth_1ha_slice
 ```
 
 
@@ -375,7 +352,7 @@ plotdf <-
 
 
 foo <- function(x) {
-  d <- 1:24
+  d <- 1:25
   names(d)<-labs
   x <- as.numeric(x)
   # s <- glue("lag {x} ({names(d[x])})")
@@ -405,9 +382,9 @@ p_growth_cf_months <-
 s_post_cf <-
   gam(surv ~ 
         s(log_shts) +
-        s(Q_post_cf, L_post_cf,
+        s(spei_history, L,
           bs = "cb",
-          k = c(3, 24),  #cubic response (at most) to drought, one knot per month lag.
+          k = c(3, 25),  #cubic response (at most) to drought, one knot per month lag.
           xt = list(bs = "cr")),
       family = binomial,
       data = demog_post_cf,
@@ -421,9 +398,9 @@ anova(s_post_cf)
 s_post_1ha <-
   gam(surv ~ 
         s(log_shts) +
-        s(Q_post_1ha, L_post_1ha,
+        s(spei_history, L,
           bs = "cb",
-          k = c(3, 24),  #cubic response (at most) to drought, one knot per month lag.
+          k = c(3, 25),  #cubic response (at most) to drought, one knot per month lag.
           xt = list(bs = "cr")),
       family = binomial,
       data = demog_post_1ha,
@@ -438,11 +415,8 @@ anova(s_post_1ha)
 This is pretty slow. It could probably be faster if I understood matrix math better.
 
 ```{r}
-#big plants
-# ref_data <- tibble(log_shts = 1.6)
-
-pred_s_post_cf <- cb_margeff(Q_post_cf, L_post_cf, s_post_cf, ref_data = ref_data)
-pred_s_post_1ha <- cb_margeff(Q_post_1ha, L_post_1ha, s_post_1ha, ref_data = ref_data)
+pred_s_post_cf  <- cb_margeff(s_post_cf,  Q = spei_history, L = L, ref_data = ref_data)
+pred_s_post_1ha <- cb_margeff(s_post_1ha, Q = spei_history, L = L, ref_data = ref_data)
 ```
 
 Shared color bar limits so scales can be combined.
@@ -463,7 +437,7 @@ p_surv_cf <-
   filter(min_dist < 0.1) %>%
   ggplot(aes(x = x, y = lag, z = plogis(fitted), fill = plogis(fitted))) +
   geom_raster(interpolate = TRUE) +
-  scale_y_continuous("lag (months)", breaks = 1:24, labels = labs, expand = c(0,0)) +
+  scale_y_continuous("lag (months)", breaks = 0:24, labels = labs, expand = c(0,0)) +
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("P(survival)", option = "A", limits = plogis(surv_lim)) +
   labs(title = "Continuous Forest") +
@@ -477,7 +451,7 @@ p_surv_1ha <-
   filter(min_dist < 0.1) %>%
   ggplot(aes(x = x, y = lag, z = plogis(fitted), fill = plogis(fitted))) +
   geom_raster(interpolate = TRUE) +
-  scale_y_continuous("lag (months)", breaks = 1:24, labels = labs, expand = c(0,0)) +
+  scale_y_continuous("lag (months)", breaks = 0:24, labels = labs, expand = c(0,0)) +
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("P(survival)", option = "A", limits = plogis(surv_lim)) +
   labs(title = "1-ha Fragments") +
@@ -498,7 +472,7 @@ p_surv_cf_slice <-
     ymax = plogis(fitted + se.fit * 1.96)
   ), alpha = 0.3)+
   geom_line() +
-  scale_x_continuous("", breaks = 1:24, labels = labs) +
+  scale_x_continuous("", breaks = 0:24, labels = labs) +
   labs(title = "Continuous Forest", y = "P(survival)") +
   theme_linedraw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
@@ -516,7 +490,7 @@ p_surv_1ha_slice <-
     ymax = plogis(fitted + se.fit * 1.96)
   ), alpha = 0.3)+
   geom_line() +
-  scale_x_continuous("", breaks = 1:24, labels = labs) +
+  scale_x_continuous("", breaks = 0:24, labels = labs) +
   labs(title = "1-ha Fragments", y = "P(survival)") +
   theme_linedraw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
@@ -528,7 +502,9 @@ p_surv_1ha_slice <-
 
 ## Growth
 
+
 ```{r include=FALSE}
+#TODO: switch to predict() so y axis is correct
 g_cf <-  plot.gam(g_post_cf,  shift = coef(g_post_cf)[1])
 g_1ha <- plot.gam(g_post_1ha, shift = coef(g_post_1ha)[1])
 
@@ -574,9 +550,9 @@ There's a significant effect of lagged drought on number of shoots in the next y
   plot_layout(guides = "collect")
 ```
 
-It looks like drought in October is bad for growth in both CF and fragments, but drought in June and July is much worse for plants in continuous forest.
+It looks like drought in October is bad for growth in fragments, but drought in June and July is much worse for plants in continuous forest.
 
-Reminder that these are still fit with two different models and that `predict()` is using different climate histories (`Q`).  Might not be entirely comparable?
+Reminder that these are still fit with two different models and that `predict()` is using different climate histories (`spei_history`).  Might not be entirely comparable?  Different penalties to the smooths make these hard to compare as well.
 
 
 Here's a slice through SPEI = -1.5 (severe drought)
