@@ -27,8 +27,8 @@ spei_lag <-
   df_spei %>%
   group_by(site) %>%
   arrange(site, yearmonth) %>%
-  mutate(spei_history = Lag(spei, 1:maxlag),
-         L = matrix(1:maxlag, nrow = n(), ncol = maxlag, byrow = TRUE))
+  mutate(spei_history = Lag(spei, 0:maxlag),
+         L = matrix(0:maxlag, nrow = n(), ncol = maxlag + 1, byrow = TRUE))
 
 #to join with demography, filter to get only history for february
 # filter(spei_lag, month(yearmonth) == 2)
@@ -52,8 +52,8 @@ xa_spei <-
 xa_spei_lags <-
   xa_spei %>%
   group_by(latlon) %>% 
-  mutate(spei_history = Lag(spei, 1:maxlag),
-         L = matrix(1:maxlag, nrow = n(), ncol = maxlag, byrow = TRUE))%>% 
+  mutate(spei_history = Lag(spei, 0:maxlag),
+         L = matrix(0:maxlag, nrow = n(), ncol = maxlag + 1, byrow = TRUE))%>% 
   select(latlon, yearmonth, spei, spei_history, L)
 
 
