@@ -5,10 +5,6 @@ author:
       email: scottericr@gmail.com
       institute: [UF]
       correspondence: true
-  - Paulo Rubim:
-      email: rubimpaulo@gmail.com
-      institute: [UFSC]
-      correspondence: false
   - Maria Uriarte:
       email: mu2126@columbia.edu
       institute: [Columbia]
@@ -20,7 +16,6 @@ author:
   
 institute:
   - UF: Department of Wildlife Ecology and Conservation, University of Florida, Gainesville, Florida 32611-0430
-  - UFSC: Departamento do Botânica, Universidade Federal de São Carlos, CP 676, CEP 13565-905, São Carlos, SP, Brazil
   - Columbia: Department of Ecology, Evolution and Environmental Biology, Columbia University 1200 Amsterdam Avenue, New York, New York 10027 USA
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
@@ -166,6 +161,10 @@ Habitat fragmentation is bad, pervasive, and getting worse
 # Conclusion
 
 # Acknowledgments
+
+If TRMM data is used, they suggest: "The TMPA data were provided by the\
+NASA/Goddard Space Flight Center's Mesoscale Atmospheric Processes Laboratory and\
+PPS, which develop and compute the TMPA as a contribution to TRMM."
 
 # References
 
