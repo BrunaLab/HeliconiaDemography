@@ -1,0 +1,168 @@
+---
+title: "Appendix 1: Quantifying Drought"
+author: "Eric R. Scott"
+date: '2020-09-13'
+output: 
+    bookdown::word_document2:
+      fig_caption: yes
+      reference_docx: "../templates/template.docx" # Insert path for the DOCX file
+      pandoc_args:
+      - --lua-filter=../templates/scholarly-metadata.lua
+      - --lua-filter=../templates/author-info-blocks.lua
+      - --lua-filter=../templates/pagebreak.lua
+bibliography: references.bib
+csl: "../templates/ecology.csl" # Insert path for the bib-style
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(
+  include = FALSE,
+  echo = FALSE,
+  collapse = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.path = "",
+  dpi = 300)
+library(tidyverse)
+library(here)
+library(conflicted)
+library(SPEI)
+library(tsibble)
+library(lubridate)
+
+library(HeliconiaDemography)
+
+conflict_prefer("lag", "dplyr")
+conflict_prefer("filter", "dplyr")
+conflict_prefer("select", "dplyr")
+```
+
+*Last compiled: `r Sys.Date()`*
+
+# Outline
+
+-   A review of global precip datasets (Sun et al. 2018) recommends ground-based products over satellite products for Brazil.
+
+-   The global SPEI database is calculated from ground-based product (CRU) and a uses method for estimating evapotranspiration that takes more than just temperature into account.
+
+-   There's also a ground-based product specifically for Brazil (Xavier et al).
+
+-   We have rain gauge data that we can get SPEI from if we use imputation (informed by EMBRAPA station data)
+
+```{r read-data}
+# Precip Sources
+xa <- read_csv(here("analysis", "data", "raw_data", "xavier_daily_0.25x0.25.csv"))
+sa <- read_csv(here("analysis", "data", "raw_data", "sa_daily_1x1.csv"))
+trmm <-
+  
+# Already calculated SPEI  
+gspei <-
+  read_delim(here("analysis", "data", "raw_data", "global_spei_-59.75_-2.25.csv"),
+             delim = ";") %>% 
+  rename(date = "days since 1900-1-1", g_spei = spei)
+  
+bdffp <- read_csv(here("analysis", "data", "raw_data", "mon_precip_spi_imputed.csv"))
+
+```
+
+# Methods
+
+## Data Source Descriptions
+
+### BDFFP rain gauge data
+
+Daily rain gauge data collected from 1987--2010 at BDFFP camps. The precipitation data has a high degree of missingness due to camps being visited infrequently and because not all camps were active from 1987--2010. There we also a large number of observations that were accumulated rainfall over two or more days. We removed multi-day accumulations as it was impossible to know how rainfall was distributed over the prior days. Missing values were then imputed after averaging rainfall data by ranch. This averaging was necessary as the degree of missingness was too high for imputation to proceed for some camps. Multiple imputation was performed using the `Amelia` package and was informed by lags/leads, seasonality, and continuous daily weather data from two nearby by weather stations including precipitation, temperature, relative humidity, and wind speed. Multiple imputation produced \_\_\_ <!--# 10? --> imputed daily datasets which were then each aggregated monthly and used for calculating SPEI using potential evapotranspiration from Xavier et al. [-@xavierDailyGriddedMeteorological2016] to calculate climatic water balance <!--# why not use mean temperature from weather stations? -->. Then, the <!--# number --> resulting SPEI datasets were averaged to produce a single dataset.
+
+### Ground-based gridded products
+
+-   Daily gridded meteorological variables in Brazil [@xavierDailyGriddedMeteorological2016]
+
+    -   Resolution 0.25º x 0.25º
+
+    -   Includes precipitation and potential evapotranspiration
+
+    -   PET calculated by ... method
+
+    -   Source: <!--# number --> ground-based weather stations across Brazil
+
+    -   Date range: 1980--2015
+
+-   Daily precipitation grids for South America [@liebmannDailyPrecipitationGrids2005] <!--# Not sure this one even makes sense to use, as it doesn't include ETO or temperature data, so I'd have to get that from Xavier or another source. -->
+
+    -   Resolution 1º x 1º
+
+    -   Includes only precipitation
+
+    -   PET calculated by \_\_\_ method using \_\_\_ data
+
+    -   Source: <!--# number --> ground-based weather stations across South America
+
+    -   Date range: 1987--2012
+
+-   Global SPEI [@santiago2017]
+
+    -   Resolution: 0.5º x 0.5º
+
+    -   Provides SPEI calculated using monthly precipitation and potential evapotranspiration estimated with the FAO-56 Pennman-Monteith method, which is considered a superior method to Thornwaite, which only takes temperature into account.
+
+    -   Source: CRU TS version 4.03, a gridded product based on land stations.
+
+    -   Date range: 1901--2018
+
+### Satelite and reanalysis products
+
+-   TRMM 3B43 <!--# doesn't go back far enough.  Not worth using? -->
+
+    -   Resolution: 0.25º x 0.25º
+
+    -   Includes:
+
+    -   PET calculated by\_\_\_ method using\_\_\_ data
+
+    -   Date range: 1997--2015
+
+-   PERSIANN-CDR
+
+    -   only rainfall, but recommended by [@zhaoEvaluatingDroughtMonitoringUtility2019] for Amazonia.
+
+    -   0.25º resolution
+
+    -   1983--present
+
+```{r xa-spei}
+#aggregate monthly, then calculate climate water balance.
+xa_mon <-
+  xa %>% 
+  unite(latlon, lat, lon, sep = ", ") %>% 
+  mutate(yearmonth = yearmonth(date), .after = date) %>% 
+  group_by(yearmonth, latlon) %>% 
+  summarize(across(c(precip, eto), sum), .groups = "drop") %>% 
+  as_tsibble(index = yearmonth, key = latlon)
+
+xa_spei <-
+  xa_mon %>% 
+  mutate(cb = precip - eto) %>% 
+  group_by(latlon) %>%
+  group_nest() %>% 
+  mutate(xa_spei = map(data, ~as.numeric(spei(.x$cb, scale = 3)$fitted))) %>% 
+  unnest(c(xa_spei, data)) %>% 
+  select(-cb)
+```
+
+```{r sa-spei}
+# sa # I'm not sure this one is worth adding to the comparison since there is no temperature or ETO data associated with it.
+
+```
+
+```{r trmm-spei}
+library(ncdf4)
+nc_open()
+```
+
+# References
+
+<!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
+
+::: {#refs}
+:::

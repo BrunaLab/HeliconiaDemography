@@ -1,5 +1,5 @@
 ---
-title: "Density dependence"
+title: "Appendix 2: Density dependence"
 author: "Eric R. Scott"
 date: '2020-09-13'
 output: 
