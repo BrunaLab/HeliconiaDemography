@@ -62,27 +62,39 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-1.  Little is known about how organisms respond to multiple anthropogenic stresses simultaneously <!--# (see Lakeman-Fraser and Ewers 2014)  -->
+1.  Little is known about how organisms respond to multiple anthropogenic stresses simultaneously <!--# (see Lakeman-Fraser and Ewers 2014)  Might not be a good introduction if we can't do much with interactions. --> ... how multiple sources of biotic and abiotic stress at different scales affect demography. ... increasingly antrhropogenic...
 
-2.  The Amazon Basin, an important place, has been fragmented, and although deforestation has slowed in recent years, it is continuing.
+    -   "multiple environmental factors" instead of "anthropogenic stresses"?
 
-    1.  fragmentation is bad because...
+    -   Cite Pedro F. Quintana-Ascencio in intro---he will likely be a reviewer.
+
+    -   Cite Jennifer Williams
+
+    -   Emphasize demography. We know about interactions on physiology and other stuff, but we don't know as much about how demography of plants is shaped by how populations respond to multiple stresses, increasingly anthropogenic.
+
+    -   Especially difficult when lagged effects are expected. Part of the challenge in doing this modeling is the statistics are new <!--# maybe goes in discussion --> . "Move beyond the statistical shackles of interaction terms".LOL
+
+2.  The Amazon Basin (or tropical lowland forests), an important place, has been fragmented, and although deforestation has slowed in recent years, it is continuing.
+
+    1.  fragmentation is bad because loss of microclimate buffering, edge effects.
 
 3.  Simultaneously, there is a drying trend in the Amazon and also increasing intensity and frequency of droughts caused by ENSO (wet-season) and sea surface warming (dry-season).
 
     1.  Drought is bad because...
 
-4.  The effects of drought and fragmentation could be additive, or interactive.
+4.  The effects of fragmentation and drought could be additive, or interactive. Could be both positive or negative depending on the vital rate.
 
     1.  The effects of drought could be more severe in fragments because of reduced microclimate buffering.
 
     2.  Alternatively, plants in fragmented habitats could be more resilient to drought because the individuals surviving in fragmented forests are already resilient in the face of a relatively dry and variable climate, even in non-drought years.
 
-    3.  Fragmentation affects plant size (in *Heliconia* [@brunaDemographicEffectsHabitat2005] and trees [@schwartz2019]). Smaller/larger plants might be more susceptible to drought. So differential effects of drought in fragments and continuous forest could be due to an interaction between drought and plant size. <!--# this paragraph might be better in conclusion.  Depends on if it makes sense without introducing the study system. BUT, I feel like there should be some justification for looking for interaction with plant size (if that's something we can even do). -->
+5.  In addition to variation among vital rates, responses to drought and fragmentation cuold depend on life history stage or plant size. Large established adults could repsond differently than seedlings. This is unknown because there are very few systems where we have data on entire life history in a climate change or fragmentation context.
 
-5.  We investigated the effects of drought on the growth, survival, reproduction, and recruitment of an understory plant in an experimentally fragmented landscape.
+    1.  Fragmentation affects plant size (in *Heliconia* [@brunaDemographicEffectsHabitat2005] and trees [@schwartz2019]). Smaller/larger plants might be more susceptible to drought. So differential effects of drought in fragments and continuous forest could be due to an interaction between drought and plant size.
 
-6.  Specifically, we want to know 1) Does drought have different impacts on plants in forest fragments compared to intact forest? 2) Do the magnitudes and directions of these effects differ among vital rates? 3) Do the effects of drought, fragmentation, and their interaction vary with plant size
+6.  We investigated the effects of drought on the growth, survival, reproduction, and recruitment of an understory plant in an experimentally fragmented landscape.
+
+    1.  Specifically, we want to know 1) Does drought have different impacts on plants in forest fragments compared to intact forest? 2) Do the magnitudes and directions of these effects differ among vital rates? 3) Do the effects of drought, fragmentation, and their interaction vary with plant size <!--# are there size dependent effects of drought and fragmentation? 4) are the effects of drought and fragmentation indpenedent, additive, or synergistic -->
 
 # Notes for Introduction (first attempt at outline):
 
@@ -157,6 +169,8 @@ Habitat fragmentation is bad, pervasive, and getting worse
 # Results
 
 # Discussion
+
+metapopulation dynamics stuff goes here.
 
 # Conclusion
 
