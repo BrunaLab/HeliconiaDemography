@@ -156,9 +156,56 @@ xa_spei <-
 ```
 
 ```{r trmm-spei}
-library(ncdf4)
-nc_open()
+# library(ncdf4)
+# nc_open()
 ```
+
+# For Cronians talk
+Just gonna make a simple-ish plot (lol) with major droughts labeled
+
+```{r}
+xa_df <-
+  xa_spei %>% 
+  group_by(yearmonth) %>% 
+  #Summarize across grid cells
+  summarize(`Xavier et al.` = mean(xa_spei))
+
+comb <- left_join(xa_df, gspei %>% 
+  mutate(yearmonth = yearmonth(date), date = NULL)) %>% 
+  rename(`Global SPEI` = g_spei) %>% 
+  pivot_longer(-yearmonth, names_to = "dataset", values_to = "spei") %>% 
+  filter(yearmonth > yearmonth(ymd("1990-01-01")))
+```
+
+
+```{r}
+p <-
+  ggplot(comb %>% filter(dataset == "Xavier et al."), aes(x = yearmonth, y = spei, color = dataset)) +
+  geom_line() +
+  scale_color_manual(values = c("#3b1255", "darkgreen")) +
+  labs(y = "SPEI")
+p <- annotate_spei(p)
+
+p <-
+  p +
+  scale_x_yearmonth(date_breaks = "3 years",
+                    date_labels = "%Y") +
+  theme_bw() +
+  theme(axis.title.x = element_blank(), 
+        panel.grid = element_blank(),
+        legend.position = "bottom")
+p
+ggsave(here("spei_xavier.png"), p, width = 10, height = 4, units = "in")
+```
+
+
+Try labeling droughts
+
+```{r}
+library(gghighlight)
+p + gghighlight(year(yearmonth) ==2010, use_direct_label = FALSE)
+```
+
 
 # References
 
