@@ -64,8 +64,9 @@ nearest <- function(x, val) {
 #'
 #' @examples
 annotate_spei <- function(p, ...) {
+  ymin <- min(ggplot_build(p)$layout$panel_scales_y[[1]]$range$range[1], -2.5)
   spei_rects <- list(
-    annotate(geom = "rect", xmin = -Inf, xmax = Inf, ymin = -4.2, ymax = -2, fill = "#e31a1c", ...),
+    annotate(geom = "rect", xmin = -Inf, xmax = Inf, ymin = ymin, ymax = -2, fill = "#e31a1c", ...),
     annotate(geom = "rect", xmin = -Inf, xmax = Inf, ymin = -2, ymax = -1.5, fill = "#fd8d3c", ...),
     annotate(geom = "rect", xmin = -Inf, xmax = Inf, ymin = -1.5, ymax = -1, fill = "#fecc5c", ...),
     annotate(geom = "rect", xmin = -Inf, xmax = Inf, ymin = -1, ymax = 0, fill = "#ffffb2", ...) 
