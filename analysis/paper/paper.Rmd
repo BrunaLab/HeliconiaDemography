@@ -26,6 +26,7 @@ output:
       - --lua-filter=../templates/scholarly-metadata.lua
       - --lua-filter=../templates/author-info-blocks.lua
       - --lua-filter=../templates/pagebreak.lua
+linkcolor: blue
 bibliography: references.bib
 csl: "../templates/ecology.csl" # Insert path for the bib-style
 abstract: |
@@ -62,9 +63,7 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-1.  Little is known about how organisms respond to multiple anthropogenic stresses simultaneously <!--# (see Lakeman-Fraser and Ewers 2014)  Might not be a good introduction if we can't do much with interactions. --> ... how multiple sources of biotic and abiotic stress at different scales affect demography. ... increasingly antrhropogenic...
-
-    -   "multiple environmental factors" instead of "anthropogenic stresses"?
+1.  Organisms experience multiple sources of natural and anthropogenic stress simultaneously. However, the impacts of multiple sources of stress on population dynamics are not well understood [@tyeDemographicMenageTrois2016].
 
     -   Cite Pedro F. Quintana-Ascencio in intro---he will likely be a reviewer.
 
@@ -74,91 +73,49 @@ knitr::opts_chunk$set(
 
     -   Especially difficult when lagged effects are expected. Part of the challenge in doing this modeling is the statistics are new <!--# maybe goes in discussion --> . "Move beyond the statistical shackles of interaction terms".LOL
 
-2.  The Amazon Basin (or tropical lowland forests), an important place, has been fragmented, and although deforestation has slowed in recent years, it is continuing.
+2.  As a result of intense deforestation, tropical lowland forests are becoming an increasingly fragmented landscape. This is especially true in the Amazon basin where \_\_\_\_ km^2^ forest are within 100m of a forest edge <!--# citation -->.
 
-    1.  fragmentation is bad because loss of microclimate buffering, edge effects.
+    -   also cite: Kapos 1989, Lovejoy et al. 1986, Kapos et al. 1997?
 
-3.  Simultaneously, there is a drying trend in the Amazon and also increasing intensity and frequency of droughts caused by ENSO (wet-season) and sea surface warming (dry-season).
+    -   This can result in ...
 
-    1.  Drought is bad because...
+3.  Simultaneously, these fragmented habitats are experiencing increased drought stress as a result of climate change. The northern Amazon has been experiencing a drying trend since the mid 1970s and ensemble climate models predict substantial decreases in dry season precipitation in southern Amazonia for the 21st century [@malhi2008]. Additionally, El Niño Southern Oscillation (ENSO)-induced droughts are predicted to increase in frequency and severity [@caiIncreasingFrequencyExtreme2014].
 
-4.  The effects of fragmentation and drought could be additive, or interactive. Could be both positive or negative depending on the vital rate.
+    -   1997 ENSO drought [@williamsonAmazonianTreeMortality2000]
 
-    1.  The effects of drought could be more severe in fragments because of reduced microclimate buffering.
+    -   2005 ENSO drought [@phillipsDroughtSensitivityAmazon2009; @marengoDroughtAmazonia20052008]
 
-    2.  Alternatively, plants in fragmented habitats could be more resilient to drought because the individuals surviving in fragmented forests are already resilient in the face of a relatively dry and variable climate, even in non-drought years.
+    -   2010 drought [@lewis2010AmazonDrought2011]
 
-5.  In addition to variation among vital rates, responses to drought and fragmentation cuold depend on life history stage or plant size. Large established adults could repsond differently than seedlings. This is unknown because there are very few systems where we have data on entire life history in a climate change or fragmentation context.
+    -   Drought is bad because...
 
-    1.  Fragmentation affects plant size (in *Heliconia* [@brunaDemographicEffectsHabitat2005] and trees [@schwartz2019]). Smaller/larger plants might be more susceptible to drought. So differential effects of drought in fragments and continuous forest could be due to an interaction between drought and plant size.
+    -   Combined environmental stresses, such as drought and fragmentation, have the potential to exacerbate or dampen effects on population dynamics [@tyeDemographicMenageTrois2016].
 
-6.  We investigated the effects of drought on the growth, survival, reproduction, and recruitment of an understory plant in an experimentally fragmented landscape.
+4.  Plant populations may be more susceptible to drought in fragmented forests. Fragmentation results in changes in forest microclimate that could exacerbate the effects of drought on plant populations. Near edges, tropical forests experience increased solar radiation, increased temperature, and decreased humidity and soil moisture due to reduced microclimate buffering [@ewersFragmentationImpairsMicroclimate2013; @didhamEdgeStructureDetermines1999].
 
-    1.  Specifically, we want to know 1) Does drought have different impacts on plants in forest fragments compared to intact forest? 2) Do the magnitudes and directions of these effects differ among vital rates? 3) Do the effects of drought, fragmentation, and their interaction vary with plant size <!--# are there size dependent effects of drought and fragmentation? 4) are the effects of drought and fragmentation indpenedent, additive, or synergistic -->
+    -   Trees near forest edges experience increased mortality after droughts compared to forest interiors [@schwartz2019; @lauranceEffectsStrongDrought2001].
 
-# Notes for Introduction (first attempt at outline):
+    -    Increased mortality after droughts disproportionately affects large trees.
 
-Habitat fragmentation is bad, pervasive, and getting worse
+5.  Alternatively, plant individuals that are more susceptible to desiccation may not have survived fragmentation, resulting in populations in fragments which are more resilient to drought.
 
--   stats about global land use change <!--# start this broad or start with the Amazon? -->
+    -   [@betts2019].
 
--   stats about amazon deforestation [@malhi2008]
+6.  <!--# I'm now thinking this doesn't need to be a separate paragraph, but included in #4.  Need to do some more reading about this though. -->In addition to variation among vital rates, responses to drought and fragmentation could depend on life history stage or plant size. Large established adults could respond differently than seedlings. This is unknown because there are very few systems where we have data on entire life history in a climate change or fragmentation context.
 
--   stats about how much land is near an edge (refs in Schwartz et al and betts 2019)
+    -   Fragmentation affects plant size (in *Heliconia* [@brunaDemographicEffectsHabitat2005] and trees [@schwartz2019]). Smaller/larger plants might be more susceptible to drought. So differential effects of drought in fragments and continuous forest could be due to an interaction between drought and plant size.
 
--   Why fragmentation bad
-
-    -   microclimate changes [@ewersFragmentationImpairsMicroclimate2013]
-
-    -   metapopulation and connectivity stuff (necessary?)
-
--   Plants in the tropics are less well adapted to fragmentation because lack of historical distrubance and less variable climate [@betts2019]
-
-## Climate change and drought
-
--   The northern Amazon has been experiencing a drying trend since the mid 1970s and ensemble climate models predict substantial decreases in dry season precipitation in southern Amazonia for the 21st century [@malhi2008].
-
--   The El Niño--Southern Oscillation (ENSO) reduces wet-season rainfall in the Amazon <!--# is this correct? Or only in the south? -->. ENSO-induced droughts are predicted to increase in frequency and severity. [@caiIncreasingFrequencyExtreme2014].
-
--   Also sea surface temperature related drought. Warming of north Atlantic results longer and more intense dry season in southern and eastern Amazonia [@phillipsDroughtSensitivityAmazon2009; @malhi2008]
-
--   drought effects on plant vital rates
-
--   1997 ENSO drought [@williamsonAmazonianTreeMortality2000]
-
--   2005 ENSO drought [@phillipsDroughtSensitivityAmazon2009; @marengoDroughtAmazonia20052008]
-
--   2010 drought [@lewis2010AmazonDrought2011]
-
--   [@zengCausesImpacts20052008]
-
-## Interactions
-
--   However, our understanding of how climate change and habitat fragmentation might interact to impact organisms is limited.
-
--   [@schwartz2019] (mention how tree size classes affected differently, but we don't know if this is also true for understory herbaceous plants.
-
--   [@malhi2008]
-
--   The 1997--1998 ENSO drought caused greater tree mortality and increased leaf litter fall in experimentally fragmented forests compared to intact forest in the Amazon [@laurancePositiveFeedbacksForest2001].
-
--   Furthermore, the interactive effects of fragmentation and drought may be difficult to detect in long-lived species (e.g. Heliconia) [bruna paper that shows growth is reduced after 10 years slightly, but impacts reproduction]
-
-## This experiment
-
--   The "fragmentation drought hypothesis" expects drought to have stronger impacts on forest fragments because of reduced microclimate buffering. Under this hypothesis we would expect drought to reduce growth, survival, reproduction and recruitment more in fragmented landscapes compared to intact forest.
-
--   It's also possible that plants in fragments have already been filtered such that the survivors are already adapted to more variable and desiccating conditions associated with forest edges [@schwartz2019]. This may result in drought having a less noticeable impact on plants in fragments, although we would expect fragmentation to still have an impact on survival, growth, and reproduction.
-
--   We set out to answer the following questions: 1) Does drought have different impacts on plants in forest fragments compared to intact forest? 2) Do the magnitudes and directions of these effects differ among vital rates? 3) Do the effects of drought, fragmentation, and their interaction vary with plant size [@tredennickSizebyenvironmentInteractionsNeglected2018] <!--# read this referrebce --> ?
-
-# Background
+7.  We investigated the effects of drought on the growth, survival, reproduction, and recruitment of an understory plant in an experimentally fragmented landscape. Specifically, we want to know 1) Does drought increase or decrease the growth, survival, and fertility rates of plant populations in continuous forest? 2) Are the effects of drought on the vital rates of populations in fragments similar in direction and magnitude to those in continuous forest? 3) Are the effects of drought and fragmentation on vital rates consistent across life-history stages?
 
 # Methods
+
+<!--# Emilio, feel free to edit -->
 
 *Heliconia acuminata* (Heliconiaceae) is a perennial, self-incompatible understory monocot native to the nonflooded rainforests of central Amazonia. *Heliconia* are rhizomatious, but clonal reproduction via underground runners is rare in *H. acuminata*, unlike other congeners [@bruna2004]. Vegetative shoots grow from the rhizome as well as one or more flowering shoots when plants reproduce. Each flowering shoot has a single inflorescence of 20--25 flowers [@bruna2002]. Flowers are pollinated nearly exclusively by two species of hummingbirds at this site <!--# species? -->. Pollinated ovaries develop into fleshy fruits containing a maximum of 3 seeds which are dispersed exclusively by birds [@uriarte2011; @brunaHeliconiaAcuminataSeed2014].
 
 ## Site
+
+<!--# Emilio: please edit -->
 
 -   All field data were collected at the Biological Dynamics of Forest Fragments Project (BDFFP)---a long term experimental site located about 80km north of Manaus (2º30' S, 60ºW) [@laurance2011; @laurance2002; @bierregaard1992]. The experimental plots are located in BDFFP reserves in nonflooded tropical lowland rainforest with nutrient-poor, well-draining, xanthic ferrosols.
 
