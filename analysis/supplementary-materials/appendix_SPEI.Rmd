@@ -54,13 +54,14 @@ conflict_prefer("select", "dplyr")
 # Precip Sources
 xa <- read_csv(here("analysis", "data", "raw_data", "xavier_daily_0.25x0.25.csv"))
 sa <- read_csv(here("analysis", "data", "raw_data", "sa_daily_1x1.csv"))
-trmm <-
+# trmm <-
   
 # Already calculated SPEI  
 gspei <-
   read_delim(here("analysis", "data", "raw_data", "global_spei_-59.75_-2.25.csv"),
              delim = ";") %>% 
-  rename(date = "days since 1900-1-1", g_spei = spei)
+  rename(date = "days since 1900-1-1", g_spei = spei) %>% 
+  mutate(yearmonth = yearmonth(date), date = NULL)
   
 bdffp <- read_csv(here("analysis", "data", "raw_data", "mon_precip_spi_imputed.csv"))
 
@@ -73,6 +74,17 @@ bdffp <- read_csv(here("analysis", "data", "raw_data", "mon_precip_spi_imputed.c
 ### BDFFP rain gauge data
 
 Daily rain gauge data collected from 1987--2010 at BDFFP camps. The precipitation data has a high degree of missingness due to camps being visited infrequently and because not all camps were active from 1987--2010. There we also a large number of observations that were accumulated rainfall over two or more days. We removed multi-day accumulations as it was impossible to know how rainfall was distributed over the prior days. Missing values were then imputed after averaging rainfall data by ranch. This averaging was necessary as the degree of missingness was too high for imputation to proceed for some camps. Multiple imputation was performed using the `Amelia` package and was informed by lags/leads, seasonality, and continuous daily weather data from two nearby by weather stations including precipitation, temperature, relative humidity, and wind speed. Multiple imputation produced \_\_\_ <!--# 10? --> imputed daily datasets which were then each aggregated monthly and used for calculating SPEI using potential evapotranspiration from Xavier et al. [-@xavierDailyGriddedMeteorological2016] to calculate climatic water balance <!--# why not use mean temperature from weather stations? -->. Then, the <!--# number --> resulting SPEI datasets were averaged to produce a single dataset.
+
+### Meterological stations
+
+-   EMBRAPA stations
+
+    -   Source: 
+
+    -   Date Range:
+    
+    -   PET calcualted by ... method
+    
 
 ### Ground-based gridded products
 
@@ -87,18 +99,6 @@ Daily rain gauge data collected from 1987--2010 at BDFFP camps. The precipitatio
     -   Source: <!--# number --> ground-based weather stations across Brazil
 
     -   Date range: 1980--2015
-
--   Daily precipitation grids for South America [@liebmannDailyPrecipitationGrids2005] <!--# Not sure this one even makes sense to use, as it doesn't include ETO or temperature data, so I'd have to get that from Xavier or another source. -->
-
-    -   Resolution 1º x 1º
-
-    -   Includes only precipitation
-
-    -   PET calculated by \_\_\_ method using \_\_\_ data
-
-    -   Source: <!--# number --> ground-based weather stations across South America
-
-    -   Date range: 1987--2012
 
 -   Global SPEI [@santiago2017]
 
@@ -150,9 +150,43 @@ xa_spei <-
   select(-cb)
 ```
 
-```{r sa-spei}
-# sa # I'm not sure this one is worth adding to the comparison since there is no temperature or ETO data associated with it.
+```{r embrapa-spei}
+rpde <-
+  read_csv(here("analysis", "data", "raw_data", "embrapa", "Estacao_Rio Preto da Eva_1980-01-01_2016-12-31.csv")) %>% 
+  select(date = Data,
+         precip = Precipitacao,
+         eto = Evatotranspiracao,
+  )
+manaus <-
+  read_csv(here("analysis", "data", "raw_data", "embrapa", "Estacao_Manaus_1980-01-01_2016-12-31.csv"))%>% 
+  select(date = Data,
+         precip = Precipitacao,
+         eto = Evatotranspiracao,
+  )
 
+embrapa_mon <-
+  bind_rows("rpde" = rpde, "manaus" = manaus, .id = "station") %>% 
+  mutate(yearmonth = yearmonth(date), .after = date) %>% 
+  group_by(yearmonth, station) %>% 
+  summarize(across(c(precip, eto), sum), .groups = "drop") %>% 
+  as_tsibble(index = yearmonth, key = station)
+
+embrapa_spei <-
+  embrapa_mon %>% 
+  mutate(cb = precip - eto) %>% 
+  group_by(station) %>% 
+  group_nest() %>% 
+  mutate(st_spei = map(data, ~as.numeric(spei(.x$cb, scale = 3)$fitted))) %>% 
+  unnest(c(st_spei, data)) %>% 
+  select(-cb) 
+
+embrapa_wide <-
+  embrapa_spei %>% 
+  select(yearmonth, station, st_spei) %>% 
+  pivot_wider(names_from= station, values_from = st_spei, names_prefix = "spei_") %>% 
+  rowwise() %>% 
+  mutate(st_spei = mean(c(spei_manaus, spei_rpde))) %>% 
+  ungroup()
 ```
 
 ```{r trmm-spei}
@@ -160,23 +194,76 @@ xa_spei <-
 # nc_open()
 ```
 
-# For Cronians talk
-Just gonna make a simple-ish plot (lol) with major droughts labeled
+# Plot
+
+Create a plot comparing data sources with known drought years labeled.
+
+## Combine into single tidy data frame
 
 ```{r}
+# take average across site
 xa_df <-
   xa_spei %>% 
   group_by(yearmonth) %>% 
   #Summarize across grid cells
-  summarize(`Xavier et al.` = mean(xa_spei))
+  summarize(xa_spei = mean(xa_spei))
 
-comb <- left_join(xa_df, gspei %>% 
-  mutate(yearmonth = yearmonth(date), date = NULL)) %>% 
-  rename(`Global SPEI` = g_spei) %>% 
+comb <-
+  full_join(xa_df, gspei) %>% 
+  full_join(embrapa_wide %>% select(yearmonth, st_spei)) %>% 
+  rename(`Global SPEI` = g_spei,
+         `Xavier et al.` = xa_spei,
+         `EMBRAPA` = st_spei) %>% 
   pivot_longer(-yearmonth, names_to = "dataset", values_to = "spei") %>% 
   filter(yearmonth > yearmonth(ymd("1990-01-01")))
 ```
 
+Annotate worst droughts.  
+Expected:
+
+- 2004 & 2006: weak ENSO
+- 2002 & 2009: moderate ENSO
+- 1997: severe ENSO
+- 2005 & 2010: severe SST
+
+```{r}
+comb <- 
+  comb %>% 
+  mutate(year = year(yearmonth)) %>% 
+  group_by(year) %>% 
+  mutate(min_mon = spei == min(spei)) %>% 
+  mutate(drought_label = case_when(
+    year %in% c(2004, 2006) & min_mon ~ "weak ENSO",
+    year %in% c(2002, 2009) & min_mon ~ "moderate ENSO",
+    year == 1997 & min_mon ~ "severe ENSO",
+    year %in% c(2005, 2010) & min_mon ~ "severe SST"
+    ))
+```
+
+
+```{r}
+labs <- comb %>% 
+  filter(!is.na(drought_label)) %>% 
+  group_by(drought_label) %>% 
+  mutate(xend = mean(yearmonth))
+
+p <-
+  ggplot(comb, aes(x = yearmonth, y = spei)) +
+  geom_line(aes(linetype = dataset), size = 0.5) +
+  # geom_label_repel(data = comb %>% filter(!is.na(drought_label)),
+  #                  aes(label = drought_label, y = -2.5))
+  geom_segment(data = labs,
+               aes(xend = yearmonth, yend = spei -1)) +
+  geom_label(data = labs,
+             aes(x = yearmonth, y = spei-1, label = year, fill = drought_label)) +
+  scale_x_yearmonth(date_breaks = "2 years") +
+  scale_color_brewer(type = "qual", palette = 2) +
+  coord_cartesian(xlim = c(yearmonth(ymd("1997-01-01")), yearmonth(ymd("2010-11-01")))) +
+  theme_bw()
+annotate_spei(p)
+```
+
+For Cronian's talk:
 
 ```{r}
 p <-
@@ -199,12 +286,6 @@ ggsave(here("spei_xavier.png"), p, width = 10, height = 4, units = "in")
 ```
 
 
-Try labeling droughts
-
-```{r}
-library(gghighlight)
-p + gghighlight(year(yearmonth) ==2010, use_direct_label = FALSE)
-```
 
 
 # References
