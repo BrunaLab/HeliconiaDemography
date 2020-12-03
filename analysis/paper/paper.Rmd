@@ -122,20 +122,15 @@ Finally, the long-term data needed to test population-level hypotheses about cli
 7.  We investigated the effects of drought on the growth, survival, reproduction, and recruitment of an understory plant in an experimentally fragmented landscape. Specifically, we want to know 1) Does drought increase or decrease the growth, survival, and fertility rates of plant populations in continuous forest? 2) Are the effects of drought on the vital rates of populations in fragments similar in direction and magnitude to those in continuous forest? 3) Are the effects of drought and fragmentation on vital rates consistent across life-history stages?
 
 # Methods
+## Study site
 
-<!--# Emilio, feel free to edit -->
+The Biological Dynamics of Forest Fragments Project (BDFFP) is located ~70 km north of Manaus, Brazil (2º30' S, 60ºW). In addition to large expanses of continuous forest, the BDFFP has forest fragment reserves ranging in size from 1-100 ha (Fig. --). These fragments were isolated from 1980-1984 by felling the trees surrounding the forest patch chosen for isolation and, in most cases, burning the downed trees once they dried. The vegetation regenerating around fragments is cleared periodically to ensure their isolation (Bierregaard et al. 2001). The BDFFP reserves are located in nonflooded (i.e., *terra firme*) tropical lowland forest with a 30-37m tall canopy, emergent trees up to 55m (Rankin-de Merona et al. 1992), and an understory dominated by stemless palms (Scariot 1999). The soils in the reserves are nutrient-poor xanthic ferrosols with poor water retention capacity despite their high clay content. Mean annual temperature in the region is 26º C (range=19–39º C), and annual rainfall at the BDFFP reserves ranges from 1900-2300 mm with a pronounced dry season from June to October (Appendix?).
 
-*Heliconia acuminata* (Heliconiaceae) is a perennial, self-incompatible understory monocot native to the nonflooded rainforests of central Amazonia. *Heliconia* are rhizomatious, but clonal reproduction via underground runners is rare in *H. acuminata*, unlike other congeners [@bruna2004]. Vegetative shoots grow from the rhizome as well as one or more flowering shoots when plants reproduce. Each flowering shoot has a single inflorescence of 20--25 flowers [@bruna2002]. Flowers are pollinated nearly exclusively by two species of hummingbirds at this site <!--# species? -->. Pollinated ovaries develop into fleshy fruits containing a maximum of 3 seeds which are dispersed exclusively by birds [@uriarte2011; @brunaHeliconiaAcuminataSeed2014].
+## Focal species 
+*Heliconia acuminata* (LC Rich.) (Heliconiaceae) is a perennial monocot widely distributed throughout the Central Amazon (Kress 1990), and it is the most abundant understory herb at the BDFFP (Ribeiro et al. 2010). While many *Heliconia* species grow in large patches along forest edges or in disturbed areas, others -- such as *H. acuminata* -- are found at lower densities in shaded forest understories. Species in this group produce fewer infloresences and are pollinated by traplining hummingbirds that move from one plant to the next rather than defend a territory (Berry and Kress 1991). In our sites *H. acuminata* is pollinated by *Phaeothornis superciliosus* and *P. bourcieri* (Bruna et al. 2004); reproducctive plants will have 1-X flowering shoots , wach of which has an inflorescence with 20--25 flowers [@bruna2002]. Fruits mature April-May and are consumed by a thrush and several species of manakin (Uriarte et al. 2011). Dispersed seeds (1-3 seeds per fruit,	$\bar{x}$=2) germinate ~6 months after dispersal at the beginning of the rainy season, and have higher rates of germination and seedling establishment in continuous forest than forest fragments (Bruna 1999, 2002). *Heliconia acuminata* is self-incompatible and does not reproduce vegetatively. 
 
-## Site
-
-<!--# Emilio: please edit -->
-
--   All field data were collected at the Biological Dynamics of Forest Fragments Project (BDFFP)---a long term experimental site located about 80km north of Manaus (2º30' S, 60ºW) [@laurance2011; @laurance2002; @bierregaard1992]. The experimental plots are located in BDFFP reserves in nonflooded tropical lowland rainforest with nutrient-poor, well-draining, xanthic ferrosols.
-
--   Something about seasonality
-
--   BDFFP is comprised of replicated forest fragments of 1, 10, and 100ha as well as continuous forest plots that were established between 1980 and 1984. Fragments were maintained by clearing secondary growth around fragments occasionally <!--# Best reference for this? -->. Demographic plots ($50 \times 100$m) were established in <!--# year --> to track the growth, reproduction, and survival of *Heliconia acuminata*. Six of these plots were established in continuous forest, four were in 1-ha fragments, and three were in 10-ha fragments. The plots in continuous forest were established at haphazardly chosen locations 500--4000m from any mature forest borders, plots in 1-ha fragments were established on a randomly selected half of the fragment, and plots in 10-ha fragments were established in the center.
+## Demographic data collection
+In 1997-1998 we established a series of 5000 $m^{2}$ plots ($50 \times 100$m) in the BDFFP reserves in which we marked and measured all *H. acuminata*. The plots are located in continuous forest (n=6), 10-ha fragments (n=3), and 1-ha fragments (n=4), with distance between plots ranging from 500 m-41 km. Plots in 1-ha fragments were on one randomly selected half of the fragment, plots in 10-ha fragments were in the fragment center, and plots in continuous forest were placed in locations 500-4000 m from the borders of secondary and mature forest (Fig or Table). Each plot is subdivided into 50 quadrats ($10 \times 10$m) to simplify surveys, during which we recorded the identity of flowering plants, the number of vegetative shoots each plant had, and the height of each plant to the tallest leaf. Height and shoot number are correlated with leaf area, the probability of flowering, and rates of survivorship (Bruna and Kress 2002, Bruna et al. 2002). In 2008 we mapped the location of all established plants to the nearest 10 cm; in subsequent years we did the same with all new seedlings. There is a seven-fold range in H. acuminata density in the forest plots, with density in several of the plots comparable to that in low-density fragments (Bruna and Kress 2002).
 
 # Results
 
@@ -147,9 +142,13 @@ metapopulation dynamics stuff goes here.
 
 # Acknowledgments
 
+We thank ----, ----, ----, and --- anonymous reviewers for helpful discussions and comments on the manuscript. We also thank the technicians and students who helped conduct the *Heliconia* censuses and the BDFFP and INPA for logistical support. Financial support was provided by the U.S. National Science Foundation (awards DEB-0614339, DEB-0614149, INT 98-06351, and DEB-1948607). This is publication No. ---- in the BDFFP Technical Series.
+
+
 If TRMM data is used, they suggest: "The TMPA data were provided by the\
 NASA/Goddard Space Flight Center's Mesoscale Atmospheric Processes Laboratory and\
 PPS, which develop and compute the TMPA as a contribution to TRMM."
+
 
 # References
 
