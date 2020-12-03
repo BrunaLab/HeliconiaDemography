@@ -63,6 +63,16 @@ knitr::opts_chunk$set(
 
 # Introduction
 
+Habitat fragmentation and drought are major threats to biodiversity, and it has been hypothesized that they could act synergistically to further reduce population viability in fragmented landscapes, particularly in the tropics [@lauranceEffectsStrongDrought2001; @didhamEdgeStructureDetermines1999]. Forest fragmentation is widespread and has resulted in 70% of the Earth's remaining forest being within 1km of forest edge [@haddadHabitatFragmentationIts2015]. In the Brazilian Amazon, over 70,000 km of new forest edges are being created annually [@broadbentForestFragmentationEdge2008].
+
+Near edges, tropical forests experience increased solar radiation, increased temperature, and decreased humidity and soil moisture due to reduced microclimate buffering [@ewersFragmentationImpairsMicroclimate2013; @didhamEdgeStructureDetermines1999]. This decrease in microclimate buffering could exacerbate the effects of drought in fragments compared to intact forest. Drought-induced tree mortality has been observed to increase more near forest edges compared to interiors [@schwartz2019; @lauranceEffectsStrongDrought2001] <!--# not sure if this belongs here, for flow into next paragraph -->.
+
+To date, however, this hypothesis remains untested for three primary reasons. First, most studies elucidating how tropical plants respond to fragmentation have studied either juvenile (i.e., seed, seedling) or larger, reproductive plants. <!--# example of juvenile but not reproductive study with drought -->. <!--# example of reproductive but not juvenile study with drought -->. Additionally, while most studies of tropical plant demography focus on trees, little is known about the understory plants that comprise up to \_\_\_\_% of biomass in tropical forests and are ecologically important <!--# citations -->.
+
+Second, there is a growing literature on how tropical plants respond to severe droughts, but few studies have compared the responses of plants in continuous forest with those in fragments. Laurance et al. [-@lauranceEffectsStrongDrought2001] found that the increase in tree (\>10 cm DBH) mortality during a drought were exacerbated in fragments, but the decline in mortality after the drought was also stronger in fragments. However, in a temperate system... <!--# oak paper --> [@forner2020].
+
+Finally, the long-term data needed to test population-level hypotheses about climate change-fragmentation synergies are scant, especially for tropical systems [@salguero-gomezCOMPADREPlantMatrix2015; @croneHowPlantEcologists2011]. However, without multi-decadal sampling one cannot capture enough droughts to quantify their ecological impact, nor the variation in vital rates needed to parameterize demographic models of long-lived species in changing climates [@morrisQuantitativeConservationBiology2002; @teller2016]. Long-term data are also needed because while some demographic effects of fragmentation or drought on can be detected immediately, others may take years to manifest.
+
 1.  Organisms experience multiple sources of natural and anthropogenic stress simultaneously. However, the impacts of multiple sources of stress on population dynamics are not well understood [@tyeDemographicMenageTrois2016].
 
     -   Cite Pedro F. Quintana-Ascencio in intro---he will likely be a reviewer.
