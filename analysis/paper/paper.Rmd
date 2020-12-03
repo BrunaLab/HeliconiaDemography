@@ -75,6 +75,8 @@ knitr::opts_chunk$set(
 
 2.  As a result of intense deforestation, tropical lowland forests are becoming an increasingly fragmented landscape. This is especially true in the Amazon basin where \_\_\_\_ km^2^ forest are within 100m of a forest edge <!--# citation -->.
 
+    -   "Over 70000 km of new forest edges are being created annually in the Brazilian Amazon by human activities (Broadbent et al., 2008)"
+
     -   also cite: Kapos 1989, Lovejoy et al. 1986, Kapos et al. 1997?
 
     -   This can result in ...
@@ -95,13 +97,15 @@ knitr::opts_chunk$set(
 
     -   Trees near forest edges experience increased mortality after droughts compared to forest interiors [@schwartz2019; @lauranceEffectsStrongDrought2001].
 
-    -    Increased mortality after droughts disproportionately affects large trees.
+    -   Increased mortality after droughts disproportionately affects large trees.
 
 5.  Alternatively, plant individuals that are more susceptible to desiccation may not have survived fragmentation, resulting in populations in fragments which are more resilient to drought.
 
     -   [@betts2019].
 
-6.  <!--# I'm now thinking this doesn't need to be a separate paragraph, but included in #4.  Need to do some more reading about this though. -->In addition to variation among vital rates, responses to drought and fragmentation could depend on life history stage or plant size. Large established adults could respond differently than seedlings. This is unknown because there are very few systems where we have data on entire life history in a climate change or fragmentation context.
+6.  <!--# I'm now thinking this doesn't need to be a separate paragraph, but included in #4.  Need to do some more reading about this though. -->
+
+    In addition to variation among vital rates, responses to drought and fragmentation could depend on life history stage or plant size. Large established adults could respond differently than seedlings. This is unknown because there are very few systems where we have data on entire life history in a climate change or fragmentation context.
 
     -   Fragmentation affects plant size (in *Heliconia* [@brunaDemographicEffectsHabitat2005] and trees [@schwartz2019]). Smaller/larger plants might be more susceptible to drought. So differential effects of drought in fragments and continuous forest could be due to an interaction between drought and plant size.
 
