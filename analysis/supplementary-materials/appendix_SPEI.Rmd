@@ -30,6 +30,7 @@ library(conflicted)
 library(SPEI)
 library(tsibble)
 library(lubridate)
+library(glue)
 
 library(HeliconiaDemography)
 
@@ -79,34 +80,31 @@ Daily rain gauge data collected from 1987--2010 at BDFFP camps. The precipitatio
 
 -   EMBRAPA stations
 
-    -   Source: 
+    -   Estacao Rio Preto da Eva: -2.65º, -59.65º
 
-    -   Date Range:
-    
-    -   PET calcualted by ... method
-    
+    -   Estacao Manaus: -2.65º, -60.35º (note, this is not in Manaus city, but NW of it.)
+
+    -   Date Range: 1980-present
+
+    -   Unclear how evapotranspiration is calculated from the [information provided](https://www.embrapa.br/en/busca-de-solucoes-tecnologicas/-/produto-servico/6044/infoclima---informacoes-climaticas).
 
 ### Ground-based gridded products
 
 -   Daily gridded meteorological variables in Brazil [@xavierDailyGriddedMeteorological2016]
 
     -   Resolution 0.25º x 0.25º
-
     -   Includes precipitation and potential evapotranspiration
-
-    -   PET calculated by ... method
-
-    -   Source: <!--# number --> ground-based weather stations across Brazil
-
+    -   PET calculated by Pennman-Monteith method
+    -   Source: 3,625 ground-based weather stations across Brazil
     -   Date range: 1980--2015
 
 -   Global SPEI [@santiago2017]
 
     -   Resolution: 0.5º x 0.5º
 
-    -   Provides SPEI calculated using monthly precipitation and potential evapotranspiration estimated with the FAO-56 Pennman-Monteith method, which is considered a superior method to Thornwaite, which only takes temperature into account.
+    -   Provides SPEI calculated using monthly precipitation and potential evapotranspiration estimated with the Pennman-Monteith method, which is considered a superior method to Thornwaite, which only takes temperature into account.
 
-    -   Source: CRU TS version 4.03, a gridded product based on land stations.
+    -   Source: Precipitation from CRU TS version 4.03, a gridded product based on land stations.
 
     -   Date range: 1901--2018
 
@@ -115,11 +113,8 @@ Daily rain gauge data collected from 1987--2010 at BDFFP camps. The precipitatio
 -   TRMM 3B43 <!--# doesn't go back far enough.  Not worth using? -->
 
     -   Resolution: 0.25º x 0.25º
-
     -   Includes:
-
     -   PET calculated by\_\_\_ method using\_\_\_ data
-
     -   Date range: 1997--2015
 
 -   PERSIANN-CDR
@@ -194,11 +189,9 @@ embrapa_wide <-
 # nc_open()
 ```
 
-# Plot
 
-Create a plot comparing data sources with known drought years labeled.
 
-## Combine into single tidy data frame
+# Combine into single tidy data frame
 
 ```{r}
 # take average across site
@@ -211,25 +204,134 @@ xa_df <-
 comb <-
   full_join(xa_df, gspei) %>% 
   full_join(embrapa_wide %>% select(yearmonth, st_spei)) %>% 
-  rename(`Global SPEI` = g_spei,
-         `Xavier et al.` = xa_spei,
-         `EMBRAPA` = st_spei) %>% 
   pivot_longer(-yearmonth, names_to = "dataset", values_to = "spei") %>% 
-  filter(yearmonth > yearmonth(ymd("1990-01-01")))
+  filter(yearmonth > yearmonth(ymd("1990-01-01"))) %>% 
+  mutate(year = year(yearmonth), .before = yearmonth)
 ```
 
-Annotate worst droughts.  
+# Table of Expected Droughts
+Annotate worst droughts.\
 Expected:
 
-- 2004 & 2006: weak ENSO
-- 2002 & 2009: moderate ENSO
-- 1997: severe ENSO
-- 2005 & 2010: severe SST
+-   2004 & 2006: weak ENSO
+-   2002 & 2009: moderate ENSO
+-   1997: severe ENSO
+-   2005 & 2010: severe SST
+
 
 ```{r}
-comb <- 
+spei_table <-
   comb %>% 
-  mutate(year = year(yearmonth)) %>% 
+  group_by(year, dataset) %>% 
+  mutate(min = min(spei)) %>% 
+  filter(spei == min) %>% 
+  mutate(month = month(yearmonth, label = TRUE)) %>% 
+  # summarize(min = min, month = month) %>%
+  filter(year %in% c(2002, 2004, 2006, 2009, 1997, 2005, 2010)) %>% 
+  select(year, dataset, spei, month) %>% 
+  mutate(dataset = str_remove(dataset, "_spei")) %>% 
+  pivot_wider(names_from = dataset, values_from = c(spei, month)) %>% 
+  add_column(cause = c("ENSO", "ENSO", "ENSO", "AMO", "ENSO", "ENSO", "AMO"), .after = "year") %>% 
+  mutate(`Global SPEI` = glue("{round(spei_g, 2)} ({month_g})"),
+         `Xavier et al.` = glue("{round(spei_xa, 2)} ({month_xa})"),
+         `EMBRAPA` = glue("{round(spei_st, 2)} ({month_st})")) %>% 
+  ungroup()
+```
+
+
+```{r}
+library(gt)
+gt(spei_table) %>% 
+  tab_style(
+    style = list(
+      cell_fill(color = "#ffffb2")
+    ),
+    locations = list(
+      cells_body(
+        columns = vars(`Global SPEI`),
+        rows = spei_g < 0 & spei_g >= -1
+      ),
+      cells_body(
+        columns = vars(EMBRAPA),
+        rows = spei_st < 0 & spei_st >= -1
+      ),
+      cells_body(
+        columns = vars(`Xavier et al.`),
+        rows = spei_xa < 0 & spei_xa >= -1
+      )
+    )
+  ) %>% 
+  tab_style(
+    style = list(
+      cell_fill(color = "#fecc5c")
+    ),
+    locations = list(
+      cells_body(
+        columns = vars(`Global SPEI`),
+        rows = spei_g < -1 & spei_g >= -1.5
+      ),
+      cells_body(
+        columns = vars(EMBRAPA),
+        rows = spei_st < -1 & spei_st >= -1.5
+      ),
+      cells_body(
+        columns = vars(`Xavier et al.`),
+        rows = spei_xa < -1 & spei_xa >= -1.5
+      )
+    )
+  ) %>% 
+  tab_style(
+    style = list(
+      cell_fill(color = "#fd8d3c")
+    ),
+    locations = list(
+      cells_body(
+        columns = vars(`Global SPEI`),
+        rows = spei_g < -1.5 & spei_g >= -2
+      ),
+      cells_body(
+        columns = vars(EMBRAPA),
+        rows = spei_st < -1.5 & spei_st >= -2
+      ),
+      cells_body(
+        columns = vars(`Xavier et al.`),
+        rows = spei_xa < -1.5 & spei_xa >= -2
+      )
+    )
+  ) %>% 
+  tab_style(
+    style = list(
+      cell_fill(color = "#e31a1c")
+    ),
+    locations = list(
+      cells_body(
+        columns = vars(`Global SPEI`),
+        rows = spei_g < -2
+      ),
+      cells_body(
+        columns = vars(EMBRAPA),
+        rows = spei_st < -2
+      ),
+      cells_body(
+        columns = vars(`Xavier et al.`),
+        rows = spei_xa < -2
+      )
+    )
+  ) %>% 
+  cols_hide(starts_with(c("spei_", "month_"))) %>% 
+  tab_spanner("Lowest SPEI for the year (Month)", vars(`Global SPEI`, EMBRAPA, `Xavier et al.`))
+
+```
+
+
+
+# Plot
+
+Create a plot comparing data sources with known drought years labeled.
+
+```{r}
+spei_plot <- 
+  comb %>% 
   group_by(year) %>% 
   mutate(min_mon = spei == min(spei)) %>% 
   mutate(drought_label = case_when(
@@ -237,21 +339,27 @@ comb <-
     year %in% c(2002, 2009) & min_mon ~ "moderate ENSO",
     year == 1997 & min_mon ~ "severe ENSO",
     year %in% c(2005, 2010) & min_mon ~ "severe SST"
-    ))
+    )) %>% 
+  mutate(dataset = case_when(
+    dataset == "g_spei"  ~ "Global SPEI",   
+    dataset == "xa_spei" ~ "Xavier et al.",
+    dataset == "st_spei" ~ "EMBRAPA"
+  ))
 ```
 
 
+
+
+
 ```{r}
-labs <- comb %>% 
+labs <- spei_plot %>% 
   filter(!is.na(drought_label)) %>% 
   group_by(drought_label) %>% 
   mutate(xend = mean(yearmonth))
 
 p <-
-  ggplot(comb, aes(x = yearmonth, y = spei)) +
+  ggplot(spei_plot, aes(x = yearmonth, y = spei)) +
   geom_line(aes(linetype = dataset), size = 0.5) +
-  # geom_label_repel(data = comb %>% filter(!is.na(drought_label)),
-  #                  aes(label = drought_label, y = -2.5))
   geom_segment(data = labs,
                aes(xend = yearmonth, yend = spei -1)) +
   geom_label(data = labs,
@@ -262,6 +370,10 @@ p <-
   theme_bw()
 annotate_spei(p)
 ```
+
+
+
+-   Are there still mismatches with 12-month SPEI?
 
 For Cronian's talk:
 
@@ -284,9 +396,6 @@ p <-
 p
 ggsave(here("spei_xavier.png"), p, width = 10, height = 4, units = "in")
 ```
-
-
-
 
 # References
 

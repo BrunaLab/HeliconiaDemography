@@ -30,7 +30,7 @@ conflict_prefer("lag", "dplyr")
 conflict_prefer("filter", "dplyr")
 conflict_prefer("slice", "dplyr")
 
-# library(HeliconiaDemography) #load functions in this compendium
+library(HeliconiaDemography) #load functions in this compendium
 # devtools::load_all()
 ```
 
@@ -217,7 +217,8 @@ Fit the GAM with crossbasis smooth for lagged drought
 g_post_cf <-
   gam(shts_next ~ 
         s(log_shts) + #does this *need* to be log # shoots?
-        # s(shts) +
+        # s(year, bs = "re") + #random effect of year
+        s(plot, bs = "re") + #random effect of plot
         s(spei_history, L,
           bs = "cb",
           k = c(3, 25),  #cubic response (at most) to drought, one knot per month lag.
@@ -239,6 +240,7 @@ anova(g_post_cf)
 g_post_1ha <-
   gam(shts_next ~ 
         s(log_shts) +
+        s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
           k = c(3, 25),  #cubic response (at most) to drought, one knot per month lag.
@@ -262,7 +264,8 @@ This is pretty slow. It could probably be faster if I understood matrix math bet
 # use mean size plant across both habitats so plots are comparable
 ref_data <-
   demog_post %>%
-  dplyr::summarize(log_shts = log(mean(shts, na.rm = TRUE))) #log of mean shoots, not mean of log_shts
+  dplyr::summarize(log_shts = log(mean(shts, na.rm = TRUE)),  #log of mean shoots, not mean of log_shts
+                   plot = "newlevel")
 # exp(1.032814) # 2.8 shoots
 ```
 
@@ -400,6 +403,7 @@ p_growth_cf_months <-
 s_post_cf <-
   gam(surv ~ 
         s(log_shts) +
+        s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
           k = c(3, 25),  #cubic response (at most) to drought, one knot per month lag.
@@ -416,6 +420,7 @@ anova(s_post_cf)
 s_post_1ha <-
   gam(surv ~ 
         s(log_shts) +
+        s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
           k = c(3, 25),  #cubic response (at most) to drought, one knot per month lag.
@@ -523,6 +528,7 @@ p_surv_1ha_slice <-
 f_post_cf <-
   gam(flowered ~ 
         s(log_shts) +
+        s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
           k = c(3, 25),  #cubic response (at most) to drought, one knot per month lag.
@@ -539,6 +545,7 @@ anova(f_post_cf)
 f_post_1ha <-
   gam(flowered ~ 
         s(log_shts) +
+        s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
           k = c(3, 25),  #cubic response (at most) to drought, one knot per month lag.
@@ -858,7 +865,10 @@ augment(flowergam, newdata = newdata_cf) %>%
                    fun = mean,
                    bins = 20) 
 ```
-
+**TODO** Check concurvity between log_shts and climate history.  That's the only thing that makes sense to me.
+```{r}
+concurvity(f_post_cf, full = FALSE)
+```
 
 ```{r}
 p_flowered_spei <- 

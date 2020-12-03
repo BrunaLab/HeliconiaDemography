@@ -25,7 +25,7 @@
 #'   results of `predict.gam()`; min_dist is the euclidean distance on the unit
 #'   square from the fitted values to the actual data used to fit the model.
 #' @export
-#' @importFrom rlang enquo
+#' @importFrom rlang enquo abort
 #' @import purrr
 #' @import dplyr
 #' @import mgcv
@@ -197,6 +197,7 @@ add_min_dist <- function(df, Q_name, L_name, pred) {
     )
   }
   
+  #I think this is the super slow step.  Would be great if it didn't have to be rowwise().
   out <-
     grid %>% 
     rowwise() %>% 
