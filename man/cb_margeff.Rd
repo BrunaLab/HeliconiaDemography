@@ -4,14 +4,14 @@
 \alias{cb_margeff}
 \title{Calculate marginal effects of a crossbasis smooth}
 \usage{
-cb_margeff(Q, L, model, ref_data = NULL, meshpts = c(50, 50), calc_dist = TRUE)
+cb_margeff(model, Q, L, ref_data = NULL, meshpts = c(50, 50), calc_dist = TRUE)
 }
 \arguments{
+\item{model}{a gam with a crossbasis smooth}
+
 \item{Q}{The matrix of predictor values used to generate a crossbasis smooth}
 
 \item{L}{The matrix of lags used to generate a crossbasis smooth}
-
-\item{model}{a gam with a crossbasis smooth}
 
 \item{ref_data}{reference data passed to the \code{newdata} argument of \code{predict}
 (optional). This one-row data frame should contain values for all model

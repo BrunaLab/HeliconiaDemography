@@ -17,3 +17,9 @@ a ggplot object
 \description{
 Add SPI or SPEI indicators to a ggplot
 }
+\examples{
+\dontrun{
+p #a ggplot object plotting SPEI over time
+annotate_spei(p)
+}
+}

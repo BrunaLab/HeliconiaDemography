@@ -58,15 +58,19 @@ nearest <- function(x, val) {
 #'
 #' @param p a ggplot object
 #' @param ... other arguments passed to [annotate()], e.g. `alpha`
-#'
 #' @return a ggplot object
+#' @import ggplot2
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' p #a ggplot object plotting SPEI over time
+#' annotate_spei(p)
+#' }
 annotate_spei <- function(p, ...) {
-  ymin <- min(ggplot_build(p)$layout$panel_scales_y[[1]]$range$range[1], -2.5)
+  ymin <- min(gggplot_build(p)$layout$panel_scales_y[[1]]$range$range[1], -2.5)
   spei_rects <- list(
-    annotate(geom = "rect", xmin = -Inf, xmax = Inf, ymin = ymin, ymax = -2, fill = "#e31a1c", ...),
+    annotate(geom = "rect", xmin = -Inf, xmax = Inf, ymin = .data$ymin, ymax = -2, fill = "#e31a1c", ...),
     annotate(geom = "rect", xmin = -Inf, xmax = Inf, ymin = -2, ymax = -1.5, fill = "#fd8d3c", ...),
     annotate(geom = "rect", xmin = -Inf, xmax = Inf, ymin = -1.5, ymax = -1, fill = "#fecc5c", ...),
     annotate(geom = "rect", xmin = -Inf, xmax = Inf, ymin = -1, ymax = 0, fill = "#ffffb2", ...) 

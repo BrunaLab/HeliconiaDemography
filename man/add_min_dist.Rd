@@ -4,14 +4,14 @@
 \alias{add_min_dist}
 \title{Calculate distance between predicted values and actual data points on a grid}
 \usage{
-add_min_dist(df, Q_name, L, pred)
+add_min_dist(df, Q_name, L_name, pred)
 }
 \arguments{
 \item{df}{data frame; model data}
 
 \item{Q_name}{quosure; the name for the Q matrix}
 
-\item{L}{matrix; the actual L matrix}
+\item{L_name}{quosure; the name for the L matrix}
 
 \item{pred}{data frame; the predicted values}
 }

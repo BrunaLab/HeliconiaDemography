@@ -27,4 +27,5 @@ Imports:
     rlang,
     purrr,
     mgcv,
-    tidyr
+    tidyr,
+    ggplot2

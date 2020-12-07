@@ -30,6 +30,7 @@
 #' @import dplyr
 #' @import mgcv
 #' @import tidyr
+#' @importFrom stats predict
 #'
 #' @examples
 #' \dontrun{
@@ -172,19 +173,19 @@ add_min_dist <- function(df, Q_name, L_name, pred) {
   
   grid <-
     pred %>% 
-    mutate(min_g_x = min(x, na.rm = TRUE),
-           min_g_y = min(lag, na.rm = TRUE),
-           g_x = x - min_g_x,
-           g_y = lag - min_g_y) %>% 
-    mutate(max_g_x = max(g_x, na.rm = TRUE),
-           max_g_y = max(g_y, na.rm = TRUE),
-           g_x = g_x / max_g_x,
-           g_y = g_y / max_g_y)
+    mutate(min_g_x = min(.data$x, na.rm = TRUE),
+           min_g_y = min(.data$lag, na.rm = TRUE),
+           g_x = .data$x - .data$min_g_x,
+           g_y = .data$lag - .data$min_g_y) %>% 
+    mutate(max_g_x = max(.data$g_x, na.rm = TRUE),
+           max_g_y = max(.data$g_y, na.rm = TRUE),
+           g_x = .data$g_x / .data$max_g_x,
+           g_y = .data$g_y / .data$max_g_y)
   
   d <-
     d %>% 
-    mutate(d_x = (x - first(grid$min_g_x)) / first(grid$max_g_x),
-           d_y = (lag - first(grid$min_g_y)) / first(grid$max_g_y))
+    mutate(d_x = (.data$x - first(grid$min_g_x)) / first(grid$max_g_x),
+           d_y = (.data$lag - first(grid$min_g_y)) / first(grid$max_g_y))
   
   #where dat is a 2-column matrix of x and y coords of the true data used to build the model
   min_dist <- function(g_x, g_y, d) {
