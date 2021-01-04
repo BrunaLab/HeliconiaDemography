@@ -152,6 +152,7 @@ xa_spei <-
   unnest(c(xa_spei, data)) %>% 
   select(-cb)
 ```
+
 # EMBRAPA stations
 
 ```{r embrapa-spei}
@@ -221,6 +222,16 @@ trmm_spei <-
   select(-cb)
 ```
 
+# Imputed data (averaged across for BDFFP)
+
+```{r}
+bdffp_spei <- 
+  bdffp %>% group_by(date) %>% 
+  summarize(bdffp_spei = mean(spei)) %>% 
+  mutate(yearmonth = yearmonth(date), date = NULL)
+```
+
+
 
 # Combine into single tidy data frame
 
@@ -241,6 +252,7 @@ comb <-
   full_join(xa_df, gspei) %>% 
   full_join(trmm_df) %>% 
   full_join(embrapa_wide %>% select(yearmonth, st_spei)) %>% 
+  full_join(bdffp_spei) %>% 
   pivot_longer(-yearmonth, names_to = "dataset", values_to = "spei") %>% 
   filter(yearmonth > yearmonth(ymd("1990-01-01"))) %>% 
   mutate(year = year(yearmonth), .before = yearmonth)
@@ -260,7 +272,7 @@ Expected:
 spei_table <-
   comb %>% 
   group_by(year, dataset) %>% 
-  mutate(min = min(spei)) %>% 
+  mutate(min = min(spei, na.rm = TRUE)) %>% 
   filter(spei == min) %>% 
   mutate(month = month(yearmonth, label = TRUE)) %>% 
   # summarize(min = min, month = month) %>%
@@ -271,15 +283,17 @@ spei_table <-
   add_column(cause = c("ENSO", "ENSO", "ENSO", "AMO", "ENSO", "ENSO", "AMO"), .after = "year") %>% 
   mutate(`Global SPEI` = glue("{round(spei_g, 2)} ({month_g})"),
          `Xavier et al.` = glue("{round(spei_xa, 2)} ({month_xa})"),
-         `EMBRAPA` = glue("{round(spei_st, 2)} ({month_st})"),
-         `TRMM` = glue("{round(spei_trmm, 2)} ({month_trmm})")) %>% 
+         EMBRAPA = glue("{round(spei_st, 2)} ({month_st})"),
+         TRMM = glue("{round(spei_trmm, 2)} ({month_trmm})"),
+         BDFFP = glue("{round(spei_bdffp, 2)} ({month_bdffp})")) %>% 
   ungroup()
 ```
 
 
 ```{r}
 library(gt)
-gt(spei_table) %>% 
+table <- 
+  gt(spei_table) %>% 
   tab_style(
     style = list(
       cell_fill(color = "#ffffb2")
@@ -300,6 +314,10 @@ gt(spei_table) %>%
       cells_body(
         columns = vars(TRMM),
         rows = spei_trmm < 0 & spei_trmm >= -1
+      ),
+      cells_body(
+        columns = vars(BDFFP),
+        rows = spei_bdffp < 0 & spei_bdffp >= -1
       )
     )
   ) %>% 
@@ -323,6 +341,10 @@ gt(spei_table) %>%
       cells_body(
         columns = vars(TRMM),
         rows = spei_trmm < -1 & spei_trmm >= -1.5
+      ),
+      cells_body(
+        columns = vars(BDFFP),
+        rows = spei_bdffp < -1 & spei_bdffp >= -1.5
       )
     )
   ) %>% 
@@ -346,6 +368,10 @@ gt(spei_table) %>%
       cells_body(
         columns = vars(TRMM),
         rows = spei_trmm < -1.5 & spei_trmm >= -2
+      ),
+      cells_body(
+        columns = vars(BDFFP),
+        rows = spei_bdffp < -1.5 & spei_bdffp >= -2
       )
     )
   ) %>% 
@@ -369,11 +395,17 @@ gt(spei_table) %>%
       cells_body(
         columns = vars(TRMM),
         rows = spei_trmm < -2
+      ),
+      cells_body(
+        columns = vars(BDFFP),
+        rows = spei_bdffp < -2
       )
     )
   ) %>% 
   cols_hide(starts_with(c("spei_", "month_"))) %>% 
-  tab_spanner("Lowest SPEI for the year (Month)", vars(`Global SPEI`, EMBRAPA, `Xavier et al.`, TRMM))
+  tab_spanner("Lowest SPEI for the year (Month)", vars(`Global SPEI`, EMBRAPA, `Xavier et al.`, TRMM, BDFFP))
+table
+gtsave(table, here("analysis", "supplementary-materials", "spei_table.png"))
 ```
 
 
@@ -397,7 +429,8 @@ spei_plot <-
     dataset == "g_spei"  ~ "Global SPEI",   
     dataset == "xa_spei" ~ "Xavier et al.",
     dataset == "st_spei" ~ "EMBRAPA",
-    dataset == "trmm_spei" ~ "TRMM"
+    dataset == "trmm_spei" ~ "TRMM",
+    dataset == "bdffp_spei" ~ "BDFFP imputed"
   ))
 ```
 
@@ -420,10 +453,10 @@ p <-
   geom_label(data = labs,
              aes(x = yearmonth, y = spei-1, label = year, fill = drought_label)) +
   scale_x_yearmonth(date_breaks = "2 years") +
-  scale_color_brewer(type = "qual", palette = 2) +
+  scale_color_brewer(type = "qual", palette = "Set1") +
   coord_cartesian(xlim = c(yearmonth(ymd("1997-01-01")), yearmonth(ymd("2010-11-01")))) +
   theme_bw()
-annotate_spei(p)
+annotate_spei(p, alpha = 0.7)
 ggsave(here("analysis", "supplementary-materials", "spei_comparison.png"))
 ```
 
