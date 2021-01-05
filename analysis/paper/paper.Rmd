@@ -127,6 +127,14 @@ Monthly precipitation and potential evapotranspiration records ( <!--# date rang
 
 ## Statistical Modeling
 
+We assessed the effects of drought history on plant vital rates using distributed lag non-linear models (DLNMs) [@gasparriniPenalizedFrameworkDistributed2017]. DLNMs model potentially delayed effects of predictor variables by fitting a bi-dimensional dose-lag-response association spline, called a crossbasis function. This crossbasis function allows the effect of a predictor to vary non-linearly through lag time and across predictor intensity. Crossbasis functions were created using the *dlnm* package in R with a maximum lag of \_\_\_\_ <!--# how far back might drought impact heliconia? -->months [@gasparriniDistributedLagLinear2011; @rcoreteamLanguageEnvironmentStatistical2020]. This particular maximum lag time was determined by .... <!--# preliminary experiments? theory? limitations of data? -->. The crossbasis function was fit to the data in the context of a generalized additive model (GAM) using the *mgcv* package in R with restricted maximum likelihood [@woodGeneralizedAdditiveModels2017]. In the process of fitting the model, the penalty on the crossbasis smooth (and other smoothed terms) is optimized such that more linear shapes are favored unless the data supports non-linearity. Cubic regression splines were used for both dimensions of the crossbasis function, with \_\_\_ <!--# same as number of lag steps -1 --> knots for the lag time and 3 knots for the drought response dimension to restrict the response to drought to bimodal at most complex.
+
+Growth
+
+Survival
+
+Flowering probability
+
 # Results
 
 # Discussion
