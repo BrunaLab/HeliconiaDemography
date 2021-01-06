@@ -203,6 +203,18 @@ To model the effect of density, I'm only going to use the subset of plants that 
 ha_xy <- right_join(ha %>% select(-x_09, -y_09), ha_coords, by = c("plot", "row", "column", "tag_number", "year"))
 ```
 
+What percentage of plants have coordinates?
+
+```{r}
+full_join(ha %>% select(-x_09, -y_09),
+          ha_coords,
+          by = c("plot", "row", "column", "tag_number", "year")) %>% 
+  group_by(ha_id_number) %>% 
+  summarize(has_coord = any(!is.na(x))) %>%  #true if there is a non-NA value for at least one year
+  summarize(percent_with_coords = sum(has_coord)/n())
+```
+
+
 # Calculate density
 
 Now the challenge is to calculate the density of surrounding shoots for every focal plant at different distances.
