@@ -59,64 +59,11 @@ Take a crack at modeling vital rates as a function of previous height and lagged
 # Load Data
 
 ```{r data, echo=TRUE}
-xa <- read_rds(here("analysis", "data", "derived_data", "xa_spei_lags.rds"))
-demog <- read_rds(here("analysis", "data", "derived_data", "ha_survey.rds"))
-plot_coords <- read_csv(here("analysis", "data", "raw_data", "plot_coords.csv"))
-```
-
-```{r}
-length(unique(demog$ha_id_number))
-range(demog$year)
-2009-1998
-```
-
-
-# Join data sets
-
-## Prep precip data
-Get only rows for february (the month of the census), and year for joining
-
-```{r}
-xa2 <- 
-  xa %>%
-  filter(month(yearmonth) == 2) %>% 
-  mutate(year = year(yearmonth), .after =yearmonth) %>% 
-  separate(latlon, into = c("lat", "lon"), sep = "_")
-xa2
-```
-
-Figure out which sites correspond to which grid cells.  The `xa` lat lon are the centers of grid cells that are 0.25º^2
-
-```{r}
-unique(xa2$lat)
-mean(c(-2.25, -2.5))
-```
-So, from -2.25 to -2.5
-
-
-```{r}
-unique(xa2$lon)
-mean(c(-59.5, -59.75))
-mean(c(-59.75, -60)) # Florestal-CF, 5752, 5751, 5750, 5756, CaboFrio-CF
-mean(c(-60, -60.25)) # 2206, 2108, 2107, Dimona-CF, 5753, PortoAlegre-CF
-```
-
-
-```{r}
-plot_coords
-```
-
-```{r}
-demog2 <-
-  demog %>% 
-  mutate(lon = case_when(
-    plot %in% c("Florestal-CF", "5752", "5751", "5750", "5756", "CaboFrio-CF") ~ "-59.875",
-    plot %in% c("2206", "2108", "2107", "Dimona-CF", "5753", "PortoAlegre-CF") ~ "-60.125",
-    TRUE ~ NA_character_
-  ), .before = plot)
-demog_full <- 
-  full_join(demog2, xa2, by = c("lon", "year")) %>% 
-  select(-lon, -lat, -yearmonth)
+demog_full <-
+  read_csv(here("analysis", "data", "derived_data", "ha_demog_spei.csv"), 
+           col_names = TRUE,
+           cols(plot = col_character(),
+                bdffp_reserve_no = col_character()))
 ```
 
 ## Tidy
