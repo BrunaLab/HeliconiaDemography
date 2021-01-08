@@ -50,8 +50,12 @@ demog <-
 count(demog, surv) #2673 dead plants over course of study
 
 # Flowering ---------------------------------------------------------------
-#number of inflorescences recorded, but flowering should just be 1 or 0
-#according to Emilio, there were no years when flowering wasn't surveyed, so all NAs for flowering should be zero if height or shoot number was recorded
+#' Number of inflorescences recorded, but flowering should just be 1 or 0
+#' According to Emilio, there were no years when flowering wasn't surveyed, so
+#' all NAs for flowering should be zero if height or shoot number was recorded.
+#' 
+#' Interestingly, there seem to be years when infl > 0 is recorded but there is
+#' no record for ht or shts.
 count(demog, infl)
 demog <- 
   demog %>% 
