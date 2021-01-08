@@ -69,7 +69,7 @@ demog <-
          year,
          ht, ht_next, shts, shts_next, infl, surv, code_notes, code2) #plant level
 
-write_rds(demog, here("analysis", "data", "derived_data", "ha_survey.rds"))
+write_csv(demog, here("analysis", "data", "derived_data", "ha_survey.csv"))
 
 
 # combine demography with SPEI history ------------------------------------
