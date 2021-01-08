@@ -182,8 +182,7 @@ Fit the GAM with crossbasis smooth for lagged drought
 ```{r}
 g_post_cf <-
   gam(shts_next ~ 
-        s(log_shts) + #does this *need* to be log # shoots?
-        # s(year, bs = "re") + #random effect of year
+        s(log_shts) + 
         s(plot, bs = "re") + #random effect of plot
         s(spei_history, L,
           bs = "cb",
@@ -191,7 +190,7 @@ g_post_cf <-
           xt = list(bs = "cr")),
       family = scat(link = "log"),
       data = demog_post_cf,
-      gamma = 1.2, #increases smoothness when above 1
+      # gamma = 1.2, #I maybe need to optimize this with cross-validation?
       method = "REML")
 ```
 
@@ -204,7 +203,7 @@ gam.check(g_post_cf)
 Suggests possibly more knots for s(log_shts), but it looks like a straight line to me
 
 ```{r}
-plot(g_post_cf, pages=1)
+plot(g_post_cf, select = 1, main = "select = FALSE")
 ```
 
 ```{r}
@@ -225,7 +224,7 @@ g_post_1ha <-
           xt = list(bs = "cr")),
       family = scat(link = "log"),
       data = demog_post_1ha,
-      gamma = 1.2, #increases smoothness when above 1
+      # gamma = 1.2, #increases smoothness when above 1
       method = "REML")
 ```
 
@@ -233,10 +232,15 @@ g_post_1ha <-
 gam.check(g_post_1ha)
 ```
 
+
 Looks great
 
 ```{r}
 summary(g_post_1ha)
+```
+
+```{r}
+plot(g_post_1ha, select = 1)
 ```
 
 ### Get plot data
@@ -250,19 +254,13 @@ ref_data <-
   dplyr::summarize(log_shts = log(mean(shts, na.rm = TRUE)),  #log of mean shoots, not mean of log_shts
                    plot = "newlevel")
 # exp(1.032814) # 2.8 shoots
+mean_size <- round(exp(ref_data$log_shts), 1)
 ```
 
 
 ```{r}
 pred_g_post_cf  <- cb_margeff(g_post_cf, Q = spei_history, L = L, ref_data = ref_data)
 pred_g_post_1ha <- cb_margeff(g_post_1ha, Q = spei_history, L = L, ref_data = ref_data)
-```
-
-Lag labels
-
-```{r}
-# first column is February, the month of the census
-labs <- c("Feb", "Jan", paste0(month(12:1, label = TRUE), " (y-1)"), paste0(month(12:2, label = TRUE), " (y-2)"))
 ```
 
 Shared color bar limits so scales can be combined.
@@ -282,10 +280,18 @@ p_growth_cf <-
   filter(min_dist < 0.1) %>%
   ggplot(aes(x = x, y = lag, z = exp(fitted), fill = exp(fitted))) +
   geom_raster(interpolate = TRUE) +
-  scale_y_continuous("lag (months)", breaks = 0:24, labels = labs, expand = c(0,0)) +
+  scale_y_continuous(
+    "lag (months)",
+    breaks = 0:24, 
+    expand = c(0,0),
+    sec.axis = dup_axis(
+      name = "Month",
+      labels = month(ymd("2020-2-01") - months(0:24), label = TRUE))
+  ) +
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("#shoots (t+1)", option = "A", limits = exp(shoot_lim)) +
-  labs(title = "Continuous Forest") +
+  labs(title = "Continuous Forest",
+       caption = glue("Predicted values for average sized plant ({mean_size} shoots)")) +
   theme_bw()
 p_growth_cf
 ```
@@ -296,10 +302,17 @@ p_growth_1ha <-
   filter(min_dist < 0.1) %>%
   ggplot(aes(x = x, y = lag, z = exp(fitted), fill = exp(fitted))) +
   geom_raster(interpolate = TRUE) +
-  scale_y_continuous("lag (months)", breaks = 0:24, labels = labs, expand = c(0,0)) +
-  scale_x_continuous("SPEI_3", expand = c(0,0)) +
+  scale_y_continuous(
+    "lag (months)",
+    breaks = 0:24, 
+    expand = c(0,0),
+    sec.axis = dup_axis(
+      name = "Month",
+      labels = month(ymd("2020-2-01") - months(0:24), label = TRUE))
+  ) +  scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("#shoots (t+1)", option = "A", limits = exp(shoot_lim)) +
-  labs(title = "1-ha Fragments") +
+  labs(title = "1-ha Fragments",
+       caption = glue("Predicted values for average sized plant ({mean_size} shoots)")) +
   theme_bw()
 p_growth_1ha
 ```
@@ -317,10 +330,9 @@ p_growth_cf_slice <-
     ymax = exp(fitted + se.fit * 1.96)
   ), alpha = 0.3)+
   geom_line() +
-  scale_x_continuous("", breaks = 0:24, labels = labs) +
+  scale_x_continuous("lag(months)", breaks = 0:24) +
   labs(title = "Continuous Forest", y = "shoots (t+1)") +
-  theme_linedraw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme_linedraw()
 p_growth_cf_slice
 ```
 
@@ -335,10 +347,9 @@ p_growth_1ha_slice <-
     ymax = exp(fitted + se.fit * 1.96)
   ), alpha = 0.3)+
   geom_line() +
-  scale_x_continuous("", breaks = 0:24, labels = labs) +
+  scale_x_continuous("lag(months)", breaks = 0:24) +
   labs(title = "1-ha Fragments", y = "shoots (t+1)") +
-  theme_linedraw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme_linedraw()
 p_growth_1ha_slice
 ```
 
@@ -354,14 +365,11 @@ plotdf <-
   group_by(x, lag) %>% 
   summarize(across(everything(),  mean))
 
-
 foo <- function(x) {
-  d <- 1:25
-  names(d)<-labs
   x <- as.numeric(x)
-  # s <- glue("lag {x} ({names(d[x])})")
-  s <- names(d[x])
-  return(s)
+  mon <- month(ymd("2020-2-01") - months(x), label = TRUE)
+  l <- glue("lag={x} ({mon})")
+  return(l)
 }
 
 p_growth_cf_months <-
@@ -376,6 +384,7 @@ p_growth_cf_months <-
   scale_y_continuous("shoots (t+1)") +
   facet_wrap(~lag, labeller = as_labeller(foo)) +
   theme_bw()
+p_growth_cf_months
 ```
 
 ## Survival
@@ -393,9 +402,14 @@ s_post_cf <-
           xt = list(bs = "cr")),
       family = binomial,
       data = demog_post_cf,
-      gamma = 1.2, #increases smoothness when above 1
+      # gamma = 1.2, #increases smoothness when above 1
       method = "REML")
-anova(s_post_cf)
+```
+```{r}
+# gam.check(s_post_cf) #not sure what to expect from any of these plots
+```
+```{r}
+summary(s_post_cf)
 ```
 
 
@@ -410,9 +424,11 @@ s_post_1ha <-
           xt = list(bs = "cr")),
       family = binomial,
       data = demog_post_1ha,
-      gamma = 1.2, #increases smoothness when above 1
+      # gamma = 1.2, #increases smoothness when above 1
       method = "REML")
-anova(s_post_1ha)
+```
+```{r}
+summary(s_post_1ha)
 ```
 
 
@@ -443,10 +459,18 @@ p_surv_cf <-
   filter(min_dist < 0.1) %>%
   ggplot(aes(x = x, y = lag, z = plogis(fitted), fill = plogis(fitted))) +
   geom_raster(interpolate = TRUE) +
-  scale_y_continuous("lag (months)", breaks = 0:24, labels = labs, expand = c(0,0)) +
+  scale_y_continuous(
+    "lag (months)",
+    breaks = 0:24, 
+    expand = c(0,0),
+    sec.axis = dup_axis(
+      name = "Month",
+      labels = month(ymd("2020-2-01") - months(0:24), label = TRUE))
+  ) + 
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("P(survival)", option = "A", limits = plogis(surv_lim)) +
-  labs(title = "Continuous Forest") +
+  labs(title = "Continuous Forest",
+       caption = glue("Predicted values for average sized plant ({mean_size} shoots)")) +
   theme_bw()
 p_surv_cf
 ```
@@ -457,10 +481,18 @@ p_surv_1ha <-
   filter(min_dist < 0.1) %>%
   ggplot(aes(x = x, y = lag, z = plogis(fitted), fill = plogis(fitted))) +
   geom_raster(interpolate = TRUE) +
-  scale_y_continuous("lag (months)", breaks = 0:24, labels = labs, expand = c(0,0)) +
+  scale_y_continuous(
+    "lag (months)",
+    breaks = 0:24, 
+    expand = c(0,0),
+    sec.axis = dup_axis(
+      name = "Month",
+      labels = month(ymd("2020-2-01") - months(0:24), label = TRUE))
+  ) +
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("P(survival)", option = "A", limits = plogis(surv_lim)) +
-  labs(title = "1-ha Fragments") +
+  labs(title = "1-ha Fragments",
+       caption = glue("Predicted values for average sized plant ({mean_size} shoots)")) +
   theme_bw()
 p_surv_1ha
 ```
@@ -478,10 +510,9 @@ p_surv_cf_slice <-
     ymax = plogis(fitted + se.fit * 1.96)
   ), alpha = 0.3)+
   geom_line() +
-  scale_x_continuous("", breaks = 0:24, labels = labs) +
+  scale_x_continuous("lag(months)", breaks = 0:24) +
   labs(title = "Continuous Forest", y = "P(survival)") +
-  theme_linedraw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme_linedraw()
 p_surv_cf_slice
 ```
 
@@ -496,20 +527,22 @@ p_surv_1ha_slice <-
     ymax = plogis(fitted + se.fit * 1.96)
   ), alpha = 0.3)+
   geom_line() +
-  scale_x_continuous("", breaks = 0:24, labels = labs) +
+  scale_x_continuous("lag(months)", breaks = 0:24) +
   labs(title = "1-ha Fragments", y = "P(survival)") +
-  theme_linedraw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme_linedraw()
 p_surv_1ha_slice
 ```
 
 ## Flowering Probability
 
 ### Fit GAMs
+
 ```{r}
 x <- demog_post_cf$flowered
 sum(x, na.rm = TRUE) / length(x)
 ```
+
+Around 0.05 percent of plants flowered.
 
 ```{r}
 f_post_cf <-
@@ -522,7 +555,7 @@ f_post_cf <-
           xt = list(bs = "cr")),
       family = binomial,
       data = demog_post_cf,
-      gamma = 1.2, #increases smoothness when above 1
+      # gamma = 1.2, #increases smoothness when above 1
       method = "REML")
 ```
 
@@ -535,6 +568,11 @@ f_post_cf <-
 summary(f_post_cf)
 ```
 
+```{r}
+plot(f_post_cf, select = 1, trans = plogis)
+```
+
+Plants with exp(3) = 20 shoots have close to a 100% chance of flowering.
 
 ```{r}
 f_post_1ha <-
@@ -547,7 +585,7 @@ f_post_1ha <-
           xt = list(bs = "cr")),
       family = binomial,
       data = demog_post_1ha,
-      gamma = 1.2, #increases smoothness when above 1
+      # gamma = 1.2, #increases smoothness when above 1
       method = "REML")
 ```
 
@@ -556,6 +594,9 @@ f_post_1ha <-
 summary(f_post_1ha)
 ```
 
+```{r}
+plot(f_post_1ha, select = 1, trans = plogis)
+```
 
 ### Get plot data
 
@@ -582,14 +623,22 @@ p_flowered_cf <-
   filter(min_dist < 0.1) %>%
   ggplot(aes(x = x, y = lag, z = plogis(fitted), fill = plogis(fitted))) +
   geom_raster(interpolate = TRUE) +
-  scale_y_continuous("lag (months)", breaks = 0:24, labels = labs, expand = c(0,0)) +
+  scale_y_continuous(
+    "lag (months)",
+    breaks = 0:24, 
+    expand = c(0,0),
+    sec.axis = dup_axis(
+      name = "Month",
+      labels = month(ymd("2020-2-01") - months(0:24), label = TRUE))
+  ) + 
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("P(flowering)", option = "A", limits = plogis(flowered_lim)) +
   labs(title = "Continuous Forest") +
   theme_bw()
 p_flowered_cf
 ```
-Something is wrong.  Flowering probability should not be 1.
+
+Something is wrong.  Flowering probability should not be 1 for an average-sized plant.
 
 ```{r}
 p_flowered_1ha <-
@@ -597,7 +646,14 @@ p_flowered_1ha <-
   filter(min_dist < 0.1) %>%
   ggplot(aes(x = x, y = lag, z = plogis(fitted), fill = plogis(fitted))) +
   geom_raster(interpolate = TRUE) +
-  scale_y_continuous("lag (months)", breaks = 0:24, labels = labs, expand = c(0,0)) +
+  scale_y_continuous(
+    "lag (months)",
+    breaks = 0:24, 
+    expand = c(0,0),
+    sec.axis = dup_axis(
+      name = "Month",
+      labels = month(ymd("2020-2-01") - months(0:24), label = TRUE))
+  ) + 
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("P(flowering)", option = "A", limits = plogis(flowered_lim)) +
   labs(title = "1-ha Fragments") +
@@ -622,7 +678,7 @@ p_flowered_cf_slice <-
   labs(title = "Continuous Forest", y = "P(flowering)") +
   theme_linedraw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-# p_surv_cf_slice
+p_flowered_cf_slice
 ```
 
 
@@ -640,7 +696,7 @@ p_flowered_1ha_slice <-
   labs(title = "1-ha Fragments", y = "P(flowering)") +
   theme_linedraw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-# p_surv_1ha_slice
+p_flowered_1ha_slice
 ```
 
 # Plots
@@ -649,7 +705,7 @@ p_flowered_1ha_slice <-
 p_growth_spei <-
   (p_growth_cf | p_growth_1ha) +
   plot_annotation(title = "Effect of drought on growth of average sized plant (~2.8 shoots)") +
-  plot_layout(guides = "collect") & theme_talk
+  plot_layout(guides = "collect") & theme_talk & labs(caption = "")
 p_growth_spei
 ggsave(here("growth_spei_xa.png"), p_growth_spei, height = 7, width = 14)
 ```
@@ -678,7 +734,7 @@ Drought also has a significant effect on survival in both habitat types.
 p_surv_spei <- 
   (p_surv_cf|p_surv_1ha) + 
   plot_annotation(title = "Effect of drought on survival") +
-  plot_layout(guides = "collect") & theme_talk
+  plot_layout(guides = "collect") & theme_talk & labs(caption="")
 p_surv_spei
 ggsave(here("surv_spei_xa.png"), p_surv_spei, width = 14, height = 7)
 ```
@@ -702,7 +758,7 @@ Pretty flat.
 p_flowered_spei <- 
   (p_flowered_cf|p_flowered_1ha) + 
   plot_annotation(title = "Effect of drought on flowering") +
-  plot_layout(guides = "collect") & theme_talk
+  plot_layout(guides = "collect") & theme_talk & labs(caption = "")
 p_flowered_spei
 ggsave(here("flowering_spei.png"), p_flowered_spei, width = 14, height = 7)
 ```
