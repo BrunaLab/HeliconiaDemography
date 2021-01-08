@@ -1,8 +1,6 @@
 library(tidyverse)
 library(here)
 library(janitor)
-library(lubridate)
-library(tsibble)
 library(conflicted)
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
@@ -69,36 +67,5 @@ demog <-
          year,
          ht, ht_next, shts, shts_next, infl, surv, code_notes, code2) #plant level
 
+
 write_csv(demog, here("analysis", "data", "derived_data", "ha_survey.csv"))
-
-
-# combine demography with SPEI history ------------------------------------
-
-xa <- read_rds(here("analysis", "data", "derived_data", "xa_spei_lags.rds"))
-plot_coords <- read_csv(here("analysis", "data", "raw_data", "plot_coords.csv"))
-
-
-#Prep SPEI data. Get only rows for february, the month demographic surveys were conducted in
-xa2 <- 
-  xa %>%
-  filter(month(yearmonth) == 2) %>% 
-  mutate(year = year(yearmonth), .after =yearmonth) %>% 
-  separate(latlon, into = c("lat", "lon"), sep = "_")
-
-# Match site names to grid cell coordinates in SPEI data
-demog2 <-
-  demog %>% 
-  mutate(lon = case_when(
-    plot %in% c("Florestal-CF", "5752", "5751", "5750", "5756", "CaboFrio-CF") ~ "-59.875",
-    plot %in% c("2206", "2108", "2107", "Dimona-CF", "5753", "PortoAlegre-CF") ~ "-60.125",
-    TRUE ~ NA_character_
-  ), .before = plot)
-
-# Join
-demog_full <- 
-  full_join(demog2, xa2, by = c("lon", "year")) %>% 
-  select(-lon, -lat, -yearmonth)
-
-# Write to disk
-
-write_csv(demog_full, here("analysis", "data", "derived_data", "ha_demog_spei.csv"))
