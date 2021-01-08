@@ -51,11 +51,11 @@ count(demog, surv) #2673 dead plants over course of study
 
 # Flowering ---------------------------------------------------------------
 #number of inflorescences recorded, but flowering should just be 1 or 0
-#according to Emilio, there were no years when flowering wasn't surveyed, so all NAs should be zeroes.
+#according to Emilio, there were no years when flowering wasn't surveyed, so all NAs for flowering should be zero if height or shoot number was recorded
 count(demog, infl)
 demog <- 
   demog %>% 
-  mutate(infl = ifelse(is.na(infl), 0, infl)) %>% 
+  mutate(infl = ifelse(is.na(infl) & (!is.na(shts) | !is.na(ht)), 0, infl)) %>% 
   mutate(flwr = ifelse(infl > 0, 1, 0), .after = infl)
 
 # Add year t+1 ------------------------------------------------------------
@@ -74,7 +74,7 @@ demog <-
   select(ranch, bdffp_reserve_no, plot, habitat, #site level
          row, column, x_09, y_09, ha_id_number, tag_number, #plot level
          year,
-         ht, ht_next, shts, shts_next, infl, surv, code_notes, code2) #plant level
+         ht, ht_next, shts, shts_next, infl_num = infl, flwr, surv, code_notes, code2) #plant level
 
 
 write_csv(demog, here("analysis", "data", "derived_data", "ha_survey.csv"))
