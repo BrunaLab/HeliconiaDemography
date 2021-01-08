@@ -1,10 +1,19 @@
+
+# Wrangling demographic survey data ---------------------------------------
+#' Author: Eric R. Scott
+#' Creation Date: 2020-01-08
+
+
+# Load packages -----------------------------------------------------------
 library(tidyverse)
 library(here)
 library(janitor)
 library(conflicted)
+source(here("R", "utils.R"))
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
 
+# Load data ---------------------------------------------------------------
 demog <- 
   read_csv(here("analysis", "data", "raw_data", "Ha_survey_with_Zombies.csv"), col_names = TRUE,
            cols(plot = col_character(),
@@ -14,43 +23,43 @@ demog <-
                 infl = col_integer(),
                 tag_number = col_character(),
                 HA_ID_Number = col_character())) %>% 
-  clean_names()
-# one plant's x-coordinate entered with a comma.
-demog <- 
-  demog %>%
-  mutate(x_09 = ifelse(
-    ha_id_number == 5800,
-    2.0,
-    x_09
-  ))
+  clean_names() 
 
-# When is a plant really dead?  It "dies" after the last non-`NA` value for ht.
+# A few entries don't read in because x_09 was entered with a comma or semicolon instead of a decimal.
+fails <- problems(demog)
+fails <-
+  fails %>% 
+  mutate(corrected = str_replace(actual, "[\\,;]", "\\."))
+
+demog$x_09[fails$row] <- fails$corrected
+
+# Survival ----------------------------------------------------------------
+#TODO: Change this so plants are only dead after 2 years of NAs or if marked dead.
 
 demog <-
   demog %>% 
   group_by(ha_id_number) %>% 
-  # Routine for figuring out last year of data collected
-  mutate(x = cumsum(ht > 0 & !is.na(ht))) %>%
-  mutate(n = 1:n()) %>% 
-  mutate(surv = if_else(
-    n == which.max(x == max(x)),
-    0L,
-    1L
-  )) %>% 
-  # remove rows after plant is dead
-  filter(row_number() <= which(surv == 0)[1]) %>% 
-  # If last year of data collected at that plot, it's not dead yet unless the notes say so.
-  group_by(plot) %>% 
-  mutate(surv = if_else(
-    year == max(year) & code_notes != "dead (2)",
-    NA_integer_,
-    surv)) %>% 
-  select(-n, -x) %>% 
+  arrange(ha_id_number, year) %>% 
+  mutate(alive = as_living(ht, n = 3)) %>%  #1 if alive, 0 if dead (assumed dead after 2 trailing NAs)
+  mutate(alive = if_else(!is.na(code_notes) & code_notes == "dead (2)", 0L, alive)) %>% 
+  mutate(surv = lead(alive)) %>% # did a plant survive to the next year?
+  filter(alive == 1) %>%  #remove entries after last year alive.
+  select(-alive) %>% #remove to reduce confusion
   ungroup()
 
-# count(demog, surv) # 2230 dead plants over course of study
+count(demog, surv) #2673 dead plants over course of study
 
-# add height and number shoots in the next year
+# Flowering ---------------------------------------------------------------
+#number of inflorescences recorded, but flowering should just be 1 or 0
+#according to Emilio, there were no years when flowering wasn't surveyed, so all NAs should be zeroes.
+count(demog, infl)
+demog <- 
+  demog %>% 
+  mutate(infl = ifelse(is.na(infl), 0, infl)) %>% 
+  mutate(flwr = ifelse(infl > 0, 1, 0), .after = infl)
+
+# Add year t+1 ------------------------------------------------------------
+# add height and number shoots in the next year for each observation
 
 demog <- 
   demog %>% 

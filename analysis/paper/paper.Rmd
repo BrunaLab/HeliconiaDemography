@@ -133,6 +133,8 @@ Growth
 
 Survival
 
+plants assumed dead on last observation if no observation for 3 years.
+
 Flowering probability
 
 # Results
