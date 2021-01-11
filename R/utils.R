@@ -94,7 +94,7 @@ annotate_spei <- function(p, ...) {
 #' NAs that are not trailing and you want to ignore trailing NAs < n
 #'
 #' @param x any ordered numeric vector such as height, size, or number of shoots, that is collected every observation unless plants are not detected.
-#' @param n number of sucessive, trailing missing survey points required to consider an organism dead.
+#' @param n number of successive, trailing missing survey points required to consider an organism dead.
 #'
 #' @return a binary vector with 1 = alive and 0 = assumed dead
 #' @export
