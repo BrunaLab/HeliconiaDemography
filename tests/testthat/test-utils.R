@@ -19,3 +19,17 @@ test_that("nearest() helper works", {
   expect_equal(x[nearest(x, 5)], 4.9)
   expect_s3_class(tibble(x) %>% filter(nearest(x, 5)), "tbl_df")
 })
+
+test_that("as_living() util works", {
+  alive <- c(1,2,NA,3,5,NA)
+  dead <- c(1,2,NA,3,NA,NA)
+  expect_equal(as_living(alive), rep(1, 6))
+  expect_equal(as_living(dead), c(1,1,1,1,0,0))
+})
+
+test_that("as_living() can handle short numbers of observations", {
+  alive <- c(1,2)
+  nope <- c(NA, NA)
+  expect_type(as_living(alive, n = 3), "integer")
+  expect_equal(as_living(nope), c(NA_integer_, NA_integer_))
+})

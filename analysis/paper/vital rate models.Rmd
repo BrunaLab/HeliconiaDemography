@@ -60,7 +60,13 @@ Take a crack at modeling vital rates as a function of previous height and lagged
 
 ```{r data, echo=TRUE}
 xa <- read_rds(here("analysis", "data", "derived_data", "xa_spei_lags.rds"))
-demog <- read_rds(here("analysis", "data", "derived_data", "ha_survey.rds"))
+demog <-
+  read_csv(
+    here("analysis", "data", "derived_data", "ha_survey.csv"),
+    col_names = TRUE,
+    cols(plot = col_character(),
+         bdffp_reserve_no = col_character())
+  )
 plot_coords <- read_csv(here("analysis", "data", "raw_data", "plot_coords.csv"))
 ```
 
@@ -115,17 +121,19 @@ demog2 <-
     TRUE ~ NA_character_
   ), .before = plot)
 demog_full <- 
-  full_join(demog2, xa2, by = c("lon", "year")) %>% 
+  left_join(demog2, xa2, by = c("lon", "year")) %>% 
   select(-lon, -lat, -yearmonth)
 ```
 
 ## Tidy
 
+There are plants with 0 shoots and 0 ht (not sure what that means yet), so to log-transform, I need to first add a small number
+
 ```{r}
 demog_full <-
   demog_full %>% 
-  mutate(log_shts = log(shts), .after = shts) %>% 
-  mutate(log_shts_next = log(shts_next), .after = shts_next)
+  mutate(log_shts = log(shts + 0.0001), .after = shts) %>% 
+  mutate(log_shts_next = log(shts_next + 0.0001), .after = shts_next)
 ```
 
 `gam` wants factors!
@@ -133,10 +141,10 @@ demog_full <-
 ```{r}
 demog_full <-
   demog_full %>% 
-  mutate(across(c(ranch, bdffp_reserve_no, plot, habitat, ha_id_number), as.factor)) %>% 
-  mutate(flowered = as.numeric(infl > 0), .after = infl)
+  mutate(across(c(ranch, bdffp_reserve_no, plot, habitat, ha_id_number), as.factor))
 # View(demog_full)
 ```
+
 
 # Splitting up data
 
@@ -169,13 +177,13 @@ demog_sdlg_1ha <-
 ```
 
 
-## Growth
+# Growth
 
 Start with no random effects
 
 Using a scaled-t family distribution because residuals were leptokurtic with a gaussian.
 
-### Fit GAMs
+## Fit GAMs
 
 Fit the GAM with crossbasis smooth for lagged drought
 
@@ -243,7 +251,7 @@ summary(g_post_1ha)
 plot(g_post_1ha, select = 1)
 ```
 
-### Get plot data
+## Get plot data
 
 This is pretty slow. It could probably be faster if I understood matrix math better.
 
@@ -270,7 +278,7 @@ shoot_lim <- c(min(pred_g_post_1ha$fitted, pred_g_post_cf$fitted),
                max(pred_g_post_1ha$fitted, pred_g_post_cf$fitted))
 ```
 
-### Plots
+## Plots
 
 **Raster plots:**
 
@@ -387,9 +395,9 @@ p_growth_cf_months <-
 p_growth_cf_months
 ```
 
-## Survival
+# Survival
 
-### Fit GAMs
+## Fit GAMs
 
 ```{r}
 s_post_cf <-
@@ -432,7 +440,7 @@ summary(s_post_1ha)
 ```
 
 
-### Get plot data
+## Get plot data
 
 This is pretty slow. It could probably be faster if I understood matrix math better.
 
@@ -449,7 +457,7 @@ surv_lim <- c(min(pred_s_post_1ha$fitted, pred_s_post_cf$fitted),
 # plogis(surv_lim)
 ```
 
-### Plots
+## Plots
 
 **Raster plots:**
 
@@ -533,12 +541,12 @@ p_surv_1ha_slice <-
 p_surv_1ha_slice
 ```
 
-## Flowering Probability
+# Flowering Probability
 
-### Fit GAMs
+## Fit GAMs
 
 ```{r}
-x <- demog_post_cf$flowered
+x <- demog_post_cf$flwr
 sum(x, na.rm = TRUE) / length(x)
 ```
 
@@ -546,7 +554,7 @@ Around 0.05 percent of plants flowered.
 
 ```{r}
 f_post_cf <-
-  gam(flowered ~ 
+  gam(flwr ~ 
         s(log_shts) +
         s(plot, bs = "re") +
         s(spei_history, L,
@@ -576,7 +584,7 @@ Plants with exp(3) = 20 shoots have close to a 100% chance of flowering.
 
 ```{r}
 f_post_1ha <-
-  gam(flowered ~ 
+  gam(flwr ~ 
         s(log_shts) +
         s(plot, bs = "re") +
         s(spei_history, L,
@@ -598,7 +606,7 @@ summary(f_post_1ha)
 plot(f_post_1ha, select = 1, trans = plogis)
 ```
 
-### Get plot data
+## Get plot data
 
 This is pretty slow. It could probably be faster if I understood matrix math better.
 
@@ -615,7 +623,7 @@ flowered_lim <- c(min(pred_f_post_1ha$fitted, pred_f_post_cf$fitted),
 plogis(flowered_lim)
 ```
 
-### Plots
+## Plots
 
 ```{r}
 p_flowered_cf <-
@@ -638,7 +646,7 @@ p_flowered_cf <-
 p_flowered_cf
 ```
 
-Something is wrong.  Flowering probability should not be 1 for an average-sized plant.
+
 
 ```{r}
 p_flowered_1ha <-
@@ -660,7 +668,7 @@ p_flowered_1ha <-
   theme_bw()
 p_flowered_1ha
 ```
-
+very similar to growth
 
 **Slice through time at severe drought**
 
@@ -674,7 +682,7 @@ p_flowered_cf_slice <-
     ymax = plogis(fitted + se.fit * 1.96)
   ), alpha = 0.3)+
   geom_line() +
-  scale_x_continuous("", breaks = 0:24, labels = labs) +
+  scale_x_continuous("lag(months)", breaks = 0:24) +
   labs(title = "Continuous Forest", y = "P(flowering)") +
   theme_linedraw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
@@ -692,7 +700,7 @@ p_flowered_1ha_slice <-
     ymax = plogis(fitted + se.fit * 1.96)
   ), alpha = 0.3)+
   geom_line() +
-  scale_x_continuous("", breaks = 0:24, labels = labs) +
+  scale_x_continuous("lag(months)", breaks = 0:24) +
   labs(title = "1-ha Fragments", y = "P(flowering)") +
   theme_linedraw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
