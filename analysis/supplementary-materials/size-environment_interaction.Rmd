@@ -1,0 +1,219 @@
+---
+title: "Size-environment interaction"
+author: "Eric R. Scott"
+date: "2020-01-11"
+output: 
+  html_notebook: 
+    highlight: kate
+    theme: yeti
+    toc: yes
+    toc_float: yes
+    number_sections: yes
+bibliography: "`r here::here('analysis', 'paper', 'references.bib')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(lme4)
+library(bbmle)
+library(car)
+library(conflicted)
+
+conflict_prefer("lag", "dplyr")
+conflict_prefer("filter", "dplyr")
+```
+
+*Last compiled: `r Sys.Date()`*
+
+# Purpose
+
+Rather than explicitly modeling drought effects on *Heliconia*, model environmental stochasticity as a random effect of year. This allows me to test an interaction term with size to see if responses to environment (maybe drought) are size dependent. Inspired by Tredennick et al. [-@tredennickSizebyenvironmentInteractionsNeglected2018].
+
+# Load Data
+
+This is the same demography data used elsewhere, but without the SPEI matrix-column
+
+```{r data, echo=TRUE}
+demog <-
+  read_csv(
+    here("analysis", "data", "derived_data", "ha_survey.csv"),
+    col_names = TRUE,
+    cols(plot = col_character(),
+         bdffp_reserve_no = col_character())
+  )
+demog <-
+  demog %>%
+  mutate(log_shts = log(shts + 0.0001),
+         log_shts_next = log(shts_next + 0.0001))
+```
+
+Seedlings are likely to have different responses than post-seedlings, so I'll split the data that way. To start with a relatively simple model, I'll only use continuous forest for now.
+
+```{r}
+demog_post <- 
+  demog %>% 
+  filter(code_notes != "sdlg (1)" | is.na(code_notes))
+
+demog_post_cf <-
+  demog_post %>% 
+  filter(habitat == "CF")
+
+demog_post_1ha <-
+  demog_post %>% 
+  filter(habitat == "1-ha")
+```
+
+# Function
+Likelihood ratio test for random effects from Tredennick et al.  Tests observed likelihood ratio between model with and without interaction against what would be expected under null.
+
+```{r}
+sy_lrt <- function(model_y, model_sy, nsim = 500) {
+  ## Loop over many iterations, simulate, compute LL: generates null distribution
+  lrt <- numeric(nsim)
+  
+  pb <- txtProgressBar(min = 1, max = nsim, style = 3)
+  for(i in 1:nsim){
+    gtmp <- model.frame(model_y) # make copy of gdata
+    y_star <- simulate(model_y) # simulate model (null hypothesis)
+    
+    #which column is response (probably always the first one, but just in case)
+    resp_col <- attr(attributes(gtmp)$terms, "response")
+    gtmp[ , resp_col] <- as.numeric(y_star[,1]) 
+    
+    # Fit models with simulated data from the null hypothesis
+    tmp_null <- suppressWarnings(suppressMessages(update(model_y, data = gtmp)))
+    tmp_full <- suppressWarnings(suppressMessages(update(model_sy, data = gtmp)))
+    
+    # Calculate log likelihoods
+    ll_null <- logLik(tmp_null)
+    ll_full <- logLik(tmp_full)
+    lrt[i] <- 2*as.numeric(ll_full - ll_null)
+    setTxtProgressBar(pb, i)
+  }
+  
+  ## Calculate upper 95th quantile as value to exceed, for one-sided test
+  upper <- as.numeric(quantile(lrt, probs = 0.95))
+  
+  ## Calculuate observed log likelihoods
+  ll_null <- logLik(model_y)
+  ll_full <- logLik(model_sy)
+  obs_lrt <- 2*as.numeric(ll_full - ll_null)
+  
+  print(glue::glue("
+                   Observed LR: {round(obs_lrt, 3)}.
+                   95th quantile expected under null: {round(upper, 3)}
+                   Significant interaction: {obs_lrt > upper}"))
+  invisible(list(sim_lrt = lrt, q95 = upper, obs_lrt))
+}
+```
+
+
+# Analysis (CF)
+
+## Growth
+
+```{r}
+growth_y <- lmer(log_shts_next ~ log_shts + (1|plot) + (1|year), data = demog_post_cf)
+growth_sy <- lmer(log_shts_next ~ log_shts + (1|plot) + (log_shts|year), data = demog_post_cf)
+AICtab(growth_y, growth_sy)
+```
+
+
+```{r}
+lrt_growth <- sy_lrt(growth_y, growth_sy, nsim = 500)
+```
+Upper = 4.539, observed = 45.689
+
+```{r}
+ecdf(lrt_growth$sim_lrt) -> growth_dist
+2*(1-growth_dist(45.689))
+```
+
+
+## Survival
+
+```{r}
+surv_y <- glmer(surv ~ log_shts + (1|plot) + (1|year), family = binomial, data = demog_post_cf)
+surv_sy <- glmer(surv ~ log_shts + (1|plot) + (log_shts|year), family = binomial, data = demog_post_cf)
+AICtab(surv_y, surv_sy)
+```
+
+
+```{r}
+lrt_surv <- sy_lrt(surv_y, surv_sy, nsim = 500)
+```
+Upper = 3.913, observed = 29.181
+
+```{r}
+ecdf(lrt_surv$sim_lrt) -> surv_dist
+2*(1-surv_dist(29.181))
+```
+
+## Flowering
+
+```{r}
+flwr_y <- glmer(flwr ~ log_shts + (1|plot) + (1|year), family = binomial, data = demog_post_cf)
+flwr_sy <- glmer(flwr ~ log_shts + (1|plot) + (log_shts|year), family = binomial, data = demog_post_cf)
+AICtab(flwr_y, flwr_sy)
+```
+
+
+```{r}
+lrt_flwr <- sy_lrt(flwr_y, flwr_sy, nsim = 500)
+```
+upper = 4.439, observed = 1.77
+
+```{r}
+ecdf(lrt_flwr$sim_lrt)->flwr_dist
+2*(1-flwr_dist(1.77))
+```
+
+
+
+# Analysis (1-ha)
+
+## Growth
+
+```{r}
+growth_y_1ha <- lmer(log_shts_next ~ log_shts + (1|plot) + (1|year), data = demog_post_1ha)
+growth_sy_1ha <- lmer(log_shts_next ~ log_shts + (1|plot) + (log_shts|year), data = demog_post_1ha)
+AICtab(growth_y_1ha, growth_sy_1ha)
+```
+
+
+```{r}
+lrt_growth_1ha <- sy_lrt(growth_y_1ha, growth_sy_1ha, nsim = 500)
+```
+
+
+## Survival
+
+```{r}
+surv_y_1ha <- glmer(surv ~ log_shts + (1|plot) + (1|year), family = binomial, data = demog_post_1ha)
+surv_sy_1ha <- glmer(surv ~ log_shts + (1|plot) + (log_shts|year), family = binomial, data = demog_post_1ha)
+AICtab(surv_y_1ha, surv_sy_1ha)
+```
+
+
+```{r}
+lrt_surv_1ha <- sy_lrt(surv_y_1ha, surv_sy_1ha, nsim = 500)
+```
+
+
+
+## Flowering
+
+```{r}
+flwr_y_1ha <- glmer(flwr ~ log_shts + (1|plot) + (1|year), family = binomial, data = demog_post_1ha)
+flwr_sy_1ha <- glmer(flwr ~ log_shts + (1|plot) + (log_shts|year), family = binomial, data = demog_post_1ha)
+AICtab(flwr_y_1ha, flwr_sy_1ha)
+```
+
+
+```{r}
+
+lrt_flwr_1ha <- sy_lrt(flwr_y_1ha, flwr_sy_1ha, nsim = 500)
+
+```
