@@ -118,14 +118,15 @@ demog_full <-
 
 ## Tidy
 
-There are plants with 0 shoots and 0 ht (not sure what that means yet), so to log-transform, I need to first add a small number
+There are plants with 0 shoots and 0 ht.  I will remove those, as having no above ground biomass is really not a size, but a different category.
+There's also a couple of plants that are probably data entry errors in height.
 
 ```{r}
 demog_full <-
   demog_full %>% 
-  mutate(log_shts = log(shts + 0.0001), .after = shts) %>% 
-  mutate(log_shts_next = log(shts_next + 0.0001), .after = shts_next) %>% 
-  mutate(size = shts*ht, size_next = shts_next*ht_next)
+  filter(ht < 200, ht_next < 200) %>% 
+  filter(shts > 0, shts_next > 0, ht > 0, ht_next > 0) %>% 
+  mutate(size = shts*ht, size_next = shts_next*ht_next, log_size = log(size), log_size_next = log(size_next))
 ```
 
 `gam` wants factors!
@@ -181,15 +182,15 @@ Fit the GAM with crossbasis smooth for lagged drought
 
 ```{r}
 g_post_cf <-
-  gam(shts_next ~ 
-        s(log_shts) + 
+  gam(log_size_next ~ 
+        s(log_size) + 
         s(plot, bs = "re") + #random effect of plot
         s(spei_history, L,
           bs = "cb",
           k = c(3, 35),  #unimodal-ish response to drought, but one knot per month lag.
           xt = list(bs = "cr")),
-      family = poisson(link = "log"),
-      # family = scat(link = "log"), #like leptokurtic gaussian.
+      # family = gaussian(link = "identity"),
+      family = scat(link = "identity"), #like leptokurtic gaussian.
       data = demog_post_cf,
       # gamma = 1.2, #I maybe need to optimize this with cross-validation?
       method = "REML")
@@ -198,14 +199,21 @@ g_post_cf <-
 Inspect the GAM
 
 ```{r}
+AIC(g_post_cf)
+
 appraise(g_post_cf)
 ```
 
-Suggests possibly more knots for s(log_shts), but it looks like a straight line to me
+AIC for... 
+Gaussian: 40909.27. looks leptokurtic
+scaled t: 37284.47.  Waaay better
+
 
 ```{r}
 plot(g_post_cf, select = 1, main = "select = FALSE")
 ```
+
+Hmm. Make sure this doesn't predict negative sizes.
 
 ```{r}
 summary(g_post_cf)
@@ -216,17 +224,14 @@ Remember, R-sq is probably so high because size this year is a very good predict
 
 ```{r}
 g_post_1ha <-
-  gam(shts_next ~ 
-        s(log_shts) +
+  gam(log_size_next ~ 
+        s(log_size) +
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
           k = c(3, 35),  #unimodal response to drought, but one knot per month lag.
           xt = list(bs = "cr")),
-      # family = poisson(link = "log"),
-      # family = quasipoisson(link = "log"),
-      family = gaussian(link = "log"),
-      # family = scat(link = "log"), #like leptokurtic gaussian.
+      family = scat(link = "identity"), #like leptokurtic gaussian.
       data = demog_post_1ha,
       # gamma = 1.2, #increases smoothness when above 1
       method = "REML")
@@ -253,10 +258,10 @@ This is pretty slow. It could probably be faster if I understood matrix math bet
 # use mean size plant across both habitats so plots are comparable
 ref_data <-
   demog_post %>%
-  dplyr::summarize(log_shts = log(mean(shts, na.rm = TRUE)),  #log of mean shoots, not mean of log_shts
+  dplyr::summarize(log_size = log(mean(size, na.rm = TRUE)),  #log of mean size, not mean of log_size
                    plot = "newlevel")
 # exp(1.032814) # 2.8 shoots
-mean_size <- round(exp(ref_data$log_shts), 1)
+mean_size <- round(exp(ref_data$log_size), 1)
 ```
 
 
@@ -361,6 +366,7 @@ p_growth_1ha_slice
 I find this less useful, but just shows that relationships are slightly quadratic at most complicated.  This would be more useful if there was a way to show which lines had "slopes" significantly different from 0 (i.e. don't totally overlap a flat line).
 
 ```{r}
+#TODO: replace with ridge plot
 plotdf <-
   pred_g_post_cf %>% 
   mutate(lag = round(lag)) %>% 
@@ -396,7 +402,7 @@ p_growth_cf_months
 ```{r}
 s_post_cf <-
   gam(surv ~ 
-        s(log_shts) +
+        s(log_size) +
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
@@ -409,17 +415,17 @@ s_post_cf <-
 ```
 ```{r}
 # gam.check(s_post_cf) #not sure what to expect from any of these plots
-appraise(s_post_cf)
+appraise(s_post_cf, method = "simulate")
 ```
 ```{r}
 summary(s_post_cf)
 ```
-
+wow, not significant!
 
 ```{r}
 s_post_1ha <-
   gam(surv ~ 
-        s(log_shts) +
+        s(log_size) +
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
@@ -433,7 +439,7 @@ s_post_1ha <-
 ```{r}
 summary(s_post_1ha)
 ```
-
+not significant!  I should try select=TRUE here.
 
 ## Get plot data
 
@@ -454,7 +460,7 @@ surv_lim <- c(min(pred_s_post_1ha$fitted, pred_s_post_cf$fitted),
 
 ## Plots
 
-**Raster plots:**
+These are not significant, so probably don't need to actually make these plots.  I'm mostly just curious what a non-significant crossbasis function looks like.
 
 ```{r}
 p_surv_cf <-
@@ -550,7 +556,7 @@ Around 0.05 percent of plants flowered.
 ```{r}
 f_post_cf <-
   gam(flwr ~ 
-        s(log_shts) +
+        s(log_size) +
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
@@ -580,7 +586,7 @@ Plants with exp(3) = 20 shoots have close to a 100% chance of flowering.
 ```{r}
 f_post_1ha <-
   gam(flwr ~ 
-        s(log_shts) +
+        s(log_size) +
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
@@ -733,7 +739,7 @@ Again, you can see that drought immediately preceding the census (Jan of that ye
 
 ## Survival
 
-Drought also has a significant effect on survival in both habitat types.
+These aren't significant.
 
 ```{r}
 p_surv_spei <- 

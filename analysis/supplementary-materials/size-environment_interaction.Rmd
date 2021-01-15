@@ -27,6 +27,10 @@ conflict_prefer("filter", "dplyr")
 
 *Last compiled: `r Sys.Date()`*
 
+# TODO
+
+- ~~Test that random effect of year is significant for all models~~
+
 # Purpose
 
 Rather than explicitly modeling drought effects on *Heliconia*, model environmental stochasticity as a random effect of year. This allows me to test an interaction term with size to see if responses to environment (maybe drought) are size dependent. Inspired by Tredennick et al. [-@tredennickSizebyenvironmentInteractionsNeglected2018].
@@ -45,8 +49,9 @@ demog <-
   )
 demog <-
   demog %>%
-  mutate(log_shts = log(shts + 0.0001),
-         log_shts_next = log(shts_next + 0.0001))
+  filter(ht < 200, ht_next < 200) %>% 
+  filter(shts > 0, shts_next > 0, ht > 0, ht_next > 0) %>% 
+  mutate(size = shts*ht, size_next = shts_next*ht_next, log_size = log(size), log_size_next = log(size_next))
 ```
 
 Seedlings are likely to have different responses than post-seedlings, so I'll split the data that way. To start with a relatively simple model, I'll only use continuous forest for now.
@@ -115,16 +120,18 @@ sy_lrt <- function(model_y, model_sy, nsim = 500) {
 ## Growth
 
 ```{r}
-growth_y <- lmer(log_shts_next ~ log_shts + (1|plot) + (1|year), data = demog_post_cf)
-growth_sy <- lmer(log_shts_next ~ log_shts + (1|plot) + (log_shts|year), data = demog_post_cf)
-AICtab(growth_y, growth_sy)
+growth_null <- lmer(log_size_next ~ log_size + (1|plot), data = demog_post_cf)
+growth_y <- lmer(log_size_next ~ log_size + (1|plot) + (1|year), data = demog_post_cf)
+growth_sy <- lmer(log_size_next ~ log_size + (1|plot) + (log_size|year), data = demog_post_cf)
+AICtab(growth_null, growth_y, growth_sy)
 ```
-
+Significant interaction.
 
 ```{r}
+#This takes a very long time and gives results qualitatively similar to comparing AIC
 lrt_growth <- sy_lrt(growth_y, growth_sy, nsim = 500)
 ```
-Upper = 4.539, observed = 45.689
+
 
 ```{r}
 ecdf(lrt_growth$sim_lrt) -> growth_dist
@@ -135,16 +142,17 @@ ecdf(lrt_growth$sim_lrt) -> growth_dist
 ## Survival
 
 ```{r}
-surv_y <- glmer(surv ~ log_shts + (1|plot) + (1|year), family = binomial, data = demog_post_cf)
-surv_sy <- glmer(surv ~ log_shts + (1|plot) + (log_shts|year), family = binomial, data = demog_post_cf)
-AICtab(surv_y, surv_sy)
+surv_null <- glmer(surv ~ log_size + (1|plot), family = binomial, data = demog_post_cf)
+surv_y <- glmer(surv ~ log_size + (1|plot) + (1|year), family = binomial, data = demog_post_cf)
+surv_sy <- glmer(surv ~ log_size + (1|plot) + (log_size|year), family = binomial, data = demog_post_cf)
+AICtab(surv_null, surv_y, surv_sy)
 ```
-
+no interaction
 
 ```{r}
 lrt_surv <- sy_lrt(surv_y, surv_sy, nsim = 500)
 ```
-Upper = 3.913, observed = 29.181
+
 
 ```{r}
 ecdf(lrt_surv$sim_lrt) -> surv_dist
@@ -154,16 +162,17 @@ ecdf(lrt_surv$sim_lrt) -> surv_dist
 ## Flowering
 
 ```{r}
-flwr_y <- glmer(flwr ~ log_shts + (1|plot) + (1|year), family = binomial, data = demog_post_cf)
-flwr_sy <- glmer(flwr ~ log_shts + (1|plot) + (log_shts|year), family = binomial, data = demog_post_cf)
-AICtab(flwr_y, flwr_sy)
+flwr_null <- glmer(flwr ~ log_size + (1|plot), family = binomial, data = demog_post_cf)
+flwr_y <- glmer(flwr ~ log_size + (1|plot) + (1|year), family = binomial, data = demog_post_cf)
+flwr_sy <- glmer(flwr ~ log_size + (1|plot) + (log_size|year), family = binomial, data = demog_post_cf)
+AICtab(flwr_null, flwr_y, flwr_sy)
 ```
-
+No interaction
 
 ```{r}
 lrt_flwr <- sy_lrt(flwr_y, flwr_sy, nsim = 500)
 ```
-upper = 4.439, observed = 1.77
+
 
 ```{r}
 ecdf(lrt_flwr$sim_lrt)->flwr_dist
@@ -171,17 +180,17 @@ ecdf(lrt_flwr$sim_lrt)->flwr_dist
 ```
 
 
-
 # Analysis (1-ha)
 
 ## Growth
 
 ```{r}
-growth_y_1ha <- lmer(log_shts_next ~ log_shts + (1|plot) + (1|year), data = demog_post_1ha)
-growth_sy_1ha <- lmer(log_shts_next ~ log_shts + (1|plot) + (log_shts|year), data = demog_post_1ha)
-AICtab(growth_y_1ha, growth_sy_1ha)
+growth_null_1ha <- lmer(log_size_next ~ log_size + (1|plot), data = demog_post_1ha)
+growth_y_1ha <- lmer(log_size_next ~ log_size + (1|plot) + (1|year), data = demog_post_1ha)
+growth_sy_1ha <- lmer(log_size_next ~ log_size + (1|plot) + (log_size|year), data = demog_post_1ha)
+AICtab(growth_null_1ha, growth_y_1ha, growth_sy_1ha)
 ```
-
+significant interaction
 
 ```{r}
 lrt_growth_1ha <- sy_lrt(growth_y_1ha, growth_sy_1ha, nsim = 500)
@@ -191,11 +200,12 @@ lrt_growth_1ha <- sy_lrt(growth_y_1ha, growth_sy_1ha, nsim = 500)
 ## Survival
 
 ```{r}
-surv_y_1ha <- glmer(surv ~ log_shts + (1|plot) + (1|year), family = binomial, data = demog_post_1ha)
-surv_sy_1ha <- glmer(surv ~ log_shts + (1|plot) + (log_shts|year), family = binomial, data = demog_post_1ha)
-AICtab(surv_y_1ha, surv_sy_1ha)
+surv_null_1ha <- glmer(surv ~ log_size + (1|plot), family = binomial, data = demog_post_1ha)
+surv_y_1ha <- glmer(surv ~ log_size + (1|plot) + (1|year), family = binomial, data = demog_post_1ha)
+surv_sy_1ha <- glmer(surv ~ log_size + (1|plot) + (log_size|year), family = binomial, data = demog_post_1ha)
+AICtab(surv_null_1ha, surv_y_1ha, surv_sy_1ha)
 ```
-
+No interaction or effect of year.
 
 ```{r}
 lrt_surv_1ha <- sy_lrt(surv_y_1ha, surv_sy_1ha, nsim = 500)
@@ -206,14 +216,13 @@ lrt_surv_1ha <- sy_lrt(surv_y_1ha, surv_sy_1ha, nsim = 500)
 ## Flowering
 
 ```{r}
-flwr_y_1ha <- glmer(flwr ~ log_shts + (1|plot) + (1|year), family = binomial, data = demog_post_1ha)
-flwr_sy_1ha <- glmer(flwr ~ log_shts + (1|plot) + (log_shts|year), family = binomial, data = demog_post_1ha)
-AICtab(flwr_y_1ha, flwr_sy_1ha)
+flwr_null_1ha <- glmer(flwr ~ log_size + (1|plot), family = binomial, data = demog_post_1ha)
+flwr_y_1ha <- glmer(flwr ~ log_size + (1|plot) + (1|year), family = binomial, data = demog_post_1ha)
+flwr_sy_1ha <- glmer(flwr ~ log_size + (1|plot) + (log_size|year), family = binomial, data = demog_post_1ha)
+AICtab(flwr_null_1ha, flwr_y_1ha, flwr_sy_1ha)
 ```
-
+significant interaction?
 
 ```{r}
-
 lrt_flwr_1ha <- sy_lrt(flwr_y_1ha, flwr_sy_1ha, nsim = 500)
-
 ```
