@@ -9,7 +9,7 @@ conflict_prefer("lag", "dplyr")
 conflict_prefer("filter", "dplyr")
 
 # Set maximum lag in months
-maxlag = 24
+maxlag = 36
 
 # Imputed rain gauge SPEI
 

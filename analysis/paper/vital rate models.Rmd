@@ -24,6 +24,7 @@ library(patchwork)
 library(sf)
 library(tsibble)
 library(broom)
+library(gratia)
 
 library(conflicted)
 conflict_prefer("lag", "dplyr")
@@ -44,13 +45,10 @@ theme_talk <- theme_bw() + theme(text = element_text(size = 18))
 
 # TODO:
 
-- 
-- ~~Remove seedlings from dataset, for now~~
-- ~~Separate models for CF and fragment, for now~~
-- Add model for probability of reproduction and other vital rates
-- Model seedlings separately?
-- Add random effects, interactions, other complexities
-- Try integrative measure of size.  Some paper you read did some formula with height and leaf number. Plantago?
+- Switch measure of plant size to shoots * height
+- ~~Change lag to 36 months (3 years)~~
+- Produce ridge plot
+
 
 # Purpose
 
@@ -69,13 +67,6 @@ demog <-
   )
 plot_coords <- read_csv(here("analysis", "data", "raw_data", "plot_coords.csv"))
 ```
-
-```{r}
-length(unique(demog$ha_id_number))
-range(demog$year)
-2009-1998
-```
-
 
 # Join data sets
 
@@ -133,7 +124,8 @@ There are plants with 0 shoots and 0 ht (not sure what that means yet), so to lo
 demog_full <-
   demog_full %>% 
   mutate(log_shts = log(shts + 0.0001), .after = shts) %>% 
-  mutate(log_shts_next = log(shts_next + 0.0001), .after = shts_next)
+  mutate(log_shts_next = log(shts_next + 0.0001), .after = shts_next) %>% 
+  mutate(size = shts*ht, size_next = shts_next*ht_next)
 ```
 
 `gam` wants factors!
@@ -194,9 +186,10 @@ g_post_cf <-
         s(plot, bs = "re") + #random effect of plot
         s(spei_history, L,
           bs = "cb",
-          k = c(3, 25),  #unimodal-ish response to drought, but one knot per month lag.
+          k = c(3, 35),  #unimodal-ish response to drought, but one knot per month lag.
           xt = list(bs = "cr")),
-      family = scat(link = "log"),
+      family = poisson(link = "log"),
+      # family = scat(link = "log"), #like leptokurtic gaussian.
       data = demog_post_cf,
       # gamma = 1.2, #I maybe need to optimize this with cross-validation?
       method = "REML")
@@ -205,7 +198,7 @@ g_post_cf <-
 Inspect the GAM
 
 ```{r}
-gam.check(g_post_cf) 
+appraise(g_post_cf)
 ```
 
 Suggests possibly more knots for s(log_shts), but it looks like a straight line to me
@@ -228,20 +221,21 @@ g_post_1ha <-
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
-          k = c(3, 25),  #unimodal response to drought, but one knot per month lag.
+          k = c(3, 35),  #unimodal response to drought, but one knot per month lag.
           xt = list(bs = "cr")),
-      family = scat(link = "log"),
+      # family = poisson(link = "log"),
+      # family = quasipoisson(link = "log"),
+      family = gaussian(link = "log"),
+      # family = scat(link = "log"), #like leptokurtic gaussian.
       data = demog_post_1ha,
       # gamma = 1.2, #increases smoothness when above 1
       method = "REML")
 ```
 
 ```{r}
-gam.check(g_post_1ha)
+appraise(g_post_1ha)
 ```
 
-
-Looks great
 
 ```{r}
 summary(g_post_1ha)
@@ -290,11 +284,11 @@ p_growth_cf <-
   geom_raster(interpolate = TRUE) +
   scale_y_continuous(
     "lag (months)",
-    breaks = 0:24, 
+    breaks = 0:36, 
     expand = c(0,0),
     sec.axis = dup_axis(
       name = "Month",
-      labels = month(ymd("2020-2-01") - months(0:24), label = TRUE))
+      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
   ) +
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("#shoots (t+1)", option = "A", limits = exp(shoot_lim)) +
@@ -312,11 +306,11 @@ p_growth_1ha <-
   geom_raster(interpolate = TRUE) +
   scale_y_continuous(
     "lag (months)",
-    breaks = 0:24, 
+    breaks = 0:36, 
     expand = c(0,0),
     sec.axis = dup_axis(
       name = "Month",
-      labels = month(ymd("2020-2-01") - months(0:24), label = TRUE))
+      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
   ) +  scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("#shoots (t+1)", option = "A", limits = exp(shoot_lim)) +
   labs(title = "1-ha Fragments",
@@ -338,7 +332,7 @@ p_growth_cf_slice <-
     ymax = exp(fitted + se.fit * 1.96)
   ), alpha = 0.3)+
   geom_line() +
-  scale_x_continuous("lag(months)", breaks = 0:24) +
+  scale_x_continuous("lag(months)", breaks = 0:36) +
   labs(title = "Continuous Forest", y = "shoots (t+1)") +
   theme_linedraw()
 p_growth_cf_slice
@@ -355,7 +349,7 @@ p_growth_1ha_slice <-
     ymax = exp(fitted + se.fit * 1.96)
   ), alpha = 0.3)+
   geom_line() +
-  scale_x_continuous("lag(months)", breaks = 0:24) +
+  scale_x_continuous("lag(months)", breaks = 0:36) +
   labs(title = "1-ha Fragments", y = "shoots (t+1)") +
   theme_linedraw()
 p_growth_1ha_slice
@@ -406,7 +400,7 @@ s_post_cf <-
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
-          k = c(3, 25),  #cubic response (at most) to drought, one knot per month lag.
+          k = c(3, 35),  #cubic response (at most) to drought, one knot per month lag.
           xt = list(bs = "cr")),
       family = binomial,
       data = demog_post_cf,
@@ -415,6 +409,7 @@ s_post_cf <-
 ```
 ```{r}
 # gam.check(s_post_cf) #not sure what to expect from any of these plots
+appraise(s_post_cf)
 ```
 ```{r}
 summary(s_post_cf)
@@ -428,7 +423,7 @@ s_post_1ha <-
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
-          k = c(3, 25),  #cubic response (at most) to drought, one knot per month lag.
+          k = c(3, 35),  #cubic response (at most) to drought, one knot per month lag.
           xt = list(bs = "cr")),
       family = binomial,
       data = demog_post_1ha,
@@ -469,11 +464,11 @@ p_surv_cf <-
   geom_raster(interpolate = TRUE) +
   scale_y_continuous(
     "lag (months)",
-    breaks = 0:24, 
+    breaks = 0:36, 
     expand = c(0,0),
     sec.axis = dup_axis(
       name = "Month",
-      labels = month(ymd("2020-2-01") - months(0:24), label = TRUE))
+      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
   ) + 
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("P(survival)", option = "A", limits = plogis(surv_lim)) +
@@ -491,11 +486,11 @@ p_surv_1ha <-
   geom_raster(interpolate = TRUE) +
   scale_y_continuous(
     "lag (months)",
-    breaks = 0:24, 
+    breaks = 0:36, 
     expand = c(0,0),
     sec.axis = dup_axis(
       name = "Month",
-      labels = month(ymd("2020-2-01") - months(0:24), label = TRUE))
+      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
   ) +
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("P(survival)", option = "A", limits = plogis(surv_lim)) +
@@ -518,7 +513,7 @@ p_surv_cf_slice <-
     ymax = plogis(fitted + se.fit * 1.96)
   ), alpha = 0.3)+
   geom_line() +
-  scale_x_continuous("lag(months)", breaks = 0:24) +
+  scale_x_continuous("lag(months)", breaks = 0:36) +
   labs(title = "Continuous Forest", y = "P(survival)") +
   theme_linedraw()
 p_surv_cf_slice
@@ -535,7 +530,7 @@ p_surv_1ha_slice <-
     ymax = plogis(fitted + se.fit * 1.96)
   ), alpha = 0.3)+
   geom_line() +
-  scale_x_continuous("lag(months)", breaks = 0:24) +
+  scale_x_continuous("lag(months)", breaks = 0:36) +
   labs(title = "1-ha Fragments", y = "P(survival)") +
   theme_linedraw()
 p_surv_1ha_slice
@@ -559,7 +554,7 @@ f_post_cf <-
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
-          k = c(3, 25),  #cubic response (at most) to drought, one knot per month lag.
+          k = c(3, 35),  #cubic response (at most) to drought, one knot per month lag.
           xt = list(bs = "cr")),
       family = binomial,
       data = demog_post_cf,
@@ -568,7 +563,7 @@ f_post_cf <-
 ```
 
 ```{r}
-# gam.check(f_post_cf)
+appraise(f_post_cf)
 ```
 
 
@@ -589,12 +584,16 @@ f_post_1ha <-
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
-          k = c(3, 25),  #cubic response (at most) to drought, one knot per month lag.
+          k = c(3, 35),  #cubic response (at most) to drought, one knot per month lag.
           xt = list(bs = "cr")),
       family = binomial,
       data = demog_post_1ha,
       # gamma = 1.2, #increases smoothness when above 1
       method = "REML")
+```
+
+```{r}
+appraise(f_post_1ha)
 ```
 
 
@@ -633,11 +632,11 @@ p_flowered_cf <-
   geom_raster(interpolate = TRUE) +
   scale_y_continuous(
     "lag (months)",
-    breaks = 0:24, 
+    breaks = 0:36, 
     expand = c(0,0),
     sec.axis = dup_axis(
       name = "Month",
-      labels = month(ymd("2020-2-01") - months(0:24), label = TRUE))
+      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
   ) + 
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("P(flowering)", option = "A", limits = plogis(flowered_lim)) +
@@ -656,11 +655,11 @@ p_flowered_1ha <-
   geom_raster(interpolate = TRUE) +
   scale_y_continuous(
     "lag (months)",
-    breaks = 0:24, 
+    breaks = 0:36, 
     expand = c(0,0),
     sec.axis = dup_axis(
       name = "Month",
-      labels = month(ymd("2020-2-01") - months(0:24), label = TRUE))
+      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
   ) + 
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("P(flowering)", option = "A", limits = plogis(flowered_lim)) +
@@ -682,10 +681,9 @@ p_flowered_cf_slice <-
     ymax = plogis(fitted + se.fit * 1.96)
   ), alpha = 0.3)+
   geom_line() +
-  scale_x_continuous("lag(months)", breaks = 0:24) +
+  scale_x_continuous("lag(months)", breaks = 0:36) +
   labs(title = "Continuous Forest", y = "P(flowering)") +
-  theme_linedraw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme_linedraw() 
 p_flowered_cf_slice
 ```
 
@@ -700,10 +698,9 @@ p_flowered_1ha_slice <-
     ymax = plogis(fitted + se.fit * 1.96)
   ), alpha = 0.3)+
   geom_line() +
-  scale_x_continuous("lag(months)", breaks = 0:24) +
+  scale_x_continuous("lag(months)", breaks = 0:36) +
   labs(title = "1-ha Fragments", y = "P(flowering)") +
-  theme_linedraw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme_linedraw()
 p_flowered_1ha_slice
 ```
 
@@ -715,7 +712,7 @@ p_growth_spei <-
   plot_annotation(title = "Effect of drought on growth of average sized plant (~2.8 shoots)") +
   plot_layout(guides = "collect") & theme_talk & labs(caption = "")
 p_growth_spei
-ggsave(here("growth_spei_xa.png"), p_growth_spei, height = 7, width = 14)
+ggsave(here("analysis", "figures", "growth_spei.png"), p_growth_spei, height = 7, width = 14)
 ```
 
 It looks like drought in September/October is bad for growth.
@@ -729,7 +726,7 @@ Here's a slice through SPEI = -1.5 (severe drought)
 (p_growth_cf_slice + theme(axis.text.x = element_blank())) /
   p_growth_1ha_slice +
   plot_annotation(title = "Effect of severe drought (SPEI = -1.5) on average sized plant (~2.8 shoots)")
-ggsave(here("growth slice_xa.png"))
+ggsave(here("analysis", "figures", "growth slice.png"))
 ```
 
 Again, you can see that drought immediately preceding the census (Jan of that year) and in the previous October are bad for growth, but dry Decembers and Septembers are good for growth.
@@ -744,7 +741,7 @@ p_surv_spei <-
   plot_annotation(title = "Effect of drought on survival") +
   plot_layout(guides = "collect") & theme_talk & labs(caption="")
 p_surv_spei
-ggsave(here("surv_spei_xa.png"), p_surv_spei, width = 14, height = 7)
+ggsave(here("analysis", "figures", "surv_spei.png"), p_surv_spei, width = 14, height = 7)
 ```
 
 The surface for 1-ha fragments is basically flat except for a slight *negative* effect of recent wet weather on survival.  In continuous forest, wet conditions or very dry conditions in the previous August–October have a positive effect on survival.
@@ -755,12 +752,11 @@ Here's a slice through SPEI = -1.5 (severe drought)
 ```{r}
 ((p_surv_cf_slice + theme(axis.text.x = element_blank())) / p_surv_1ha_slice) +
   plot_annotation(title = "Effect of severe drought (SPEI = -1.5)")
-ggsave(here("survival slice_xa.png"))
+ggsave(here("analysis", "figures", "survival slice.png"))
 ```
 Pretty flat.
 
 ## Flowering
-
 
 ```{r}
 p_flowered_spei <- 
@@ -768,7 +764,7 @@ p_flowered_spei <-
   plot_annotation(title = "Effect of drought on flowering") +
   plot_layout(guides = "collect") & theme_talk & labs(caption = "")
 p_flowered_spei
-ggsave(here("flowering_spei.png"), p_flowered_spei, width = 14, height = 7)
+ggsave(here("analysis", "figures", "flowering_spei.png"), p_flowered_spei, width = 14, height = 7)
 ```
 
 The surface for continuous forest is perfectly flat (did I do something wrong with the color scale?) and for 1-ha fragments there is a strange (anomalous?) negative effect of high SPEI (wet conditions) in the summer 2 years ago.
@@ -779,5 +775,6 @@ Here's a slice through SPEI = -1.5 (severe drought)
 ```{r}
 ((p_flowered_cf_slice + theme(axis.text.x = element_blank())) / p_flowered_1ha_slice) +
   plot_annotation(title = "Effect of severe drought (SPEI = -1.5)")
-ggsave(here("flowering slice.png"))
+ggsave(here("analysis", "figures", "flowering slice.png"))
 ```
+
