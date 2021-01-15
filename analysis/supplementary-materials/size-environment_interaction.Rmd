@@ -50,7 +50,7 @@ demog <-
 demog <-
   demog %>%
   filter(ht < 200, ht_next < 200) %>% 
-  filter(shts > 0, shts_next > 0, ht > 0, ht_next > 0) %>% 
+  filter(shts > 0, shts_next > 0, ht >= 1, ht_next >= 1) %>% 
   mutate(size = shts*ht, size_next = shts_next*ht_next, log_size = log(size), log_size_next = log(size_next))
 ```
 
