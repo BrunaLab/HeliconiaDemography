@@ -117,7 +117,7 @@ Daily rain gauge data collected from 1987--2010 at BDFFP camps. The precipitatio
 ### Satelite and reanalysis products
 
 -   TRMM 3B43 <!--# doesn't go back far enough.  Not worth using? -->
-
+    -   Source DOI: 10.5067/TRMM/TMPA/MONTH/7
     -   Resolution: 0.25º x 0.25º
     -   Includes: Monthly precip
     -   Doesn't include PET, so I guess I'll take that from the ground stations??
