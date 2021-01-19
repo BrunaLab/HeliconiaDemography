@@ -19,6 +19,8 @@
 #'   useful for filtering data before plotting because "smooths tend to go wild
 #'   away from data". This step takes a long time, so if you don't need it,
 #'   consider setting to `FALSE`
+#' @param ... Other arguments passed to `predict()`, for example, in the case of
+#'   a model created with `bam()`, the `cluster` argument.  Use with caution.
 #' @return a tibble suitable for plotting marginal effects as a heatmap or
 #'   contour plot.  `x` is the meshpoint values across the range of the
 #'   predictor, `Q`; `lag` is the values of `L`; `fitted` and `se.fit` are the
@@ -49,11 +51,11 @@
 #' cb_margeff(Q, L, gam1)
 #' }
 cb_margeff <- 
-  function(model, Q, L, ref_data = NULL, meshpts = c(50, 50), calc_dist = TRUE) {
+  function(model, Q, L, ref_data = NULL, meshpts = c(50, 50), calc_dist = TRUE, ...) {
     # Q_name <- quo(Q)
     # L_name <- quo(L)
     
-    if (!inherits(model, "gam")) {
+    if (!inherits(model, c("gam", "bam"))) {
       abort("This is only for GAMs made with the `mgcv` package including cross-basis smooths from the `dlnm` package.")
     } 
     
@@ -112,7 +114,8 @@ cb_margeff <-
           model,
           newdata = newdata %>% add_column(!!Q_name := P1_i),
           se.fit = TRUE,
-          type = "link"
+          type = "link",
+          ...
         )
       )
       resp[, i] <- p$fit
