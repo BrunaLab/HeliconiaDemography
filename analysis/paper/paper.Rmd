@@ -151,6 +151,8 @@ The crossbasis function could also be represented by something a lot more abstra
 
 ------------------------------------------------------------------------
 
+Because DLNMs do not currently allow modeling of interactions, we fit separate models for plants in fragments and in continuous forest to allow the shape of the crossbasis function to differ between habitats.
+
 Statistical significance of crossbasis functions and covariates was determined by .... <!--# not sure yet! -->
 
 # Results
