@@ -24,5 +24,3 @@ ha %>%
   col_vals_between(vars(ht, ht_next), 0, 200, na_pass = TRUE) %>% 
   rows_distinct() %>% 
   interrogate()
-
-
