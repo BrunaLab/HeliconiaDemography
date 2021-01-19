@@ -45,9 +45,12 @@ theme_talk <- theme_bw() + theme(text = element_text(size = 18))
 
 # TODO:
 
-- Switch measure of plant size to shoots * height
+- ~~Switch measure of plant size to shoots * height~~
 - ~~Change lag to 36 months (3 years)~~
 - Produce ridge plot
+- Heatmap for growth should be ∆size
+- try select = TRUE (after you understand it better? blog about it first)
+
 
 
 # Purpose
@@ -134,7 +137,8 @@ demog_full <-
 ```{r}
 demog_full <-
   demog_full %>% 
-  mutate(across(c(ranch, bdffp_reserve_no, plot, habitat, ha_id_number), as.factor))
+  mutate(across(c(ranch, bdffp_reserve_no, plot, habitat, ha_id_number), as.factor)) %>% 
+  mutate(year_fac = as.factor(year))
 # View(demog_full)
 ```
 
@@ -169,6 +173,14 @@ demog_sdlg_1ha <-
   filter(habitat == "1-ha")
 ```
 
+# Speed up models with bam()
+
+I'm going to start fitting these with `bam()` to speed things up.  This sets up the paralellization.  CAUTION: you may need to change these settings for your machine.
+
+```{r}
+cl <- parallel::makeForkCluster()
+```
+
 
 # Growth
 
@@ -182,8 +194,9 @@ Fit the GAM with crossbasis smooth for lagged drought
 
 ```{r}
 g_post_cf <-
-  gam(log_size_next ~ 
+  bam(log_size_next ~ 
         s(log_size) + 
+        s(year_fac, bs = "re") + 
         s(plot, bs = "re") + #random effect of plot
         s(spei_history, L,
           bs = "cb",
@@ -192,15 +205,14 @@ g_post_cf <-
       # family = gaussian(link = "identity"),
       family = scat(link = "identity"), #like leptokurtic gaussian.
       data = demog_post_cf,
-      # gamma = 1.2, #I maybe need to optimize this with cross-validation?
-      method = "REML")
+      method = "REML",
+      cluster = cl)
 ```
 
 Inspect the GAM
 
 ```{r}
 AIC(g_post_cf)
-
 appraise(g_post_cf)
 ```
 
@@ -210,22 +222,21 @@ scaled t: 37284.47.  Waaay better
 
 
 ```{r}
-plot(g_post_cf, select = 1, main = "select = FALSE")
-```
-
-Hmm. Make sure this doesn't predict negative sizes.
-
-```{r}
 summary(g_post_cf)
 ```
-
-
 Remember, R-sq is probably so high because size this year is a very good predictor of size next year.
 
 ```{r}
+draw(g_post_cf)
+```
+
+
+
+```{r}
 g_post_1ha <-
-  gam(log_size_next ~ 
+  bam(log_size_next ~ 
         s(log_size) +
+        s(year_fac, bs = "re") +
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
@@ -233,8 +244,8 @@ g_post_1ha <-
           xt = list(bs = "cr")),
       family = scat(link = "identity"), #like leptokurtic gaussian.
       data = demog_post_1ha,
-      # gamma = 1.2, #increases smoothness when above 1
-      method = "REML")
+      method = "REML",
+      cluster = cl)
 ```
 
 ```{r}
@@ -245,9 +256,56 @@ appraise(g_post_1ha)
 ```{r}
 summary(g_post_1ha)
 ```
+```{r}
+draw(g_post_1ha)
+```
+
+## Covariate plots
+
+Effect of size with all else held average.
 
 ```{r}
-plot(g_post_1ha, select = 1)
+range(demog_post_cf$log_size)
+
+newdata <- 
+  tibble(log_size = seq(0, 7.8, length.out = 100),
+         plot = "newplot",
+         year_fac = "newyear", 
+         spei_history = mean(demog_post_cf$spei_history),
+         L = demog_post_cf$L[1:100, ])
+
+out <- augment(g_post_cf, newdata = newdata, se_fit = TRUE)
+
+covar_growth_cf <-
+  ggplot(out, aes(x = exp(log_size), y = exp(.fitted))) + 
+  geom_point(data = demog_post_cf, aes(x = size, y = size_next), alpha = 0.1) +
+  geom_ribbon(aes(ymin = exp(.fitted - .se.fit * 1.96), ymax = exp(.fitted + .se.fit * 1.96)), alpha = 0.3) +
+  geom_line(color = "blue") +
+  # geom_rug(data = demog_post_cf, aes(x = size, y = size_next), alpha = 0.25) +
+  theme_linedraw() +
+  labs(x = "size in year t (shoots * height)", y = "size in year t+1 (shoots * height)")
+covar_growth_cf
+```
+```{r}
+range(demog_post_1ha$log_size)
+
+newdata <- 
+  tibble(log_size = seq(0, 7.6, length.out = 100),
+         plot = "newplot",
+         year_fac = "newyear",
+         spei_history = mean(demog_post_1ha$spei_history),
+         L = demog_post_cf$L[1:100, ])
+out <- augment(g_post_1ha, newdata = newdata, se_fit = TRUE)
+
+covar_growth_1ha <-
+  ggplot(out, aes(x = exp(log_size), y = exp(.fitted))) + 
+  geom_point(data = demog_post_1ha, aes(x = size, y = size_next), alpha = 0.1) +
+  geom_ribbon(aes(ymin = exp(.fitted - .se.fit * 1.96), ymax = exp(.fitted + .se.fit * 1.96)), alpha = 0.3) +
+  geom_line(color = "blue") +
+  # geom_rug(data = demog_post_1ha, aes(x = size, y = size_next), alpha = 0.25) +
+  theme_linedraw() +
+  labs(x = "size in year t (shoots * height)", y = "size in year t+1 (shoots * height)")
+covar_growth_1ha
 ```
 
 ## Get plot data
@@ -259,6 +317,7 @@ This is pretty slow. It could probably be faster if I understood matrix math bet
 ref_data <-
   demog_post %>%
   dplyr::summarize(log_size = log(mean(size, na.rm = TRUE)),  #log of mean size, not mean of log_size
+                   year_fac = "newyear",
                    plot = "newlevel")
 # exp(1.032814) # 2.8 shoots
 mean_size <- round(exp(ref_data$log_size), 1)
@@ -266,9 +325,10 @@ mean_size <- round(exp(ref_data$log_size), 1)
 
 
 ```{r}
-pred_g_post_cf  <- cb_margeff(g_post_cf, Q = spei_history, L = L, ref_data = ref_data)
-pred_g_post_1ha <- cb_margeff(g_post_1ha, Q = spei_history, L = L, ref_data = ref_data)
+pred_g_post_cf  <- cb_margeff(g_post_cf, Q = spei_history, L = L, ref_data = ref_data, cluster = cl)
+pred_g_post_1ha <- cb_margeff(g_post_1ha, Q = spei_history, L = L, ref_data = ref_data, cluster = cl)
 ```
+
 
 Shared color bar limits so scales can be combined.
 
@@ -279,7 +339,7 @@ shoot_lim <- c(min(pred_g_post_1ha$fitted, pred_g_post_cf$fitted),
 
 ## Plots
 
-**Raster plots:**
+TODO: make color be ∆size (i.e. fitted - mean size from ref_data)
 
 ```{r}
 p_growth_cf <-
@@ -296,9 +356,8 @@ p_growth_cf <-
       labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
   ) +
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
-  scale_fill_viridis_c("#shoots (t+1)", option = "A", limits = exp(shoot_lim)) +
-  labs(title = "Continuous Forest",
-       caption = glue("Predicted values for average sized plant ({mean_size} shoots)")) +
+  scale_fill_viridis_c("size(t+1)", option = "A", limits = exp(shoot_lim)) +
+  labs(title = "Continuous Forest") +
   theme_bw()
 p_growth_cf
 ```
@@ -318,8 +377,7 @@ p_growth_1ha <-
       labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
   ) +  scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("#shoots (t+1)", option = "A", limits = exp(shoot_lim)) +
-  labs(title = "1-ha Fragments",
-       caption = glue("Predicted values for average sized plant ({mean_size} shoots)")) +
+  labs(title = "1-ha Fragments") +
   theme_bw()
 p_growth_1ha
 ```
@@ -362,6 +420,7 @@ p_growth_1ha_slice
 
 
 **Slice through individual months**
+TODO: Change to ridge plots?
 
 I find this less useful, but just shows that relationships are slightly quadratic at most complicated.  This would be more useful if there was a way to show which lines had "slopes" significantly different from 0 (i.e. don't totally overlap a flat line).
 
@@ -401,8 +460,9 @@ p_growth_cf_months
 
 ```{r}
 s_post_cf <-
-  gam(surv ~ 
+  bam(surv ~ 
         s(log_size) +
+        s(year_fac, bs = "re") +
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
@@ -410,22 +470,27 @@ s_post_cf <-
           xt = list(bs = "cr")),
       family = binomial,
       data = demog_post_cf,
-      # gamma = 1.2, #increases smoothness when above 1
-      method = "REML")
+      method = "REML",
+      cluster = cl)
 ```
 ```{r}
 # gam.check(s_post_cf) #not sure what to expect from any of these plots
-appraise(s_post_cf, method = "simulate")
+appraise(s_post_cf)
 ```
 ```{r}
 summary(s_post_cf)
 ```
-wow, not significant!
+
+
+```{r}
+draw(s_post_cf)
+```
 
 ```{r}
 s_post_1ha <-
-  gam(surv ~ 
+  bam(surv ~ 
         s(log_size) +
+        s(year_fac, bs = "re") +
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
@@ -433,21 +498,51 @@ s_post_1ha <-
           xt = list(bs = "cr")),
       family = binomial,
       data = demog_post_1ha,
-      # gamma = 1.2, #increases smoothness when above 1
-      method = "REML")
+      method = "REML",
+      cluster = cl)
 ```
 ```{r}
 summary(s_post_1ha)
 ```
+
 not significant!  I should try select=TRUE here.
+
+```{r}
+draw(s_post_1ha)
+```
+
+## Covariate plots
+
+Effect of size with all else held average.
+
+
+```{r}
+range(demog_post_cf$log_size)
+newdata <- 
+  tibble(log_size = seq(0, 7.8, length.out = 100),
+         plot = "newplot",
+         year_fac = "newyear",
+         spei_history = mean(demog_post_cf$spei_history),
+         L = demog_post_cf$L[1:100, ])
+out <- augment(s_post_cf, newdata = newdata, se_fit = TRUE)
+
+covar_s_cf <-
+  ggplot(out, aes(x = log_size, y = plogis(.fitted))) + 
+  # geom_point(data = demog_post_cf, aes(x = size, y = size_next), alpha = 0.1) +
+  geom_ribbon(aes(ymin = plogis(.fitted - .se.fit * 1.96), ymax = plogis(.fitted + .se.fit * 1.96)), alpha = 0.3) +
+  geom_line(color = "blue") +
+  # geom_rug(data = demog_post_cf, aes(x = size, y = size_next), alpha = 0.25) +
+  theme_linedraw()
+covar_s_cf
+```
 
 ## Get plot data
 
 This is pretty slow. It could probably be faster if I understood matrix math better.
 
 ```{r}
-pred_s_post_cf  <- cb_margeff(s_post_cf,  Q = spei_history, L = L, ref_data = ref_data)
-pred_s_post_1ha <- cb_margeff(s_post_1ha, Q = spei_history, L = L, ref_data = ref_data)
+pred_s_post_cf  <- cb_margeff(s_post_cf,  Q = spei_history, L = L, ref_data = ref_data, cluster = cl)
+pred_s_post_1ha <- cb_margeff(s_post_1ha, Q = spei_history, L = L, ref_data = ref_data, cluster = cl)
 ```
 
 Shared color bar limits so scales can be combined.
@@ -478,8 +573,7 @@ p_surv_cf <-
   ) + 
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("P(survival)", option = "A", limits = plogis(surv_lim)) +
-  labs(title = "Continuous Forest",
-       caption = glue("Predicted values for average sized plant ({mean_size} shoots)")) +
+  labs(title = "Continuous Forest") +
   theme_bw()
 p_surv_cf
 ```
@@ -500,8 +594,7 @@ p_surv_1ha <-
   ) +
   scale_x_continuous("SPEI_3", expand = c(0,0)) +
   scale_fill_viridis_c("P(survival)", option = "A", limits = plogis(surv_lim)) +
-  labs(title = "1-ha Fragments",
-       caption = glue("Predicted values for average sized plant ({mean_size} shoots)")) +
+  labs(title = "1-ha Fragments") +
   theme_bw()
 p_surv_1ha
 ```
@@ -555,8 +648,9 @@ Around 0.05 percent of plants flowered.
 
 ```{r}
 f_post_cf <-
-  gam(flwr ~ 
+  bam(flwr ~ 
         s(log_size) +
+        s(year_fac, bs = "re") +
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
@@ -564,29 +658,30 @@ f_post_cf <-
           xt = list(bs = "cr")),
       family = binomial,
       data = demog_post_cf,
-      # gamma = 1.2, #increases smoothness when above 1
-      method = "REML")
+      method = "REML",
+      cluster = cl)
 ```
 
 ```{r}
 appraise(f_post_cf)
 ```
-
+these residuals are troubling
 
 ```{r}
 summary(f_post_cf)
 ```
 
 ```{r}
-plot(f_post_cf, select = 1, trans = plogis)
+draw(f_post_cf)
 ```
 
-Plants with exp(3) = 20 shoots have close to a 100% chance of flowering.
+
 
 ```{r}
 f_post_1ha <-
-  gam(flwr ~ 
+  bam(flwr ~ 
         s(log_size) +
+        s(year_fac, bs = "re") +
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
@@ -594,8 +689,8 @@ f_post_1ha <-
           xt = list(bs = "cr")),
       family = binomial,
       data = demog_post_1ha,
-      # gamma = 1.2, #increases smoothness when above 1
-      method = "REML")
+      method = "REML",
+      cluster = cl)
 ```
 
 ```{r}
@@ -608,7 +703,7 @@ summary(f_post_1ha)
 ```
 
 ```{r}
-plot(f_post_1ha, select = 1, trans = plogis)
+draw(f_post_1ha)
 ```
 
 ## Get plot data
@@ -616,8 +711,8 @@ plot(f_post_1ha, select = 1, trans = plogis)
 This is pretty slow. It could probably be faster if I understood matrix math better.
 
 ```{r}
-pred_f_post_cf  <- cb_margeff(f_post_cf,  Q = spei_history, L = L, ref_data = ref_data)
-pred_f_post_1ha <- cb_margeff(f_post_1ha, Q = spei_history, L = L, ref_data = ref_data)
+pred_f_post_cf  <- cb_margeff(f_post_cf,  Q = spei_history, L = L, ref_data = ref_data, cluster = cl)
+pred_f_post_1ha <- cb_margeff(f_post_1ha, Q = spei_history, L = L, ref_data = ref_data, cluster = cl)
 ```
 
 Shared color bar limits so scales can be combined.
