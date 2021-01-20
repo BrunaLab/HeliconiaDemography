@@ -25,6 +25,7 @@ library(sf)
 library(tsibble)
 library(broom)
 library(gratia)
+library(latex2exp)
 
 library(conflicted)
 conflict_prefer("lag", "dplyr")
@@ -178,7 +179,9 @@ demog_sdlg_1ha <-
 I'm going to start fitting these with `bam()` to speed things up.  This sets up the paralellization.  CAUTION: you may need to change these settings for your machine.
 
 ```{r}
-cl <- parallel::makeForkCluster()
+library(parallel)
+ncores <- detectCores()
+cl <- makeForkCluster(ncores - 2)
 ```
 
 
@@ -265,16 +268,16 @@ draw(g_post_1ha)
 Effect of size with all else held average.
 
 ```{r}
-range(demog_post_cf$log_size)
+sr <- range(demog_post_cf$log_size)
 
-newdata <- 
-  tibble(log_size = seq(0, 7.8, length.out = 100),
+newdata_covar_cf <- 
+  tibble(log_size = seq(sr[1], sr[2], length.out = 100),
          plot = "newplot",
          year_fac = "newyear", 
          spei_history = mean(demog_post_cf$spei_history),
          L = demog_post_cf$L[1:100, ])
 
-out <- augment(g_post_cf, newdata = newdata, se_fit = TRUE)
+out <- augment(g_post_cf, newdata = newdata_covar_cf, se_fit = TRUE)
 
 covar_growth_cf <-
   ggplot(out, aes(x = exp(log_size), y = exp(.fitted))) + 
@@ -283,19 +286,20 @@ covar_growth_cf <-
   geom_line(color = "blue") +
   # geom_rug(data = demog_post_cf, aes(x = size, y = size_next), alpha = 0.25) +
   theme_linedraw() +
-  labs(x = "size in year t (shoots * height)", y = "size in year t+1 (shoots * height)")
+  labs(x = TeX("size_t_"), y = TeX("size_{t+1}_"))
 covar_growth_cf
+ggsave(here("analysis", "figures", "growth_cf_size.png"), covar_growth_cf)
 ```
 ```{r}
-range(demog_post_1ha$log_size)
-
-newdata <- 
-  tibble(log_size = seq(0, 7.6, length.out = 100),
+sr <- range(demog_post_1ha$log_size)
+newdata_covar_1ha <- 
+  tibble(log_size = seq(sr[1], sr[2], length.out = 100),
          plot = "newplot",
          year_fac = "newyear",
          spei_history = mean(demog_post_1ha$spei_history),
          L = demog_post_cf$L[1:100, ])
-out <- augment(g_post_1ha, newdata = newdata, se_fit = TRUE)
+
+out <- augment(g_post_1ha, newdata = newdata_covar_1ha, se_fit = TRUE)
 
 covar_growth_1ha <-
   ggplot(out, aes(x = exp(log_size), y = exp(.fitted))) + 
@@ -304,8 +308,10 @@ covar_growth_1ha <-
   geom_line(color = "blue") +
   # geom_rug(data = demog_post_1ha, aes(x = size, y = size_next), alpha = 0.25) +
   theme_linedraw() +
-  labs(x = "size in year t (shoots * height)", y = "size in year t+1 (shoots * height)")
+  labs(x = TeX("size_t_"), y = TeX("size_{t+1}_"))
+
 covar_growth_1ha
+ggsave(here("analysis", "figures", "growth_1ha_size.png"), covar_growth_1ha)
 ```
 
 ## Get plot data
@@ -319,8 +325,8 @@ ref_data <-
   dplyr::summarize(log_size = log(mean(size, na.rm = TRUE)),  #log of mean size, not mean of log_size
                    year_fac = "newyear",
                    plot = "newlevel")
-# exp(1.032814) # 2.8 shoots
-mean_size <- round(exp(ref_data$log_size), 1)
+
+mean_size <- exp(ref_data$log_size)
 ```
 
 
@@ -330,22 +336,59 @@ pred_g_post_1ha <- cb_margeff(g_post_1ha, Q = spei_history, L = L, ref_data = re
 ```
 
 
+Calculate growth as change from year t to year t+1
+
+```{r}
+mean_size # size in year t for fitted values
+
+pred_g_post_cf <- 
+  pred_g_post_cf %>% 
+  mutate(e_fitted = exp(fitted),
+         d_fitted = e_fitted - mean_size)
+
+pred_g_post_1ha <-
+  pred_g_post_1ha %>% 
+  mutate(e_fitted = exp(fitted),
+         d_fitted = e_fitted - mean_size)
+```
+
+
 Shared color bar limits so scales can be combined.
 
 ```{r}
-shoot_lim <- c(min(pred_g_post_1ha$fitted, pred_g_post_cf$fitted),
-               max(pred_g_post_1ha$fitted, pred_g_post_cf$fitted))
+shoot_lim <- c(min(pred_g_post_1ha$d_fitted, pred_g_post_cf$d_fitted),
+               max(pred_g_post_1ha$d_fitted, pred_g_post_cf$d_fitted))
 ```
 
 ## Plots
-
-TODO: make color be ∆size (i.e. fitted - mean size from ref_data)
 
 ```{r}
 p_growth_cf <-
   pred_g_post_cf %>%
   filter(min_dist < 0.1) %>%
-  ggplot(aes(x = x, y = lag, z = exp(fitted), fill = exp(fitted))) +
+  ggplot(aes(x = x, y = lag, z = d_fitted, fill = d_fitted)) +
+  geom_raster(interpolate = TRUE) +
+  scale_y_continuous(
+    "lag (months)",
+    breaks = 0:36, 
+    expand = c(0,0),
+    sec.axis = dup_axis(
+      name = "month",
+      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
+  ) +
+  scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
+  scale_fill_viridis_c(TeX("$\\Delta$ size"), option = "A", limits = shoot_lim) +
+  labs(title = "Continuous Forest") +
+  theme_bw()
+p_growth_cf
+ggsave(here("analysis", "figures", "growth_cf_spei.png"), p_growth_cf)
+```
+
+```{r}
+p_growth_1ha <-
+  pred_g_post_1ha %>%
+  filter(min_dist < 0.1) %>%
+  ggplot(aes(x = x, y = lag, z = d_fitted, fill = d_fitted)) +
   geom_raster(interpolate = TRUE) +
   scale_y_continuous(
     "lag (months)",
@@ -355,67 +398,48 @@ p_growth_cf <-
       name = "Month",
       labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
   ) +
-  scale_x_continuous("SPEI_3", expand = c(0,0)) +
-  scale_fill_viridis_c("size(t+1)", option = "A", limits = exp(shoot_lim)) +
-  labs(title = "Continuous Forest") +
-  theme_bw()
-p_growth_cf
-```
-
-```{r}
-p_growth_1ha <-
-  pred_g_post_1ha %>%
-  filter(min_dist < 0.1) %>%
-  ggplot(aes(x = x, y = lag, z = exp(fitted), fill = exp(fitted))) +
-  geom_raster(interpolate = TRUE) +
-  scale_y_continuous(
-    "lag (months)",
-    breaks = 0:36, 
-    expand = c(0,0),
-    sec.axis = dup_axis(
-      name = "Month",
-      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
-  ) +  scale_x_continuous("SPEI_3", expand = c(0,0)) +
-  scale_fill_viridis_c("#shoots (t+1)", option = "A", limits = exp(shoot_lim)) +
+  scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
+  scale_fill_viridis_c(TeX("$\\Delta$ size"), option = "A", limits = shoot_lim) +
   labs(title = "1-ha Fragments") +
   theme_bw()
 p_growth_1ha
+ggsave(here("analysis", "figures", "growth_1ha_spei.png"), p_growth_1ha)
 ```
 
 
 **Slice through time at severe drought**
 
 ```{r}
-p_growth_cf_slice <-
-  pred_g_post_cf %>% 
-  filter(nearest(x, -1.50)) %>% 
-  ggplot(aes(x = lag, y = exp(fitted))) +
-  geom_ribbon(aes(
-    ymin = exp(fitted - se.fit * 1.96),
-    ymax = exp(fitted + se.fit * 1.96)
-  ), alpha = 0.3)+
-  geom_line() +
-  scale_x_continuous("lag(months)", breaks = 0:36) +
-  labs(title = "Continuous Forest", y = "shoots (t+1)") +
-  theme_linedraw()
-p_growth_cf_slice
+# p_growth_cf_slice <-
+#   pred_g_post_cf %>% 
+#   filter(nearest(x, -1.50)) %>% 
+#   ggplot(aes(x = lag, y = exp(fitted))) +
+#   geom_ribbon(aes(
+#     ymin = exp(fitted - se.fit * 1.96),
+#     ymax = exp(fitted + se.fit * 1.96)
+#   ), alpha = 0.3)+
+#   geom_line() +
+#   scale_x_continuous("lag(months)", breaks = 0:36) +
+#   labs(title = "Continuous Forest", y = "shoots (t+1)") +
+#   theme_linedraw()
+# p_growth_cf_slice
 ```
 
 
 ```{r}
-p_growth_1ha_slice <-
-  pred_g_post_1ha %>% 
-  filter(nearest(x, -1.5)) %>% 
-  ggplot(aes(x = lag, y = exp(fitted))) +
-  geom_ribbon(aes(
-    ymin = exp(fitted - se.fit * 1.96),
-    ymax = exp(fitted + se.fit * 1.96)
-  ), alpha = 0.3)+
-  geom_line() +
-  scale_x_continuous("lag(months)", breaks = 0:36) +
-  labs(title = "1-ha Fragments", y = "shoots (t+1)") +
-  theme_linedraw()
-p_growth_1ha_slice
+# p_growth_1ha_slice <-
+#   pred_g_post_1ha %>% 
+#   filter(nearest(x, -1.5)) %>% 
+#   ggplot(aes(x = lag, y = exp(fitted))) +
+#   geom_ribbon(aes(
+#     ymin = exp(fitted - se.fit * 1.96),
+#     ymax = exp(fitted + se.fit * 1.96)
+#   ), alpha = 0.3)+
+#   geom_line() +
+#   scale_x_continuous("lag(months)", breaks = 0:36) +
+#   labs(title = "1-ha Fragments", y = "shoots (t+1)") +
+#   theme_linedraw()
+# p_growth_1ha_slice
 ```
 
 
@@ -425,33 +449,33 @@ TODO: Change to ridge plots?
 I find this less useful, but just shows that relationships are slightly quadratic at most complicated.  This would be more useful if there was a way to show which lines had "slopes" significantly different from 0 (i.e. don't totally overlap a flat line).
 
 ```{r}
-#TODO: replace with ridge plot
-plotdf <-
-  pred_g_post_cf %>% 
-  mutate(lag = round(lag)) %>% 
-  group_by(x, lag) %>% 
-  summarize(across(everything(),  mean))
-
-foo <- function(x) {
-  x <- as.numeric(x)
-  mon <- month(ymd("2020-2-01") - months(x), label = TRUE)
-  l <- glue("lag={x} ({mon})")
-  return(l)
-}
-
-p_growth_cf_months <-
-  plotdf %>% 
-  ggplot(aes(x = x, y = exp(fitted))) +
-  geom_ribbon(aes(
-    ymin = exp(fitted - se.fit * 1.96),
-    ymax = exp(fitted + se.fit * 1.96)
-  ), alpha = 0.3)+
-  geom_line() +
-  scale_x_continuous("SPEI3") +
-  scale_y_continuous("shoots (t+1)") +
-  facet_wrap(~lag, labeller = as_labeller(foo)) +
-  theme_bw()
-p_growth_cf_months
+# #TODO: replace with ridge plot
+# plotdf <-
+#   pred_g_post_cf %>% 
+#   mutate(lag = round(lag)) %>% 
+#   group_by(x, lag) %>% 
+#   summarize(across(everything(),  mean))
+# 
+# foo <- function(x) {
+#   x <- as.numeric(x)
+#   mon <- month(ymd("2020-2-01") - months(x), label = TRUE)
+#   l <- glue("lag={x} ({mon})")
+#   return(l)
+# }
+# 
+# p_growth_cf_months <-
+#   plotdf %>% 
+#   ggplot(aes(x = x, y = exp(fitted))) +
+#   geom_ribbon(aes(
+#     ymin = exp(fitted - se.fit * 1.96),
+#     ymax = exp(fitted + se.fit * 1.96)
+#   ), alpha = 0.3)+
+#   geom_line() +
+#   scale_x_continuous("SPEI3") +
+#   scale_y_continuous("shoots (t+1)") +
+#   facet_wrap(~lag, labeller = as_labeller(foo)) +
+#   theme_bw()
+# p_growth_cf_months
 ```
 
 # Survival
@@ -515,25 +539,36 @@ draw(s_post_1ha)
 
 Effect of size with all else held average.
 
-
 ```{r}
-range(demog_post_cf$log_size)
-newdata <- 
-  tibble(log_size = seq(0, 7.8, length.out = 100),
-         plot = "newplot",
-         year_fac = "newyear",
-         spei_history = mean(demog_post_cf$spei_history),
-         L = demog_post_cf$L[1:100, ])
-out <- augment(s_post_cf, newdata = newdata, se_fit = TRUE)
+out <- augment(s_post_cf, newdata = newdata_covar_cf, se_fit = TRUE)
 
 covar_s_cf <-
-  ggplot(out, aes(x = log_size, y = plogis(.fitted))) + 
-  # geom_point(data = demog_post_cf, aes(x = size, y = size_next), alpha = 0.1) +
+  ggplot(out, aes(x = exp(log_size), y = plogis(.fitted))) + 
+  stat_summary_bin(geom = "point", fun = mean, aes(y = surv), data = demog_post_cf) +
   geom_ribbon(aes(ymin = plogis(.fitted - .se.fit * 1.96), ymax = plogis(.fitted + .se.fit * 1.96)), alpha = 0.3) +
   geom_line(color = "blue") +
-  # geom_rug(data = demog_post_cf, aes(x = size, y = size_next), alpha = 0.25) +
+  labs(x = TeX("size_t_"), y = "P(survival)") +
   theme_linedraw()
+
 covar_s_cf
+ggsave(here("analysis", "figures", "surv_cf_size.png"), covar_s_cf)
+```
+
+Uh...There might be something wrong with how I've determined survival.  I should revisit this.
+
+```{r}
+out <- augment(s_post_1ha, newdata = newdata_covar_1ha, se_fit = TRUE)
+
+covar_s_1ha <-
+  ggplot(out, aes(x = exp(log_size), y = plogis(.fitted))) + 
+  stat_summary_bin(geom = "point", fun = mean, aes(y = surv), data = demog_post_1ha) +
+  geom_ribbon(aes(ymin = plogis(.fitted - .se.fit * 1.96), ymax = plogis(.fitted + .se.fit * 1.96)), alpha = 0.3) +
+  geom_line(color = "blue") +
+  labs(x = TeX("size_t_"), y = "P(survival)") +
+  theme_linedraw()
+
+covar_s_1ha
+ggsave(here("analysis", "figures", "surv_1ha_size.png"), covar_s_1ha)
 ```
 
 ## Get plot data
@@ -558,6 +593,12 @@ surv_lim <- c(min(pred_s_post_1ha$fitted, pred_s_post_cf$fitted),
 These are not significant, so probably don't need to actually make these plots.  I'm mostly just curious what a non-significant crossbasis function looks like.
 
 ```{r}
+#mean survival
+x <- demog_post$surv
+sum(x, na.rm = TRUE) / length(x)
+```
+
+```{r}
 p_surv_cf <-
   pred_s_post_cf %>%
   filter(min_dist < 0.1) %>%
@@ -568,14 +609,15 @@ p_surv_cf <-
     breaks = 0:36, 
     expand = c(0,0),
     sec.axis = dup_axis(
-      name = "Month",
+      name = "month",
       labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
   ) + 
-  scale_x_continuous("SPEI_3", expand = c(0,0)) +
+  scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
   scale_fill_viridis_c("P(survival)", option = "A", limits = plogis(surv_lim)) +
   labs(title = "Continuous Forest") +
   theme_bw()
 p_surv_cf
+ggsave(here("analysis", "figures", "surv_cf_spei.png"), p_surv_cf)
 ```
 
 ```{r}
@@ -589,14 +631,15 @@ p_surv_1ha <-
     breaks = 0:36, 
     expand = c(0,0),
     sec.axis = dup_axis(
-      name = "Month",
+      name = "month",
       labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
   ) +
-  scale_x_continuous("SPEI_3", expand = c(0,0)) +
+  scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
   scale_fill_viridis_c("P(survival)", option = "A", limits = plogis(surv_lim)) +
   labs(title = "1-ha Fragments") +
   theme_bw()
 p_surv_1ha
+ggsave(here("analysis", "figures", "surv_1ha_spei.png"), p_surv_1ha)
 ```
 
 
@@ -640,7 +683,7 @@ p_surv_1ha_slice
 ## Fit GAMs
 
 ```{r}
-x <- demog_post_cf$flwr
+x <- demog_post$flwr
 sum(x, na.rm = TRUE) / length(x)
 ```
 
@@ -650,7 +693,7 @@ Around 0.05 percent of plants flowered.
 f_post_cf <-
   bam(flwr ~ 
         s(log_size) +
-        s(year_fac, bs = "re") +
+        s(year_fac, bs = "re") + 
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
@@ -662,8 +705,11 @@ f_post_cf <-
       cluster = cl)
 ```
 
+Doesn't converge with random effect of year
+
 ```{r}
 appraise(f_post_cf)
+# concurvity(f_post_cf, full = FALSE)
 ```
 these residuals are troubling
 
@@ -706,6 +752,39 @@ summary(f_post_1ha)
 draw(f_post_1ha)
 ```
 
+## Covariate plots
+Effect of size with all else held average.
+
+```{r}
+out <- augment(f_post_cf, newdata = newdata_covar_cf, se_fit = TRUE)
+
+covar_f_cf <-
+  ggplot(out, aes(x = exp(log_size), y = plogis(.fitted))) + 
+  stat_summary_bin(geom = "point", fun = mean, aes(y = flwr), data = demog_post_cf) +
+  geom_ribbon(aes(ymin = plogis(.fitted - .se.fit * 1.96), ymax = plogis(.fitted + .se.fit * 1.96)), alpha = 0.3) +
+  geom_line(color = "blue") +
+  labs(x = TeX("size_t_"), y = "P(flowering)") +
+  theme_linedraw()
+
+covar_f_cf
+ggsave(here("analysis", "figures", "flwr_cf_size.png"), covar_f_cf)
+```
+
+
+```{r}
+out <- augment(f_post_1ha, newdata = newdata_covar_1ha, se_fit = TRUE)
+
+covar_f_1ha <-
+  ggplot(out, aes(x = exp(log_size), y = plogis(.fitted))) + 
+  stat_summary_bin(geom = "point", fun = mean, aes(y = flwr), data = demog_post_1ha) +
+  geom_ribbon(aes(ymin = plogis(.fitted - .se.fit * 1.96), ymax = plogis(.fitted + .se.fit * 1.96)), alpha = 0.3) +
+  geom_line(color = "blue") +
+  labs(x = TeX("size_t_"), y = "P(flowering)") +
+  theme_linedraw()
+
+covar_f_1ha
+ggsave(here("analysis", "figures", "flwr_1ha_size.png"), covar_f_1ha)
+```
 ## Get plot data
 
 This is pretty slow. It could probably be faster if I understood matrix math better.
@@ -736,14 +815,15 @@ p_flowered_cf <-
     breaks = 0:36, 
     expand = c(0,0),
     sec.axis = dup_axis(
-      name = "Month",
+      name = "month",
       labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
   ) + 
-  scale_x_continuous("SPEI_3", expand = c(0,0)) +
+  scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
   scale_fill_viridis_c("P(flowering)", option = "A", limits = plogis(flowered_lim)) +
   labs(title = "Continuous Forest") +
   theme_bw()
 p_flowered_cf
+ggsave(here("analysis", "figures", "flwr_cf_spei.png"), p_flowered_cf)
 ```
 
 
@@ -759,14 +839,15 @@ p_flowered_1ha <-
     breaks = 0:36, 
     expand = c(0,0),
     sec.axis = dup_axis(
-      name = "Month",
+      name = "month",
       labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
   ) + 
-  scale_x_continuous("SPEI_3", expand = c(0,0)) +
+  scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
   scale_fill_viridis_c("P(flowering)", option = "A", limits = plogis(flowered_lim)) +
   labs(title = "1-ha Fragments") +
   theme_bw()
 p_flowered_1ha
+ggsave(here("analysis", "figures", "flwr_1ha_spei.png"), p_flowered_1ha)
 ```
 very similar to growth
 
@@ -810,27 +891,11 @@ p_flowered_1ha_slice
 ```{r}
 p_growth_spei <-
   (p_growth_cf | p_growth_1ha) +
-  plot_annotation(title = "Effect of drought on growth of average sized plant (~2.8 shoots)") +
+  plot_annotation(title = "Effect of drought on growth") +
   plot_layout(guides = "collect") & theme_talk & labs(caption = "")
 p_growth_spei
-ggsave(here("analysis", "figures", "growth_spei.png"), p_growth_spei, height = 7, width = 14)
+# ggsave(here("analysis", "figures", "growth_spei.png"), p_growth_spei, height = 7, width = 14)
 ```
-
-It looks like drought in September/October is bad for growth.
-
-Reminder that these are still fit with two different models and might not be entirely comparable.  Different penalties to the smooths make these hard to compare as well.
-
-
-Here's a slice through SPEI = -1.5 (severe drought)
-
-```{r}
-(p_growth_cf_slice + theme(axis.text.x = element_blank())) /
-  p_growth_1ha_slice +
-  plot_annotation(title = "Effect of severe drought (SPEI = -1.5) on average sized plant (~2.8 shoots)")
-ggsave(here("analysis", "figures", "growth slice.png"))
-```
-
-Again, you can see that drought immediately preceding the census (Jan of that year) and in the previous October are bad for growth, but dry Decembers and Septembers are good for growth.
 
 ## Survival
 
@@ -842,20 +907,9 @@ p_surv_spei <-
   plot_annotation(title = "Effect of drought on survival") +
   plot_layout(guides = "collect") & theme_talk & labs(caption="")
 p_surv_spei
-ggsave(here("analysis", "figures", "surv_spei.png"), p_surv_spei, width = 14, height = 7)
+# ggsave(here("analysis", "figures", "surv_spei.png"), p_surv_spei, width = 14, height = 7)
 ```
 
-The surface for 1-ha fragments is basically flat except for a slight *negative* effect of recent wet weather on survival.  In continuous forest, wet conditions or very dry conditions in the previous August–October have a positive effect on survival.
-
-
-Here's a slice through SPEI = -1.5 (severe drought)
-
-```{r}
-((p_surv_cf_slice + theme(axis.text.x = element_blank())) / p_surv_1ha_slice) +
-  plot_annotation(title = "Effect of severe drought (SPEI = -1.5)")
-ggsave(here("analysis", "figures", "survival slice.png"))
-```
-Pretty flat.
 
 ## Flowering
 
@@ -865,17 +919,7 @@ p_flowered_spei <-
   plot_annotation(title = "Effect of drought on flowering") +
   plot_layout(guides = "collect") & theme_talk & labs(caption = "")
 p_flowered_spei
-ggsave(here("analysis", "figures", "flowering_spei.png"), p_flowered_spei, width = 14, height = 7)
+# ggsave(here("analysis", "figures", "flowering_spei.png"), p_flowered_spei, width = 14, height = 7)
 ```
 
-The surface for continuous forest is perfectly flat (did I do something wrong with the color scale?) and for 1-ha fragments there is a strange (anomalous?) negative effect of high SPEI (wet conditions) in the summer 2 years ago.
-
-
-Here's a slice through SPEI = -1.5 (severe drought)
-
-```{r}
-((p_flowered_cf_slice + theme(axis.text.x = element_blank())) / p_flowered_1ha_slice) +
-  plot_annotation(title = "Effect of severe drought (SPEI = -1.5)")
-ggsave(here("analysis", "figures", "flowering slice.png"))
-```
 
