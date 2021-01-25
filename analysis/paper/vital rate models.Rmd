@@ -41,7 +41,6 @@ library(HeliconiaDemography) #load functions in this compendium
 theme_talk <- theme_bw() + theme(text = element_text(size = 18))
 ```
 
-
 *Last compiled: `r Sys.Date()`*
 
 # TODO:
@@ -51,8 +50,6 @@ theme_talk <- theme_bw() + theme(text = element_text(size = 18))
 - Produce ridge plot
 - Heatmap for growth should be ∆size
 - try select = TRUE (after you understand it better? blog about it first)
-
-
 
 # Purpose
 
@@ -75,6 +72,7 @@ plot_coords <- read_csv(here("analysis", "data", "raw_data", "plot_coords.csv"))
 # Join data sets
 
 ## Prep precip data
+
 Get only rows for february (the month of the census), and year for joining
 
 ```{r}
@@ -92,8 +90,8 @@ Figure out which sites correspond to which grid cells.  The `xa` lat lon are the
 unique(xa2$lat)
 mean(c(-2.25, -2.5))
 ```
-So, from -2.25 to -2.5
 
+So, from -2.25 to -2.5
 
 ```{r}
 unique(xa2$lon)
@@ -101,7 +99,6 @@ mean(c(-59.5, -59.75))
 mean(c(-59.75, -60)) # Florestal-CF, 5752, 5751, 5750, 5756, CaboFrio-CF
 mean(c(-60, -60.25)) # 2206, 2108, 2107, Dimona-CF, 5753, PortoAlegre-CF
 ```
-
 
 ```{r}
 plot_coords
@@ -128,9 +125,9 @@ There's also a couple of plants that are probably data entry errors in height.
 ```{r}
 demog_full <-
   demog_full %>% 
-  filter(ht < 200, ht_next < 200) %>% 
-  filter(shts > 0, shts_next > 0, ht > 0, ht_next > 0) %>% 
-  mutate(size = shts*ht, size_next = shts_next*ht_next, log_size = log(size), log_size_next = log(size_next))
+  filter(ht < 200, ht_prev < 200) %>% 
+  filter(shts > 0, shts_prev > 0, ht > 0, ht_prev > 0) %>% 
+  mutate(size = shts*ht, size_prev = shts_prev * ht_prev, log_size = log(size), log_size_prev = log(size_prev))
 ```
 
 `gam` wants factors!
@@ -193,13 +190,15 @@ Using a scaled-t family distribution because residuals were leptokurtic with a g
 
 ## Fit GAMs
 
-Fit the GAM with crossbasis smooth for lagged drought
+Fit the GAM with crossbasis smooth for lagged drought.
+
+Preliminary modeling showed that if year is included as random effect it is concurve with SPEI history (which would mean biased p-values and coefficients).
 
 ```{r}
 g_post_cf <-
-  bam(log_size_next ~ 
-        s(log_size) + 
-        s(year_fac, bs = "re") + 
+  bam(log_size ~ 
+        s(log_size_prev) + 
+        # s(year_fac, bs = "re") + 
         s(plot, bs = "re") + #random effect of plot
         s(spei_history, L,
           bs = "cb",
@@ -209,6 +208,7 @@ g_post_cf <-
       family = scat(link = "identity"), #like leptokurtic gaussian.
       data = demog_post_cf,
       method = "REML",
+      select = TRUE,
       cluster = cl)
 ```
 
@@ -223,23 +223,21 @@ AIC for...
 Gaussian: 40909.27. looks leptokurtic
 scaled t: 37284.47.  Waaay better
 
-
 ```{r}
 summary(g_post_cf)
 ```
+
 Remember, R-sq is probably so high because size this year is a very good predictor of size next year.
 
 ```{r}
 draw(g_post_cf)
 ```
 
-
-
 ```{r}
 g_post_1ha <-
-  bam(log_size_next ~ 
-        s(log_size) +
-        s(year_fac, bs = "re") +
+  bam(log_size ~ 
+        s(log_size_prev) +
+        # s(year_fac, bs = "re") +
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
@@ -247,6 +245,7 @@ g_post_1ha <-
           xt = list(bs = "cr")),
       family = scat(link = "identity"), #like leptokurtic gaussian.
       data = demog_post_1ha,
+      select = TRUE,
       method = "REML",
       cluster = cl)
 ```
@@ -255,10 +254,10 @@ g_post_1ha <-
 appraise(g_post_1ha)
 ```
 
-
 ```{r}
 summary(g_post_1ha)
 ```
+
 ```{r}
 draw(g_post_1ha)
 ```
@@ -268,10 +267,10 @@ draw(g_post_1ha)
 Effect of size with all else held average.
 
 ```{r}
-sr <- range(demog_post_cf$log_size)
+sr <- range(demog_post_cf$log_size_prev)
 
 newdata_covar_cf <- 
-  tibble(log_size = seq(sr[1], sr[2], length.out = 100),
+  tibble(log_size_prev = seq(sr[1], sr[2], length.out = 100),
          plot = "newplot",
          year_fac = "newyear", 
          spei_history = mean(demog_post_cf$spei_history),
@@ -280,9 +279,10 @@ newdata_covar_cf <-
 out <- augment(g_post_cf, newdata = newdata_covar_cf, se_fit = TRUE)
 
 covar_growth_cf <-
-  ggplot(out, aes(x = exp(log_size), y = exp(.fitted))) + 
-  geom_point(data = demog_post_cf, aes(x = size, y = size_next), alpha = 0.1) +
+  ggplot(out, aes(x = exp(log_size_prev), y = exp(.fitted))) + 
+  geom_point(data = demog_post_cf, aes(x = size_prev, y = size), alpha = 0.1) +
   geom_ribbon(aes(ymin = exp(.fitted - .se.fit * 1.96), ymax = exp(.fitted + .se.fit * 1.96)), alpha = 0.3) +
+  geom_abline(slope = 1, linetype = 2, color = "red") +
   geom_line(color = "blue") +
   # geom_rug(data = demog_post_cf, aes(x = size, y = size_next), alpha = 0.25) +
   theme_linedraw() +
@@ -291,9 +291,15 @@ covar_growth_cf
 ggsave(here("analysis", "figures", "growth_cf_size.png"), covar_growth_cf)
 ```
 ```{r}
-sr <- range(demog_post_1ha$log_size)
+out %>%
+  filter(exp(log_size_prev) > exp(.fitted)) %>% # shinking plants
+  pull(log_size_prev) %>% min() %>% exp() #first size at which shrinking happens.
+```
+
+```{r}
+sr <- range(demog_post_1ha$log_size_prev)
 newdata_covar_1ha <- 
-  tibble(log_size = seq(sr[1], sr[2], length.out = 100),
+  tibble(log_size_prev = seq(sr[1], sr[2], length.out = 100),
          plot = "newplot",
          year_fac = "newyear",
          spei_history = mean(demog_post_1ha$spei_history),
@@ -302,9 +308,10 @@ newdata_covar_1ha <-
 out <- augment(g_post_1ha, newdata = newdata_covar_1ha, se_fit = TRUE)
 
 covar_growth_1ha <-
-  ggplot(out, aes(x = exp(log_size), y = exp(.fitted))) + 
-  geom_point(data = demog_post_1ha, aes(x = size, y = size_next), alpha = 0.1) +
+  ggplot(out, aes(x = exp(log_size_prev), y = exp(.fitted))) + 
+  geom_point(data = demog_post_1ha, aes(x = size_prev, y = size), alpha = 0.1) +
   geom_ribbon(aes(ymin = exp(.fitted - .se.fit * 1.96), ymax = exp(.fitted + .se.fit * 1.96)), alpha = 0.3) +
+  geom_abline(slope = 1, linetype = 2, color = "red") +
   geom_line(color = "blue") +
   # geom_rug(data = demog_post_1ha, aes(x = size, y = size_next), alpha = 0.25) +
   theme_linedraw() +
@@ -312,6 +319,11 @@ covar_growth_1ha <-
 
 covar_growth_1ha
 ggsave(here("analysis", "figures", "growth_1ha_size.png"), covar_growth_1ha)
+```
+```{r}
+out %>%
+  filter(exp(log_size_prev) > exp(.fitted)) %>% #shrinking plants
+  pull(log_size_prev) %>% min() %>% exp() #smallest size where plants start shrinking
 ```
 
 ## Get plot data
@@ -322,19 +334,17 @@ This is pretty slow. It could probably be faster if I understood matrix math bet
 # use mean size plant across both habitats so plots are comparable
 ref_data <-
   demog_post %>%
-  dplyr::summarize(log_size = log(mean(size, na.rm = TRUE)),  #log of mean size, not mean of log_size
+  dplyr::summarize(log_size_prev = log(mean(size_prev, na.rm = TRUE)),  #log of mean size, not mean of log_size
                    year_fac = "newyear",
                    plot = "newlevel")
 
-mean_size <- exp(ref_data$log_size)
+mean_size <- exp(ref_data$log_size_prev)
 ```
-
 
 ```{r}
 pred_g_post_cf  <- cb_margeff(g_post_cf, Q = spei_history, L = L, ref_data = ref_data, cluster = cl)
 pred_g_post_1ha <- cb_margeff(g_post_1ha, Q = spei_history, L = L, ref_data = ref_data, cluster = cl)
 ```
-
 
 Calculate growth as change from year t to year t+1
 
@@ -351,7 +361,6 @@ pred_g_post_1ha <-
   mutate(e_fitted = exp(fitted),
          d_fitted = e_fitted - mean_size)
 ```
-
 
 Shared color bar limits so scales can be combined.
 
@@ -485,8 +494,8 @@ I find this less useful, but just shows that relationships are slightly quadrati
 ```{r}
 s_post_cf <-
   bam(surv ~ 
-        s(log_size) +
-        s(year_fac, bs = "re") +
+        s(log_size_prev) +
+        # s(year_fac, bs = "re") +
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
@@ -495,16 +504,19 @@ s_post_cf <-
       family = binomial,
       data = demog_post_cf,
       method = "REML",
+      select = TRUE,
       cluster = cl)
 ```
+
+
 ```{r}
 # gam.check(s_post_cf) #not sure what to expect from any of these plots
 appraise(s_post_cf)
 ```
+
 ```{r}
 summary(s_post_cf)
 ```
-
 
 ```{r}
 draw(s_post_cf)
@@ -513,8 +525,8 @@ draw(s_post_cf)
 ```{r}
 s_post_1ha <-
   bam(surv ~ 
-        s(log_size) +
-        s(year_fac, bs = "re") +
+        s(log_size_prev) +
+        # s(year_fac, bs = "re") +
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
@@ -523,8 +535,10 @@ s_post_1ha <-
       family = binomial,
       data = demog_post_1ha,
       method = "REML",
+      select = TRUE,
       cluster = cl)
 ```
+
 ```{r}
 summary(s_post_1ha)
 ```
@@ -543,7 +557,7 @@ Effect of size with all else held average.
 out <- augment(s_post_cf, newdata = newdata_covar_cf, se_fit = TRUE)
 
 covar_s_cf <-
-  ggplot(out, aes(x = exp(log_size), y = plogis(.fitted))) + 
+  ggplot(out, aes(x = exp(log_size_prev), y = plogis(.fitted))) + 
   stat_summary_bin(geom = "point", fun = mean, aes(y = surv), data = demog_post_cf) +
   geom_ribbon(aes(ymin = plogis(.fitted - .se.fit * 1.96), ymax = plogis(.fitted + .se.fit * 1.96)), alpha = 0.3) +
   geom_line(color = "blue") +
@@ -560,7 +574,7 @@ Uh...There might be something wrong with how I've determined survival.  I should
 out <- augment(s_post_1ha, newdata = newdata_covar_1ha, se_fit = TRUE)
 
 covar_s_1ha <-
-  ggplot(out, aes(x = exp(log_size), y = plogis(.fitted))) + 
+  ggplot(out, aes(x = exp(log_size_prev), y = plogis(.fitted))) + 
   stat_summary_bin(geom = "point", fun = mean, aes(y = surv), data = demog_post_1ha) +
   geom_ribbon(aes(ymin = plogis(.fitted - .se.fit * 1.96), ymax = plogis(.fitted + .se.fit * 1.96)), alpha = 0.3) +
   geom_line(color = "blue") +
@@ -687,13 +701,13 @@ x <- demog_post$flwr
 sum(x, na.rm = TRUE) / length(x)
 ```
 
-Around 0.05 percent of plants flowered.
+Around 5 percent of plants flowered.
 
 ```{r}
 f_post_cf <-
   bam(flwr ~ 
-        s(log_size) +
-        s(year_fac, bs = "re") + 
+        s(log_size_prev) +
+        # s(year_fac, bs = "re") + 
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
@@ -702,6 +716,7 @@ f_post_cf <-
       family = binomial,
       data = demog_post_cf,
       method = "REML",
+      select = TRUE,
       cluster = cl)
 ```
 
@@ -711,6 +726,7 @@ Doesn't converge with random effect of year
 appraise(f_post_cf)
 # concurvity(f_post_cf, full = FALSE)
 ```
+
 these residuals are troubling
 
 ```{r}
@@ -721,13 +737,13 @@ summary(f_post_cf)
 draw(f_post_cf)
 ```
 
-
+This model changes **drastically** depending on whether year is included as a random effect.  Does that mean ther random effect is important? Or is it because it is collinear / concurve with SPEI history?
 
 ```{r}
 f_post_1ha <-
   bam(flwr ~ 
-        s(log_size) +
-        s(year_fac, bs = "re") +
+        s(log_size_prev) +
+        # s(year_fac, bs = "re") +
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
@@ -736,13 +752,13 @@ f_post_1ha <-
       family = binomial,
       data = demog_post_1ha,
       method = "REML",
+      select = TRUE,
       cluster = cl)
 ```
 
 ```{r}
 appraise(f_post_1ha)
 ```
-
 
 ```{r}
 summary(f_post_1ha)
@@ -753,13 +769,14 @@ draw(f_post_1ha)
 ```
 
 ## Covariate plots
+
 Effect of size with all else held average.
 
 ```{r}
 out <- augment(f_post_cf, newdata = newdata_covar_cf, se_fit = TRUE)
 
 covar_f_cf <-
-  ggplot(out, aes(x = exp(log_size), y = plogis(.fitted))) + 
+  ggplot(out, aes(x = exp(log_size_prev), y = plogis(.fitted))) + 
   stat_summary_bin(geom = "point", fun = mean, aes(y = flwr), data = demog_post_cf) +
   geom_ribbon(aes(ymin = plogis(.fitted - .se.fit * 1.96), ymax = plogis(.fitted + .se.fit * 1.96)), alpha = 0.3) +
   geom_line(color = "blue") +
@@ -775,7 +792,7 @@ ggsave(here("analysis", "figures", "flwr_cf_size.png"), covar_f_cf)
 out <- augment(f_post_1ha, newdata = newdata_covar_1ha, se_fit = TRUE)
 
 covar_f_1ha <-
-  ggplot(out, aes(x = exp(log_size), y = plogis(.fitted))) + 
+  ggplot(out, aes(x = exp(log_size_prev), y = plogis(.fitted))) + 
   stat_summary_bin(geom = "point", fun = mean, aes(y = flwr), data = demog_post_1ha) +
   geom_ribbon(aes(ymin = plogis(.fitted - .se.fit * 1.96), ymax = plogis(.fitted + .se.fit * 1.96)), alpha = 0.3) +
   geom_line(color = "blue") +
@@ -785,6 +802,7 @@ covar_f_1ha <-
 covar_f_1ha
 ggsave(here("analysis", "figures", "flwr_1ha_size.png"), covar_f_1ha)
 ```
+
 ## Get plot data
 
 This is pretty slow. It could probably be faster if I understood matrix math better.

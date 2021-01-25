@@ -62,14 +62,14 @@ demog <-
   mutate(infl = ifelse(is.na(infl) & (!is.na(shts) | !is.na(ht)), 0, infl)) %>% 
   mutate(flwr = ifelse(infl > 0, 1, 0), .after = infl)
 
-# Add year t+1 ------------------------------------------------------------
+# Add year t-1 ------------------------------------------------------------
 # add height and number shoots in the next year for each observation
 
 demog <- 
   demog %>% 
   group_by(ha_id_number) %>% 
-  mutate(ht_next = lead(ht),
-         shts_next = lead(shts)) %>% 
+  mutate(ht_prev = lag(ht),
+         shts_prev = lag(shts)) %>% 
   ungroup()
 
 # arrange columns
@@ -78,7 +78,7 @@ demog <-
   select(ranch, bdffp_reserve_no, plot, habitat, #site level
          row, column, x_09, y_09, ha_id_number, tag_number, #plot level
          year,
-         ht, ht_next, shts, shts_next, infl_num = infl, flwr, surv, code_notes, code2) #plant level
+         ht, ht_prev, shts, shts_prev, infl_num = infl, flwr, surv, code_notes, code2) #plant level
 
 
 write_csv(demog, here("analysis", "data", "derived_data", "ha_survey.csv"))
