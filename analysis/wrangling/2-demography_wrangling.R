@@ -12,7 +12,7 @@ library(conflicted)
 source(here("R", "utils.R"))
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
-
+conflict_prefer("lag", "dplyr")
 # Load data ---------------------------------------------------------------
 demog <- 
   read_csv(here("analysis", "data", "raw_data", "Ha_survey_with_Zombies.csv"), col_names = TRUE,
@@ -34,17 +34,18 @@ fails <-
 demog$x_09[fails$row] <- fails$corrected
 
 # Survival ----------------------------------------------------------------
-#TODO: Change this so plants are only dead after 2 years of NAs or if marked dead.
-
+# The `surv` column should be 1 if a plant is currently alive in `year` and 0 if it's dead in `year`.
+# tibble(year = 1990:2000, x = c(12, 34, NA, 12, 13, 14, 16, NA, NA, NA, NA)) %>%
+#   mutate(alive = as_living(x)) %>%
+#   filter(alive == 1 | is.na(lag(alive)))
+# 
 demog <-
   demog %>% 
   group_by(ha_id_number) %>% 
   arrange(ha_id_number, year) %>% 
-  mutate(alive = as_living(ht, n = 3)) %>%  #1 if alive, 0 if dead (assumed dead after 2 trailing NAs)
-  mutate(alive = if_else(!is.na(code_notes) & code_notes == "dead (2)", 0L, alive)) %>% 
-  mutate(surv = lead(alive)) %>% # did a plant survive to the next year?
-  filter(alive == 1) %>%  #remove entries after last year alive.
-  select(-alive) %>% #remove to reduce confusion
+  mutate(surv = as_living(ht, n = 3)) %>%  #1 if alive, 0 if dead (assumed dead after 2 trailing NAs)
+  mutate(surv = if_else(!is.na(code_notes) & code_notes == "dead (2)", 0L, surv)) %>% 
+  filter(surv == 1 | lag(surv) == 1) %>%  #remove entries after last year alive.
   ungroup()
 
 count(demog, surv) #2673 dead plants over course of study
