@@ -125,10 +125,18 @@ There's also a couple of plants that are probably data entry errors in height.
 ```{r}
 demog_full <-
   demog_full %>% 
-  filter(ht < 200, ht_prev < 200) %>% 
-  filter(shts > 0, shts_prev > 0, ht > 0, ht_prev > 0) %>% 
+  filter(ht < 200 | is.na(ht), ht_prev < 200 | is.na(ht_prev)) %>%
+  filter(
+    # having no aboveground biomass is possible, but categorically different than just being small. Exclude plants with 0 shoots or 0 height
+    shts_prev > 0,
+    ht_prev > 0,
+    #for survival data, must include plants with NA for shts and height (i.e. dead plants)
+    shts > 0 | is.na(shts), 
+    ht > 0 | is.na(ht)
+  ) %>%
   mutate(size = shts*ht, size_prev = shts_prev * ht_prev, log_size = log(size), log_size_prev = log(size_prev))
 ```
+
 
 `gam` wants factors!
 
@@ -171,6 +179,17 @@ demog_sdlg_1ha <-
   filter(habitat == "1-ha")
 ```
 
+# Inspect raw data
+
+```{r}
+demog_post %>% ggplot(aes(x = surv)) + geom_bar() + facet_wrap(~habitat)
+```
+```{r}
+demog_post %>% ggplot(aes(x = habitat, y = log_size)) + geom_boxplot()
+```
+```{r}
+demog_post %>% ggplot(aes(x = flwr)) + geom_bar() + facet_wrap(~habitat)
+```
 # Speed up models with bam()
 
 I'm going to start fitting these with `bam()` to speed things up.  This sets up the paralellization.  CAUTION: you may need to change these settings for your machine.
@@ -181,18 +200,254 @@ ncores <- detectCores()
 cl <- makeForkCluster(ncores - 2)
 ```
 
+# Survival
+`surv` is 1 in `year`s when a plant is alive and 0 in the first `year` when the plant is dead.  These GAMs model the survival of a plant (over the past year) as a function of size in the previous census and SPEI values starting at february of the current year going back 36 months.
+## Fit GAMs
+
+```{r}
+s_post_cf <-
+  bam(surv ~ 
+        s(log_size_prev) +
+        # s(year_fac, bs = "re") +
+        s(plot, bs = "re") +
+        s(spei_history, L,
+          bs = "cb",
+          k = c(3, 35),  #cubic response (at most) to drought, one knot per month lag.
+          xt = list(bs = "cr")),
+      family = binomial,
+      data = demog_post_cf,
+      method = "REML",
+      select = TRUE,
+      cluster = cl)
+```
+
+
+```{r}
+# gam.check(s_post_cf) #not sure what to expect from any of these plots
+appraise(s_post_cf)
+```
+
+```{r}
+summary(s_post_cf)
+```
+
+```{r}
+draw(s_post_cf)
+```
+
+```{r}
+s_post_1ha <-
+  bam(surv ~ 
+        s(log_size_prev) +
+        # s(year_fac, bs = "re") +
+        s(plot, bs = "re") +
+        s(spei_history, L,
+          bs = "cb",
+          k = c(3, 35),  #cubic response (at most) to drought, one knot per month lag.
+          xt = list(bs = "cr")),
+      family = binomial,
+      data = demog_post_1ha,
+      method = "REML",
+      select = TRUE,
+      cluster = cl)
+```
+
+```{r}
+summary(s_post_1ha)
+```
+
+
+```{r}
+draw(s_post_1ha)
+```
+
+## Covariate plots
+
+Effect of size with all else held average.
+
+```{r}
+sr <- range(demog_post_cf$log_size_prev)
+
+newdata_covar_cf <- 
+  tibble(log_size_prev = seq(sr[1], sr[2], length.out = 100),
+         plot = "newplot",
+         year_fac = "newyear", 
+         spei_history = mean(demog_post_cf$spei_history),
+         L = demog_post_cf$L[1:100, ])
+```
+
+
+```{r}
+out <- augment(s_post_cf, newdata = newdata_covar_cf, se_fit = TRUE)
+
+covar_s_cf <-
+  ggplot(out, aes(x = exp(log_size_prev), y = plogis(.fitted))) + 
+  stat_summary_bin(geom = "point", fun = mean, aes(y = surv), data = demog_post_cf) +
+  geom_ribbon(aes(ymin = plogis(.fitted - .se.fit * 1.96), ymax = plogis(.fitted + .se.fit * 1.96)), alpha = 0.3) +
+  geom_line(color = "blue") +
+  labs(x = TeX("size_t_"), y = "P(survival)") +
+  theme_linedraw()
+
+covar_s_cf
+ggsave(here("analysis", "figures", "surv_cf_size.png"), covar_s_cf)
+```
+
+
+```{r}
+sr <- range(demog_post_1ha$log_size_prev)
+newdata_covar_1ha <- 
+  tibble(log_size_prev = seq(sr[1], sr[2], length.out = 100),
+         plot = "newplot",
+         year_fac = "newyear",
+         spei_history = mean(demog_post_1ha$spei_history),
+         L = demog_post_cf$L[1:100, ])
+
+out <- augment(s_post_1ha, newdata = newdata_covar_1ha, se_fit = TRUE)
+
+covar_s_1ha <-
+  ggplot(out, aes(x = exp(log_size_prev), y = plogis(.fitted))) + 
+  stat_summary_bin(geom = "point", fun = mean, aes(y = surv), data = demog_post_1ha) +
+  geom_ribbon(aes(ymin = plogis(.fitted - .se.fit * 1.96), ymax = plogis(.fitted + .se.fit * 1.96)), alpha = 0.3) +
+  geom_line(color = "blue") +
+  labs(x = TeX("size_t_"), y = "P(survival)") +
+  theme_linedraw()
+
+covar_s_1ha
+ggsave(here("analysis", "figures", "surv_1ha_size.png"), covar_s_1ha)
+```
+
+## Get plot data
+
+```{r}
+# use mean size plant across both habitats so plots are comparable
+ref_data <-
+  demog_post %>%
+  dplyr::summarize(log_size_prev = log(mean(size_prev, na.rm = TRUE)),  #log of mean size, not mean of log_size
+                   year_fac = "newyear",
+                   plot = "newlevel")
+
+mean_size <- exp(ref_data$log_size_prev)
+```
+
+This is pretty slow. It could probably be faster if I understood matrix math better.
+
+```{r}
+pred_s_post_cf  <- cb_margeff(s_post_cf,  Q = spei_history, L = L, ref_data = ref_data, cluster = cl)
+pred_s_post_1ha <- cb_margeff(s_post_1ha, Q = spei_history, L = L, ref_data = ref_data, cluster = cl)
+```
+
+Shared color bar limits so scales can be combined.
+
+```{r}
+surv_lim <- c(min(pred_s_post_1ha$fitted, pred_s_post_cf$fitted),
+              max(pred_s_post_1ha$fitted, pred_s_post_cf$fitted))
+# plogis(surv_lim)
+```
+
+## Plots
+
+```{r}
+#mean survival
+x <- demog_post$surv
+sum(x, na.rm = TRUE) / length(x)
+```
+
+```{r}
+p_surv_cf <-
+  pred_s_post_cf %>%
+  filter(min_dist < 0.1) %>%
+  ggplot(aes(x = x, y = lag, z = plogis(fitted), fill = plogis(fitted))) +
+  geom_raster(interpolate = TRUE) +
+  scale_y_continuous(
+    "lag (months)",
+    breaks = 0:36, 
+    expand = c(0,0),
+    sec.axis = dup_axis(
+      name = "month",
+      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
+  ) + 
+  scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
+  scale_fill_viridis_c("P(survival)", option = "A", limits = plogis(surv_lim)) +
+  labs(title = "Continuous Forest") +
+  theme_bw()
+p_surv_cf
+ggsave(here("analysis", "figures", "surv_cf_spei.png"), p_surv_cf)
+```
+
+```{r}
+p_surv_1ha <-
+  pred_s_post_1ha %>%
+  filter(min_dist < 0.1) %>%
+  ggplot(aes(x = x, y = lag, z = plogis(fitted), fill = plogis(fitted))) +
+  geom_raster(interpolate = TRUE) +
+  scale_y_continuous(
+    "lag (months)",
+    breaks = 0:36, 
+    expand = c(0,0),
+    sec.axis = dup_axis(
+      name = "month",
+      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
+  ) +
+  scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
+  scale_fill_viridis_c("P(survival)", option = "A", limits = plogis(surv_lim)) +
+  labs(title = "1-ha Fragments") +
+  theme_bw()
+p_surv_1ha
+ggsave(here("analysis", "figures", "surv_1ha_spei.png"), p_surv_1ha)
+```
+
+
+**Slice through time at severe drought**
+
+```{r}
+p_surv_cf_slice <-
+  pred_s_post_cf %>% 
+  filter(nearest(x, -1.50)) %>% 
+  ggplot(aes(x = lag, y = plogis(fitted))) +
+  geom_ribbon(aes(
+    ymin = plogis(fitted - se.fit * 1.96),
+    ymax = plogis(fitted + se.fit * 1.96)
+  ), alpha = 0.3)+
+  geom_line() +
+  scale_x_continuous("lag(months)", breaks = 0:36) +
+  labs(title = "Continuous Forest", y = "P(survival)") +
+  theme_linedraw()
+p_surv_cf_slice
+```
+
+
+```{r}
+p_surv_1ha_slice <-
+  pred_s_post_1ha %>% 
+  filter(nearest(x, -1.5)) %>% 
+  ggplot(aes(x = lag, y = plogis(fitted))) +
+  geom_ribbon(aes(
+    ymin = plogis(fitted - se.fit * 1.96),
+    ymax = plogis(fitted + se.fit * 1.96)
+  ), alpha = 0.3)+
+  geom_line() +
+  scale_x_continuous("lag(months)", breaks = 0:36) +
+  labs(title = "1-ha Fragments", y = "P(survival)") +
+  theme_linedraw()
+p_surv_1ha_slice
+```
 
 # Growth
+For mature plants that are alive...
 
-Start with no random effects
+```{r}
+demog2_post_cf <- demog_post_cf %>% filter(surv == 1, !is.na(log_size))
+demog2_post_1ha <- demog_post_1ha %>% filter(surv == 1, !is.na(log_size))
+```
 
-Using a scaled-t family distribution because residuals were leptokurtic with a gaussian.
 
 ## Fit GAMs
 
 Fit the GAM with crossbasis smooth for lagged drought.
-
+Using a scaled-t family distribution because residuals were leptokurtic with a gaussian.
 Preliminary modeling showed that if year is included as random effect it is concurve with SPEI history (which would mean biased p-values and coefficients).
+
+The transformed response and identity link is actually better than a log-link, according to Ellner, Childs and Rees.
 
 ```{r}
 g_post_cf <-
@@ -206,7 +461,7 @@ g_post_cf <-
           xt = list(bs = "cr")),
       # family = gaussian(link = "identity"),
       family = scat(link = "identity"), #like leptokurtic gaussian.
-      data = demog_post_cf,
+      data = demog2_post_cf,
       method = "REML",
       select = TRUE,
       cluster = cl)
@@ -220,8 +475,8 @@ appraise(g_post_cf)
 ```
 
 AIC for... 
-Gaussian: 40909.27. looks leptokurtic
-scaled t: 37284.47.  Waaay better
+Gaussian: ~40909.27. looks leptokurtic
+scaled t: ~37284.47.  Waaay better
 
 ```{r}
 summary(g_post_cf)
@@ -244,7 +499,7 @@ g_post_1ha <-
           k = c(3, 35),  #unimodal response to drought, but one knot per month lag.
           xt = list(bs = "cr")),
       family = scat(link = "identity"), #like leptokurtic gaussian.
-      data = demog_post_1ha,
+      data = demog2_post_1ha,
       select = TRUE,
       method = "REML",
       cluster = cl)
@@ -267,15 +522,6 @@ draw(g_post_1ha)
 Effect of size with all else held average.
 
 ```{r}
-sr <- range(demog_post_cf$log_size_prev)
-
-newdata_covar_cf <- 
-  tibble(log_size_prev = seq(sr[1], sr[2], length.out = 100),
-         plot = "newplot",
-         year_fac = "newyear", 
-         spei_history = mean(demog_post_cf$spei_history),
-         L = demog_post_cf$L[1:100, ])
-
 out <- augment(g_post_cf, newdata = newdata_covar_cf, se_fit = TRUE)
 
 covar_growth_cf <-
@@ -297,14 +543,6 @@ out %>%
 ```
 
 ```{r}
-sr <- range(demog_post_1ha$log_size_prev)
-newdata_covar_1ha <- 
-  tibble(log_size_prev = seq(sr[1], sr[2], length.out = 100),
-         plot = "newplot",
-         year_fac = "newyear",
-         spei_history = mean(demog_post_1ha$spei_history),
-         L = demog_post_cf$L[1:100, ])
-
 out <- augment(g_post_1ha, newdata = newdata_covar_1ha, se_fit = TRUE)
 
 covar_growth_1ha <-
@@ -329,17 +567,6 @@ out %>%
 ## Get plot data
 
 This is pretty slow. It could probably be faster if I understood matrix math better.
-
-```{r}
-# use mean size plant across both habitats so plots are comparable
-ref_data <-
-  demog_post %>%
-  dplyr::summarize(log_size_prev = log(mean(size_prev, na.rm = TRUE)),  #log of mean size, not mean of log_size
-                   year_fac = "newyear",
-                   plot = "newlevel")
-
-mean_size <- exp(ref_data$log_size_prev)
-```
 
 ```{r}
 pred_g_post_cf  <- cb_margeff(g_post_cf, Q = spei_history, L = L, ref_data = ref_data, cluster = cl)
@@ -487,210 +714,7 @@ I find this less useful, but just shows that relationships are slightly quadrati
 # p_growth_cf_months
 ```
 
-# Survival
 
-## Fit GAMs
-
-```{r}
-s_post_cf <-
-  bam(surv ~ 
-        s(log_size_prev) +
-        # s(year_fac, bs = "re") +
-        s(plot, bs = "re") +
-        s(spei_history, L,
-          bs = "cb",
-          k = c(3, 35),  #cubic response (at most) to drought, one knot per month lag.
-          xt = list(bs = "cr")),
-      family = binomial,
-      data = demog_post_cf,
-      method = "REML",
-      select = TRUE,
-      cluster = cl)
-```
-
-
-```{r}
-# gam.check(s_post_cf) #not sure what to expect from any of these plots
-appraise(s_post_cf)
-```
-
-```{r}
-summary(s_post_cf)
-```
-
-```{r}
-draw(s_post_cf)
-```
-
-```{r}
-s_post_1ha <-
-  bam(surv ~ 
-        s(log_size_prev) +
-        # s(year_fac, bs = "re") +
-        s(plot, bs = "re") +
-        s(spei_history, L,
-          bs = "cb",
-          k = c(3, 35),  #cubic response (at most) to drought, one knot per month lag.
-          xt = list(bs = "cr")),
-      family = binomial,
-      data = demog_post_1ha,
-      method = "REML",
-      select = TRUE,
-      cluster = cl)
-```
-
-```{r}
-summary(s_post_1ha)
-```
-
-not significant!  I should try select=TRUE here.
-
-```{r}
-draw(s_post_1ha)
-```
-
-## Covariate plots
-
-Effect of size with all else held average.
-
-```{r}
-out <- augment(s_post_cf, newdata = newdata_covar_cf, se_fit = TRUE)
-
-covar_s_cf <-
-  ggplot(out, aes(x = exp(log_size_prev), y = plogis(.fitted))) + 
-  stat_summary_bin(geom = "point", fun = mean, aes(y = surv), data = demog_post_cf) +
-  geom_ribbon(aes(ymin = plogis(.fitted - .se.fit * 1.96), ymax = plogis(.fitted + .se.fit * 1.96)), alpha = 0.3) +
-  geom_line(color = "blue") +
-  labs(x = TeX("size_t_"), y = "P(survival)") +
-  theme_linedraw()
-
-covar_s_cf
-ggsave(here("analysis", "figures", "surv_cf_size.png"), covar_s_cf)
-```
-
-Uh...There might be something wrong with how I've determined survival.  I should revisit this.
-
-```{r}
-out <- augment(s_post_1ha, newdata = newdata_covar_1ha, se_fit = TRUE)
-
-covar_s_1ha <-
-  ggplot(out, aes(x = exp(log_size_prev), y = plogis(.fitted))) + 
-  stat_summary_bin(geom = "point", fun = mean, aes(y = surv), data = demog_post_1ha) +
-  geom_ribbon(aes(ymin = plogis(.fitted - .se.fit * 1.96), ymax = plogis(.fitted + .se.fit * 1.96)), alpha = 0.3) +
-  geom_line(color = "blue") +
-  labs(x = TeX("size_t_"), y = "P(survival)") +
-  theme_linedraw()
-
-covar_s_1ha
-ggsave(here("analysis", "figures", "surv_1ha_size.png"), covar_s_1ha)
-```
-
-## Get plot data
-
-This is pretty slow. It could probably be faster if I understood matrix math better.
-
-```{r}
-pred_s_post_cf  <- cb_margeff(s_post_cf,  Q = spei_history, L = L, ref_data = ref_data, cluster = cl)
-pred_s_post_1ha <- cb_margeff(s_post_1ha, Q = spei_history, L = L, ref_data = ref_data, cluster = cl)
-```
-
-Shared color bar limits so scales can be combined.
-
-```{r}
-surv_lim <- c(min(pred_s_post_1ha$fitted, pred_s_post_cf$fitted),
-              max(pred_s_post_1ha$fitted, pred_s_post_cf$fitted))
-# plogis(surv_lim)
-```
-
-## Plots
-
-These are not significant, so probably don't need to actually make these plots.  I'm mostly just curious what a non-significant crossbasis function looks like.
-
-```{r}
-#mean survival
-x <- demog_post$surv
-sum(x, na.rm = TRUE) / length(x)
-```
-
-```{r}
-p_surv_cf <-
-  pred_s_post_cf %>%
-  filter(min_dist < 0.1) %>%
-  ggplot(aes(x = x, y = lag, z = plogis(fitted), fill = plogis(fitted))) +
-  geom_raster(interpolate = TRUE) +
-  scale_y_continuous(
-    "lag (months)",
-    breaks = 0:36, 
-    expand = c(0,0),
-    sec.axis = dup_axis(
-      name = "month",
-      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
-  ) + 
-  scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
-  scale_fill_viridis_c("P(survival)", option = "A", limits = plogis(surv_lim)) +
-  labs(title = "Continuous Forest") +
-  theme_bw()
-p_surv_cf
-ggsave(here("analysis", "figures", "surv_cf_spei.png"), p_surv_cf)
-```
-
-```{r}
-p_surv_1ha <-
-  pred_s_post_1ha %>%
-  filter(min_dist < 0.1) %>%
-  ggplot(aes(x = x, y = lag, z = plogis(fitted), fill = plogis(fitted))) +
-  geom_raster(interpolate = TRUE) +
-  scale_y_continuous(
-    "lag (months)",
-    breaks = 0:36, 
-    expand = c(0,0),
-    sec.axis = dup_axis(
-      name = "month",
-      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
-  ) +
-  scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
-  scale_fill_viridis_c("P(survival)", option = "A", limits = plogis(surv_lim)) +
-  labs(title = "1-ha Fragments") +
-  theme_bw()
-p_surv_1ha
-ggsave(here("analysis", "figures", "surv_1ha_spei.png"), p_surv_1ha)
-```
-
-
-**Slice through time at severe drought**
-
-```{r}
-p_surv_cf_slice <-
-  pred_s_post_cf %>% 
-  filter(nearest(x, -1.50)) %>% 
-  ggplot(aes(x = lag, y = plogis(fitted))) +
-  geom_ribbon(aes(
-    ymin = plogis(fitted - se.fit * 1.96),
-    ymax = plogis(fitted + se.fit * 1.96)
-  ), alpha = 0.3)+
-  geom_line() +
-  scale_x_continuous("lag(months)", breaks = 0:36) +
-  labs(title = "Continuous Forest", y = "P(survival)") +
-  theme_linedraw()
-p_surv_cf_slice
-```
-
-
-```{r}
-p_surv_1ha_slice <-
-  pred_s_post_1ha %>% 
-  filter(nearest(x, -1.5)) %>% 
-  ggplot(aes(x = lag, y = plogis(fitted))) +
-  geom_ribbon(aes(
-    ymin = plogis(fitted - se.fit * 1.96),
-    ymax = plogis(fitted + se.fit * 1.96)
-  ), alpha = 0.3)+
-  geom_line() +
-  scale_x_continuous("lag(months)", breaks = 0:36) +
-  labs(title = "1-ha Fragments", y = "P(survival)") +
-  theme_linedraw()
-p_surv_1ha_slice
-```
 
 # Flowering Probability
 
@@ -714,7 +738,7 @@ f_post_cf <-
           k = c(3, 35),  #cubic response (at most) to drought, one knot per month lag.
           xt = list(bs = "cr")),
       family = binomial,
-      data = demog_post_cf,
+      data = demog2_post_cf,
       method = "REML",
       select = TRUE,
       cluster = cl)
@@ -750,7 +774,7 @@ f_post_1ha <-
           k = c(3, 35),  #cubic response (at most) to drought, one knot per month lag.
           xt = list(bs = "cr")),
       family = binomial,
-      data = demog_post_1ha,
+      data = demog2_post_1ha,
       method = "REML",
       select = TRUE,
       cluster = cl)
