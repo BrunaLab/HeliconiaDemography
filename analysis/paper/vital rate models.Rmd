@@ -181,12 +181,54 @@ demog_sdlg_1ha <-
 
 # Inspect raw data
 
+## Survival
+
 ```{r}
 demog_post %>% ggplot(aes(x = surv)) + geom_bar() + facet_wrap(~habitat)
 ```
+
+```{r}
+demog_post %>% 
+  group_by(habitat) %>% 
+  summarize(surv = sum(surv, na.rm = TRUE) / n())
+```
+
+Survival nearly identical for 1 ha and CF.
+
+```{r}
+survival <-
+  demog_post %>% 
+  filter(habitat !="10-ha") %>% 
+  group_by(year, habitat) %>% 
+  summarize(surv = sum(surv, na.rm = TRUE)/n()) %>% 
+  ggplot(aes(x = year, y = surv, color = habitat)) + geom_line()
+survival / annotate_spei(spei)
+```
+Looks like survival went down year after 2003 drought and durring 2007 drought.
+
+## Size / growth
+
 ```{r}
 demog_post %>% ggplot(aes(x = habitat, y = log_size)) + geom_boxplot()
 ```
+
+```{r}
+size <- demog_post %>% 
+  ggplot(aes(x = year, y = size, color = habitat)) +
+  stat_summary(geom = "pointrange", fun.data = "mean_cl_boot") +
+  stat_summary(geom = "line", fun = mean)
+
+dates <- range(demog_post$year) %>% paste0(., "-01-01") %>% ymd()
+
+spei <- ggplot(xa, aes(x = yearmonth, y = spei)) + 
+  geom_line(aes(group = latlon)) +
+  scale_x_yearmonth(limits = dates)
+size/annotate_spei(spei)
+```
+Average plant size shrank in 2003 drought, but not 2007 drought
+
+## Flowering
+
 ```{r}
 demog_post %>% ggplot(aes(x = flwr)) + geom_bar() + facet_wrap(~habitat)
 ```
@@ -346,11 +388,6 @@ surv_lim <- c(min(pred_s_post_1ha$fitted, pred_s_post_cf$fitted),
 
 ## Plots
 
-```{r}
-#mean survival
-x <- demog_post$surv
-sum(x, na.rm = TRUE) / length(x)
-```
 
 ```{r}
 p_surv_cf <-
