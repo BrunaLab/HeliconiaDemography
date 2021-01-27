@@ -33,3 +33,10 @@ test_that("as_living() can handle short numbers of observations", {
   expect_type(as_living(alive, n = 3), "integer")
   expect_equal(as_living(nope), c(NA_integer_, NA_integer_))
 })
+
+#extremely simple test that just checks for errors, not correctness.
+test_that("annotate_spei() doesn't error", {
+  df <- tibble(x = 1:20, y = runif(20, -2.5, 2.5))
+  p <- ggplot(df, aes(x, y)) + geom_line()  
+  expect_s3_class(annotate_spei(p), "ggplot")
+})
