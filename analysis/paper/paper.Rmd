@@ -157,7 +157,11 @@ Statistical significance of crossbasis functions and covariates was determined b
 
 # Results
 
-## DLNMs
+Start with descriptive results of drought events---how many droughts, how severe, timing of droughts, etc.
+
+The size of plants significantly predicted their size in the following year in continuous forest (edf = 7.8, P \< 0.001 <!--# What stats to include?  reference df and F also?  Is this all better as a table? -->) and forest fragments (edf = 7.4, P \< 0.001). In continuous forest, plants under a size of 259 were predicted to grow from year t-1 to year t, and the fit line was below 1:1 for larger plants, indicating that larger plants tended to shrink, on average. In 1 ha fragments, the fit line followed a 1:1 line more closely, indicating that plants tended to stay the same size on average from year to year over the course of this study. <!--# something weird about backtransformation causing these strange results? --> Drought history also had a significant effect on plant size in both continuous forest (edf = 14.7, p \< 0.001) and fragments (edf = 17.8, p \< 0.001). <!--# Describe seasonality of drought effects / shape of crossbasis function -->
+
+Survival of post-seedling plants was very high (93.3%) and was higher, overall, in 1 ha fragments than in continuous forest. Survival was related to plant size (edf = , p = ) such that survival was essentially 1 for plants larger than size \_\_\_ in continuous forest and larger than size \_\_\_ in 1 ha fragments.
 
 ## Size by year interaction
 

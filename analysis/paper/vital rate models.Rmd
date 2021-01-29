@@ -196,13 +196,19 @@ demog_post %>%
 Survival nearly identical for 1 ha and CF.
 
 ```{r}
+dates <- range(demog_post$year) %>% paste0(., "-01-01") %>% ymd()
+
+spei <- ggplot(xa, aes(x = yearmonth, y = spei)) + 
+  geom_line(aes(linetype = latlon)) +
+  scale_x_yearmonth(limits = dates)
+spei <- annotate_spei(spei)
 survival <-
   demog_post %>% 
   filter(habitat !="10-ha") %>% 
   group_by(year, habitat) %>% 
   summarize(surv = sum(surv, na.rm = TRUE)/n()) %>% 
   ggplot(aes(x = year, y = surv, color = habitat)) + geom_line()
-survival / annotate_spei(spei)
+survival / spei
 ```
 Looks like survival went down year after 2003 drought and durring 2007 drought.
 
@@ -218,12 +224,8 @@ size <- demog_post %>%
   stat_summary(geom = "pointrange", fun.data = "mean_cl_boot") +
   stat_summary(geom = "line", fun = mean)
 
-dates <- range(demog_post$year) %>% paste0(., "-01-01") %>% ymd()
 
-spei <- ggplot(xa, aes(x = yearmonth, y = spei)) + 
-  geom_line(aes(group = latlon)) +
-  scale_x_yearmonth(limits = dates)
-size/annotate_spei(spei)
+size/spei
 ```
 Average plant size shrank in 2003 drought, but not 2007 drought
 
@@ -332,6 +334,11 @@ covar_s_cf <-
 
 covar_s_cf
 ggsave(here("analysis", "figures", "surv_cf_size.png"), covar_s_cf)
+```
+```{r}
+demog_post_cf %>% filter(size_prev > 1500, surv == 0)
+
+demog %>% filter(ha_id_number == 5310) %>% View()
 ```
 
 
