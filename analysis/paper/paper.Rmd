@@ -63,6 +63,8 @@ knitr::opts_chunk$set(
 
 # Introduction
 
+<!-- Underemphasize the interaction between fragmentation and drought bc can't do the interaction in test. Instead it's "compare drought effects in fragmented and cf populations."  -->
+
 1.  Organisms simultanously experience multiple forms of natural and anthropogenic disturbance. While work investigating the demographic effects of individual factors is common, studies investigating how multiple factors interact to influence population dynamics remains poorly understood. They could act in concert to exacerbate or dampen population dynamics. <!--# examples of interactions on demography -->For example, fire and herbivory ...[@tyeDemographicMenageTrois2016].
 
     -   Cite Pedro F. Quintana-Ascencio in intro---he will likely be a reviewer.
