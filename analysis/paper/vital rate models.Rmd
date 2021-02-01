@@ -558,7 +558,9 @@ summary(g_post_1ha)
 ```
 
 ```{r}
-draw(g_post_1ha)
+# draw(g_post_1ha)
+draw(g_post_1ha, select = 3, continuous_fill = scale_fill_viridis_c(option = "inferno"), contour = FALSE, fun = "exp")
+ggsave("function_smooth-cb.png")
 ```
 
 ## Covariate plots
