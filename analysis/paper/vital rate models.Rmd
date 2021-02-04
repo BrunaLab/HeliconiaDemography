@@ -181,6 +181,37 @@ demog_sdlg_1ha <-
 
 # Inspect raw data
 
+```{r}
+demog_plotdf <-  
+  demog_post %>% 
+  filter(habitat !="10-ha") %>% 
+  select(ranch, bdffp_reserve_no, plot, habitat, year, ht, shts, size, surv, flwr) %>% 
+  mutate(date = paste(year, "-02-01") %>% ymd(),
+         yearmonth = yearmonth(date))
+```
+
+## SPEI
+
+```{r}
+dates <- range(demog_post$year) %>% paste0(., "-02-01") %>% ymd()
+census_dates <- min(demog_post$year)[1]:max(demog_post$year) %>% paste(., "-02-01") %>% ymd()
+
+spei <-
+  xa %>%
+  select(latlon, yearmonth, spei) %>%
+  filter(!is.na(spei)) %>% 
+  ggplot(aes(x = yearmonth, y = spei)) + 
+  geom_line(aes(group = latlon), alpha = 0.2) +
+  stat_summary(geom = "line", fun = "mean") +
+  scale_y_continuous("SPEI", expand = expansion(mult = c(0, 0.05), add = 0)) +
+  scale_x_yearmonth("Date", limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+spei <- annotate_spei(spei)
+spei
+```
+
 ## Survival
 
 ```{r}
@@ -195,37 +226,50 @@ demog_post %>%
 
 Survival nearly identical for 1 ha and CF.
 
-```{r}
-dates <- range(demog_post$year) %>% paste0(., "-01-01") %>% ymd()
+### Timeseries
 
-spei <- ggplot(xa, aes(x = yearmonth, y = spei)) + 
-  geom_line(aes(linetype = latlon)) +
-  scale_x_yearmonth(limits = dates)
-spei <- annotate_spei(spei)
+```{r}
 survival <-
-  demog_post %>% 
-  filter(habitat !="10-ha") %>% 
-  group_by(year, habitat) %>% 
-  summarize(surv = sum(surv, na.rm = TRUE)/n()) %>% 
-  ggplot(aes(x = year, y = surv, color = habitat)) + geom_line()
-survival / spei
+  demog_plotdf %>%  
+  ggplot(aes(x = yearmonth, y = surv, color = habitat)) +
+  stat_summary(geom = "line", fun = "mean", fun.args = list(na.rm = TRUE)) +
+  stat_summary(geom = "pointrange", fatten = 1) +
+  scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
+  scale_y_continuous("P(survived)") +
+  theme_bw() +
+  theme(axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(), panel.grid.minor.x = element_blank())
+survival
+# (survival / spei) 
 ```
-Looks like survival went down year after 2003 drought and durring 2007 drought.
+Looks like survival went down year after 2003 drought and during 2007 drought.
 
 ## Size / growth
 
 ```{r}
 demog_post %>% ggplot(aes(x = habitat, y = log_size)) + geom_boxplot()
 ```
+```{r}
+demog_post %>% 
+  group_by(habitat) %>% 
+  summarize(size = mean(size, na.rm = TRUE),
+            shts = mean(shts, na.rm = TRUE),
+            ht = mean(ht, na.rm = TRUE))
+```
+
+### Timeseries
 
 ```{r}
-size <- demog_post %>% 
-  ggplot(aes(x = year, y = size, color = habitat)) +
-  stat_summary(geom = "pointrange", fun.data = "mean_cl_boot") +
-  stat_summary(geom = "line", fun = mean)
-
-
-size/spei
+size <-
+  demog_plotdf %>% 
+  ggplot(aes(x = yearmonth, y = size, color = habitat)) +
+  stat_summary(geom = "line", fun = "mean", fun.args = list(na.rm = TRUE)) +
+  stat_summary(geom = "pointrange", fatten = 1) +
+  scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
+  scale_y_continuous("Size") +
+  theme_bw() +
+  theme(axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(), panel.grid.minor.x = element_blank())
+size
+# size/survival/spei
 ```
 Average plant size shrank in 2003 drought, but not 2007 drought
 
@@ -234,6 +278,35 @@ Average plant size shrank in 2003 drought, but not 2007 drought
 ```{r}
 demog_post %>% ggplot(aes(x = flwr)) + geom_bar() + facet_wrap(~habitat)
 ```
+### Timeseries
+
+```{r}
+flowering <-
+  demog_plotdf %>% 
+  ggplot(aes(x = yearmonth, y = flwr, color = habitat)) + 
+  stat_summary(geom = "line", fun = "mean") +
+  stat_summary(geom = "pointrange", fatten = 1) +
+  scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
+  scale_y_continuous("P(flowering)") +
+  theme_bw() +
+  theme(axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(), panel.grid.minor.x = element_blank())
+flowering
+```
+```{r}
+demog_plotdf %>% filter(year == 2003) %>% group_by(habitat) %>% summarize(flwr = mean(flwr, na.rm = TRUE))
+```
+
+
+```{r}
+size/survival/flowering/spei +
+  plot_layout(guides = "collect") &
+  theme(plot.margin = margin(2,1,1,1)) &
+  guides(col = guide_legend(title = "Habitat"))
+ggsave(here("analysis", "figures", "eda.png"), height = 7, width = 10)
+```
+
+
+
 # Speed up models with bam()
 
 I'm going to start fitting these with `bam()` to speed things up.  This sets up the paralellization.  CAUTION: you may need to change these settings for your machine.
@@ -251,7 +324,8 @@ cl <- makeForkCluster(ncores - 2)
 ```{r}
 s_post_cf <-
   bam(surv ~ 
-        s(log_size_prev) +
+        s(log_size_prev, bs = "cr") +
+        # s(year) +
         # s(year_fac, bs = "re") +
         s(plot, bs = "re") +
         s(spei_history, L,
@@ -269,6 +343,7 @@ s_post_cf <-
 ```{r}
 # gam.check(s_post_cf) #not sure what to expect from any of these plots
 appraise(s_post_cf)
+# concurvity(s_post_cf, full = FALSE)
 ```
 
 ```{r}
