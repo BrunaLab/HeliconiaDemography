@@ -63,6 +63,8 @@ knitr::opts_chunk$set(
 
 # Introduction
 
+<!-- Underemphasize the interaction between fragmentation and drought bc can't do the interaction in test. Instead it's "compare drought effects in fragmented and cf populations."  -->
+
 1.  Organisms simultanously experience multiple forms of natural and anthropogenic disturbance. While work investigating the demographic effects of individual factors is common, studies investigating how multiple factors interact to influence population dynamics remains poorly understood. They could act in concert to exacerbate or dampen population dynamics. <!--# examples of interactions on demography -->For example, fire and herbivory ...[@tyeDemographicMenageTrois2016].
 
     -   Cite Pedro F. Quintana-Ascencio in intro---he will likely be a reviewer.
@@ -129,9 +131,7 @@ Precipitation and potential evapotranspiration data were obtained from a gridded
 
 ## Statistical Modeling
 
-We assessed the effects of drought history on plant vital rates using distributed lag non-linear models (DLNMs) [@gasparriniPenalizedFrameworkDistributed2017]. DLNMs model potentially delayed effects of predictor variables by fitting a bi-dimensional predictor-lag-response association spline, referred to as a crossbasis function. This function allows the effect of a predictor to vary non-linearly through lag time and across predictor intensity. Crossbasis functions were created using the *dlnm* package with possible lags from 0--36 months [@gasparriniDistributedLagLinear2011; @rcoreteamLanguageEnvironmentStatistical2020]. We chose 36 months as a maximum lag because *H. acuminata* individuals transplanted to forest fragments typically recovered from transplant shock within 36 months [@brunaExperimentalAssessmentHeliconia2002]. The crossbasis function was fit to the data in the context of a generalized additive model (GAM) using the *mgcv* package with restricted maximum likelihood [@woodGeneralizedAdditiveModels2017].
-
-The general form of the vital rate models was as follows:
+We assessed the effects of drought history on plant vital rates using distributed lag non-linear models (DLNMs) [@gasparriniPenalizedFrameworkDistributed2017]. DLNMs model potentially delayed effects of predictor variables by fitting a bi-dimensional predictor-lag-response association spline, referred to as a crossbasis function. This function allows the effect of a predictor to vary non-linearly through lag time and across predictor intensity. Crossbasis functions were created using the *dlnm* package with possible lags from 0--36 months [@gasparriniDistributedLagLinear2011; @rcoreteamLanguageEnvironmentStatistical2020]. We chose 36 months as a maximum lag because *H. acuminata* individuals transplanted to forest fragments typically recovered from transplant shock within 36 months [@brunaExperimentalAssessmentHeliconia2002]. The crossbasis function was fit to the data in the context of a generalized additive model (GAM) using the *mgcv* package with restricted maximum likelihood [@woodGeneralizedAdditiveModels2017]. The general form of the vital rate models was as follows:
 
 $$
 g[\textrm{E}(y_{i})] = \alpha_j + s_1(x_i) + s_2(d_{i,t}, ..., d_{i,t-24}) \\
