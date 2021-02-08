@@ -357,7 +357,7 @@ draw(s_post_cf)
 ```{r}
 s_post_1ha <-
   bam(surv ~ 
-        s(log_size_prev) +
+        s(log_size_prev, bs = "cr") +
         # s(year_fac, bs = "re") +
         s(plot, bs = "re") +
         s(spei_history, L,
@@ -571,7 +571,7 @@ The transformed response and identity link is actually better than a log-link, a
 ```{r}
 g_post_cf <-
   bam(log_size ~ 
-        s(log_size_prev) + 
+        s(log_size_prev, bs = "cr") + 
         # s(year_fac, bs = "re") + 
         s(plot, bs = "re") + #random effect of plot
         s(spei_history, L,
@@ -610,7 +610,7 @@ draw(g_post_cf)
 ```{r}
 g_post_1ha <-
   bam(log_size ~ 
-        s(log_size_prev) +
+        s(log_size_prev, bs = "cr") +
         # s(year_fac, bs = "re") +
         s(plot, bs = "re") +
         s(spei_history, L,
@@ -851,7 +851,7 @@ Around 5 percent of plants flowered.
 ```{r}
 f_post_cf <-
   bam(flwr ~ 
-        s(log_size_prev) +
+        s(log_size_prev, bs = "cr") +
         # s(year_fac, bs = "re") + 
         s(plot, bs = "re") +
         s(spei_history, L,
@@ -887,7 +887,7 @@ This model changes **drastically** depending on whether year is included as a ra
 ```{r}
 f_post_1ha <-
   bam(flwr ~ 
-        s(log_size_prev) +
+        s(log_size_prev, bs = "cr") +
         # s(year_fac, bs = "re") +
         s(plot, bs = "re") +
         s(spei_history, L,
