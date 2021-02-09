@@ -211,6 +211,10 @@ spei <-
 spei <- annotate_spei(spei)
 spei
 ```
+```{r}
+demog_post %>% filter(spei_history[,36] > 2) %>% pull(year) %>% unique()
+demog_post %>% filter(year == min(year)) %>% filter(surv == 0)
+```
 
 ## Survival
 
@@ -421,6 +425,7 @@ surv_lims <- c(min(s_1ha_eval$est, s_cf_eval$est, na.rm = TRUE),
                   max(s_1ha_eval$est, s_cf_eval$est, na.rm = TRUE))
 ```
 
+TODO: It would be *very cool* if the colors could be the same, but the limits on the scale bar could be different.
 
 ```{r}
 ggplot(s_1ha_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
