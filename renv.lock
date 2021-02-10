@@ -191,6 +191,13 @@
       "Repository": "CRAN",
       "Hash": "b3158a579ecef0e8f7626f4dadc369d0"
     },
+    "blastula": {
+      "Package": "blastula",
+      "Version": "0.3.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "1f45952e8aadddb043afb988b988dd52"
+    },
     "blob": {
       "Package": "blob",
       "Version": "1.2.1",
@@ -534,6 +541,20 @@
       "Repository": "CRAN",
       "Hash": "0ebdadbb2b742cd230cb3ec7fdf5898a"
     },
+    "getPass": {
+      "Package": "getPass",
+      "Version": "0.2-2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "07a91f99e56951818ab911366db77700"
+    },
+    "ggforce": {
+      "Package": "ggforce",
+      "Version": "0.3.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "4adaf6b01b41f243ba0c62801de3331e"
+    },
     "ggplot2": {
       "Package": "ggplot2",
       "Version": "3.3.3",
@@ -582,6 +603,18 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "3c9209bce1b10900155ea37ce954cf30"
+    },
+    "gratia": {
+      "Package": "gratia",
+      "Version": "0.5.1.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "gavinsimpson",
+      "RemoteRepo": "gratia",
+      "RemoteRef": "master",
+      "RemoteSha": "a36eeef2ac224dd0e73f1c27fa0accea69a9cb07",
+      "Hash": "6f4ecf21aacd9a4828122261923b0c30"
     },
     "gt": {
       "Package": "gt",
@@ -695,6 +728,13 @@
       "Repository": "CRAN",
       "Hash": "d0a62b247165aabf397fded504660d8a"
     },
+    "latex2exp": {
+      "Package": "latex2exp",
+      "Version": "0.4.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "dad1cdbbe7546e372dd822c4aba9ac75"
+    },
     "lattice": {
       "Package": "lattice",
       "Version": "0.20-41",
@@ -736,6 +776,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "7855d2dfcb1be6c8f4d6c45e22f6c65e"
+    },
+    "log4r": {
+      "Package": "log4r",
+      "Version": "0.3.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "5ce4d2c11689134403962d6229395314"
     },
     "lubridate": {
       "Package": "lubridate",
@@ -820,6 +867,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "6dfe8bf774944bd5595785e3229d8771"
+    },
+    "mvnfast": {
+      "Package": "mvnfast",
+      "Version": "0.2.5.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "760c2afbd323d8d31d527d9360225e35"
     },
     "mvtnorm": {
       "Package": "mvtnorm",
@@ -925,6 +979,25 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "ec0e5ab4e5f851f6ef32cd1d1984957f"
+    },
+    "pointblank": {
+      "Package": "pointblank",
+      "Version": "0.6.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "rich-iannone",
+      "RemoteRepo": "pointblank",
+      "RemoteRef": "master",
+      "RemoteSha": "c7d4533cf3514b2f92648f2a4a6212d2af928c4d",
+      "Hash": "500de5b4bc659f1fda4dad3dec62a119"
+    },
+    "polyclip": {
+      "Package": "polyclip",
+      "Version": "1.10-0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "cb167f328b3ada4ec5cf67a7df4c900a"
     },
     "praise": {
       "Package": "praise",
@@ -1262,6 +1335,13 @@
       "Repository": "CRAN",
       "Hash": "cf2b7b04af789f4fd73109783848b7b6"
     },
+    "tweenr": {
+      "Package": "tweenr",
+      "Version": "1.0.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "fc77eb5297507cccfa3349a606061030"
+    },
     "units": {
       "Package": "units",
       "Version": "0.6-7",
@@ -1282,6 +1362,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "4a5081acfb7b81a572e4384a7aaf2af1"
+    },
+    "uuid": {
+      "Package": "uuid",
+      "Version": "0.1-4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "e4169eb989a5d03ccb6b628cad1b1b50"
     },
     "vctrs": {
       "Package": "vctrs",

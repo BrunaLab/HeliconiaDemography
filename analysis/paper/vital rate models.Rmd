@@ -304,6 +304,7 @@ demog_plotdf %>% filter(year == 2003) %>% group_by(habitat) %>% summarize(flwr =
 ```{r}
 size/survival/flowering/spei +
   plot_layout(guides = "collect") &
+  plot_annotation(tag_levels = "a", tag_suffix = ")") &
   theme(plot.margin = margin(2,1,1,1)) &
   guides(col = guide_legend(title = "Habitat"))
 ggsave(here("analysis", "figures", "eda.png"), height = 7, width = 10)
@@ -409,6 +410,25 @@ ggplot(s_cf_eval1, aes(x = log_size_prev)) +
 ggsave(here("analysis", "figures", "surv_cf_size.png"))
 ```
 
+Combine and plot together
+
+```{r}
+bind_rows("1-ha" = s_1ha_eval1, "CF" = s_cf_eval1, .id = "habitat") %>% 
+  ggplot(aes(x = log_size_prev, color = habitat)) +
+  geom_line(aes(y = est)) +
+  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, color = NULL, fill = habitat), alpha = 0.25) +
+  geom_rug(data = bind_rows(
+    "1-ha" = model.frame(s_post_1ha),
+    "CF" = model.frame(s_post_cf), 
+    .id = "habitat"),
+    color = "black") +
+  theme_bw() +
+  labs(x = TeX("$log(size_t)$"), y = "P(survival)")
+ggsave(here("analysis", "figures", "surv_both_size.png"))
+```
+
+
+
 ## Crossbasis plot
 
 `dist` isn't working yet in `smooth_estimates`, but that's ok because I don't need CI for these plots (yet).
@@ -428,7 +448,8 @@ surv_lims <- c(min(s_1ha_eval$est, s_cf_eval$est, na.rm = TRUE),
 TODO: It would be *very cool* if the colors could be the same, but the limits on the scale bar could be different.
 
 ```{r}
-ggplot(s_1ha_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
+s_1ha_cbplot <-
+  ggplot(s_1ha_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
   geom_raster() +
   geom_contour(color = "black", binwidth = 0.002) +
   scale_fill_viridis_c("P(survival)", option = "magma", limits = surv_lims) +
@@ -443,10 +464,11 @@ ggplot(s_1ha_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
   scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
   labs(title = "1ha fragments") +
   theme_bw()
-ggsave(here("analysis", "figures", "surv_1ha_spei.png"))
+ggsave(here("analysis", "figures", "surv_1ha_spei.png"), s_1ha_cbplot)
 ```
 ```{r}
-ggplot(s_cf_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
+s_cf_cbplot <- 
+  ggplot(s_cf_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
   geom_raster() +
   geom_contour(color = "black", binwidth = 0.002) +
   scale_fill_viridis_c("P(survival)", option = "magma", limits = surv_lims) +
@@ -461,7 +483,13 @@ ggplot(s_cf_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
   scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
   labs(title = "Continuous forest") +
   theme_bw()
-ggsave(here("analysis", "figures", "surv_cf_spei.png"))
+ggsave(here("analysis", "figures", "surv_cf_spei.png"), s_cf_cbplot)
+```
+
+combine
+```{r}
+s_1ha_cbplot + s_cf_cbplot + plot_layout(guides = "collect") + plot_annotation(tag_levels = "a", tag_suffix = ")")
+ggsave(here("analysis", "figures", "surv_both_spei.png"))
 ```
 
 
@@ -577,6 +605,25 @@ ggplot(g_cf_eval1, aes(x = log_size_prev)) +
 ggsave(here("analysis", "figures", "growth_cf_size.png"))
 ```
 
+Both together
+
+```{r}
+bind_rows("1-ha" = g_1ha_eval1, "CF" = g_cf_eval1, .id = "habitat") %>% 
+  ggplot(aes(x = log_size_prev)) +
+  geom_line(aes(y = est, color = habitat)) +
+  geom_abline(slope = 1, linetype = 2, color = "red") +
+  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = habitat), alpha = 0.25) +
+  geom_rug(data = bind_rows(
+    "1-ha" = model.frame(g_post_1ha),
+    "CF" = model.frame(g_post_cf),
+    .id = "habitat")) +
+  theme_bw() +
+  labs(x = TeX("$log(size_t)$"), y = TeX("$log(size_{t+1})"))
+ggsave(here("analysis", "figures", "growth_both_size.png"))
+```
+
+
+
 ## Crossbasis plot
 `dist` isn't working yet in `smooth_estimates`, but that's ok because I don't need CI for these plots (yet).
 
@@ -594,10 +641,11 @@ grow_lims <- c(min(g_1ha_eval$est, g_cf_eval$est, na.rm = TRUE),
 
 
 ```{r}
-ggplot(g_1ha_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
+g_1ha_cbplot <- 
+  ggplot(g_1ha_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
   geom_raster() +
   geom_contour(color = "black", binwidth = 0.1) +
-  scale_fill_viridis_c("∆Size (?)", option = "magma", limits = grow_lims) +
+  scale_fill_viridis_c("∆log(size) (?)", option = "magma", limits = grow_lims) +
   scale_y_continuous(
     "lag (months)",
     breaks = 0:36, 
@@ -609,13 +657,15 @@ ggplot(g_1ha_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
   scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
   labs(title = "1ha fragments") +
   theme_bw()
-ggsave(here("analysis", "figures", "growth_1ha_spei.png"))
+ggsave(here("analysis", "figures", "growth_1ha_spei.png"), g_1ha_cbplot)
 ```
+
 ```{r}
-ggplot(g_cf_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
+g_cf_cbplot <-
+  ggplot(g_cf_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
   geom_raster() +
   geom_contour(color = "black", binwidth = 0.1) +
-  scale_fill_viridis_c("∆Size (?)", option = "magma", limits = grow_lims) +
+  scale_fill_viridis_c("∆log(size) (?)", option = "magma", limits = grow_lims) +
   scale_y_continuous(
     "lag (months)",
     breaks = 0:36, 
@@ -627,8 +677,16 @@ ggplot(g_cf_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
   scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
   labs(title = "Continuous forest") +
   theme_bw()
-ggsave(here("analysis", "figures", "growth_cf_spei.png"))
+ggsave(here("analysis", "figures", "growth_cf_spei.png"), g_cf_cbplot)
 ```
+
+combine
+
+```{r}
+g_1ha_cbplot + g_cf_cbplot + plot_layout(guides = "collect") + plot_annotation(tag_levels = "a", tag_suffix = ")")
+ggsave(here("analysis", "figures", "growth_both_spei.png"))
+```
+
 
 # Flowering Probability
 
@@ -735,6 +793,22 @@ ggplot(f_cf_eval1, aes(x = log_size_prev)) +
 ggsave(here("analysis", "figures", "flwr_cf_size.png"))
 ```
 
+combine and plot
+
+```{r}
+bind_rows("1-ha" = f_1ha_eval1, "CF" = f_cf_eval1, .id = "habitat") %>% 
+  ggplot(aes(x = log_size_prev)) +
+  geom_line(aes(y = est, color = habitat)) +
+  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = habitat), alpha = 0.25) +
+  # stat_summary_bin(geom = "point", fun = mean, aes(y = flwr), data = model.frame(f_post_cf)) +
+  geom_rug(data = bind_rows(
+    "1-ha" = model.frame(f_post_1ha),
+    "CF" = model.frame(f_post_cf),
+    .id = "habitat")) +
+  theme_bw() +
+  labs(x = TeX("$log(size_t)$"), y = "P(flowering)")
+ggsave(here("analysis", "figures", "flwr_both_size.png"))
+```
 
 ## Crossbasis plot
 
@@ -754,7 +828,8 @@ flwr_lims <- c(min(f_1ha_eval$est, f_cf_eval$est, na.rm = TRUE),
 
 
 ```{r}
-ggplot(f_1ha_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
+f_1ha_cbplot <- 
+  ggplot(f_1ha_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
   geom_raster() +
   geom_contour(color = "black", binwidth = 0.001) +
   scale_fill_viridis_c("P(flowering)", option = "magma", limits = flwr_lims) +
@@ -767,12 +842,13 @@ ggplot(f_1ha_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
       labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
   ) +
   scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
-  labs(title = "1ha fragments") +
+  labs(title = "1-ha fragments") +
   theme_bw()
-ggsave(here("analysis", "figures", "flwr_1ha_spei.png"))
+ggsave(here("analysis", "figures", "flwr_1ha_spei.png"), f_1ha_cbplot)
 ```
 ```{r}
-ggplot(f_cf_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
+f_cf_cbplot <- 
+  ggplot(f_cf_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
   geom_raster() +
   geom_contour(color = "black", binwidth = 0.001) +
   scale_fill_viridis_c("P(flowering)", option = "magma", limits = flwr_lims) +
@@ -787,10 +863,17 @@ ggplot(f_cf_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
   scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
   labs(title = "Continuous forest") +
   theme_bw()
-ggsave(here("analysis", "figures", "flwr_cf_spei.png"))
+ggsave(here("analysis", "figures", "flwr_cf_spei.png"), f_cf_cbplot)
 ```
 
-# Plots
+combine
+```{r}
+f_1ha_cbplot + f_cf_cbplot + plot_layout(guides = "collect") + plot_annotation(tag_levels = "a", tag_suffix = ")")
+ggsave(here("analysis", "figures", "flwr_both_spei.png"))
+```
+
+
+# Predict Plots
 ## Growth
 
 ### Get plot data
