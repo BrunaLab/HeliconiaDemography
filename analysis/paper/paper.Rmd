@@ -20,6 +20,7 @@ institute:
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
     bookdown::word_document2:
+      number_sections: no
       fig_caption: yes
       reference_docx: "../templates/template.docx" # Insert path for the DOCX file
       pandoc_args:
@@ -57,6 +58,8 @@ knitr::opts_chunk$set(
   fig.path = "../figures/",
   dpi = 300
 )
+library(knitr)
+library(here)
 ```
 
 <!-- The actual document text starts here: -->
@@ -170,8 +173,10 @@ We assessed the effects of drought history on plant vital rates using distribute
 The general form of the vital rate models was as follows:
 
 $$
-g[\textrm{E}(y_{i})] = \alpha_j + s_1(x_i) + s_2(d_{i,t}, ..., d_{i,t-24}) \\
-\alpha_j \sim N(\mu_{\alpha_j}, \sigma^2_{\alpha_j}), \textrm{for plot }j
+\begin{gather}
+    g[ \textrm{E}(y_{i})] = \alpha_j + s_1(x_i) + s_2(d_{i,t}, ..., d_{i,t-24}) \\
+    \alpha_j \sim N(\mu_{\alpha_j}, \sigma^2_{\alpha_j}), \textrm{for plot }j 
+\end{gather}
 $$
 
 Where $s_1(x_i)$ is a smooth function of plant size [ ln(height $\times$ shoot number) ], fit using a penalized cubic regression spline, $s_2(\cdot)$ is the crossbasis function in which $d_{i,t}$ is the SPEI value during the census month of an observation (February) and $d_{i,t-l}$ is the SPEI $l$ months prior (see Gasparrini et al. 2017 for details).
@@ -199,105 +204,127 @@ Because the `dlnm` package does not currently allow modeling of interactions, we
 
 Start with descriptive results of drought events---how many droughts, how severe, timing of droughts, etc.
 
+```{r}
+cap <- "Plots of means ± SE."
+```
+
+```{r eda, fig.cap=cap}
+knitr::include_graphics(here("analysis", "figures", "eda.png"))
+
+```
+
 ## Survival
 
+```{r}
+cap <- "Smooth effect of plant size in the previous census on survival modeled by a cubic regression spline.  95% confidence intervals are shown and include uncertainty in the model intercept as well as uncertainty due to smoothness selection. The smooths for 1-ha fragments and continuous forest are fit in separate models. The model intercepts were added to the fitted values of the smooth and values are back-transformed to the response scale"
+```
+
+```{r surv-size, fig.cap=cap}
+include_graphics(here("analysis", "figures", "surv_both_size.png"))
+```
+
 Overall survival rate across the entire dataset is 0.95 in both CF and 1-ha.
-Survival was lowest in 2004 which coincided with a moderate drought in Jan 2004 / Feb 2005 and a severe drought in Jan--Mar of 2004.
-Survival was lower in continuous forest compared to 1-ha fragments in this year (\~0.91 compared to \~0.94, will get exact numbers from data).
+Survival was lowest in 2004 which coincided with a moderate drought in Jan 2004 / Feb 2005 and a severe drought in Jan--Mar of 2004 (Figure \@ref(fig:eda)).
+Survival was lower in continuous forest compared to 1-ha fragments in this year (\~0.91 compared to \~0.94, <!--# will get exact numbers from data -->).
 The lowest survival for 1-ha fragment plots (about 0.93) was actually in the 2006 census corresponding to unusually wet weather (SPEI \>0.5), but with a moderate drought the preceding October.
 
-### Continuous Forest
+Log transformed plant size had a significant effect on survival in both continuous forest and 1-ha fragments (both p \< 0.001).
+Survival probability of large plants approached 1, but this high survival rate was reached at a smaller size for plants in continuous forest compared to fragments (Figure \@ref(fig:surv-size)).
+Survival of the smallest plants was higher in 1-ha fragments, but the 95% confidence intervals still overlapped the fitted values for continuous forest <!--# I wonder if this changes if I don't include both sources of uncertainty in draw.gam? -->.
 
-size: p \< 0.001 (figure = surv_cf_size.png)
+```{r}
+cap <- "Smooth effect of lagged SPEI on survival. Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Contour lines correspond to a change of 0.002. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale."
 
-plot: p \< 0.001
+```
 
-SPEI: p \< 0.001 (figure = surv_cf_spei.png)
+```{r surv-spei, fig.cap=cap}
+knitr::include_graphics(here("analysis", "figures", "surv_both_spei.png"))
+```
 
-Lags 6-0 (Aug--Feb) and 20-15 (Jun--Nov) show reduced survival with drought.
-Lags 14-7 (Dec - Jul) and 26-21 (Dec-May) show increased survival with drought.
-Lag 36-33 (Feb - May) shows quadratic relationship with increased survival in dry and wet conditions (this seems like it's gotta be spurious).
+Drought history had a significant effect on survival in both habitats (P \< 0.001), but the shape of the crossbasis surface differed.
+For 1-ha fragments, recent SPEI values had the strongest effect on survival with the highest survival near SPEI of 0 and decreasing survival in both drier and wetter conditions (Figure \@ref(fig:surv-spei)a).
+In continuous forest, recent SPEI had a weaker effect with only SPEI values less than -1 producing slightly reduced survival probabilities (Figure \@ref(fig:surv-spei)b).
+However, SPEI at a lag time of 15--20 months, corresponding to June--October of the previous year, also effected survival probabilities.
+Lower SPEI (drought) 15--20 months prior to census was associated with reduced survival and higher SPEI at these lag times was associated with higher survival.
+Plants in both continuous forest and 1-ha fragments showed an increase in survival probability with very high (wet) SPEI values at a lag time of 36 months.
+However, only the first year of census data (1999) had an SPEI value greater than 2 within 36 months in the past, and although there were plants that did not survive this initial census, it may not be representative of a true survival process <!--# Emilio: let's talk about this. Maybe I should remove this year from the analysis for survival? -->
 
-### 1-ha fragment
-
-size: p \<0.001 (figure = surv_1ha_size.png)
-
-plot: p = 0.258
-
-SPEI: p \< 0.001 (figure = surv_1ha_spei.png)
-
-Crossbasis is very flat with essentially no effect of SPEI beyond 6 months lag.
-Recent SPEI has bimodal effect with both low and high values reducing survival.
-
-**Question**: Currently the figures are expected values for the average plant across both plots.
-This makes it look like survival is a lot higher in 1-ha fragments when in reality survival is exactly the same (0.95) because plants are smaller in 1-ha fragments.
-Should these plots instead be for an average sized plant within the habitat type?
+The random effect of plot was significant for continuous forest ( p \< 0.001), but not for 1-ha fragments (p = 0.258 <!--# double-check -->)
 
 ## Growth
 
 Plants were on average larger in continuous forest compared to 1-ha fragments.
 In continuous forest, plants had an average of 2.91 shoots and were on average 40.6 cm tall with an average size (shoots $\times$ height) of 150.
 In 1-ha fragments, plants had 2.53 shoots on average and a mean height of 36.2 cm and a mean size of 115.
+The size difference between plants in continuous forest and 1-ha fragments was more dramatic early on in the timeseries with mean sizes becoming more similar over time (Figure \@ref(fig:eda)a).
 
-The size difference between plants in continuous forest and 1-ha fragments was more dramatic early on in the dataset with mean sizes becoming more similar over time.
+```{r}
+cap <- "Smooth effect of plant size in year t on plant size in year t+1 modeled by a cubic regression spline.  95% confidence intervals are shown and include uncertainty in the model intercept as well as uncertainty due to smoothness selection. The dashed red line represents a 1:1 line for reference. The smooths for 1-ha fragments and continuous forest are fit in separate models. Model intercepts were added to the fitted values of the smooths."
+```
+
+```{r growth-size, fig.cap=cap}
+include_graphics(here("analysis", "figures", "growth_both_size.png"))
+```
+
+Log transformed size in year t was a significant predictor of log transformed size in year t+1 (p \< 0.001).
+The 95% confidence intervals for the effect of size in year t in fragments and continuous forest overlapped for most sizes, but was slightly higher in continuous forest for mid-sized plants (Figure \@ref(fig:growth-size)).
+
+```{r}
+cap <- "Smooth effect of lagged SPEI on plant growth. Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Contour lines correspond to a change of 0.1. "
+```
+
+<!--# this is the raw fitted values of the tensor product smooth. That is, I have not shifted this by adding the model intercepts like I did in the last figure.  Not sure if the effect size should actually be interpreted as a additive change in size, but I think so maybe?  If that's true, then the predicted effect of SPEI on size in year t+1 is extremely small compared to the effect of size in year t. -->
+
+```{r growth-spei, fig.cap=cap}
+include_graphics(here("analysis", "figures", "growth_both_spei.png"))
+```
+
+Drought history also had a significant effect on plant size in both habitats (p \< 0.001).
+The fitted crossbasis functions for fragments and continuous forest showed somewhat similar patterns, although the surface for 1-ha fragments was much more complex (edf = 17.9 for 1-ha fragments; edf = 5.9 for continuous forest; see also Figure \@ref(fig:growth-spei)).
+Drought at lags 8--10 increase growth in both habitats.
+<!--# say a lot more about this here. -->
+
+The random effect of plot is significant in both habitat models (p \< 0.001).
 
 **NOTE**: I considered adding a covariate of year to account for yearly trends in growth, but since there is also a trend in SPEI over the time of this experiment, they were concurve (wiggly collinearity), and shouldn't both be included in model.
 
-### Continuous Forest
-
-size: p \< 0.001
-
-plot: p \< 0.001
-
-SPEI: p \< 0.001
-
-Predicted results show only lagged effects of SPEI on growth (f(x) at lags 0 and 1 is flat).
-Wet conditions in preceding winter months improve growth (lags 4-2, Oct - Dec).
-Positive effect of drought on growth at lags 11-8 (Mar - Jun) and 34-24 (nearly the entirety of year t-2).
-
-### 1-ha fragment
-
-size: p \< 0.001
-
-plot: p \< 0.001
-
-SPEI: p \< 0.001
-
-Crossbasis looks very similar to continuous forest but more extreme.
-SPEI has a stronger effect on growth in fragments.
-Wet conditions at lag 0 predict the greatest shrinkage of plants in fragments (∆size = -75 at SPEI \>2), but at lags 5-2 (Sept-Dec) high SPEI has a less negative effect on plant size.
-We only expect plant growth (∆size \> 0) in years when SPEI was low at lags 34-32
-
-The size of plants significantly predicted their size in the following year in continuous forest (edf = 7.8, P \< 0.001 <!--# What stats to include?  reference df and F also?  Is this all better as a table? -->) and forest fragments (edf = 7.4, P \< 0.001).
-In continuous forest, plants under a size of 259 were predicted to grow from year t-1 to year t, and the fit line was below 1:1 for larger plants, indicating that larger plants tended to shrink, on average.
-In 1 ha fragments, the fit line followed a 1:1 line more closely, indicating that plants tended to stay the same size on average from year to year over the course of this study.
-<!--# something weird about backtransformation causing these strange results? --> Drought history also had a significant effect on plant size in both continuous forest (edf = 14.7, p \< 0.001) and fragments (edf = 17.8, p \< 0.001).
-
 ## Flowering
 
-Probability of flowering increased with size and was generally higher in continuous forest compared to 1-ha fragments.
-The exceptions to this are in 2006 and 2008 when the proportion of flowering plants was lower in continuous forest.
+Probability of flowering was generally higher in continuous forest compared to 1-ha fragments.
+The exceptions to this are in 2006 and 2008 when the proportion of flowering plants was lower in continuous forest (Figure \@ref(fig:eda)c).
 The most striking difference between habitat types in flowering proportion was in 2003 when 9.7% of plants flowered in the continuous forest plots and only 2.7% flowered in fragment plots.
 
-### Continuous forest
+```{r}
+cap <- "Smooth effect of plant size in the previous census on flowering probability modeled by a cubic regression spline.  95% confidence intervals are shown and include uncertainty in the model intercept as well as uncertainty due to smoothness selection. The smooths for 1-ha fragments and continuous forest are fit in separate models. The model intercepts were added to the fitted values of the smooth and values are back-transformed to the response scale"
+```
 
-size: p \< 0.001
+```{r flwr-size, fig.cap=cap}
+include_graphics(here("analysis", "figures", "flwr_both_size.png"))
+```
 
-plot: p\<0.001
+Plant size had a significant effect on flowering probability in both habitats (p \< 0.001).
+Flowering probability increased rapidly with log-transformed plant size greater than 5 in both habitats (Figure \@ref(fig:flwr-size)).
+Flowering probability was greater in 1-ha fragments for large plants compared to continuous forest.
+However, because mean plant size is larger in continuous forest, overall flowering probability was greater.
+<!--# idea: plot vertical lines representing mean or median size in each habitat -->
 
-SPEI: p \< 0.001
+```{r}
+cap <- "Smooth effect of lagged SPEI on flowering probability. Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Contour lines correspond to a change of 0.001. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale."
+```
 
-Flowering probability was increased by recent drought (at lag = 0 with SPEI \< 1) and drought at lags 20-15 (Jun - Nov).
-Drought at lags 13-7 reduced flowering probability
+```{r flwr-spei, fig.cap=cap}
+include_graphics(here("analysis", "figures", "flwr_both_spei.png"))
+```
 
-## Size by year interaction
+Drought history had a significant effect on flowering probability in both habitat types (p \< 0.001).
+Flowering probability was overall higher at all values of SPEI in continuous forest compared to 1-ha fragments (Figure \@ref(fig:flwr-spei)).
+The effects of SPEI on flowering probability were also stronger and more complex in continuous forest compared to fragments (1-ha edf = 8.5, continuous forest edf = 10.5).
+In continuous forest, flowering probability was increased by recent drought (at lag = 0 with SPEI \< -1) and drought at lags 15--20 (Jun - Nov).
+Drought at lags 7--13 reduced flowering probability.
+The shape of the crossbasis function was similar in 1-ha fragments, but significantly muted (Figure \@ref(fig:flwr-spei)a).
+That is, the variation in fitted values along the SPEI dimension was much lower at all values of the lag dimension in fragments.
 
-<!--# this all needs updating.  Probably going to use AIC instead of these p-values since I think they're doing the same thing. -->
-
-In continuous forest plots there was support for size by year interactions for growth (95% LR~null~ = 4.54, LR~obs~ = 45.69) and survival (95% LR~null~ = 3.91, LR~obs~ = 29.18) , but not for flowering (95% LR~null~ = 4.44, LR~obs~ = 1.77).
-However, in 1 ha fragments, we saw no evidence of size by year interaction.
-For growth 95% LR~null~ = 4.45, LR~obs~ = 4.35, for survival 95% LR~null~ = 4.47, LR~obs~ = 0.62, and for flowering probability 95% LR~null~ = 3.86, LR~obs~ = 2.82.
-This is consistent with the DLNMs in that the crossbasis functions for \_\_\_ and \_\_\_ were much flatter in fragments compared to continuous forest.
+The random effect of plot also had a significant effect in both habitats (p \< 0.001).
 
 # Discussion
 
