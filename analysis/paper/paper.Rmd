@@ -244,12 +244,12 @@ knitr::include_graphics(here("analysis", "figures", "surv_both_spei.png"))
 Drought history had a significant effect on survival in both habitats (P \< 0.001), but the shape of the crossbasis surface differed.
 For 1-ha fragments, recent SPEI values had the strongest effect on survival with the highest survival near SPEI of 0 and decreasing survival in both drier and wetter conditions (Figure \@ref(fig:surv-spei)a).
 In continuous forest, recent SPEI had a weaker effect with only SPEI values less than -1 producing slightly reduced survival probabilities (Figure \@ref(fig:surv-spei)b).
-However, SPEI at a lag time of 15--20 months, corresponding to June--October of the previous year, also effected survival probabilities.
-Lower SPEI (drought) 15--20 months prior to census was associated with reduced survival and higher SPEI at these lag times was associated with higher survival.
+However, SPEI at a lag time of 15--20 months, corresponding to June--October (the dry season) of the previous year <!--# i.e. not the most recent dry season, but the one before that.  How can I clarify this? -->, also effected survival probabilities.
+Lower SPEI (drought) 15--20 months prior to census <!--# i.e. same dry season --> was associated with reduced survival and higher SPEI at these lag times was associated with higher survival.
 Plants in both continuous forest and 1-ha fragments showed an increase in survival probability with very high (wet) SPEI values at a lag time of 36 months.
 However, only the first year of census data (1999) had an SPEI value greater than 2 within 36 months in the past, and although there were plants that did not survive this initial census, it may not be representative of a true survival process <!--# Emilio: let's talk about this. Maybe I should remove this year from the analysis for survival? -->
 
-The random effect of plot was significant for continuous forest ( p \< 0.001), but not for 1-ha fragments (p = 0.258 <!--# double-check -->)
+The random effect of plot was significant for continuous forest ( p \< 0.001), but not for 1-ha fragments (p = 0.257).
 
 ## Growth
 
@@ -281,12 +281,11 @@ include_graphics(here("analysis", "figures", "growth_both_spei.png"))
 
 Drought history also had a significant effect on plant size in both habitats (p \< 0.001).
 The fitted crossbasis functions for fragments and continuous forest showed somewhat similar patterns, although the surface for 1-ha fragments was much more complex (edf = 17.9 for 1-ha fragments; edf = 5.9 for continuous forest; see also Figure \@ref(fig:growth-spei)).
-Drought at lags 8--10 increase growth in both habitats.
-<!--# say a lot more about this here. -->
+Drought at lags 8--11 (March - June, the end of the wet season) increase growth in both habitats.
+
+<!--# There's a lot more going on in the 1-ha fragments.  Hurts my brain to look at it.  Will write another day. -->
 
 The random effect of plot is significant in both habitat models (p \< 0.001).
-
-**NOTE**: I considered adding a covariate of year to account for yearly trends in growth, but since there is also a trend in SPEI over the time of this experiment, they were concurve (wiggly collinearity), and shouldn't both be included in model.
 
 ## Flowering
 
@@ -319,7 +318,7 @@ include_graphics(here("analysis", "figures", "flwr_both_spei.png"))
 Drought history had a significant effect on flowering probability in both habitat types (p \< 0.001).
 Flowering probability was overall higher at all values of SPEI in continuous forest compared to 1-ha fragments (Figure \@ref(fig:flwr-spei)).
 The effects of SPEI on flowering probability were also stronger and more complex in continuous forest compared to fragments (1-ha edf = 8.5, continuous forest edf = 10.5).
-In continuous forest, flowering probability was increased by recent drought (at lag = 0 with SPEI \< -1) and drought at lags 15--20 (Jun - Nov).
+In continuous forest, flowering probability was increased by recent drought (at lag = 0 with SPEI \< -1) and drought at lags 15--20 (Jun-Nov, the dry season in the previous year).
 Drought at lags 7--13 reduced flowering probability.
 The shape of the crossbasis function was similar in 1-ha fragments, but significantly muted (Figure \@ref(fig:flwr-spei)a).
 That is, the variation in fitted values along the SPEI dimension was much lower at all values of the lag dimension in fragments.
