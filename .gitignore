@@ -41,7 +41,7 @@ vignettes/*.pdf
 
 # Data
 /analysis/data/raw_data/
-
+*.rds
 /notes
 
 # Figures and documents
