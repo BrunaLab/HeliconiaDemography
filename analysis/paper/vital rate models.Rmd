@@ -21,7 +21,7 @@ library(bbmle)
 library(lubridate)
 library(glue)
 library(patchwork)
-library(sf)
+# library(sf)
 library(tsibble)
 library(broom)
 library(gratia)
@@ -36,10 +36,6 @@ library(HeliconiaDemography) #load functions in this compendium
 # devtools::load_all()
 ```
 
-```{r}
-#define plotting themes
-theme_talk <- theme_bw() + theme(text = element_text(size = 18))
-```
 
 *Last compiled: `r Sys.Date()`*
 
@@ -57,64 +53,9 @@ Take a crack at modeling vital rates as a function of previous height and lagged
 
 # Load Data
 
-```{r data, echo=TRUE}
-xa <- read_rds(here("analysis", "data", "derived_data", "xa_spei_lags.rds"))
-demog <-
-  read_csv(
-    here("analysis", "data", "derived_data", "ha_survey.csv"),
-    col_names = TRUE,
-    cols(plot = col_character(),
-         bdffp_reserve_no = col_character())
-  )
-plot_coords <- read_csv(here("analysis", "data", "raw_data", "plot_coords.csv"))
-```
-
-# Join data sets
-
-## Prep precip data
-
-Get only rows for february (the month of the census), and year for joining
 
 ```{r}
-xa2 <- 
-  xa %>%
-  filter(month(yearmonth) == 2) %>% 
-  mutate(year = year(yearmonth), .after =yearmonth) %>% 
-  separate(latlon, into = c("lat", "lon"), sep = "_")
-xa2
-```
-
-Figure out which sites correspond to which grid cells.  The `xa` lat lon are the centers of grid cells that are 0.25º^2
-
-```{r}
-unique(xa2$lat)
-mean(c(-2.25, -2.5))
-```
-
-So, from -2.25 to -2.5
-
-```{r}
-unique(xa2$lon)
-mean(c(-59.5, -59.75))
-mean(c(-59.75, -60)) # Florestal-CF, 5752, 5751, 5750, 5756, CaboFrio-CF
-mean(c(-60, -60.25)) # 2206, 2108, 2107, Dimona-CF, 5753, PortoAlegre-CF
-```
-
-```{r}
-plot_coords
-```
-
-```{r}
-demog2 <-
-  demog %>% 
-  mutate(lon = case_when(
-    plot %in% c("Florestal-CF", "5752", "5751", "5750", "5756", "CaboFrio-CF") ~ "-59.875",
-    plot %in% c("2206", "2108", "2107", "Dimona-CF", "5753", "PortoAlegre-CF") ~ "-60.125",
-    TRUE ~ NA_character_
-  ), .before = plot)
-demog_full <- 
-  left_join(demog2, xa2, by = c("lon", "year")) %>% 
-  select(-lon, -lat, -yearmonth)
+demog_full <- read_rds(here("analysis", "data", "derived_data", "ha_spei_combined.rds"))
 ```
 
 ## Tidy
@@ -178,138 +119,6 @@ demog_sdlg_1ha <-
   demog_sdlg %>% 
   filter(habitat == "1-ha")
 ```
-
-# Inspect raw data
-
-```{r}
-demog_plotdf <-  
-  demog_post %>% 
-  filter(habitat !="10-ha") %>% 
-  select(ranch, bdffp_reserve_no, plot, habitat, year, ht, shts, size, surv, flwr) %>% 
-  mutate(date = paste(year, "-02-01") %>% ymd(),
-         yearmonth = yearmonth(date))
-```
-
-## SPEI
-
-```{r}
-dates <- range(demog_post$year) %>% paste0(., "-02-01") %>% ymd()
-census_dates <- min(demog_post$year)[1]:max(demog_post$year) %>% paste(., "-02-01") %>% ymd()
-
-spei <-
-  xa %>%
-  select(latlon, yearmonth, spei) %>%
-  filter(!is.na(spei)) %>% 
-  ggplot(aes(x = yearmonth, y = spei)) + 
-  geom_line(aes(group = latlon), alpha = 0.2) +
-  stat_summary(geom = "line", fun = "mean") +
-  scale_y_continuous("SPEI", expand = expansion(mult = c(0, 0.05), add = 0)) +
-  scale_x_yearmonth("Date", limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-spei <- annotate_spei(spei)
-spei
-```
-```{r}
-demog_post %>% filter(spei_history[,36] > 2) %>% pull(year) %>% unique()
-demog_post %>% filter(year == min(year)) %>% filter(surv == 0)
-```
-
-## Survival
-
-```{r}
-demog_post %>% ggplot(aes(x = surv)) + geom_bar() + facet_wrap(~habitat)
-```
-
-```{r}
-demog_post %>% 
-  group_by(habitat) %>% 
-  summarize(surv = sum(surv, na.rm = TRUE) / n())
-```
-
-Survival nearly identical for 1 ha and CF.
-
-### Timeseries
-
-```{r}
-survival <-
-  demog_plotdf %>%  
-  ggplot(aes(x = yearmonth, y = surv, color = habitat)) +
-  stat_summary(geom = "line", fun = "mean", fun.args = list(na.rm = TRUE)) +
-  stat_summary(geom = "pointrange", fatten = 1) +
-  scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
-  scale_y_continuous("P(survived)") +
-  theme_bw() +
-  theme(axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(), panel.grid.minor.x = element_blank())
-survival
-# (survival / spei) 
-```
-Looks like survival went down year after 2003 drought and during 2007 drought.
-
-## Size / growth
-
-```{r}
-demog_post %>% ggplot(aes(x = habitat, y = log_size)) + geom_boxplot()
-```
-```{r}
-demog_post %>% 
-  group_by(habitat) %>% 
-  summarize(size = mean(size, na.rm = TRUE),
-            shts = mean(shts, na.rm = TRUE),
-            ht = mean(ht, na.rm = TRUE))
-```
-
-### Timeseries
-
-```{r}
-size <-
-  demog_plotdf %>% 
-  ggplot(aes(x = yearmonth, y = size, color = habitat)) +
-  stat_summary(geom = "line", fun = "mean", fun.args = list(na.rm = TRUE)) +
-  stat_summary(geom = "pointrange", fatten = 1) +
-  scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
-  scale_y_continuous("Size") +
-  theme_bw() +
-  theme(axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(), panel.grid.minor.x = element_blank())
-size
-# size/survival/spei
-```
-Average plant size shrank in 2003 drought, but not 2007 drought
-
-## Flowering
-
-```{r}
-demog_post %>% ggplot(aes(x = flwr)) + geom_bar() + facet_wrap(~habitat)
-```
-### Timeseries
-
-```{r}
-flowering <-
-  demog_plotdf %>% 
-  ggplot(aes(x = yearmonth, y = flwr, color = habitat)) + 
-  stat_summary(geom = "line", fun = "mean") +
-  stat_summary(geom = "pointrange", fatten = 1) +
-  scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
-  scale_y_continuous("P(flowering)") +
-  theme_bw() +
-  theme(axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(), panel.grid.minor.x = element_blank())
-flowering
-```
-```{r}
-demog_plotdf %>% filter(year == 2003) %>% group_by(habitat) %>% summarize(flwr = mean(flwr, na.rm = TRUE))
-```
-
-
-```{r}
-size/survival/flowering/spei +
-  plot_layout(guides = "collect") &
-  plot_annotation(tag_levels = "a", tag_suffix = ")") &
-  theme(plot.margin = margin(2,1,1,1)) &
-  guides(col = guide_legend(title = "Habitat"))
-ggsave(here("analysis", "figures", "eda.png"), height = 7, width = 10)
-```
-
 
 
 # Speed up models with bam()
@@ -489,7 +298,7 @@ ggsave(here("analysis", "figures", "surv_cf_spei.png"), s_cf_cbplot)
 combine
 ```{r}
 s_1ha_cbplot + s_cf_cbplot + plot_layout(guides = "collect") + plot_annotation(tag_levels = "a", tag_suffix = ")")
-ggsave(here("analysis", "figures", "surv_both_spei.png"))
+ggsave(here("analysis", "figures", "surv_both_spei.png"), width = 10, height = 5)
 ```
 
 
@@ -684,7 +493,7 @@ combine
 
 ```{r}
 g_1ha_cbplot + g_cf_cbplot + plot_layout(guides = "collect") + plot_annotation(tag_levels = "a", tag_suffix = ")")
-ggsave(here("analysis", "figures", "growth_both_spei.png"))
+ggsave(here("analysis", "figures", "growth_both_spei.png"), width = 10, height = 5)
 ```
 
 
@@ -869,7 +678,7 @@ ggsave(here("analysis", "figures", "flwr_cf_spei.png"), f_cf_cbplot)
 combine
 ```{r}
 f_1ha_cbplot + f_cf_cbplot + plot_layout(guides = "collect") + plot_annotation(tag_levels = "a", tag_suffix = ")")
-ggsave(here("analysis", "figures", "flwr_both_spei.png"))
+ggsave(here("analysis", "figures", "flwr_both_spei.png"), width = 10, height = 5)
 ```
 
 

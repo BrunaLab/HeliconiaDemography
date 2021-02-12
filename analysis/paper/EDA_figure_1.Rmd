@@ -1,0 +1,196 @@
+---
+title: "Exploratory Data Visualizations (Fig. 1)"
+author: "Eric R. Scott"
+date: "2021-02-12"
+output: 
+  html_notebook: 
+    highlight: kate
+    theme: yeti
+    toc: yes
+    toc_float: yes
+    number_sections: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(lubridate)
+library(tsibble)
+library(patchwork)
+library(HeliconiaDemography) #load functions in current package.
+library(conflicted)
+
+conflict_prefer("lag", "dplyr")
+conflict_prefer("filter", "dplyr")
+```
+
+*Last compiled: `r Sys.Date()`*
+
+# Purpose
+
+What is the goal of this notebook?
+
+# Load Data
+
+
+```{r}
+demog_full <- read_rds(here("analysis", "data", "derived_data", "ha_spei_combined.rds"))
+xa <- read_rds(here("analysis", "data", "derived_data", "xa_spei_lags.rds"))
+```
+
+## Tidy
+
+There are plants with 0 shoots and 0 ht.  I will remove those, as having no above ground biomass is really not a size, but a different category.
+There's also a couple of plants that are probably data entry errors in height.
+
+```{r}
+demog_full <-
+  demog_full %>% 
+  filter(ht < 200 | is.na(ht), ht_prev < 200 | is.na(ht_prev)) %>%
+  filter(
+    # having no aboveground biomass is possible, but categorically different than just being small. Exclude plants with 0 shoots or 0 height
+    shts_prev > 0,
+    ht_prev > 0,
+    #for survival data, must include plants with NA for shts and height (i.e. dead plants)
+    shts > 0 | is.na(shts), 
+    ht > 0 | is.na(ht)
+  ) %>%
+  mutate(size = shts*ht, size_prev = shts_prev * ht_prev, log_size = log(size), log_size_prev = log(size_prev))
+```
+
+Only do post-seedlings
+
+```{r}
+demog_post <- 
+  demog_full %>% 
+  filter(code_notes != "sdlg (1)" | is.na(code_notes))
+```
+
+
+# Inspect raw data
+
+```{r}
+demog_plotdf <-  
+  demog_post %>% 
+  filter(habitat !="10-ha") %>% 
+  select(ranch, bdffp_reserve_no, plot, habitat, year, ht, shts, shts_prev, size, surv, flwr) %>% 
+  mutate(date = paste(year, "-02-01") %>% ymd(),
+         yearmonth = yearmonth(date))
+```
+## SPEI
+
+```{r}
+dates <- range(demog_post$year) %>% paste0(., "-02-01") %>% ymd()
+census_dates <- min(demog_post$year)[1]:max(demog_post$year) %>% paste(., "-02-01") %>% ymd()
+
+spei <-
+  xa %>%
+  select(latlon, yearmonth, spei) %>%
+  filter(!is.na(spei)) %>% 
+  ggplot(aes(x = yearmonth, y = spei)) + 
+  geom_line(aes(group = latlon), alpha = 0.2) +
+  stat_summary(geom = "line", fun = "mean") +
+  scale_y_continuous("SPEI", expand = expansion(mult = c(0, 0.05), add = 0)) +
+  scale_x_yearmonth("Date", limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+spei <- annotate_spei(spei)
+spei
+```
+## Survival
+
+```{r}
+demog_post %>% ggplot(aes(x = surv)) + geom_bar() + facet_wrap(~habitat)
+```
+
+```{r}
+demog_post %>% 
+  group_by(habitat) %>% 
+  summarize(surv = sum(surv, na.rm = TRUE) / n())
+```
+
+Survival nearly identical for 1 ha and CF.
+
+### Timeseries
+
+```{r}
+survival <-
+  demog_plotdf %>%  
+  filter(shts_prev >= 4) %>%
+  ggplot(aes(x = yearmonth, y = surv, color = habitat)) +
+  stat_summary(geom = "line", fun = "mean", fun.args = list(na.rm = TRUE)) +
+  stat_summary(geom = "pointrange", fatten = 1) +
+  scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
+  scale_y_continuous("P(survived)") +
+  theme_bw() +
+  theme(axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(), panel.grid.minor.x = element_blank())
+survival
+# (survival / spei) 
+```
+Looks like survival went down year after 2003 drought and during 2007 drought.
+
+## Size / growth
+
+```{r}
+demog_post %>% ggplot(aes(x = habitat, y = log_size)) + geom_boxplot()
+```
+```{r}
+demog_post %>% 
+  group_by(habitat) %>% 
+  summarize(size = mean(size, na.rm = TRUE),
+            shts = mean(shts, na.rm = TRUE),
+            ht = mean(ht, na.rm = TRUE))
+```
+
+### Timeseries
+
+```{r}
+size <-
+  demog_plotdf %>% 
+  ggplot(aes(x = yearmonth, y = size, color = habitat)) +
+  stat_summary(geom = "line", fun = "mean", fun.args = list(na.rm = TRUE)) +
+  stat_summary(geom = "pointrange", fatten = 1) +
+  scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
+  scale_y_continuous("Size") +
+  theme_bw() +
+  theme(axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(), panel.grid.minor.x = element_blank())
+size
+# size/survival/spei
+```
+Average plant size shrank in 2003 drought, but not 2007 drought
+
+## Flowering
+
+```{r}
+demog_post %>% ggplot(aes(x = flwr)) + geom_bar() + facet_wrap(~habitat)
+```
+### Timeseries
+
+```{r}
+flowering <-
+  demog_plotdf %>% 
+  filter(shts >= 4) %>% 
+  ggplot(aes(x = yearmonth, y = flwr, color = habitat)) + 
+  stat_summary(geom = "line", fun = "mean") +
+  stat_summary(geom = "pointrange", fatten = 1) +
+  scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
+  scale_y_continuous("P(flowering)") +
+  theme_bw() +
+  theme(axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(), panel.grid.minor.x = element_blank())
+flowering
+```
+```{r}
+demog_plotdf %>% filter(year == 2003) %>% group_by(habitat) %>% summarize(flwr = mean(flwr, na.rm = TRUE))
+```
+
+
+```{r}
+size/survival/flowering/spei +
+  plot_layout(guides = "collect") &
+  plot_annotation(tag_levels = "a", tag_suffix = ")") &
+  theme(plot.margin = margin(2,1,1,1)) &
+  guides(col = guide_legend(title = "Habitat"))
+ggsave(here("analysis", "figures", "eda.png"), height = 7, width = 10)
+```
