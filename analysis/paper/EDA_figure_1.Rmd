@@ -125,7 +125,13 @@ survival <-
   scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
   scale_y_continuous("P(survived)") +
   theme_bw() +
-  theme(axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(), panel.grid.minor.x = element_blank())
+  theme(
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    legend.position = "none"
+  )
 survival
 # (survival / spei) 
 ```
@@ -136,7 +142,7 @@ Looks like survival went down year after 2003 drought and during 2007 drought.
 Emilio suggested an alternative to the timeseries plot---a survivorship curve for the 1998 cohort of plants.
 
 ```{r paged.print=FALSE}
-cohort <-demog %>% filter(year == 1998) %>% pull(ha_id_number) %>% unique()
+cohort <- demog %>% filter(year == 1998) %>% pull(ha_id_number) %>% unique()
 
 surv_curve_df <-
   demog %>% 
@@ -156,9 +162,9 @@ surv_curve <-
   scale_y_continuous("P(survived)") +
   theme_bw() +
   theme(
-    # axis.text.x = element_blank(),
-    # axis.title.x = element_blank(),
-    # axis.ticks.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.ticks.x = element_blank(),
     panel.grid.minor.x = element_blank()
   )
 surv_curve
@@ -189,7 +195,13 @@ size <-
   scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
   scale_y_continuous("Size") +
   theme_bw() +
-  theme(axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(), panel.grid.minor.x = element_blank())
+  theme(
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    legend.position = "none"
+  )
 size
 # size/survival/spei
 ```
@@ -203,16 +215,30 @@ demog_post %>% ggplot(aes(x = flwr)) + geom_bar() + facet_wrap(~habitat)
 ### Timeseries
 
 ```{r}
-flowering <-
+flowering_df <-
   demog_plotdf %>% 
   filter(shts >= 4) %>% 
-  ggplot(aes(x = yearmonth, y = flwr, color = habitat)) + 
-  stat_summary(geom = "line", fun = "mean") +
-  stat_summary(geom = "pointrange", fatten = 1) +
-  scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
-  scale_y_continuous("P(flowering)") +
+  group_by(yearmonth, habitat) %>% 
+  summarize(n = n(), flwr = sum(flwr == 1, na.rm = TRUE)) %>% 
+  mutate(prop_flwr = flwr/n)
+
+flowering <-
+  ggplot(flowering_df, aes(x = yearmonth, y = prop_flwr, color = habitat)) + 
+  geom_line() +
+    scale_x_yearmonth(
+      limits = dates,
+      breaks = census_dates,
+      date_minor_breaks = "1 month",
+      expand = expansion(mult = 0.02)
+    ) +
+    scale_y_continuous("P(flowering | shts ≥ 4)") +
   theme_bw() +
-  theme(axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank(), panel.grid.minor.x = element_blank())
+  theme(
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  )
 flowering
 ```
 ```{r}
