@@ -35,7 +35,7 @@ What is the goal of this notebook?
 
 
 ```{r}
-demog_full <- read_rds(here("analysis", "data", "derived_data", "ha_spei_combined.rds"))
+demog <- read_rds(here("analysis", "data", "derived_data", "ha_spei_combined.rds"))
 xa <- read_rds(here("analysis", "data", "derived_data", "xa_spei_lags.rds"))
 ```
 
@@ -46,7 +46,7 @@ There's also a couple of plants that are probably data entry errors in height.
 
 ```{r}
 demog_full <-
-  demog_full %>% 
+  demog %>% 
   filter(ht < 200 | is.na(ht), ht_prev < 200 | is.na(ht_prev)) %>%
   filter(
     # having no aboveground biomass is possible, but categorically different than just being small. Exclude plants with 0 shoots or 0 height
@@ -131,6 +131,40 @@ survival
 ```
 Looks like survival went down year after 2003 drought and during 2007 drought.
 
+### Survivorship curve
+
+Emilio suggested an alternative to the timeseries plot---a survivorship curve for the 1998 cohort of plants.
+
+```{r paged.print=FALSE}
+cohort <-demog %>% filter(year == 1998) %>% pull(ha_id_number) %>% unique()
+
+surv_curve_df <-
+  demog %>% 
+  filter(ha_id_number %in% cohort) %>% 
+  filter(surv == 1, habitat != "10-ha") %>% 
+  group_by(year, habitat) %>% 
+  summarize(n = n()) %>%
+  group_by(habitat) %>% 
+  mutate(p_surv = n/first(n),
+         date = ymd(paste0(year, "-02-01")),
+         yearmonth = yearmonth(date))
+
+surv_curve <-
+  ggplot(surv_curve_df, aes(x = yearmonth, y = p_surv, color = habitat)) +
+  geom_step() +
+  scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
+  scale_y_continuous("P(survived)") +
+  theme_bw() +
+  theme(
+    # axis.text.x = element_blank(),
+    # axis.title.x = element_blank(),
+    # axis.ticks.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  )
+surv_curve
+```
+
+
 ## Size / growth
 
 ```{r}
@@ -185,9 +219,14 @@ flowering
 demog_plotdf %>% filter(year == 2003) %>% group_by(habitat) %>% summarize(flwr = mean(flwr, na.rm = TRUE))
 ```
 
+# Combine
 
 ```{r}
-size/survival/flowering/spei +
+size/
+  # survival/
+  surv_curve/
+  flowering/
+  spei +
   plot_layout(guides = "collect") &
   plot_annotation(tag_levels = "a", tag_suffix = ")") &
   theme(plot.margin = margin(2,1,1,1)) &
