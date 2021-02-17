@@ -139,9 +139,8 @@ cl <- makeForkCluster(ncores - 2)
 s_post_cf <-
   bam(surv ~ 
         s(log_size_prev, bs = "cr") +
-        # s(year) +
-        # s(year_fac, bs = "re") +
-        s(plot, bs = "re") +
+        s(plot, bs = "re") + #random intercept
+        # s(plot, log_size_prev, bs = "re") + #random slope
         s(spei_history, L,
           bs = "cb",
           k = c(3, 35),  #cubic response (at most) to drought, one knot per month lag.
@@ -155,9 +154,15 @@ s_post_cf <-
 
 
 ```{r}
-# gam.check(s_post_cf) #not sure what to expect from any of these plots
-appraise(s_post_cf)
-# concurvity(s_post_cf, full = FALSE)
+# appraise(s_post_cf)
+#quantile residuals are better with discrete response variable.
+library(statmod)
+#histogram
+plot(density(qresid(s_post_cf)))
+#QQ plot
+qqnorm(qresid(s_post_cf)); qqline(qresid(s_post_cf))
+#Fitted vs. residuals
+scatter.smooth(predict(s_post_cf, type = "response"), qresid(s_post_cf), col = "grey")
 ```
 
 ```{r}
@@ -168,8 +173,8 @@ summary(s_post_cf)
 s_post_1ha <-
   bam(surv ~ 
         s(log_size_prev, bs = "cr") +
-        # s(year_fac, bs = "re") +
         s(plot, bs = "re") +
+        # s(plot, log_size_prev, bs = "re") +
         s(spei_history, L,
           bs = "cb",
           k = c(3, 35),  #cubic response (at most) to drought, one knot per month lag.
@@ -179,6 +184,14 @@ s_post_1ha <-
       method = "REML",
       select = TRUE,
       cluster = cl)
+```
+```{r}
+#histogram
+plot(density(qresid(s_post_1ha)))
+#QQ plot
+qqnorm(qresid(s_post_1ha)); qqline(qresid(s_post_1ha))
+#Fitted vs. residuals
+scatter.smooth(predict(s_post_1ha, type = "response"), qresid(s_post_1ha), col = "grey")
 ```
 
 ```{r}
@@ -236,7 +249,20 @@ bind_rows("1-ha" = s_1ha_eval1, "CF" = s_cf_eval1, .id = "habitat") %>%
 ggsave(here("analysis", "figures", "surv_both_size.png"))
 ```
 
+Emilio suggested plotting curves from all 1-ha plots just to visualize the variation. But the random effect of plot is not significant, so there is actually very little variation among plots in the model.
 
+```{r}
+new_data <-
+  tidyr::expand(model.frame(s_post_1ha),
+                nesting(plot),
+                log_size_prev = seq(min(log_size_prev), max(log_size_prev), length.out = 50),
+                spei_history = mean(spei_history), L = L)
+m1pred <- bind_cols(new_data,
+          as.data.frame(predict(s_post_1ha, newdata = new_data, se.fit = TRUE, type = "response")))
+ggplot(m1pred, aes(x = log_size_prev, y = fit, group = plot)) + geom_line()
+```
+
+The wide confidence intervals are probably due to lower sample size at this size of plant.
 
 ## Crossbasis plot
 
@@ -345,8 +371,7 @@ The transformed response and identity link is actually better than a log-link, a
 g_post_cf <-
   bam(log_size ~ 
         s(log_size_prev, bs = "cr") + 
-        # s(year_fac, bs = "re") + 
-        s(plot, bs = "re") + #random effect of plot
+        s(plot, bs = "re") + #random effect of plot on intercept
         s(spei_history, L,
           bs = "cb",
           k = c(3, 35),  #unimodal-ish response to drought, but one knot per month lag.
@@ -550,8 +575,12 @@ f_post_cf <-
 Doesn't converge with random effect of year
 
 ```{r}
-appraise(f_post_cf)
-# concurvity(f_post_cf, full = FALSE)
+#histogram
+plot(density(qresid(f_post_cf)))
+#QQ plot
+qqnorm(qresid(f_post_cf)); qqline(qresid(f_post_cf))
+#Fitted vs. residuals
+scatter.smooth(predict(f_post_cf, type = "response"), qresid(f_post_cf), col = "grey")
 ```
 
 these residuals are troubling
@@ -580,7 +609,12 @@ f_post_1ha <-
 ```
 
 ```{r}
-appraise(f_post_1ha)
+#histogram
+plot(density(qresid(f_post_1ha)))
+#QQ plot
+qqnorm(qresid(f_post_1ha)); qqline(qresid(f_post_1ha))
+#Fitted vs. residuals
+scatter.smooth(predict(f_post_1ha, type = "response"), qresid(f_post_1ha), col = "grey")
 ```
 
 ```{r}
