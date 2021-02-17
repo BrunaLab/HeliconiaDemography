@@ -300,6 +300,28 @@ combine
 s_1ha_cbplot + s_cf_cbplot + plot_layout(guides = "collect") + plot_annotation(tag_levels = "a", tag_suffix = ")")
 ggsave(here("analysis", "figures", "surv_both_spei.png"), width = 10, height = 5)
 ```
+Try rotating to put time on x-axis
+
+```{r}
+breaks <- seq(0,36, by = 2)
+ggplot(s_1ha_eval, aes(y = spei_history, x = L, fill = est, z = est)) +
+  geom_raster() +
+  geom_contour(color = "black", binwidth = 0.002) +
+  scale_fill_viridis_c("P(survival)", option = "magma", limits = surv_lims) +
+  scale_x_reverse(
+    "lag (months)",
+    breaks = breaks,
+    expand = c(0, 0),
+    labels = function(x) -x,
+    sec.axis = dup_axis(name = "month",
+                        labels = month(ymd("2020-2-01") - months(breaks), label = TRUE))
+  )+
+  scale_y_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
+  # labs(title = "1ha fragments") +
+  theme_bw() +
+  theme(axis.text.x.top = element_text(angle = 45, vjust = 0.2, hjust = 0)) +
+  NULL
+```
 
 
 # Growth
