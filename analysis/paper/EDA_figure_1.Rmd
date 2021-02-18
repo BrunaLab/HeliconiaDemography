@@ -12,7 +12,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, paged.print = FALSE)
 library(tidyverse)
 library(here)
 library(lubridate)
@@ -50,8 +50,8 @@ demog_full <-
   filter(ht < 200 | is.na(ht), ht_prev < 200 | is.na(ht_prev)) %>%
   filter(
     # having no aboveground biomass is possible, but categorically different than just being small. Exclude plants with 0 shoots or 0 height
-    shts_prev > 0,
-    ht_prev > 0,
+    shts_prev > 0 | is.na(shts_prev),
+    ht_prev > 0 | is.na(shts_prev),
     #for survival data, must include plants with NA for shts and height (i.e. dead plants)
     shts > 0 | is.na(shts), 
     ht > 0 | is.na(ht)
@@ -78,11 +78,17 @@ demog_plotdf <-
   mutate(date = paste(year, "-02-01") %>% ymd(),
          yearmonth = yearmonth(date))
 ```
+
 ## SPEI
 
 ```{r}
-dates <- range(demog_post$year) %>% paste0(., "-02-01") %>% ymd()
-census_dates <- min(demog_post$year)[1]:max(demog_post$year) %>% paste(., "-02-01") %>% ymd()
+dates <- 
+  range(demog_post$year) %>%
+  paste0(., "-02-01") %>% 
+  ymd()
+dates[1] <- dates[1] - months(36)
+
+census_dates <- seq(dates[1], dates[2], by = "year")
 
 spei <-
   xa %>%
@@ -212,6 +218,17 @@ Average plant size shrank in 2003 drought, but not 2007 drought
 ```{r}
 demog_post %>% ggplot(aes(x = flwr)) + geom_bar() + facet_wrap(~habitat)
 ```
+How many infloresences given flowering?
+
+```{r}
+demog %>% 
+  filter(flwr == 1) %>%
+  summarize(mean_infl = mean(infl_num),
+            median_infl = median(infl_num),
+            min = min(infl_num),
+            max = max(infl_num))
+```
+
 ### Timeseries
 
 ```{r}
