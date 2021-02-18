@@ -119,6 +119,16 @@ demog_post %>%
 
 Survival nearly identical for 1 ha and CF.
 
+When is survival lowest?
+
+```{r}
+demog_post %>% 
+  group_by(year, habitat) %>% 
+  summarize(surv = sum(surv, na.rm = TRUE) / n()) %>% 
+  pivot_wider(names_from = habitat, values_from = surv)
+```
+
+
 ### Timeseries
 
 ```{r}
