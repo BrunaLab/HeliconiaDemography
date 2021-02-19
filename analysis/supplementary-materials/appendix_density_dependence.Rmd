@@ -12,6 +12,9 @@ output:
       - --lua-filter=../templates/pagebreak.lua
 bibliography: references.bib
 csl: "../templates/ecology.csl" # Insert path for the bib-style
+editor_options:
+  markdown:
+    wrap: sentence
 ---
 
 ```{r setup, include=FALSE, echo=FALSE}
@@ -58,13 +61,25 @@ conflict_prefer("select", "dplyr")
 
 -   Cite [@bruna2004] (reproductive success is independent of local floral density. Not sure if scales are comparable though, need to read paper first)
 
+-   Use a tensor product with a monotonically decreasing P-spline for the distance dimension (see Wood book 5.3.6, something like `ssp <- s(x, bs = "ps", k = k); ssp$mono <- -1`
+
 # Methods
 
 ## Data collection
 
-The exact coordinates (to the nearest 0.1m) of each plant relative to the plot were recorded for a subset of plots in three years. In 2006 and 2007, locations of plants were recorded to the nearest meter as part of a study to assess the effects of safe-site limitation on recruitment [@uriarte2010]. In 2009, plants were mapped to .... <!--# rubim study -->For each plot and year, we calculated the density of conspecific shoots in annuli at varying distances from focal plants, as in Teller et al. [-@teller2016]. Density was calculated for 5 annuli ranging from an inner radius of 0m and an outer radius of 0.5m (i.e. a circle of radius 0.5m) to an inner radius of 4.5m and and outer radius of 5m. If an annulus intersected with the edge of the plot, the density for that particular plant and annulus was considered as a missing value. Conspecific density was estimated as the size of H. acuminata shoots per m2 in each annulus. <!--# Add analyses using height and shoots + height -->Number of shoots was used as a measure of plant size rather than height as it is less error prone to measure, is not affected by plants being knocked over, and is strongly correlated with plant height and leaf area in H. acuminata [@bruna2002; @brunaEffectsForestFragmentation2002].
+The exact coordinates (to the nearest 0.1m) of each plant relative to the plot were recorded for a subset of plots in three years.
+In 2006 and 2007, locations of plants were recorded to the nearest meter as part of a study to assess the effects of safe-site limitation on recruitment [@uriarte2010].
+In 2009, plants were mapped to ....
+<!--# rubim study -->For each plot and year, we calculated the density of conspecific shoots in annuli at varying distances from focal plants, as in Teller et al. [-@teller2016].
+Density was calculated for 5 annuli ranging from an inner radius of 0m and an outer radius of 0.5m (i.e. a circle of radius 0.5m) to an inner radius of 4.5m and and outer radius of 5m.
+If an annulus intersected with the edge of the plot, the density for that particular plant and annulus was considered as a missing value.
+Conspecific density was estimated as the size of H.
+acuminata shoots per m2 in each annulus.
+<!--# Add analyses using height and shoots + height -->Number of shoots was used as a measure of plant size rather than height as it is less error prone to measure, is not affected by plants being knocked over, and is strongly correlated with plant height and leaf area in H.
+acuminata [@bruna2002; @brunaEffectsForestFragmentation2002].
 
-We used the three transition years for which we had density data to test for effects of conspecific density on growth and survival of *H. acuminata*. We were unable to test for the effects of density dependence on probability of flowering, as surveys of reproduction were not conducted in these years <!--# or perhaps no plants flowered? -->.
+We used the three transition years for which we had density data to test for effects of conspecific density on growth and survival of *H. acuminata*.
+We were unable to test for the effects of density dependence on probability of flowering, as surveys of reproduction were not conducted in these years <!--# or perhaps no plants flowered? -->.
 
 ```{r data}
 ha <- read_rds(here("analysis", "data", "derived_data", "ha_density.rds"))
@@ -90,7 +105,10 @@ ha <-
 
 ## Statistical Modeling
 
-We modeled density dependence using a penalized distributed lag non-linear model (DLNM) approach with the `dlnm` package in R [@gasparriniPenalizedFrameworkDistributed2017; @gasparriniDistributedLagLinear2011; @rcoreteamLanguageEnvironmentStatistical2020]. This approach is similar to that of Teller et al. [-@teller2016], in that it makes no assumptions about the shape of the competition kernel. Instead, it fits a two-dimensional spline allowing for a non-linear response to the intensity of conspecific density as well as the distance of conspecifics. We implemented this in a generalized additive model (GAM) framework taking advantage of the penalization features of the `mgcv` package [@woodGeneralizedAdditiveModels2017].
+We modeled density dependence using a penalized distributed lag non-linear model (DLNM) approach with the `dlnm` package in R [@gasparriniPenalizedFrameworkDistributed2017; @gasparriniDistributedLagLinear2011; @rcoreteamLanguageEnvironmentStatistical2020].
+This approach is similar to that of Teller et al. [-@teller2016], in that it makes no assumptions about the shape of the competition kernel.
+Instead, it fits a two-dimensional spline allowing for a non-linear response to the intensity of conspecific density as well as the distance of conspecifics.
+We implemented this in a generalized additive model (GAM) framework taking advantage of the penalization features of the `mgcv` package [@woodGeneralizedAdditiveModels2017].
 
 ```{r}
 Q <-
@@ -128,7 +146,11 @@ $$
 size_{t+1} = \sum_{d=d_0}^D f \cdot w(x_{i,d}, d)
 $$
 
-Where $f \cdot w(x, d)$ is a two dimensional crossbasis smooth composed of two marginal functions: $f(x)$, the effect of conspecific density, $x$ , on growth, and the additional distance response function $w(d)$ that models the effect of density at different annuli, $d$, equal to the midpoint of the inner and outer radius of the 5 annuli for which density was calculated. Each dimension was modeled with 10 knots. With a penalized spline, the number of knots is not very important as ... <!--# finish thought and cite (maybe Noam Ross) --> Habitat is a parametric fixed effect with two levels (1-ha and continuous forest), $s(log(shts_t))$ is a penalized cubic spline describing the growth from year t to year t + 1, and a random effect of plot, nested within habitat. We did not include a random effect of plant ID, as the model did not converge. Although the response, shoot number in year t+1, is a discrete variable, a scaled t distribution with a log-link was used as it was a better fit than a poisson distribution ($\Delta$AIC = 810.5) and a log-normal distribution ($\Delta$AIC = 294).
+Where $f \cdot w(x, d)$ is a two dimensional crossbasis smooth composed of two marginal functions: $f(x)$, the effect of conspecific density, $x$ , on growth, and the additional distance response function $w(d)$ that models the effect of density at different annuli, $d$, equal to the midpoint of the inner and outer radius of the 5 annuli for which density was calculated.
+Each dimension was modeled with 10 knots.
+With a penalized spline, the number of knots is not very important as ... <!--# finish thought and cite (maybe Noam Ross) --> Habitat is a parametric fixed effect with two levels (1-ha and continuous forest), $s(log(shts_t))$ is a penalized cubic spline describing the growth from year t to year t + 1, and a random effect of plot, nested within habitat.
+We did not include a random effect of plant ID, as the model did not converge.
+Although the response, shoot number in year t+1, is a discrete variable, a scaled t distribution with a log-link was used as it was a better fit than a poisson distribution ($\Delta$AIC = 810.5) and a log-normal distribution ($\Delta$AIC = 294).
 
 ```{r eval=FALSE, include=FALSE}
 g_growth_pois <- update(g_growth_scat, family = poisson(link = "log"))
@@ -153,7 +175,9 @@ g_surv <-
 # plot(g_surv)
 ```
 
-Because the DLNM approach does not allow for modeling an interaction between conspecific density and habitat type, we used the outputs of these cross-basis smooths to fit generalized linear mixed-effects models with interaction terms. By inspecting the marginal effects plots from the cross-basis smooths, we identified a range of distances over which conspecific density had the greatest effect and used density over that distance as a predictor in the GLMMs. <!--# revise and also talk more about what interactions and random effects included -->
+Because the DLNM approach does not allow for modeling an interaction between conspecific density and habitat type, we used the outputs of these cross-basis smooths to fit generalized linear mixed-effects models with interaction terms.
+By inspecting the marginal effects plots from the cross-basis smooths, we identified a range of distances over which conspecific density had the greatest effect and used density over that distance as a predictor in the GLMMs.
+<!--# revise and also talk more about what interactions and random effects included -->
 
 # Results
 
@@ -198,7 +222,9 @@ ggplot(fitted, aes(x = exp(log_shts), y = exp(.fitted))) +
   theme_bw()
 ```
 
-Number of shoots in the current year had a significant effect on size in year t + 1 ($\chi^2$ = 796.8, df = 1, P \< 0.0001) (Figure \@ref(fig:growth-plot)). There was no significant effect of habitat or the interaction between habitat and size on size in year t + 1. The cross-basis smooth describing the effects of conspecific density on growth was significant ($\chi^2$ = 23.2, edf = 6.4, P = 0.004).
+Number of shoots in the current year had a significant effect on size in year t + 1 ($\chi^2$ = 796.8, df = 1, P \< 0.0001) (Figure \@ref(fig:growth-plot)).
+There was no significant effect of habitat or the interaction between habitat and size on size in year t + 1.
+The cross-basis smooth describing the effects of conspecific density on growth was significant ($\chi^2$ = 23.2, edf = 6.4, P = 0.004).
 
 ```{r}
 pred_growth <- cb_margeff(Q, L, g_growth_scat)
@@ -216,7 +242,8 @@ pred_growth %>%
   theme_bw()
 ```
 
-Plants had a greater number of shoots in year t+1 as conspecific density increased, all else being average. The effects of conspecific density were strongest around 0--1 meters from the focal plant (Figure \@ref(fig:growth-cb)).
+Plants had a greater number of shoots in year t+1 as conspecific density increased, all else being average.
+The effects of conspecific density were strongest around 0--1 meters from the focal plant (Figure \@ref(fig:growth-cb)).
 
 ```{r growth-slice, include=TRUE, fig.cap="this is a figure"}
 pred_growth %>%
@@ -246,7 +273,8 @@ In that annulus, conspecific density showed no effect (i.e. a flat line) below a
 anova(g_surv)
 ```
 
-Plant size had a significant, nearly quadratic (on a logit scale), effect on survival in continuous forest ($\chi^2$ = 112.2, edf = 2.1, P \< 0.001), but a linear (on a logit scale) effect in 1 ha fragments ($\chi^2$ = 15.63, edf = 1, P \< 0.001), but their 95% confidence intervals overlap (Figure \@ref(fig:surv-plot)). However, there were no significant effects of habitat ($\chi^2$ = 0.002, df = 1, P = 0.964) or conspecific density ($\chi^2$ = 5.36, edf = 2, P = 0.0688) on survival.
+Plant size had a significant, nearly quadratic (on a logit scale), effect on survival in continuous forest ($\chi^2$ = 112.2, edf = 2.1, P \< 0.001), but a linear (on a logit scale) effect in 1 ha fragments ($\chi^2$ = 15.63, edf = 1, P \< 0.001), but their 95% confidence intervals overlap (Figure \@ref(fig:surv-plot)).
+However, there were no significant effects of habitat ($\chi^2$ = 0.002, df = 1, P = 0.964) or conspecific density ($\chi^2$ = 5.36, edf = 2, P = 0.0688) on survival.
 
 ```{r surv-plot, include=TRUE, fig.cap="this is a figure"}
 Q_new <- 
@@ -308,7 +336,10 @@ ggplot(fitted, aes(x = exp(log_shts), y = plogis(.fitted), color = habitat)) +
 
 ## Mixed Models Approach
 
-Because the DLNM approach does not allow for interaction terms and did not converge with the inclusion of certain random effects, we repeated the analysis using a more standard generalized linear mixed effects model approach. Because the effects of conspecific density dropped off steeply beyond 3m from the focal plant (Figure \@ref(fig:growth-cb)), we re-calculated conspecific shoot density within a radius of 3m and used this as a predictor. We used AIC comparisons to test for significance of random effects, then interactions, then used a marginal hypothesis test to test for significance of main effects of log(shoot number), habitat, and conspecific density. Marginal hypothesis tests were conducted with the `Anova` function from the `car` package [@foxCompanionAppliedRegression2019].
+Because the DLNM approach does not allow for interaction terms and did not converge with the inclusion of certain random effects, we repeated the analysis using a more standard generalized linear mixed effects model approach.
+Because the effects of conspecific density dropped off steeply beyond 3m from the focal plant (Figure \@ref(fig:growth-cb)), we re-calculated conspecific shoot density within a radius of 3m and used this as a predictor.
+We used AIC comparisons to test for significance of random effects, then interactions, then used a marginal hypothesis test to test for significance of main effects of log(shoot number), habitat, and conspecific density.
+Marginal hypothesis tests were conducted with the `Anova` function from the `car` package [@foxCompanionAppliedRegression2019].
 
 ```{r}
 mnorm <-
@@ -348,9 +379,12 @@ fixef(mnorm10)
 
 **No longer significant**
 
-marginally significant size x conspecific density interaction (p = 0.046). No significant main effect of density.
+marginally significant size x conspecific density interaction (p = 0.046).
+No significant main effect of density.
 
-In the GLMM, only plant ID number was retained as a random effect. Plant size (log(shoot number)) was a significant predictor of plant size in the next year ($\chi^2$ = 1422.4, df = 1, P \< 0.001). Conspecific density within 3m of the focal plant did not have a significant effect of plant size in the next year ($\chi^2$ = 1.26, df = 1, P = 0.2623).
+In the GLMM, only plant ID number was retained as a random effect.
+Plant size (log(shoot number)) was a significant predictor of plant size in the next year ($\chi^2$ = 1422.4, df = 1, P \< 0.001).
+Conspecific density within 3m of the focal plant did not have a significant effect of plant size in the next year ($\chi^2$ = 1.26, df = 1, P = 0.2623).
 
 ```{r glmer-plot, fig.cap="this"}
 
@@ -374,7 +408,10 @@ augment(mnorm11, newdata = newdata, re.form = NA) %>%
 
 # Discussion
 
-We found no meaningful statistically significant effect of conspecific density on the growth or survival of *H. accuminata.* In the GAM approach, the statistically significant effect we saw was driven by a few (\< 20) plants with with a high density of conspecific shoots. The GAM model also did not take into account variation in growth among individual plants, which was shown to be important in the GLMER model. In the GLMER, the effects of density are not significant. Because of this, we feel it is safe to exclude density dependence from further demographic models.
+We found no meaningful statistically significant effect of conspecific density on the growth or survival of *H. accuminata.* In the GAM approach, the statistically significant effect we saw was driven by a few (\< 20) plants with with a high density of conspecific shoots.
+The GAM model also did not take into account variation in growth among individual plants, which was shown to be important in the GLMER model.
+In the GLMER, the effects of density are not significant.
+Because of this, we feel it is safe to exclude density dependence from further demographic models.
 
 # References
 
