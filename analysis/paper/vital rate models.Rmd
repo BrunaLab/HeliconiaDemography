@@ -266,6 +266,30 @@ The wide confidence intervals are probably due to lower sample size at this size
 
 ## Crossbasis plot
 
+### Setup for all crossbasis plots
+Ok, I want to add a lil strip on the bottom that shows dry and wet seasons.  Wet = November-may, dry = june-october.
+
+```{r}
+wet_xmaxs = c(3, 15, 27, 36)
+wet_xmins = c(0, 8, 20, 32)
+dry_xmaxs = c(8, 20, 32)
+dry_xmins = c(3, 15, 27)
+df <- tibble(x = 0:36)
+season_bar <- 
+  ggplot(df, aes(x = x, y = 1)) +
+  annotate(geom = "rect", xmin = wet_xmins, xmax = wet_xmaxs, ymin = 0.975, ymax = 1.025, fill = "black") +
+  annotate(geom = "rect", xmin = dry_xmins, xmax = dry_xmaxs, ymin = 0.975, ymax = 1.025, fill = "white") +
+  scale_y_continuous(expand = c(0,0)) +
+  scale_x_continuous(expand = c(0,0)) +
+  theme_void()
+```
+
+
+```{r}
+breaks <- seq(0,36, by = 2)
+```
+
+### Get plot data
 `dist` isn't working yet in `smooth_estimates`, but that's ok because I don't need CI for these plots (yet).
 
 ```{r}
@@ -280,97 +304,62 @@ surv_lims <- c(min(s_1ha_eval$est, s_cf_eval$est, na.rm = TRUE),
                   max(s_1ha_eval$est, s_cf_eval$est, na.rm = TRUE))
 ```
 
-TODO: It would be *very cool* if the colors could be the same, but the limits on the scale bar could be different.
+
+### 1ha
 
 ```{r}
-s_1ha_cbplot <-
-  ggplot(s_1ha_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
-  geom_raster() +
-  geom_contour(color = "black", binwidth = 0.002) +
-  scale_fill_viridis_c("P(survival)", option = "magma", limits = surv_lims) +
-  scale_y_continuous(
-    "lag (months)",
-    breaks = 0:36, 
-    expand = c(0,0),
-    sec.axis = dup_axis(
-      name = "month",
-      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
-  ) +
-  scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
-  labs(title = "1ha fragments") +
-  theme_bw()
-ggsave(here("analysis", "figures", "surv_1ha_spei.png"), s_1ha_cbplot)
-```
-```{r}
-s_cf_cbplot <- 
-  ggplot(s_cf_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
-  geom_raster() +
-  geom_contour(color = "black", binwidth = 0.002) +
-  scale_fill_viridis_c("P(survival)", option = "magma", limits = surv_lims) +
-  scale_y_continuous(
-    "lag (months)",
-    breaks = 0:36, 
-    expand = c(0,0),
-    sec.axis = dup_axis(
-      name = "month",
-      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
-  ) + 
-  scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
-  labs(title = "Continuous forest") +
-  theme_bw()
-ggsave(here("analysis", "figures", "surv_cf_spei.png"), s_cf_cbplot)
-```
-
-combine
-```{r}
-s_1ha_cbplot + s_cf_cbplot + plot_layout(guides = "collect") + plot_annotation(tag_levels = "a", tag_suffix = ")")
-ggsave(here("analysis", "figures", "surv_both_spei.png"), width = 10, height = 5)
-```
-Try rotating to put time on x-axis
-
-```{r}
-breaks <- seq(0,36, by = 2)
 s_1ha_rotated <-
   ggplot(s_1ha_eval, aes(y = spei_history, x = L, fill = est, z = est)) +
   geom_raster() +
   geom_contour(color = "black", binwidth = 0.002) +
-  scale_fill_viridis_c("P(survival)", option = "magma", limits = surv_lims) +
-  scale_x_reverse(
-    "lag (months)",
+  geom_hline(aes(yintercept = 0), color = "grey", linetype = 2) +
+  scale_fill_viridis_c("P(survival)", option = "viridis", limits = surv_lims) +
+  scale_x_continuous(
+    "lag (months before census)",
     breaks = breaks,
-    expand = c(0, 0),
-    labels = function(x) -x,
-    sec.axis = dup_axis(name = "month",
-                        labels = month(ymd("2020-2-01") - months(breaks), label = TRUE))
-  )+
-  scale_y_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
+    expand = c(0, 0)
+  ) +
+  scale_y_continuous(TeX("SPEI_3_"), expand = expansion(mult = c(0.025, 0)))+ #leave room for season bar at bottom
   labs(title = "1ha fragments") +
   theme_bw() +
-  theme(axis.text.x.top = element_text(angle = 45, vjust = 0.2, hjust = 0)) +
+  annotation_custom(grob = ggplotGrob(season_bar), ymin = -Inf, ymax = min(s_cf_eval$spei_history), xmin = -Inf, xmax = Inf) +
   NULL
 ```
+
+### CF
+
 ```{r}
-s_cf_rotated <- 
+s_cf_rotated <-
   ggplot(s_cf_eval, aes(y = spei_history, x = L, fill = est, z = est)) +
   geom_raster() +
   geom_contour(color = "black", binwidth = 0.002) +
-  scale_fill_viridis_c("P(survival)", option = "magma", limits = surv_lims) +
-  scale_x_reverse(
+  geom_hline(aes(yintercept = 0), color = "grey", linetype = 2) +
+  scale_fill_viridis_c("P(survival)", option = "viridis", limits = surv_lims) +
+  scale_x_continuous(
     "lag (months)",
     breaks = breaks,
-    expand = c(0, 0),
-    labels = function(x) -x,
-    sec.axis = dup_axis(name = "month",
-                        labels = month(ymd("2020-2-01") - months(breaks), label = TRUE))
+    expand = c(0, 0)
   )+
-  scale_y_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
+  scale_y_continuous(TeX("SPEI_3_"), expand = expansion(mult = c(0.025, 0))) +
   labs(title = "Continuous Forest") +
   theme_bw() +
-  theme(axis.text.x.top = element_text(angle = 45, vjust = 0.2, hjust = 0)) +
+  annotation_custom(grob = ggplotGrob(season_bar), ymin = -Inf, ymax = min(s_cf_eval$spei_history), xmin = -Inf, xmax = Inf) +
   NULL
+
 ```
 
+### Combine
 
+```{r}
+(s_cf_rotated + theme(axis.title.x = element_blank())) / 
+  (s_1ha_rotated) + 
+  plot_layout(guides = "collect") + 
+  plot_annotation(tag_levels = "a", tag_suffix = ")") & 
+  labs(title = NULL) #remove plot titles
+ggsave(here("analysis", "figures", "surv_both_spei.png"), width = 7, height = 5)
+```
+
+### Difference
 Try plotting a raster of the difference between CF and 1-ha
 
 ```{r}
@@ -383,23 +372,19 @@ s_diff_rotated <-
   ggplot(aes(x = cf_L, y = cf_spei_history, fill = diff, z = diff)) +
   geom_raster() +
   geom_contour(color = "black", binwidth = 0.002) +
-  scale_fill_viridis_c("∆Survival (CF – 1ha)", option = "plasma") +
-  scale_x_reverse(
-    "lag (months)",
+  geom_hline(aes(yintercept = 0), color = "grey", linetype = 2) +
+  scale_fill_viridis_c("∆Survival (CF – 1ha)", option = "viridis") +
+  scale_x_continuous(
+    "lag (months before census)",
     breaks = breaks,
-    expand = c(0, 0),
-    labels = function(x) -x,
-    sec.axis = dup_axis(name = "month",
-                        labels = month(ymd("2020-2-01") - months(breaks), label = TRUE))
+    expand = c(0, 0)
   )+
-  scale_y_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
+  scale_y_continuous(TeX("SPEI_3_"), expand = expansion(mult = c(0.025, 0))) +
   labs(title = "CF – 1-ha") +
   theme_bw() +
-  theme(axis.text.x.top = element_text(angle = 45, vjust = 0.2, hjust = 0)) +
+  annotation_custom(grob = ggplotGrob(season_bar), ymin = -Inf, ymax = min(s_cf_eval$spei_history), xmin = -Inf, xmax = Inf) +
   NULL
-```
-```{r}
-(s_cf_rotated |s_1ha_rotated) / (s_diff_rotated | plot_spacer()) + plot_layout(guides="collect")
+ggsave(here("analysis", "figures", "surv_diff_spei.png"),plot = s_diff_rotated, width = 7, height = 2.5)
 ```
 
 
@@ -534,66 +519,99 @@ ggsave(here("analysis", "figures", "growth_both_size.png"))
 
 
 ## Crossbasis plot
+
+### Get plot data
 `dist` isn't working yet in `smooth_estimates`, but that's ok because I don't need CI for these plots (yet).
 
 ```{r}
 g_1ha_eval <-
-  evaluate_smooth(g_post_1ha, smooth = "spei_history", dist = 0.1) #%>% 
-  # mutate(est = est + coef(g_post_1ha)[1])
+  evaluate_smooth(g_post_1ha, smooth = "spei_history", dist = 0.1) %>% 
+  mutate(est = est + coef(g_post_1ha)[1])
 g_cf_eval <-
-  evaluate_smooth(g_post_cf, smooth = "spei_history", dist = 0.1) # %>% 
-  # mutate(est = est + coef(g_post_cf)[1])
+  evaluate_smooth(g_post_cf, smooth = "spei_history", dist = 0.1)  %>% 
+  mutate(est = est + coef(g_post_cf)[1])
 
 grow_lims <- c(min(g_1ha_eval$est, g_cf_eval$est, na.rm = TRUE),
                max(g_1ha_eval$est, g_cf_eval$est, na.rm = TRUE))
 ```
 
+### 1ha
 
 ```{r}
-g_1ha_cbplot <- 
-  ggplot(g_1ha_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
+g_1ha_rotated <-
+  ggplot(g_1ha_eval, aes(y = spei_history, x = L, fill = est, z = est)) +
   geom_raster() +
-  geom_contour(color = "black", binwidth = 0.1) +
-  scale_fill_viridis_c("∆log(size) (?)", option = "magma", limits = grow_lims) +
-  scale_y_continuous(
-    "lag (months)",
-    breaks = 0:36, 
-    expand = c(0,0),
-    sec.axis = dup_axis(
-      name = "month",
-      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
-  ) +
-  scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
+  geom_contour(color = "black", binwidth = 0.05) +
+  geom_hline(aes(yintercept = 0), color = "grey", linetype = 2) +
+  scale_fill_viridis_c(TeX("$log(size_{t+1})$"), option = "viridis", limits = grow_lims) +
+  scale_x_continuous(
+    "lag (months before census)",
+    breaks = breaks,
+    expand = c(0, 0)
+  )+
+  scale_y_continuous(TeX("SPEI_3_"), expand = expansion(mult = c(0.025, 0)))+ #leave room for season bar at bottom
   labs(title = "1ha fragments") +
-  theme_bw()
-ggsave(here("analysis", "figures", "growth_1ha_spei.png"), g_1ha_cbplot)
+  theme_bw() +
+  annotation_custom(grob = ggplotGrob(season_bar), ymin = -Inf, ymax = min(s_cf_eval$spei_history), xmin = -Inf, xmax = Inf) +
+  NULL
 ```
 
+### CF
+
 ```{r}
-g_cf_cbplot <-
-  ggplot(g_cf_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
+g_cf_rotated <-
+  ggplot(g_cf_eval, aes(y = spei_history, x = L, fill = est, z = est)) +
   geom_raster() +
-  geom_contour(color = "black", binwidth = 0.1) +
-  scale_fill_viridis_c("∆log(size) (?)", option = "magma", limits = grow_lims) +
-  scale_y_continuous(
-    "lag (months)",
-    breaks = 0:36, 
-    expand = c(0,0),
-    sec.axis = dup_axis(
-      name = "month",
-      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
-  ) +
-  scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
+  geom_contour(color = "black", binwidth = 0.05) +
+  geom_hline(aes(yintercept = 0), color = "grey", linetype = 2) +
+  scale_fill_viridis_c(TeX("$log(size_{t+1})$"), option = "viridis", limits = grow_lims) +
+  scale_x_continuous(
+    "lag (months before census)",
+    breaks = breaks,
+    expand = c(0, 0)
+  )+
+  scale_y_continuous(TeX("SPEI_3_"), expand = expansion(mult = c(0.025, 0)))+ #leave room for season bar at bottom
   labs(title = "Continuous forest") +
-  theme_bw()
-ggsave(here("analysis", "figures", "growth_cf_spei.png"), g_cf_cbplot)
+  theme_bw() +
+  annotation_custom(grob = ggplotGrob(season_bar), ymin = -Inf, ymax = min(s_cf_eval$spei_history), xmin = -Inf, xmax = Inf) +
+  NULL
 ```
 
+### Combine
 combine
+```{r}
+(g_cf_rotated + theme(axis.title.x = element_blank())) / 
+  (g_1ha_rotated) + 
+  plot_layout(guides = "collect") + 
+  plot_annotation(tag_levels = "a", tag_suffix = ")") & 
+  labs(title = NULL) #remove plot titles
+ggsave(here("analysis", "figures", "growth_both_spei.png"), width = 7, height = 5)
+```
+### Difference
 
 ```{r}
-g_1ha_cbplot + g_cf_cbplot + plot_layout(guides = "collect") + plot_annotation(tag_levels = "a", tag_suffix = ")")
-ggsave(here("analysis", "figures", "growth_both_spei.png"), width = 10, height = 5)
+g_diff_rotated <- 
+  bind_cols(
+  g_cf_eval %>% rename_with(.fn = ~glue("cf_{.}")),
+  g_1ha_eval %>% rename_with(.fn = ~glue("frag_{.}"))
+  ) %>%
+  mutate(diff = cf_est - frag_est) %>% 
+  ggplot(aes(x = cf_L, y = cf_spei_history, fill = diff, z = diff)) +
+  geom_raster() +
+  geom_contour(color = "black", binwidth = 0.05) +
+  geom_hline(aes(yintercept = 0), color = "grey", linetype = 2) +
+  scale_fill_viridis_c(TeX("$\\Delta log(size_{t+1})$ (CF – 1ha)"), option = "viridis") +
+  scale_x_continuous(
+    "lag (months before census)",
+    breaks = breaks,
+    expand = c(0, 0)
+  )+
+  scale_y_continuous(TeX("SPEI_3_"), expand = expansion(mult = c(0.025, 0))) +
+  labs(title = "CF – 1-ha") +
+  theme_bw() +
+  annotation_custom(grob = ggplotGrob(season_bar), ymin = -Inf, ymax = min(s_cf_eval$spei_history), xmin = -Inf, xmax = Inf) +
+  NULL
+ggsave(here("analysis", "figures", "growth_diff_spei.png"),plot = g_diff_rotated, width = 7, height = 2.5)
 ```
 
 
@@ -727,9 +745,12 @@ bind_rows("1-ha" = f_1ha_eval1, "CF" = f_cf_eval1, .id = "habitat") %>%
   labs(x = TeX("$log(size_t)$"), y = "P(flowering)")
 ggsave(here("analysis", "figures", "flwr_both_size.png"))
 ```
+```{r paged.print=FALSE}
+demog_full %>% filter(ht < 1)
+```
 
 ## Crossbasis plot
-
+### Get plot data
 `dist` isn't working yet in `smooth_estimates`, but that's ok because I don't need CI for these plots (yet).
 
 ```{r}
@@ -744,49 +765,81 @@ flwr_lims <- c(min(f_1ha_eval$est, f_cf_eval$est, na.rm = TRUE),
                max(f_1ha_eval$est, f_cf_eval$est, na.rm = TRUE))
 ```
 
+### 1ha
 
 ```{r}
-f_1ha_cbplot <- 
-  ggplot(f_1ha_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
+f_1ha_rotated <-
+  ggplot(f_1ha_eval, aes(y = spei_history, x = L, fill = est, z = est)) +
   geom_raster() +
   geom_contour(color = "black", binwidth = 0.001) +
-  scale_fill_viridis_c("P(flowering)", option = "magma", limits = flwr_lims) +
-  scale_y_continuous(
-    "lag (months)",
-    breaks = 0:36, 
-    expand = c(0,0),
-    sec.axis = dup_axis(
-      name = "month",
-      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
-  ) +
-  scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
-  labs(title = "1-ha fragments") +
-  theme_bw()
-ggsave(here("analysis", "figures", "flwr_1ha_spei.png"), f_1ha_cbplot)
+  geom_hline(aes(yintercept = 0), color = "grey", linetype = 2) +
+  scale_fill_viridis_c("P(flowering)", option = "viridis", limits = flwr_lims) +
+  scale_x_continuous(
+    "lag (months before census)",
+    breaks = breaks,
+    expand = c(0, 0)
+  )+
+  scale_y_continuous(TeX("SPEI_3_"), expand = expansion(mult = c(0.025, 0)))+ #leave room for season bar at bottom
+  labs(title = "1ha fragments") +
+  theme_bw() +
+  annotation_custom(grob = ggplotGrob(season_bar), ymin = -Inf, ymax = min(s_cf_eval$spei_history), xmin = -Inf, xmax = Inf) +
+  NULL
 ```
+
+### CF
 ```{r}
-f_cf_cbplot <- 
-  ggplot(f_cf_eval, aes(x = spei_history, y = L, fill = est, z = est)) +
+f_cf_rotated <-
+  ggplot(f_cf_eval, aes(y = spei_history, x = L, fill = est, z = est)) +
   geom_raster() +
   geom_contour(color = "black", binwidth = 0.001) +
-  scale_fill_viridis_c("P(flowering)", option = "magma", limits = flwr_lims) +
-  scale_y_continuous(
-    "lag (months)",
-    breaks = 0:36, 
-    expand = c(0,0),
-    sec.axis = dup_axis(
-      name = "month",
-      labels = month(ymd("2020-2-01") - months(0:36), label = TRUE))
-  ) + 
-  scale_x_continuous(TeX("SPEI_3_"), expand = c(0,0)) +
+  geom_hline(aes(yintercept = 0), color = "grey", linetype = 2) +
+  scale_fill_viridis_c("P(flowering)", option = "viridis", limits = flwr_lims) +
+  scale_x_continuous(
+    "lag (months before census)",
+    breaks = breaks,
+    expand = c(0, 0)
+  )+
+  scale_y_continuous(TeX("SPEI_3_"), expand = expansion(mult = c(0.025, 0)))+ #leave room for season bar at bottom
   labs(title = "Continuous forest") +
-  theme_bw()
-ggsave(here("analysis", "figures", "flwr_cf_spei.png"), f_cf_cbplot)
+  theme_bw() +
+  annotation_custom(grob = ggplotGrob(season_bar), ymin = -Inf, ymax = min(s_cf_eval$spei_history), xmin = -Inf, xmax = Inf) +
+  NULL
 ```
-
+### Combine
 combine
+`
 ```{r}
-f_1ha_cbplot + f_cf_cbplot + plot_layout(guides = "collect") + plot_annotation(tag_levels = "a", tag_suffix = ")")
-ggsave(here("analysis", "figures", "flwr_both_spei.png"), width = 10, height = 5)
+  (f_cf_rotated + theme(axis.title.x = element_blank())) / 
+  (f_1ha_rotated) + 
+  plot_layout(guides = "collect") + 
+  plot_annotation(tag_levels = "a", tag_suffix = ")") & 
+  labs(title = NULL) #remove plot titles
+ggsave(here("analysis", "figures", "flwr_both_spei.png"), width = 7, height = 5)
+```
+### Difference
+
+```{r}
+f_diff_rotated <- 
+  bind_cols(
+  f_cf_eval %>% rename_with(.fn = ~glue("cf_{.}")),
+  f_1ha_eval %>% rename_with(.fn = ~glue("frag_{.}"))
+  ) %>%
+  mutate(diff = cf_est - frag_est) %>% 
+  ggplot(aes(x = cf_L, y = cf_spei_history, fill = diff, z = diff)) +
+  geom_raster() +
+  geom_contour(color = "black", binwidth = 0.001) +
+  geom_hline(aes(yintercept = 0), color = "grey", linetype = 2) +
+  scale_fill_viridis_c("∆Flowering (CF – 1ha)", option = "viridis") +
+  scale_x_continuous(
+    "lag (months before census)",
+    breaks = breaks,
+    expand = c(0, 0)
+  )+
+  scale_y_continuous(TeX("SPEI_3_"), expand = expansion(mult = c(0.025, 0))) +
+  labs(title = "CF – 1-ha") +
+  theme_bw() +
+  annotation_custom(grob = ggplotGrob(season_bar), ymin = -Inf, ymax = min(s_cf_eval$spei_history), xmin = -Inf, xmax = Inf) +
+  NULL
+ggsave(here("analysis", "figures", "flwr_diff_spei.png"),plot = s_diff_rotated, width = 7, height = 2.5)
 ```
 
