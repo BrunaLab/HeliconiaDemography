@@ -195,9 +195,13 @@ demog_post %>% ggplot(aes(x = habitat, y = log_size)) + geom_boxplot()
 ```{r}
 demog_post %>% 
   group_by(habitat) %>% 
-  summarize(size = mean(size, na.rm = TRUE),
-            shts = mean(shts, na.rm = TRUE),
-            ht = mean(ht, na.rm = TRUE))
+  summarize(across(
+    c(size, shts, ht),
+    list(mean = mean, sd = sd),
+    na.rm = TRUE,
+    .names = "{.col}_{.fn}"
+  ))
+
 ```
 
 ### Timeseries
@@ -205,11 +209,23 @@ demog_post %>%
 ```{r}
 size <-
   demog_plotdf %>% 
-  ggplot(aes(x = yearmonth, y = size, color = habitat)) +
-  stat_summary(geom = "line", fun = "mean", fun.args = list(na.rm = TRUE)) +
-  stat_summary(geom = "pointrange", fatten = 1) +
+  ggplot(aes(x = yearmonth, y = log(size), color = habitat)) +
+    stat_summary(
+      geom = "line",
+      fun = "mean",
+      fun.args = list(na.rm = TRUE),
+      position = position_dodge(width = 100),
+      aes(group = habitat)
+    )+
+    stat_summary(
+      geom = "pointrange",
+      fatten = 1,
+      fun.data = "mean_sdl",
+      fun.args = list(mult = 1),
+      position = position_dodge(width = 100)
+    ) +
   scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
-  scale_y_continuous("Size") +
+  scale_y_continuous("log(size)") +
   theme_bw() +
   theme(
     axis.text.x = element_blank(),
@@ -217,11 +233,22 @@ size <-
     axis.ticks.x = element_blank(),
     panel.grid.minor.x = element_blank(),
     legend.position = "none"
-  )
-size
+  ) +
+  NULL
 # size/survival/spei
 ```
 Average plant size shrank in 2003 drought, but not 2007 drought
+
+### Ridge plot
+```{r}
+library(ggridges)
+ggplot(demog_plotdf) +
+  geom_density_ridges(aes(x = log(size), y = as.factor(year), fill = habitat, color = habitat), alpha = 0.5)
+ggplot(demog_plotdf) +
+  geom_violin(aes(y = log(size), x = as.factor(year), fill = habitat), alpha = 0.5, draw_quantiles = c(0.5))
+
+```
+
 
 ## Flowering
 

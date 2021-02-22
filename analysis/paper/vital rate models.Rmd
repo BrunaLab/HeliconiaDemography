@@ -840,6 +840,6 @@ f_diff_rotated <-
   theme_bw() +
   annotation_custom(grob = ggplotGrob(season_bar), ymin = -Inf, ymax = min(s_cf_eval$spei_history), xmin = -Inf, xmax = Inf) +
   NULL
-ggsave(here("analysis", "figures", "flwr_diff_spei.png"),plot = s_diff_rotated, width = 7, height = 2.5)
+ggsave(here("analysis", "figures", "flwr_diff_spei.png"),plot = f_diff_rotated, width = 7, height = 2.5)
 ```
 
