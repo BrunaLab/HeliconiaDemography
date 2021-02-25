@@ -71,54 +71,26 @@ library(here)
 
 <!-- Underemphasize the interaction between fragmentation and drought bc can't do the interaction in test. Instead it's "compare drought effects in fragmented and cf populations."  -->
 
-1.  Organisms simultanously experience multiple forms of natural and anthropogenic disturbance.
+1.  Organisms simultaneously experience multiple forms of natural and anthropogenic disturbance.
     While work investigating the demographic effects of individual factors is common, studies investigating how multiple factors interact to influence population dynamics remains poorly understood.
     They could act in concert to exacerbate or dampen population dynamics.
-    <!--# examples of interactions on demography -->For example, fire and herbivory ...[@tyeDemographicMenageTrois2016].
+    <!--# examples here? -->
 
-    -   Cite Pedro F. Quintana-Ascencio in intro---he will likely be a reviewer.
+2.  Forest fragmentation, in particular, is widespread and has resulted in 70% of the Earth's remaining forest being within 1km of forest edge [@haddadHabitatFragmentationIts2015]. Of particular concern are the effects of fragmentation on species-rich tropical ecosystems. In the Brazilian Amazon, for example, over 70,000 km of new forest edges are being created annually [@broadbentForestFragmentationEdge2008] and the proportion of forest \>1 km from an forest edge has decreased from 90% to only 75% [@haddadHabitatFragmentationIts2015].
+    Fragmentation on its own can result in <!--# insert effects on plant populations -->
 
-    -   Cite Jennifer Williams
+3.  In addition to the environmental changes associated with fragmentation, populations persisting in tropical forest remnants experience abiotic stresses that are increasing with climate change (CITE IPCC?).
+    For instance, the northern Amazon has been experiencing a drying trend since the mid-1970s, and ensemble climate models predict substantial decreases in dry season precipitation in southern Amazonia for the 21st century [@malhi2008]. Furthermore, droughts induced by the El Niño Southern Oscillation (ENSO) are predicted to increase in frequency and severity [@caiIncreasingFrequencyExtreme2014]. Severe droughts in the Amazon have been shown to reduce aboveground biomass through increased tree mortality and dieback [@williamsonAmazonianTreeMortality2000;[@phillipsDroughtSensitivityAmazon2009; @marengoDroughtAmazonia20052008; @lewis2010AmazonDrought2011].
 
-    -   Emphasize demography.
-        We know about interactions on physiology and other stuff, but we don't know as much about how demography of plants is shaped by how populations respond to multiple stresses, increasingly anthropogenic.
+4.  It has been hypothesized that drought and fragmentation could act in synergy to further reduce population viability in fragmented landscapes, particularly in the tropics [@lauranceEffectsStrongDrought2001; @didhamEdgeStructureDetermines1999]. Fragmentation drives several changes in microclimate near forest edges, including increased air temperature, decreased relative humidity, reduced soil moisture, and increased penetration of solar radiation in the forest understory [@ewersFragmentationImpairsMicroclimate2013; @didhamEdgeStructureDetermines1999]. This decrease in microclimatic buffering could exacerbate the effects of drought in fragments compared to intact forest. This may be why the drought-induced mortality of trees is higher near forest edges than in forest interiors [@schwartz2019; @lauranceEffectsStrongDrought2001]. Alternatively, plant populations persisting in fragments may be more resilient to drought if individuals susceptible to desiccation died quickly after fragment isolation [@betts2019].
 
-2.  Habitat fragmentation is a major source of environmental stress.
-    **[I'm not sure I'd call it a stress...I think the biotic and abioti changes associated with it are stressful]** <!--# fragmentation results in increaed mortality due to increased stress. fragmentation itself is not the stressor -->Forest fragmentation, in particular, is widespread and has resulted in 70% of the Earth's remaining forest being within 1km of forest edge [@haddadHabitatFragmentationIts2015].
-    Of particular concern are the effects of fragmentation on species-rich tropical ecosystems.
-    In the Brazilian Amazon, for example, over 70,000 km of new forest edges are being created annually [@broadbentForestFragmentationEdge2008] and the proportion of forest \>1 km from an forest edge has decreased to from 90% to only 75% [@haddadHabitatFragmentationIts2015].
-    Fragmentation can impact plant population dynamics through ... <!--# more about consequences of fragmentation pull from slides from Emilio-->
-
-3.  In addition to the environmental changes associated with fragmentation, populations persisting in tropical forest remnants experience abiotic stress resulting from climate change.
-    For instance, the northern Amazon has been experiencing a drying trend since the mid-1970s, and ensemble climate models predict substantial decreases in dry season precipitation in southern Amazonia for the 21st century [@malhi2008].
-    Furthermore, droughts induced by the El Niño Southern Oscillation (ENSO) are predicted to increase in frequency and severity [@caiIncreasingFrequencyExtreme2014].
-
-    -   Drought is bad because...
-
-    -   1997 ENSO drought [@williamsonAmazonianTreeMortality2000]
-
-    -   2005 ENSO drought [@phillipsDroughtSensitivityAmazon2009; @marengoDroughtAmazonia20052008]
-
-    -   2010 drought [@lewis2010AmazonDrought2011]
-
-4.  It has been hypothesized that drought and fragmentation could act in synergy to further reduce population viability in fragmented landscapes, particularly in the tropics [@lauranceEffectsStrongDrought2001; @didhamEdgeStructureDetermines1999].
-    Fragmentation drives several changes in microclimate near forest edges, including increased air temperature, decreased relative humidity, reduced soil moisture, and increased penetration of solar radiation in the forest understory [@ewersFragmentationImpairsMicroclimate2013; @didhamEdgeStructureDetermines1999].
-    This decrease in microclimatic buffering could exacerbate the effects of drought in fragments compared to intact forest.
-    This may be why the drought-induced mortality of trees is higher near forest edges than in forest interiors [@schwartz2019; @lauranceEffectsStrongDrought2001].
-
-5.  Alternatively, the populations persisting in fragments may be more resilient to drought if individuals susceptible to desiccation died quickly after fragment isolation.
-
-    -   [@betts2019].
-
-6.  <!--# I'm now thinking this doesn't need to be a separate paragraph, but included in #4.  Need to do some more reading about this though. -->
-
+5.  The effects of drought and fragmentation could differ among demographic vital rates such as growth, survival, and reproduction.
     In addition to variation among vital rates, responses to drought and fragmentation could depend on life history stage or plant size.
     Large established adults could respond differently than seedlings.
     This is unknown because there are very few systems where we have data on entire life history in a climate change or fragmentation context.
+    <!--# I'm not actually testing a size x climate or size x fragmentation interaction explicitly.  Maybe I should not emphasize the variation among size classes in the introduction -->
 
     -   Fragmentation affects plant size (in *Heliconia* [@brunaDemographicEffectsHabitat2005] and trees [@schwartz2019]). Smaller/larger plants might be more susceptible to drought. So differential effects of drought in fragments and continuous forest could be due to an interaction between drought and plant size.
-
-<!--# transition better -->
 
 To date, however, this hypothesis remains untested for three primary reasons.
 First, most studies elucidating how tropical plants respond to fragmentation have studied either juvenile (i.e., seed, seedling) or larger, reproductive plants.
@@ -128,18 +100,14 @@ Additionally, while most studies of tropical plant demography focus on trees, li
 
 Second, there is a growing literature on how tropical plants respond to droughts, but few studies have compared the responses of plants in continuous forest with those in forest fragments.
 Laurance et al. [-@lauranceEffectsStrongDrought2001] found that the increase in tree (\>10 cm DBH) mortality during a drought were exacerbated in fragments, but the decline in mortality after the drought was also stronger in fragments.
-However, in a temperate system... <!--# oak paper --> [@forner2020].
+However, there are no similar studies on tropical understorey plants.
 
-Finally, the long-term data needed to test population-level hypotheses about climate change-fragmentation synergies are scant, especially for tropical systems [@salguero-gomezCOMPADREPlantMatrix2015; @croneHowPlantEcologists2011].
-However, without multi-decadal sampling one cannot capture enough droughts to quantify their ecological impact, nor the variation in vital rates needed to parameterize demographic models of long-lived species in changing climates [@morrisQuantitativeConservationBiology2002; @teller2016].
-Long-term data are also needed because while some demographic effects of fragmentation or drought on can be detected immediately, others may take years to manifest.
+Finally, the long-term data needed to test population-level hypotheses about climate change-fragmentation synergies are scant, especially for tropical systems [@salguero-gomezCOMPADREPlantMatrix2015; @croneHowPlantEcologists2011]. Without multi-decadal sampling one cannot capture enough droughts to quantify their ecological impact, nor the variation in vital rates needed to parameterize demographic models of long-lived species in changing climates [@morrisQuantitativeConservationBiology2002; @teller2016]. Long-term data are also needed because while some demographic effects of fragmentation or drought on can be detected immediately, others may take years to manifest. Lagged effects of climate on plant vital rates may, in fact, be the rule rather than the exception [@eversLaggedDormantSeason].
 
-<!--# more about the heliconia dataset here -->
-
-We investigated the effects of drought on the growth, survival, reproduction, and recruitment of a understory herb in an experimentally fragmented landscape in the Central Amazon.
+We investigated the effects of drought on the growth, survival, reproduction, and recruitment <!--# I haven't included recruitment.  Should I? --> of a understory herb (*Heliconia acuminata*) in an experimentally fragmented landscape in the Central Amazon.
 Specifically, we asked 1) Does drought increase or decrease the growth, survival, and fertility rates of plant populations in continuous forest?
-2) Are the effects of drought on the vital rates of populations in fragments similar in direction and magnitude to those in continuous forest?
-3) Are the effects of drought and fragmentation on vital rates consistent across life-history stages?
+2) What lag times are most important in considering the effects of drought on vital rates?
+3) Are the effects of drought on the vital rates of populations in fragments similar in direction and magnitude to those in continuous forest?
 
 # Methods
 
@@ -185,7 +153,8 @@ There is a seven-fold range in *H. acuminata* density in the forest plots, with 
 
 ## Weather data
 
-Precipitation and potential evapotranspiration data were obtained from a published gridded dataset (0.25º x 0.25º resolution) built using data from 3,625 ground-based weather stations across Brazil [@xavierDailyGriddedMeteorological2016]. We used these data to calculate the standardized precipitation evapotranspiration index (SPEI) [@vicente-serranoMultiscalarDroughtIndex2010].
+Precipitation and potential evapotranspiration data were obtained from a published gridded dataset (0.25º x 0.25º resolution) built using data from 3,625 ground-based weather stations across Brazil [@xavierDailyGriddedMeteorological2016].
+We used these data to calculate the standardized precipitation evapotranspiration index (SPEI) [@vicente-serranoMultiscalarDroughtIndex2010].
 SPEI is a proxy for meteorological drought that integrates precipitation and evapotranspiration anomalies over a specified time scale.
 Positive SPEI values for a given month indicate conditions wetter than the historical average for that month, while negative values of SPEI indicate droughts with intensity categorized as mild (0 to -1), moderate (-1 to -1.5), severe (-1.5 to -2), or extreme (\< -2) [@mckeeRelationshipDroughtFrequency1993].
 SPEI can be calculated to represent different temporal scales of drought.
