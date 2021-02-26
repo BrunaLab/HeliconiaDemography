@@ -33,7 +33,6 @@ What is the goal of this notebook?
 
 # Load Data
 
-
 ```{r}
 demog <- read_rds(here("analysis", "data", "derived_data", "ha_spei_combined.rds"))
 xa <- read_rds(here("analysis", "data", "derived_data", "xa_spei_lags.rds"))
@@ -41,7 +40,8 @@ xa <- read_rds(here("analysis", "data", "derived_data", "xa_spei_lags.rds"))
 
 ## Tidy
 
-There are plants with 0 shoots and 0 ht.  I will remove those, as having no above ground biomass is really not a size, but a different category.
+There are plants with 0 shoots and 0 ht.
+I will remove those, as having no above ground biomass is really not a size, but a different category.
 There's also a couple of plants that are probably data entry errors in height.
 
 ```{r}
@@ -66,7 +66,6 @@ demog_post <-
   demog_full %>% 
   filter(code_notes != "sdlg (1)" | is.na(code_notes))
 ```
-
 
 # Inspect raw data
 
@@ -105,6 +104,7 @@ spei <-
 spei <- annotate_spei(spei)
 spei
 ```
+
 ## Survival
 
 ```{r}
@@ -128,7 +128,6 @@ demog_post %>%
   pivot_wider(names_from = habitat, values_from = surv)
 ```
 
-
 ### Timeseries
 
 ```{r}
@@ -151,6 +150,7 @@ survival <-
 survival
 # (survival / spei) 
 ```
+
 Looks like survival went down year after 2003 drought and during 2007 drought.
 
 ### Survivorship curve
@@ -174,7 +174,7 @@ surv_curve_df <-
 surv_curve <-
   ggplot(surv_curve_df, aes(x = yearmonth, y = p_surv, color = habitat)) +
   geom_step() +
-  scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
+  scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.04)) +
   scale_y_continuous("P(survived)") +
   theme_bw() +
   theme(
@@ -186,12 +186,12 @@ surv_curve <-
 surv_curve
 ```
 
-
 ## Size / growth
 
 ```{r}
 demog_post %>% ggplot(aes(x = habitat, y = log_size)) + geom_boxplot()
 ```
+
 ```{r}
 demog_post %>% 
   group_by(habitat) %>% 
@@ -224,8 +224,14 @@ size <-
       fun.args = list(mult = 1),
       position = position_dodge(width = 100)
     ) +
-  scale_x_yearmonth(limits = dates, breaks = census_dates, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
+  scale_x_yearmonth(
+    # limits = dates,
+    breaks = census_dates,
+    date_minor_breaks = "1 month",
+    expand = expansion(mult = 0.04)
+  ) +
   scale_y_continuous("log(size)") +
+  coord_cartesian(xlim = dates) + #limits here so points don't get removed
   theme_bw() +
   theme(
     axis.text.x = element_blank(),
@@ -237,9 +243,11 @@ size <-
   NULL
 # size/survival/spei
 ```
+
 Average plant size shrank in 2003 drought, but not 2007 drought
 
 ### Ridge plot
+
 ```{r}
 library(ggridges)
 ggplot(demog_plotdf) +
@@ -249,12 +257,12 @@ ggplot(demog_plotdf) +
 
 ```
 
-
 ## Flowering
 
 ```{r}
 demog_post %>% ggplot(aes(x = flwr)) + geom_bar() + facet_wrap(~habitat)
 ```
+
 How many infloresences given flowering?
 
 ```{r}
@@ -283,7 +291,7 @@ flowering <-
       limits = dates,
       breaks = census_dates,
       date_minor_breaks = "1 month",
-      expand = expansion(mult = 0.02)
+      expand = expansion(mult = 0.04)
     ) +
     scale_y_continuous("P(flowering | shts ≥ 4)") +
   theme_bw() +
@@ -295,6 +303,7 @@ flowering <-
   )
 flowering
 ```
+
 ```{r}
 demog_plotdf %>% filter(year == 2003) %>% group_by(habitat) %>% summarize(flwr = mean(flwr, na.rm = TRUE))
 ```
