@@ -1,5 +1,5 @@
 ---
-title: "Interactive effects of drought and habitat fragmentation on vital rates of an understory tropical plant"
+title: "Delayed effects of climate lead to demographic divergence in a fragmented Amazonian landscape"
 author:
   - Eric R. Scott:
       email: scottericr@gmail.com
@@ -222,10 +222,11 @@ knitr::include_graphics(here("analysis", "figures", "eda.png"))
 
 ```
 
+\
 The meteorological drought occurrences indicated by SPEI mostly agree with drought events in the Amazon reported in the literature.
 For example, the 1997 El Niño drought was one of the most severe droughts in the Amazon on record [@williamsonAmazonianTreeMortality2000] and correspondingly, 1997 has the lowest SPEI values in our timeseries (Figure \@ref(fig:eda)d).\
-The 2005 dry season (June--October) was also reported as exceptionally dry, although this drought mostly affected the south western Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008].
-<!--# I know I'm missing some literature here.  Add more refs for more droughts. Any papers mentioning 2003 wet season drought? Also, Feb 2007?-->
+The 2005 dry season (June--October) was also reported as exceptionally dry, although this drought mostly affected the south western Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008]. <
+!--# I know I'm missing some literature here.  Add more refs for more droughts. Any papers mentioning 2003 wet season drought? Also, Feb 2007?-->
 
 Mean plant size dropped dramatically in 2003 in both habitat types, corresponding with the most severe drought in the timeseries (Figure \@ref(fig:eda)d).
 Two noticeable peaks in the proportion of flowering mature plants occur in the most severe drought years (2003 and 2007) (Figure \@ref(fig:eda)c).
