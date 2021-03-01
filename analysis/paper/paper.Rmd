@@ -1,9 +1,9 @@
 ---
-title: "Delayed effects of climate lead to demographic divergence in a fragmented Amazonian landscape"
+title: "Delayed effects of [responses to?] climate lead to demographic divergence in a fragmented Amazonian landscape"
 author:
   - Eric R. Scott:
       email: scottericr@gmail.com
-      institute: [UF]
+      institute: [UF_WEC]
       correspondence: true
   - Maria Uriarte:
       email: mu2126@columbia.edu
@@ -11,12 +11,14 @@ author:
       correspondence: false
   - Emilio M. Bruna:
       email: embruna@ufl.edu
-      intitute: [UF]
+      intitute: [UF_WEC,UF_LAS,BDFFP]
       correspondence: false
   
 institute:
-  - UF: Department of Wildlife Ecology and Conservation, University of Florida, Gainesville, Florida 32611-0430
+  - UF_WEC: Department of Wildlife Ecology and Conservation, University of Florida, Gainesville, Florida 32611-0430
+  - UF_LAS: Center for Latin American Studies, University of Florida, Gainesville, Florida 32611-5530  
   - Columbia: Department of Ecology, Evolution and Environmental Biology, Columbia University 1200 Amsterdam Avenue, New York, New York 10027 USA
+  - BDFFP: Biological Dynamics of Forest Fragments Project, INPA-PDBFF, CP 478, Manaus, Amazonas 69011-970 Brazil
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
     bookdown::word_document2:
@@ -69,58 +71,36 @@ library(here)
 
 # Introduction
 
-<!-- Underemphasize the interaction between fragmentation and drought bc can't do the interaction in test. Instead it's "compare drought effects in fragmented and cf populations."  -->
+Deforestation driven by the expansion of agriculture and other human activities is a primary driver of biodiversity loss worldwide [@haddadHabitatFragmentationIts2015]. Deforestation also results in landscapes where the remaining forest can be highly fragmented, with remnants of different sizes embedded in a matrix of often highly-contrasting habitat. Although the local extinction of species from individual fragments is common *(CITATIONS_1)*, the demographic mechanisms underlying these extinctions are poorly understood *(CITATIONS_2)*. However, it is often assumed that that the dramatically altered abiotic conditions often observed in fragments can depress rates of reproduction or survivorship *(CITATIONS_3)*, leading to local or regional population declines *(CITATIONS_2)*. This is thought to be particularly true in species-rich tropical forests [@lauranceEffectsStrongDrought2001; @didhamEdgeStructureDetermines1999], which continue to be cleared and fragmented at unprecedented rates. For example, over 24 million ha of the Brazilian Amazon have been cleared in the last two decades *(CITATION_4)*, resulting in extensive fragmentation and creation of over 70,000 km of new forest edges annually [@broadbentForestFragmentationEdge2008].
 
-1.  Organisms simultaneously experience multiple forms of natural and anthropogenic disturbance.
-    While work investigating the demographic effects of individual factors is common, studies investigating how multiple factors interact to influence population dynamics remains poorly understood.
-    They could act in concert to exacerbate or dampen population dynamics.
-    <!--# examples here? -->
+<!-- CITATIONS_1: Haddad, others? -->
+<!-- CITATIONS_2: Bruna et al J Veg Sci 2009, others? -->
+<!-- CITATIONS_3: Bruna 1999 Nature, Laurance et al 1998 Ecology, Zartman 2015 Biotropica.  -->
+<!-- CITATION_4: WRI Report? -->
 
-2.  Forest fragmentation, in particular, is widespread and has resulted in 70% of the Earth's remaining forest being within 1km of forest edge [@haddadHabitatFragmentationIts2015].
-    Of particular concern are the effects of fragmentation on species-rich tropical ecosystems.
-    In the Brazilian Amazon, for example, over 70,000 km of new forest edges are being created annually [@broadbentForestFragmentationEdge2008] and the proportion of forest \>1 km from an forest edge has decreased from 90% to only 75% [@haddadHabitatFragmentationIts2015].
-    Fragmentation on its own can result in <!--# insert effects on plant populations -->
+Populations in fragmented tropical landscapes are also at risk from climate change *(CITATIONS_5)*. These effects may be especially pronounced in Amazonia, parts of which have been experiencing a drying trend since the mid-1970s and where climate models for the 21st century predict substantial decreases in dry season precipitation [@malhi2008] and increases in both drought frequency and severity [@caiIncreasingFrequencyExtreme2014] *(add CITATIONS_6)*. All of these have the potential to exacerbate the microclimatic changes observed in forest fragments that are hypothesized to make populations demographically vulnerable - especially for plants, which are unable to move in response to increased in air temperature, decreased relative humidity, reduced soil moisture, or the increased penetration of solar radiation in the forest understory [@ewersFragmentationImpairsMicroclimate2013; @didhamEdgeStructureDetermines1999]). Alternatively, populations persisting in fragments may be more demographically resilient to drought than those in primary forest if the individuals susceptible to desiccation died quickly after fragment isolation [@betts2019].
 
-3.  In addition to the environmental changes associated with fragmentation, populations persisting in tropical forest remnants experience abiotic stresses that are increasing with climate change (CITE IPCC?).
-    For instance, the northern Amazon has been experiencing a drying trend since the mid-1970s, and ensemble climate models predict substantial decreases in dry season precipitation in southern Amazonia for the 21st century [@malhi2008].
-    Furthermore, droughts induced by the El Niño Southern Oscillation (ENSO) are predicted to increase in frequency and severity [@caiIncreasingFrequencyExtreme2014].
-    Severe droughts in the Amazon have been shown to reduce aboveground biomass through increased tree mortality and dieback [@williamsonAmazonianTreeMortality2000;[@phillipsDroughtSensitivityAmazon2009; @marengoDroughtAmazonia20052008; @lewis2010AmazonDrought2011].
+<!-- CITATION_5: Brodie J et al 2012. TREE, Scheffers et al 2016. Science -->
+<!-- CITATION_6: Zeng et al 2008 Environmental Research Letters, Mora et al 2013 Nature -->
 
-4.  It has been hypothesized that drought and fragmentation could act in synergy to further reduce population viability in fragmented landscapes, particularly in the tropics [@lauranceEffectsStrongDrought2001; @didhamEdgeStructureDetermines1999].
-    Fragmentation drives several changes in microclimate near forest edges, including increased air temperature, decreased relative humidity, reduced soil moisture, and increased penetration of solar radiation in the forest understory [@ewersFragmentationImpairsMicroclimate2013; @didhamEdgeStructureDetermines1999].
-    This decrease in microclimatic buffering could exacerbate the effects of drought in fragments compared to intact forest.
-    This may be why the drought-induced mortality of trees is higher near forest edges than in forest interiors [@schwartz2019; @lauranceEffectsStrongDrought2001].
-    Alternatively, plant populations persisting in fragments may be more resilient to drought if individuals susceptible to desiccation died quickly after fragment isolation [@betts2019].
+Whether plant populations in tropical forest fragments are particularly susceptible to drought remains unclear for three primary reasons. First, most studies of plants in fragments have focused on a single history-stage or process *(CITATIONS)*, making it challenging to draw broader demographic conclusions. Similarly, there is a growing literature on how tropical plants respond to droughts, but few studies have compared the responses of plants in continuous forest with those in forest fragments.[@lauranceEffectsStrongDrought2001]. Finally, the multi-year data needed to test population-level hypotheses about climate change and fragmentation are scant, especially for tropical systems [@salguero-gomezCOMPADREPlantMatrix2015; @croneHowPlantEcologists2011]. These data are critical not only because they allow for capturing variation in climatic conditions and the resulting demographic responses [@morrisQuantitativeConservationBiology2002; @teller2016]. They are also essential because while some demographic effects of fragmentation or drought can be detected immediately, others may take years to manifest *(CITATION gagnon)*. Indeed, lagged responses of demographic vital rates to climate may in fact be the rule rather than the exception [@eversLaggedDormantSeason].
 
-5.  The effects of drought and fragmentation could differ among demographic vital rates such as growth, survival, and reproduction.
-    In addition to variation among vital rates, responses to drought and fragmentation could depend on life history stage or plant size.
-    Large established adults could respond differently than seedlings.
-    This is unknown because there are very few systems where we have data on entire life history in a climate change or fragmentation context.
-    <!--# I'm not actually testing a size x climate or size x fragmentation interaction explicitly.  Maybe I should not emphasize the variation among size classes in the introduction -->
+We used a decade of demographic and climatic data to assess the effects of climate on populations of a tropical understory herb (*Heliconia acuminata*, Heliconiaceae) in an experimentally fragmented landscape in the Central Amazon. Herbaceous plants represent up to 25% of plant diversity in tropical forests *(CITATION Gentry)*, are critical food and habitat for myriad species *(CITATION Snow)*, and are economically and culturally vital *(CITATION Nakazono, Ticktin)*. Nevertheless, the impacts of global change phenomena on their demography remain conspicuously understudied *(CITATION Bruna, Gaoue)*. We addressed the following questions:
 
-    -   Fragmentation affects plant size (in *Heliconia* [@brunaDemographicEffectsHabitat2005] and trees [@schwartz2019]). Smaller/larger plants might be more susceptible to drought. So differential effects of drought in fragments and continuous forest could be due to an interaction between drought and plant size.
-
-To date, however, this hypothesis remains untested for three primary reasons.
-First, most studies elucidating how tropical plants respond to fragmentation have studied either juvenile (i.e., seed, seedling) or larger, reproductive plants.
-<!--# example of juvenile but not reproductive study with drought -->.
-<!--# example of reproductive but not juvenile study with drought -->.
-Additionally, while most studies of tropical plant demography focus on trees, little is known about the understory plants that comprise up to \_\_\_\_% of biomass in tropical forests and are ecologically important <!--# citations -->.
-
-Second, there is a growing literature on how tropical plants respond to droughts, but few studies have compared the responses of plants in continuous forest with those in forest fragments.
-Laurance et al. [-@lauranceEffectsStrongDrought2001] found that the increase in tree (\>10 cm DBH) mortality during a drought were exacerbated in fragments, but the decline in mortality after the drought was also stronger in fragments.
-However, there are no similar studies on tropical understorey plants.
-
-Finally, the long-term data needed to test population-level hypotheses about climate change-fragmentation synergies are scant, especially for tropical systems [@salguero-gomezCOMPADREPlantMatrix2015; @croneHowPlantEcologists2011].
-Without multi-decadal sampling one cannot capture enough droughts to quantify their ecological impact, nor the variation in vital rates needed to parameterize demographic models of long-lived species in changing climates [@morrisQuantitativeConservationBiology2002; @teller2016].
-Long-term data are also needed because while some demographic effects of fragmentation or drought on can be detected immediately, others may take years to manifest.
-Lagged effects of climate on plant vital rates may, in fact, be the rule rather than the exception [@eversLaggedDormantSeason].
-
-We investigated the effects of drought on the growth, survival, reproduction, and recruitment <!--# I haven't included recruitment.  Should I? --> of a understory herb (*Heliconia acuminata*) in an experimentally fragmented landscape in the Central Amazon.
-Specifically, we asked 1) Does drought increase or decrease the growth, survival, and fertility rates of plant populations in continuous forest?
-2) What lag times are most important in considering the effects of drought on vital rates?
+1) Does drought increase or decrease the growth, survival, and fertility of plant populations in continuous forest?
+2) What lag times are most important in considering the effects of drought on vital rates? [Maybe: are there temporal delays effects in demographic respoinses to drought, and if so what lag times are most critical?]
 3) Are the effects of drought on the vital rates of populations in fragments similar in direction and magnitude to those in continuous forest?
 
+
+<!-- Gentry AH, Emmons LH  1987. Geographical variation in fertility, phenology and composition of the understory of neotropical forests. Biotropica 19:216-217. -->
+
+<!-- Snow DW  1981. Tropical frugivorous birds and their food plants - a world survey. Biotropica 13:1-14. -->
+
+<!-- Nakazono EM, Bruna EM, Mesquita RCG  2004. Experiemental harvesting of the non-timber forest product Ischnosiphon polyphyllus in central Amazonia. Forest Ecology and Management 190:219-225. -->
+
 # Methods
+
+
 
 ```{r}
 cap <- "This is just a placeholder figure, but a map or satelite image of BDFFP will go here."
@@ -132,54 +112,40 @@ include_graphics(here("analysis", "figures", "map.png"))
 
 ## Study site
 
-The Biological Dynamics of Forest Fragments Project (BDFFP) is located \~70 km north of Manaus, Brazil (2º30' S, 60ºW).
-In addition to large areas of continuous forest, the BDFFP has forest fragment reserves that range in size from 1-100 ha (Figure \@ref(fig:map)). These fragments were isolated from 1980--1984 by felling the trees surrounding the area chosen for isolation and, in most cases, burning the downed trees once they dried. In subsequent decades the vegetation regenerating around fragments has been periodically cleared to ensure fragment isolation [@bierregaardLessonsAmazoniaEcology2001].
+The Biological Dynamics of Forest Fragments Project (BDFFP) is located \~70 km north of Manaus, Brazil (2º30' S, 60ºW). In addition to large areas of continuous forest, the BDFFP has forest fragment reserves isolated from 1980--1984 by felling the trees surrounding the area chosen for isolation and, in most cases, burning the downed trees once they dried (Figure \@ref(fig:map). In subsequent decades the vegetation regenerating around fragments has been periodically cleared to ensure fragment isolation [@bierregaardLessonsAmazoniaEcology2001].
 
-The BDFFP reserves are located in nonflooded (i.e., *terra firme*) tropical lowland forest with a 30--37m tall canopy [@rankin-de-meronaPreliminaryResultsLargescale1992] and an understory dominated by stemless palms [@scariotForestFragmentationEffects1999].
-The soils in the reserves are nutrient-poor xanthic ferrosols; their water retention capacity is poor despite having a high clay content.
-Mean annual temperature in the region is 26º C (range=19--39º C), and annual rainfall at the BDFFP reserves ranges from 1900-2300 mm.
-There is a pronounced dry season from June to October **(Appendix?)**.
+The BDFFP reserves are located in nonflooded (i.e., *terra firme*) tropical lowland forest with a 30--37m tall canopy [@rankin-de-meronaPreliminaryResultsLargescale1992] and an understory dominated by stemless palms [@scariotForestFragmentationEffects1999]. The soils in the reserves are nutrient-poor xanthic ferrosols; their water retention capacity is poor despite having a high clay content. Mean annual temperature in the region is 26º C (range=19--39º C), and annual rainfall at the BDFFP reserves ranges from 1900-2300 mm. There is a pronounced dry season from June to October **(Appendix?)**.
 
 ## Focal species
 
-*Heliconia acuminata* (LC Rich.) (Heliconiaceae) is a perennial monocot distributed throughout Central Amazonia [@kressDiversityDistributionHeliconia1990]; it is the most abundant understory herb at the BDFFP [@ribeiroInfluencePostclearingTreatment2010].
-While many *Heliconia* species grow in large patches along forest edges or in disturbed areas, others---including as *H. acuminata*---are usually found at lower densities and in the more shaded forest understory.
-These species produce fewer infloresences and are pollinated by traplining rather than territorial hummingbirds [@berryHeliconiaIdentificationGuide1991a].
-In our sites *H. acuminata* is pollinated by *Phaeothornis superciliosus* and *P. bourcieri* [@bruna2004]; reproductive plants have $\bar{x}$ = **1.1** flowering shoots (range = 1-7), each of which has an inflorescence with 20--25 flowers [@brunaHabitatFragmentationDemographic2002].
-Fruits mature April-May and are consumed by a thrush and several species of manakin [@uriarteDisentanglingDriversReduced2011].
-Dispersed seeds (1--3 seeds per fruit, $\bar{x}$=2) germinate \~6 months after dispersal at the beginning of the rainy season, and have higher rates of germination and seedling establishment in continuous forest than forest fragments [@brunaHabitatFragmentationDemographic2002; @brunaSeedGerminationRainforest1999].
-*Heliconia acuminata* is self-incompatible and does not reproduce vegetatively.
+*Heliconia acuminata* (LC Rich.) (Heliconiaceae) is a perennial monocot distributed throughout Central Amazonia [@kressDiversityDistributionHeliconia1990] and is the most abundant understory herb at the BDFFP [@ribeiroInfluencePostclearingTreatment2010]. While many *Heliconia* species grow in large patches along forest edges or in treefall gaps, others---such as *H. acuminata*---are found at lower densities in the darker and cooler forest understory. These species produce fewer infloresences and are pollinated by traplining rather than territorial hummingbirds [@berryHeliconiaIdentificationGuide1991a]. While some *Heliconia* species are at least partially self-compatible *[Kress Evolution 1983]*, pollen transfer experiments indicate self-fertilization in *Heliconia acuminata* is extremely rare *[darrigo unpubl. data]*.
+
+In our sites *H. acuminata* is pollinated by *Phaeothornis superciliosus* and *P. bourcieri* [@bruna2004]. Plants begin flowering at the start of the rainy season; reproductive plants have $\bar{x}$ = **1.1** flowering shoots (range = 1-7), each of which has an inflorescence with 20--25 flowers [@brunaHabitatFragmentationDemographic2002]. Fruits mature April-May, have 1--3 seeds per fruit ($\bar{x}$=2), and are eaten by a thrush and several species of manakin [@uriarteDisentanglingDriversReduced2011]. Dispersed seeds germinate \~6 months after dispersal at the onset of the subsequent rainy season, with rates of germination and seedling establishment higher in continuous forest than forest fragments [@brunaHabitatFragmentationDemographic2002; @brunaSeedGerminationRainforest1999].
+
 
 ## Demographic data collection
 
-In 1997--1998 we established a series of 5000 $m^{2}$ plots ($50 \times 100$m) in the BDFFP reserves in which we marked and measured all *Heliconia acuminata*.
-The plots are located in continuous forest (n=6), 10-ha fragments (n=3), and 1-ha fragments (n=4), with distance between plots ranging from 500 m--41 km.
-Plots in 1-ha fragments were on one randomly selected half of the fragment, plots in 10-ha fragments <!--# are we including 10ha fragments? --> were in the fragment center, and plots in continuous forest were placed in locations 500-4000 m from the borders of secondary and mature forest (Fig or Table <!--# insert fig ref -->).
-Each plot is subdivided into 50 quadrats ($10 \times 10$m) to simplify the annual surveys, during which we recorded the number of vegetative shoots each plant had, the height of each plant to the tallest leaf, and the identity of any flowering plants.
-We also surveyed plots regularly during the rainy season to identify any that flowered after the survey.
-Height and shoot number are correlated with leaf area, the probability of flowering, and rates of survivorship [@brunaHabitatFragmentationDemographic2002; @brunaEffectsForestFragmentation2002].
-Plants that were not found for three consecutive surveys were considered dead.
-In 2008 we mapped the location of all established plants to the nearest 10 cm; in subsequent years we did the same with all new seedlings <!--# are we using these data? -->.
-There is a seven-fold range in *H. acuminata* density in the forest plots, with density in several of the plots comparable to that in low-density fragments [@brunaHabitatFragmentationDemographic2002].
+In 1997--1998 we established a series of 5000 $m^{2}$ plots ($50 \times 100$m) in the BDFFP reserves in which we marked and measured all *Heliconia acuminata*. The plots are located in continuous forest (n=6), 10-ha fragments (n=3), and 1-ha fragments (n=4), with distance between plots ranging from 500 m--41 km. Plots in 1-ha fragments were on one randomly selected half of the fragment, plots in 10-ha fragments were in the fragment center, and plots in continuous forest were placed in locations 500-4000 m from the borders of secondary and mature forest (Fig or Table <!--# insert fig ref -->). This study uses data from 1-ha fragments and Continuous Forest sites.
+
+Each plot is subdivided into 50 quadrats ($10 \times 10$m) to simplify the annual surveys, during which we recorded the number of vegetative shoots each plant had, the height of each plant to the tallest leaf, and the identity of any flowering plants. We also surveyed plots regularly during the rainy season to identify any that flowered after the survey. Height and shoot number are correlated with leaf area, the probability of flowering, and rates of survivorship [@brunaHabitatFragmentationDemographic2002; @brunaEffectsForestFragmentation2002]. Plants that were not found for three consecutive surveys were considered dead. There is a seven-fold range in *H. acuminata* density in the forest plots, with density in several of the plots comparable to that in low-density fragments [@brunaHabitatFragmentationDemographic2002].
 
 ## Weather data
 
-Precipitation and potential evapotranspiration data were obtained from a published gridded dataset (0.25º x 0.25º resolution) built using data from 3,625 ground-based weather stations across Brazil [@xavierDailyGriddedMeteorological2016].
+Data on precipitation and potential evapotranspiration in our sites were obtained from a published gridded dataset (0.25º x 0.25º resolution) built using data from 3,625 ground-based weather stations across Brazil [@xavierDailyGriddedMeteorological2016].
 We used these data to calculate the standardized precipitation evapotranspiration index (SPEI) [@vicente-serranoMultiscalarDroughtIndex2010].
 SPEI is a proxy for meteorological drought that integrates precipitation and evapotranspiration anomalies over a specified time scale.
 Positive SPEI values for a given month indicate conditions wetter than the historical average for that month, while negative values of SPEI indicate droughts with intensity categorized as mild (0 to -1), moderate (-1 to -1.5), severe (-1.5 to -2), or extreme (\< -2) [@mckeeRelationshipDroughtFrequency1993].
-SPEI can be calculated to represent different temporal scales of drought.
-We used 3-month SPEI because *H. acuminata* relies primarily on soil moisture rather than deeper water sources that can persist for longer timescales.
+SPEI can be calculated to represent different temporal scales of drought; we used 3-month SPEI because -- given its shallow roots and rhizome -- *H. acuminata* relies primarily on soil moisture rather than deeper water sources that can persist for longer timescales.
 SPEI calculations were done using the `SPEI` package in `r version$version.string` [@rcoreteamLanguageEnvironmentStatistical2020; @begueriaSPEICalculationStandardised2017].
 The timing of drought events based on these SPEI calculations is consistent with that resulting from SPEI calculated with other data sources (e.g., nearby weather stations, the global SPEI database [@begueriaSbegueriaSPEIbaseVersion2017], TRMM [@trmm3b43]), though the magnitude of drought can sometimes differ (**Appendix \_\_**).
 
-## Statistical Modeling
-
+## Statistical Modeling of _______________ 
+<!-- I think this is well described but could use some biologizing, eg,"This function allows the effect of a predictor on a response variable (e.g., SPEI on the growth rate of plants) to vary non-linearly through lag time and across predictor intensity (e.g, SPEI values from -2 to 2).  -->
 We assessed the effects of drought history on plant vital rates using distributed lag non-linear models (DLNMs) [@gasparriniPenalizedFrameworkDistributed2017].
 DLNMs model potentially delayed effects of predictor variables by fitting a bi-dimensional predictor-lag-response association spline, referred to as a crossbasis function.
 This function allows the effect of a predictor to vary non-linearly through lag time and across predictor intensity.
 Crossbasis functions were created using the *dlnm* package with possible lags from 0--36 months [@gasparriniDistributedLagLinear2011; @rcoreteamLanguageEnvironmentStatistical2020].
-We chose 36 months as a maximum lag because *H. acuminata* individuals transplanted to forest fragments typically recovered from transplant shock within 36 months [@brunaExperimentalAssessmentHeliconia2002].
+We chose 36 months as a maximum lag because prior *H. acuminata* individuals transplanted to forest fragments typically recovered from transplant shock within 36 months [@brunaExperimentalAssessmentHeliconia2002].
 The crossbasis function was fit to the data in the context of a generalized additive model (GAM) using the *mgcv* package with restricted maximum likelihood [@woodGeneralizedAdditiveModels2017].
 The general form of the vital rate models was as follows:
 
@@ -222,10 +188,10 @@ knitr::include_graphics(here("analysis", "figures", "eda.png"))
 
 ```
 
-\
+
 The meteorological drought occurrences indicated by SPEI mostly agree with drought events in the Amazon reported in the literature.
-For example, the 1997 El Niño drought was one of the most severe droughts in the Amazon on record [@williamsonAmazonianTreeMortality2000] and correspondingly, 1997 has the lowest SPEI values in our timeseries (Figure \@ref(fig:eda)d).\
-The 2005 dry season (June--October) was also reported as exceptionally dry, although this drought mostly affected the south western Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008]. <
+For example, the drought associated with the 1997 El Niño Southern Oscillation (ENSO) event was one of the most severe on record for the Amazon [@williamsonAmazonianTreeMortality2000]; correspondingly, 1997 has the lowest SPEI values in our timeseries (Figure \@ref(fig:eda)d).\
+The 2005 dry season (June--October) was also exceptionally dry, although this drought mostly affected the south western Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008]. <
 !--# I know I'm missing some literature here.  Add more refs for more droughts. Any papers mentioning 2003 wet season drought? Also, Feb 2007?-->
 
 Mean plant size dropped dramatically in 2003 in both habitat types, corresponding with the most severe drought in the timeseries (Figure \@ref(fig:eda)d).
@@ -373,6 +339,24 @@ The least difference between habitat types occurs when there is strong drought a
 The random effect of plot also had a significant effect in both habitats (p \< 0.001).
 
 # Discussion
+
+Understanding how landscape structure and environmental conditions act to influence population dynamics is fundamental to many of the emerging conceptual frameworks for studying and conserving fragmented landscapes [7,8]. 
+<!-- Didham RK, Kapos V, Ewers RM  2012. Rethinking the conceptual foundations of habitat fragmentation research. Oikos 121:161-170. -->
+<!-- Driscoll DA, Banks SC, Barton PS, Lindenmayer DB, Smith AL  2013. Conceptual domain of the matrix in fragmented landscapes. Trends in Ecology & Evolution 28:605-613. -->
+
+MAJOR TAKE-HOME MESSAGES
+
+1. 
+
+2.  
+
+3. 
+
+Future directions/Caveats: 
+
+* There could be size-specific effects: Fragmentation affects plant size (in *Heliconia* [@brunaDemographicEffectsHabitat2005] and trees [@schwartz2019]). Smaller/larger plants might be more susceptible to drought. So differential effects of drought in fragments and continuous forest could be due to an interaction between drought and plant size.
+
+* Synergistic effects of fragmentation and climate (need the stats to catch up with us) "Organisms simultaneously experience multiple forms of disturbance. While work investigating the demographic effects of individual factors is common, studies investigating how multiple factors interact to influence population dynamics remains poorly understood. They could act in concert to exacerbate or dampen population dynamics."
 
 Caveats:
 
