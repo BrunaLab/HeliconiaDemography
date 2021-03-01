@@ -71,8 +71,9 @@ library(here)
 
 # Introduction
 
-
 Deforestation driven by the expansion of agriculture and other human activities is a primary driver of biodiversity loss worldwide [@haddadHabitatFragmentationIts2015]. Deforestation also results in landscapes where the remaining forest can be highly fragmented, with remnants of different sizes embedded in a matrix of often highly-contrasting habitat. Although the local extinction of species from individual fragments is common *(CITATIONS_1)*, the demographic mechanisms underlying these extinctions are poorly understood *(CITATIONS_2)*. However, it is often assumed that that the dramatically altered abiotic conditions often observed in fragments can depress rates of reproduction or survivorship *(CITATIONS_3)*, ultimately leading to local or regional population declines. This is thought to be particularly true in species-rich tropical forests, which continue to be cleared and fragmented at unprecedented rates. For example, over 24 million ha of the Brazilian Amazon have been cleared in the last two decades *(CITATION_4)*, resulting in extensive fragmentation and creation of over 70,000 km of new forest edges annually [@broadbentForestFragmentationEdge2008].
+
+
 
 <!-- CITATIONS_1: Haddad, others? -->
 <!-- CITATIONS_2: Bruna et al J Veg Sci 2009, others? -->
@@ -82,9 +83,7 @@ Deforestation driven by the expansion of agriculture and other human activities 
 <!-- CITATION_6: Zeng et al 2008 Environmental Research Letters, Mora et al 2013 Nature -->
 
 Populations in fragmented tropical landscapes are also at risk from climate change *(CITATIONS_5)*. These effects may be especially pronounced in Amazonia, parts of which have been experiencing a drying trend since the mid-1970s and where climate models for the 21st century predict substantial decreases in dry season precipitation [@malhi2008] as well as increased drought frequency and severity [@caiIncreasingFrequencyExtreme2014] *(add CITATIONS_6)*.
-Severe droughts in the Amazon have been shown to reduce aboveground biomass through increased tree mortality and dieback [@williamsonAmazonianTreeMortality2000;[@phillipsDroughtSensitivityAmazon2009; @marengoDroughtAmazonia20052008; @lewis2010AmazonDrought2011]. These changes in forest structure can further exascerbate changes in microclimate near the edges of forest fragments, including increased air temperature, decreased relative humidity, reduced soil moisture, and increased penetration of solar radiation in the forest understory [@ewersFragmentationImpairsMicroclimate2013; @didhamEdgeStructureDetermines1999].
-
-It has been hypothesized that drought and fragmentation could act in synergy to further reduce population viability in fragmented landscapes, particularly in the tropics [@lauranceEffectsStrongDrought2001; @didhamEdgeStructureDetermines1999].
+Severe droughts in the Amazon have been shown to reduce aboveground biomass through increased tree mortality and dieback [@williamsonAmazonianTreeMortality2000;[@phillipsDroughtSensitivityAmazon2009; @marengoDroughtAmazonia20052008; @lewis2010AmazonDrought2011].
 
     This decrease in microclimatic buffering could exacerbate the effects of drought in fragments compared to intact forest.
     This may be why the drought-induced mortality of trees is higher near forest edges than in forest interiors [@schwartz2019; @lauranceEffectsStrongDrought2001].
@@ -357,6 +356,7 @@ Understanding how landscape structure and environmental conditions act to influe
 <!-- Driscoll DA, Banks SC, Barton PS, Lindenmayer DB, Smith AL  2013. Conceptual domain of the matrix in fragmented landscapes. Trends in Ecology & Evolution 28:605-613. -->
 
 
+<<<<<<< HEAD
 
 Future directions: 
 
@@ -364,6 +364,8 @@ Future directions:
 
 * Synergistic effects of fragmentation and climate (need the stats to catch up with us)
 
+=======
+>>>>>>> 71e3580cb41c8a0bb40be6be707435fa14202303
 1. To set up the next paper: Organisms simultaneously experience multiple forms of disturbance. While work investigating the demographic effects of individual factors is common, studies investigating how multiple factors interact to influence population dynamics remains poorly understood. They could act in concert to exacerbate or dampen population dynamics.
 
 Caveats:
