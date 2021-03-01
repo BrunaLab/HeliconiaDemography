@@ -31,6 +31,8 @@ library(SPEI)
 library(tsibble)
 library(lubridate)
 library(glue)
+library(colorspace)
+library(latex2exp)
 
 library(HeliconiaDemography)
 
@@ -71,6 +73,7 @@ gspei <-
   mutate(yearmonth = yearmonth(date), date = NULL)
   
 bdffp <- read_csv(here("analysis", "data", "raw_data", "mon_precip_spi_imputed.csv"))
+#TODO edit to pull this from github or use bdffp rainfall data package
 
 ```
 
@@ -406,6 +409,7 @@ table <-
   tab_spanner("Lowest SPEI for the year (Month)", vars(`Global SPEI`, EMBRAPA, `Xavier et al.`, TRMM, BDFFP))
 table
 gtsave(table, here("analysis", "supplementary-materials", "spei_table.png"))
+#TODO: add citations to this table as footnotes on `cause` or a new column.
 ```
 
 
@@ -448,15 +452,20 @@ labs <-
 p <-
   ggplot(spei_plot, aes(x = yearmonth, y = spei)) +
   geom_line(aes(color = dataset), size = 0.5) +
-  geom_segment(data = labs,
-               aes(xend = yearmonth, yend = spei -1)) +
-  geom_label(data = labs,
-             aes(x = yearmonth, y = spei-1, label = year, fill = drought_label)) +
-  scale_x_yearmonth(date_breaks = "2 years") +
-  scale_color_brewer(type = "qual", palette = "Set1") +
-  coord_cartesian(xlim = c(yearmonth(ymd("1997-01-01")), yearmonth(ymd("2010-11-01")))) +
-  theme_bw()
-annotate_spei(p, alpha = 0.7)
+  scale_x_yearmonth(
+    "Date",
+    date_breaks = "1 year",
+    # date_minor_breaks = "1 month"
+  ) +
+  scale_y_continuous(TeX("SPEI_3_"),
+                     breaks = seq(-2.5, 2.5, 0.5))+
+  scale_color_discrete_qualitative() +
+  coord_cartesian(xlim = c("1995-02-01", "2009-02-01")) +
+  labs(color = "Dataset", linetype = "Dataset") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+p
+annotate_spei(p)
 ggsave(here("analysis", "supplementary-materials", "spei_comparison.png"))
 ```
 
