@@ -595,7 +595,7 @@ g_diff_rotated <-
   g_cf_eval %>% rename_with(.fn = ~glue("cf_{.}")),
   g_1ha_eval %>% rename_with(.fn = ~glue("frag_{.}"))
   ) %>%
-  mutate(diff = cf_est - frag_est) %>% 
+  mutate(diff = cf_est - frag_est) %>% filter(diff == max(diff, na.rm = TRUE))
   ggplot(aes(x = cf_L, y = cf_spei_history, fill = diff, z = diff)) +
   geom_raster() +
   geom_contour(color = "black", binwidth = 0.05) +
@@ -630,11 +630,10 @@ Around 5 percent of plants flowered.
 f_post_cf <-
   bam(flwr ~ 
         s(log_size_prev, bs = "cr") +
-        # s(year_fac, bs = "re") + 
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
-          k = c(3, 35),  #cubic response (at most) to drought, one knot per month lag.
+          k = c(3, 35), 
           xt = list(bs = "cr")),
       family = binomial,
       data = demog2_post_cf,
@@ -660,17 +659,16 @@ these residuals are troubling
 summary(f_post_cf)
 ```
 
-This model changes **drastically** depending on whether year is included as a random effect.  Does that mean ther random effect is important? Or is it because it is collinear / concurve with SPEI history?
+
 
 ```{r}
 f_post_1ha <-
   bam(flwr ~ 
         s(log_size_prev, bs = "cr") +
-        # s(year_fac, bs = "re") +
         s(plot, bs = "re") +
         s(spei_history, L,
           bs = "cb",
-          k = c(3, 35),  #cubic response (at most) to drought, one knot per month lag.
+          k = c(3, 35),
           xt = list(bs = "cr")),
       family = binomial,
       data = demog2_post_1ha,
@@ -692,6 +690,11 @@ scatter.smooth(predict(f_post_1ha, type = "response"), qresid(f_post_1ha), col =
 summary(f_post_1ha)
 ```
 
+```{r}
+plogis(coef(f_post_1ha)[1])
+plogis(coef(f_post_cf)[1])
+```
+Overall probability of flowering higher in continuous forest (0.008) compared to 1ha fragments (0.003)
 
 ## Covariate plots
 

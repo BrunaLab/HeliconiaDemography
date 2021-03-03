@@ -104,6 +104,9 @@ spei <-
 spei <- annotate_spei(spei)
 spei
 ```
+```{r}
+xa %>% select(-spei_history, -L) %>% ungroup() %>%  summarize(spei = mean(spei)) %>% filter(year(yearmonth) == 2003) %>% arrange(spei)
+```
 
 ## Survival
 
@@ -293,7 +296,7 @@ flowering <-
       date_minor_breaks = "1 month",
       expand = expansion(mult = 0.04)
     ) +
-    scale_y_continuous("P(flowering | shts ≥ 4)") +
+    scale_y_continuous("P(flowering)") +
   theme_bw() +
   theme(
     axis.text.x = element_blank(),
@@ -305,7 +308,15 @@ flowering
 ```
 
 ```{r}
-demog_plotdf %>% filter(year == 2003) %>% group_by(habitat) %>% summarize(flwr = mean(flwr, na.rm = TRUE))
+demog_plotdf %>% filter(year == 2003, shts >= 4) %>% group_by(habitat) %>% summarize(flwr = mean(flwr, na.rm = TRUE))
+```
+```{r}
+demog_plotdf %>% 
+  group_by(habitat, year) %>% 
+  filter(!is.na(flwr)) %>% #removes both dead plants and plants with no data.
+  summarize(flwr = sum(flwr)/n()) %>% 
+  summarize(flwr_mean = mean(flwr),
+            flwr_sd = sd(flwr))
 ```
 
 # Combine

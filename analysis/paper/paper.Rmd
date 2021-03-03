@@ -109,7 +109,7 @@ In addition to large areas of continuous forest, the BDFFP has forest fragment r
 The BDFFP reserves are located in nonflooded (i.e., *terra firme*) tropical lowland forest with a 30--37m tall canopy [@rankin-de-meronaPreliminaryResultsLargescale1992] and an understory dominated by stemless palms [@scariotForestFragmentationEffects1999].
 The soils in the reserves are nutrient-poor xanthic ferrosols; their water retention capacity is poor despite having a high clay content.
 Mean annual temperature in the region is 26º C (range=19--39º C), and annual rainfall at the BDFFP reserves ranges from 1900-2300 mm.
-There is a pronounced dry season from June to October **(Appendix?)**.
+There is a pronounced dry season from June to October **(Figure?)**.
 
 <!-- Rainfall data should prob be a figure in main text, since the paper deals with rainfall and seasonality. I’d think of citing the (eventual) BDFFP rain package -->
 
@@ -139,7 +139,7 @@ SPEI can be calculated to represent different temporal scales of drought; we use
 SPEI calculations were done using the `SPEI` package in `r version$version.string` [@rcoreteamLanguageEnvironmentStatistical2020; @begueriaSPEICalculationStandardised2017].
 The timing of drought events based on these SPEI calculations is consistent with that resulting from SPEI calculated with other data sources (e.g., nearby weather stations, the global SPEI database [@begueriaSbegueriaSPEIbaseVersion2017], TRMM [@trmm3b43]), though the magnitude of drought can sometimes differ (**Supplemental \_\_**).
 
-## Statistical Modeling of \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+## Statistical Modeling of Vital Rates
 
 <!-- I think this is well described but could use some biologizing, eg,"This function allows the effect of a predictor on a response variable (e.g., SPEI on the growth rate of plants) to vary non-linearly through lag time and across predictor intensity (e.g, SPEI values from -2 to 2).  -->
 
@@ -148,7 +148,7 @@ The general form of the vital rate models was as follows:
 
 $$
 \begin{gather}
-    g[ \textrm{E}(y_{i})] = \alpha_j + s_1(x_i) + s_2(d_{i,t}, ..., d_{i,t-24}) \\
+    g[ \textrm{E}(y_{i})] = \alpha_j + s_1(x_i) + s_2(d_{i,t}, ..., d_{i,t-36}) \\
     \alpha_j \sim N(\mu_{\alpha_j}, \sigma^2_{\alpha_j}), \textrm{for plot }j 
 \end{gather}
 $$
@@ -177,7 +177,7 @@ Because the `dlnm` package does not currently allow modeling of factor by smooth
 # Results
 
 ```{r}
-cap <- "Timeseries of demographic parameters and drought ocurrence. Mean plant size ± standard deviation (a) shows that plants were smaller in fragments (red) than continuous forest (blue). (b) shows the survival curve for the 1998 cohort of plants in both fragments and continuous forest. c) shows the proportion of mature plants (with 4 or more shoots) flowering each census. In d), monthly 3-month SPEI is plotted. Light grey lines represent values from different grid cells encompassing BDFFP and the dark line is the site mean.  Yellow, orange, dark orange, and red stripes show mild, moderate, severe, and extreme drought, respectively."
+cap <- "Timeseries of demographic parameters and drought ocurrence. Mean plant size ± standard deviation (a) shows that plants were smaller in fragments (red) than continuous forest (blue). (b) shows the survival curve for the 1998 cohort of plants in both fragments and continuous forest. c) shows the proportion of plants with 4 or more shoots flowering each census. In d), monthly 3-month SPEI is plotted. Light grey lines represent values from different grid cells encompassing BDFFP and the dark line is the site mean. Yellow, orange, dark orange, and red stripes show mild, moderate, severe, and extreme drought, respectively."
 ```
 
 ```{r eda, fig.cap=cap}
@@ -187,11 +187,12 @@ knitr::include_graphics(here("analysis", "figures", "eda.png"))
 
 The meteorological drought occurrences indicated by SPEI mostly agree with drought events in the Amazon reported in the literature.
 For example, the drought associated with the 1997 El Niño Southern Oscillation (ENSO) event was one of the most severe on record for the Amazon [@williamsonAmazonianTreeMortality2000]; correspondingly, 1997 has the lowest SPEI values in our timeseries (Figure \@ref(fig:eda)d).\
-The 2005 dry season (June--October) was also exceptionally dry, although this drought mostly affected the south western Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008].
+The 2005 dry season (June--October) was also reported as an exceptionally dry year, although this drought mostly affected the south western Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008].
+Our SPEI data show the 2005 dry season to be a moderate drought.
 <!--#  I know I'm missing some literature here. Add more refs for more droughts. Any papers mentioning 2003 wet season drought? Also, Feb 2007?-->
 
-Mean plant size dropped dramatically in 2003 in both habitat types, corresponding with the most severe drought in the timeseries (Figure \@ref(fig:eda)d).
-Two noticeable peaks in the proportion of flowering mature plants occur in the most severe drought years (2003 and 2007) (Figure \@ref(fig:eda)c).
+Mean plant size dropped dramatically in 2003 in both habitat types, corresponding with an severe drought during the February census (SPEI = -1.39) (Figure \@ref(fig:eda)d).
+Two noticeable peaks in the proportion of flowering mature plants occur in severe drought years (2003 and 2007) (Figure \@ref(fig:eda)c).
 
 ## Survival
 
@@ -203,8 +204,8 @@ cap <- "Smooth effect of plant size in the previous census on survival modeled b
 include_graphics(here("analysis", "figures", "surv_both_size.png"))
 ```
 
-Overall survival rate across the entire dataset is 0.95 in both CF and 1-ha.
-The proportion of surviving plants across both habitat types was lowest in 2004 (0.92) which coincided with a moderate drought in Jan 2004 / Feb 2005 and a severe drought in Jan--Mar of 2004.
+Overall survival rate across the entire dataset was the same (0.95) in both CF and 1-ha.
+The proportion of surviving plants across both habitat types was lowest in 2004 (0.92) which coincided with a moderate drought in Jan 2004 / Feb 2005 and a severe drought in Jan--Mar of 2004 (Figure \@ref(fig:eda)b,d).
 The lowest survival for 1-ha fragment plots (0.93) was in the 2006 census corresponding to unusually wet weather (SPEI \>0.5), but with a moderate drought the preceding October.
 
 Log transformed plant size had a significant effect on survival in both continuous forest and 1-ha fragments (both p \< 0.001).
@@ -256,7 +257,7 @@ cap <- "Smooth effect of plant size in year t on plant size in year t+1 modeled 
 include_graphics(here("analysis", "figures", "growth_both_size.png"))
 ```
 
-Log transformed size in year t was a significant predictor of log transformed size in year t+1 (p \< 0.001).
+Size in year t was a significant predictor of size in year t+1 (p \< 0.001).
 The 95% confidence intervals for the effect of size in year t in fragments and continuous forest overlapped for most sizes, but was slightly higher in continuous forest for mid-sized plants (Figure \@ref(fig:growth-size)).
 
 ```{r}
@@ -280,16 +281,18 @@ include_graphics(here("analysis", "figures", "growth_diff_spei.png"))
 ```
 
 The difference between the effects of SPEI history in continuous forest and 1-ha fragments shows that growth is equal or slightly higher in continuous forest for average conditions (SPEI = 0) over all lag periods (Figure \@ref(fig:growth-diff).
-However, growth in continuous forests is higher by up to log(size) = 0.48 <!--# double-check this number --> when the current wet season is unusually wet (SPEI\>1).
+However, growth in continuous forests is higher by up to log(size) = 0.57 when the current wet season is unusually wet (SPEI\>2).
+This is due to reduced growth in fragments under wet conditions.
 
 The random effect of plot is significant in both habitat models (p \< 0.001).
 
 ## Flowering
 
-Probability of flowering was generally higher in continuous forest compared to 1-ha fragments.
-The exceptions to this are in 2006 and 2008 when the proportion of flowering plants was lower in continuous forest (Figure \@ref(fig:eda)c).
-The most striking difference between habitat types in flowering proportion was in 2003 when 9.7% of plants flowered in the continuous forest plots and only 2.7% flowered in fragment plots.
-<!--# update to be only for large plants -->
+The mean proportion of flowering plants across all census years was generally higher in continuous forest (0.050 ± 0.021) compared to 1-ha fragments (0.036 ± 0.027).
+In fact, the proportion of flowering plants was higher in continuous forest in all survey years except 2006 and 2008 (Figure \@ref(fig:eda)c).
+The most striking difference between habitat types in flowering proportion coincided with a severe drought in 2003 when the percentage of flowering plants with four or more shoots was 24.1% in continuous forest and 12% in 1-ha fragments (Figure \@ref(fig:eda)c).
+The back-transformed model intercepts, representing the flowering probability of averaged sized plants in each habitat given average SPEI, showed a similar pattern with 0.008 for continuous forest and 0.004 for 1-ha fragments.
+<!--# not sure how necessary this is -->
 
 ```{r}
 cap <- "Smooth effect of plant size in the previous census on flowering probability modeled by a cubic regression spline.  95% confidence intervals are shown and include uncertainty in the model intercept as well as uncertainty due to smoothness selection. The smooths for 1-ha fragments and continuous forest are fit in separate models. The model intercepts were added to the fitted values of the smooth and values are back-transformed to the response scale"
@@ -341,11 +344,11 @@ Understanding how landscape structure and environmental conditions act to influe
 
 MAJOR TAKE-HOME MESSAGES
 
-1.  
+1.  Survival and growth rates are similar in CF and fragments, but more strongly effected by SPEI in fragments.
 
-2.  
+2.  Flowering probability is higher in CF (overall and for averaged sized plants), but large plants have higher flowering probability in fragments than in CF.
 
-3.  
+3.  Two dry seasons ago (lag of 15--20 months) is important for all three vital rates, but most clearly for flowering where drought in this period increases flowering probability (cite @nihadRelationshipStressFlowering2018 )
 
 Future directions/Caveats:
 
