@@ -106,18 +106,6 @@ demog_post_cf <-
 demog_post_1ha <-
   demog_post %>% 
   filter(habitat == "1-ha")
-
-demog_sdlg <- 
-  demog_full %>% 
-  filter(code_notes == "sdlg (1)")
-
-demog_sdlg_cf <- 
-  demog_sdlg %>% 
-  filter(habitat == "CF")
-
-demog_sdlg_1ha <- 
-  demog_sdlg %>% 
-  filter(habitat == "1-ha")
 ```
 
 
@@ -750,7 +738,16 @@ ggsave(here("analysis", "figures", "flwr_both_size.png"))
 ```
 ```{r paged.print=FALSE}
 demog_full %>% filter(ht < 1)
+demog_full %>% 
+  # filter(log_size > 7) %>%
+  filter(shts >= 4) %>% 
+  group_by(habitat) %>% 
+  summarise(flower_prob = mean(flwr, na.rm = TRUE))
+
+coef(f_post_1ha)[1] %>% plogis()
 ```
+
+Opposite of what plot shows.
 
 ## Crossbasis plot
 ### Get plot data
