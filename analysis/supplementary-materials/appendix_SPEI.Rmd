@@ -48,33 +48,11 @@ conflict_prefer("select", "dplyr")
 -   Write brief text
 -   Possibly make a figure S2 that compares SPEI across BDFFP from east to west (3 panels), using all data with similar resolution
 
+When looking for data to calculate SPEI for the BDFFP site, there were a number of possible options.
+A review of global precipitation datasets [@sunReviewGlobalPrecipitation2018] shows that ground-based products are more accurate compared to satellite products for Brazil specifically.
 
-# Outline
-
--   A review of global precip datasets (Sun et al. 2018) recommends ground-based products over satellite products for Brazil.
-
--   The global SPEI database is calculated from ground-based product (CRU) and a uses method for estimating evapotranspiration that takes more than just temperature into account.
-
--   There's also a ground-based product specifically for Brazil (Xavier et al).
-
--   We have rain gauge data that we can get SPEI from if we use imputation (informed by EMBRAPA station data)
-
-```{r read-data}
-# Precip Sources
-sa <- read_csv(here("analysis", "data", "raw_data", "sa_daily_1x1.csv"))
-# trmm <-
-  
-# Already calculated SPEI  
-
-  
-# bdffp <- read_csv(here("analysis", "data", "raw_data", "mon_precip_spi_imputed.csv"))
-# #TODO edit to pull this from github or use bdffp rainfall data package
-
-```
-
-# Methods
-
-We compared 3-month SPEI data calculated from a number of sources for the BDFFP site including ground-based data from on-site rain gauges, two nearby weather stations, satellite products, and gridded land station based datasets.
+We calculated 3-month SPEI data calculated from a number of sources for the BDFFP site including on-site rain gauges, nearby weather stations, a satellite product, and a gridded land-based product.
+We then compared the calculated SPEI values to each other and to reported qualitative drought severity from literature.
 
 ## EMBRAPA
 
@@ -119,8 +97,8 @@ embrapa_wide <-
   ungroup()
 ```
 
-Two weather stations within \_\_\_ km of BDFFP had data available through EMBRAPA <!--# what is this -->, Rio Preto da Eva to the East (-2.65º, -59.65º) and the Manaus station to the West (-2.65º, -60.35º).
-We downloaded daily precipitation and potential evapotranspiration data, aggregated it to monthly, and calculated 3 month SPEI for each station separately.
+Two weather stations within \_\_\_ km of BDFFP had data available through EMBRAPA (*Empresa Brasileira de Pesquisa Agropecuária*): Rio Preto da Eva to the East (-2.65º, -59.65º) and the Manaus station to the West (-2.65º, -60.35º).
+We downloaded daily precipitation and potential evapotranspiration data through the *infoclima* portal (<https://www.cnpaf.embrapa.br/infoclima/>), aggregated it to monthly, and calculated 3 month SPEI for each station separately.
 We then averaged the SPEI values for two stations at each month to produce monthly estimates for the BDFFP site.
 
 ## BDFFP rain gauge data
@@ -259,14 +237,14 @@ bdffp_spei <-
   ungroup()
 ```
 
-We obtained rain gauge data collected from 1987--2010 at BDFFP camps.
+We obtained rain gauge data collected from 1987--2010 at BDFFP camps <!--# cite eventual BDFFP rainfall package -->.
 The precipitation data has a high degree of missingness due to camps being visited infrequently and because not all camps were active from 1987--2010.
 There we also a large number of observations representing accumulated rainfall over two or more days.
 We removed multi-day accumulations as it was impossible to know how rainfall was distributed over the prior days.
 Missing values were then imputed after averaging rainfall data by ranch.
 This averaging was necessary as the degree of missingness was too high for imputation to proceed for some camps.
-Multiple imputation was performed using the `Amelia` package and was informed by lags/leads, seasonality, and continuous daily weather data from two nearby by weather stations including precipitation, temperature, relative humidity, and wind speed [@honakerAmeliaIIProgram2011].
-We produced 10 imputed daily datasets which were then each aggregated monthly and used for calculating SPEI using the averaged potential evapotranspiration from the two EMBRAPA weather stations<!--# why not use mean temperature from weather stations? -->.
+Multiple imputation was performed using the `Amelia` package and was informed by lags/leads, and seasonality [@honakerAmeliaIIProgram2011].
+We produced 10 imputed datasets which were then each aggregated monthly and used for calculating SPEI using potential evapotranspiration averaged from the two EMBRAPA weather stations.
 Then, the 10 resulting SPEI datasets were averaged to produce a single dataset.
 
 ## Xavier et al.
@@ -323,7 +301,8 @@ trmm_spei <-
   select(-cb)
 ```
 
-Monthly precipitation data from TRMM was used in combination with potential evapotranspiration data from Xavier et al. [-@xavierDailyGriddedMeteorological2016].
+The Tropical Rainfall Measuring Mission (TRMM) is a satellite product of global precipitation data from 1998-2019 at a resolution of 0.25º x 0.25º <!--# make sentence better -->[@tropicalrainfallmeasuringmissiontrmmTRMMTMPA3B432011].
+Monthly precipitation data from the TRMM 3B43 product was used in combination with potential evapotranspiration data from Xavier et al. [-@xavierDailyGriddedMeteorological2016] to calculate SPEI at BDFFP.
 
 ## Global SPEI
 
@@ -335,10 +314,8 @@ gspei <-
   mutate(yearmonth = yearmonth(date), date = NULL)
 ```
 
-Additionally, we downloaded SPEI data from the Global SPEI dataset [@begueriaSbegueriaSPEIbaseVersion2017].
+Lastly, we downloaded SPEI data from the Global SPEI dataset [@begueriaSbegueriaSPEIbaseVersion2017].
 These calculations were made using precipitation data from a gridded product based on land stations and evapotranspiration estimated with the Pennman-Montieth method.
-
-
 
 # Combine into single tidy data frame
 
@@ -365,13 +342,16 @@ comb <-
   mutate(year = year(yearmonth), .before = yearmonth)
 ```
 
-
 <!-- Annotate worst droughts.\ -->
+
 <!-- Expected: -->
 
 <!-- -   2004 & 2006: weak ENSO -->
+
 <!-- -   2002 & 2009: moderate ENSO -->
+
 <!-- -   1997: severe ENSO -->
+
 <!-- -   2005 & 2010: severe SST -->
 
 ```{r}
@@ -394,7 +374,6 @@ spei_table <-
          BDFFP = glue("{round(spei_bdffp, 2)} ({month_bdffp})")) %>% 
   ungroup()
 ```
-
 
 ```{r}
 library(gt)
@@ -546,6 +525,7 @@ spei_plot <-
     dataset == "bdffp_spei" ~ "BDFFP imputed"
   ))
 ```
+
 ```{r}
 cap <- "Three-month SPEI at BDFFP calculated using 5 precipitation datasets.  Drought categories mild, moderate, severe, and extreme drought are represented by yellow, goldenrod, orange, and red panels, respectively."
 ```
@@ -596,9 +576,13 @@ annotate_spei(p)
 <!-- -   Daily gridded meteorological variables in Brazil [@xavierDailyGriddedMeteorological2016] -->
 
 <!--     -   Resolution 0.25º x 0.25º -->
+
 <!--     -   Includes precipitation and potential evapotranspiration -->
+
 <!--     -   PET calculated by Pennman-Monteith method -->
+
 <!--     -   Source: 3,625 ground-based weather stations across Brazil -->
+
 <!--     -   Date range: 1980--2015 -->
 
 <!-- -   Global SPEI [@santiago2017] -->
@@ -613,12 +597,18 @@ annotate_spei(p)
 
 <!-- ### Satelite and reanalysis products -->
 
-<!-- -   TRMM 3B43 <!--# doesn't go back far enough.  Not worth using? --> -->
+<!-- -   TRMM 3B43 <!--# doesn't go back far enough.  Not worth using? -->
+
+--\>
 
 <!--     -   Source DOI: 10.5067/TRMM/TMPA/MONTH/7 -->
+
 <!--     -   Resolution: 0.25º x 0.25º -->
+
 <!--     -   Includes: Monthly precip -->
+
 <!--     -   Doesn't include PET, so I guess I'll take that from the ground stations?? -->
+
 <!--     -   Date range: 1998--2019 -->
 
 <!-- -   PERSIANN-CDR -->
