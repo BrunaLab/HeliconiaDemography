@@ -37,19 +37,28 @@ add_surv <- function(data, n_years = 3) {
     ungroup()
 }
 
-tidy_demog <- function(data) {
-  data %>% 
-    #add binary column for flowering
-    mutate(infl = ifelse(is.na(infl) & (!is.na(shts) | !is.na(ht)), 0, infl)) %>% 
-    mutate(flwr = ifelse(infl > 0, 1, 0), .after = infl) %>% 
+add_size <- function(data) {
+  data %>%
     # add height and number shoots in the next year for each observation
     group_by(ha_id_number) %>% 
     mutate(ht_prev = lag(ht),
            shts_prev = lag(shts)) %>% 
     ungroup() %>% 
+    #add size
+    mutate(size = shts*ht, size_prev = shts_prev * ht_prev, log_size = log(size), log_size_prev = log(size_prev))
+}
+
+tidy_demog <- function(data) {
+  data %>% 
+    #add binary column for flowering
+    mutate(infl = ifelse(is.na(infl) & (!is.na(shts) | !is.na(ht)), 0, infl)) %>% 
+    mutate(flwr = ifelse(infl > 0, 1, 0), .after = infl) %>% 
+    #create factors
+    mutate(across(c(ranch, bdffp_reserve_no, plot, habitat, ha_id_number), as.factor)) %>% 
+    mutate(year_fac = as.factor(year)) %>% 
     # arrange columns
     select(ranch, bdffp_reserve_no, plot, habitat, #site level
            row, column, x_09, y_09, ha_id_number, tag_number, #plot level
            year,
-           ht, ht_prev, shts, shts_prev, infl_num = infl, flwr, surv, code_notes, code2) #plant level
+           ht, ht_prev, shts, shts_prev, size, size_prev, log_size, log_size_prev, infl_num = infl, flwr, surv, code_notes, code2)
 }
