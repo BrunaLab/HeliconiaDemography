@@ -131,7 +131,7 @@ s_post_cf <-
         # s(plot, log_size_prev, bs = "re") + #random slope
         s(spei_history, L,
           bs = "cb",
-          k = c(3, 35),  #cubic response (at most) to drought, one knot per month lag.
+          k = c(3, 35),  #bimodal response (at most) to drought, one knot per month lag.
           xt = list(bs = "cr")),
       family = binomial,
       data = demog_post_cf,
