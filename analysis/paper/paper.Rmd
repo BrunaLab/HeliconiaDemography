@@ -1,4 +1,5 @@
 ---
+ga---
 title: "Delayed effects of [responses to?] climate lead to demographic divergence in a fragmented Amazonian landscape"
 author:
   - Eric R. Scott:
@@ -104,14 +105,10 @@ Nevertheless, the impacts of global change phenomena on their demography remain 
 We addressed the following questions:
 
 1)  Does drought increase or decrease the growth, survival, and fertility of plant populations in continuous forest?
+
 2)  What lag times are most important in considering the effects of drought on vital rates? [Maybe: are there temporal delays effects in demographic responses to drought, and if so what lag times are most critical?]
+
 3)  Are the effects of drought on the vital rates of populations in fragments similar in direction and magnitude to those in continuous forest?
-
-<!-- Gentry AH, Emmons LH  1987. Geographical variation in fertility, phenology and composition of the understory of neotropical forests. Biotropica 19:216-217. -->
-
-<!-- Snow DW  1981. Tropical frugivorous birds and their food plants - a world survey. Biotropica 13:1-14. -->
-
-<!-- Nakazono EM, Bruna EM, Mesquita RCG  2004. Experiemental harvesting of the non-timber forest product Ischnosiphon polyphyllus in central Amazonia. Forest Ecology and Management 190:219-225. -->
 
 # Methods
 
@@ -384,11 +381,12 @@ Understanding how landscape structure and environmental conditions act to influe
 
 1.  Consequences for demographers
 
-    1.  Delayed effects of environmental drivers on vital rates are rarely included in demographic models, but they may be the rule rather than the exception.
-        [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
-        This study is another example of one where delayed effects of climate are important and sometimes better predictors of vital rates than more recent conditions (e.g. drought two dry seasons ago and flowering probability).
+    1.  Very few demographic studies have the data required to fit models that include delayed effects.
 
-    2.  Very few demographic studies have the data to fit models that include delayed effects.
+    2.  This study adds to the growing body of work that finds delayed effects of climate drivers on vital rates without *a priori* assumptions about the influence of particular climate windows [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
+        We found evidence for delayed effects of drought which are sometimes better predictors of vital rates than more recent conditions.
+        Delayed effects of climate on plant vital rates may be the rule, rather than the exception, and distributed lag non-linear models offer an unbiased way of identifying these delayed effects (but see @pierreCriticalWindowsMethod2020 for an alternative method).
+        <!--# maybe the previous sentence goes in methods? -->
 
 2.  Consequences for biology
 
@@ -397,19 +395,25 @@ Understanding how landscape structure and environmental conditions act to influe
     2.  Average flowering probability of plants in continuous forest is equivalent to flowering once every \_\_\_ years compared to once every \_\_\_ years in 1-ha fragments (assuming plant remains the same size and SPEI is average).
         <!--# from model intercepts -->
 
+        1.  Previous work has shown flowering probability to be an important vital rate.
+            Bruna (CITATION) showed that since smaller plants are less likely to flower, a decrease in plant size can result in a significant reduction in flowering.
+            <!--# re-skim this paper and flesh out. -->
+
+    3.  Two dry seasons ago (lag of 15--20 months) is important for all three vital rates, but most clearly for flowering where drought in this period increases flowering probability.
+
+        1.  The increase in flowering rate of plants following a drought could be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018].
+
+        2.  Alternatively, the delayed effect of drought could be due to indirect effects mediated by canopy openness.
+            In Manaus, canopy is as green or greener in dry season compared to wet season [@guanPhotosyntheticSeasonalityGlobal2015], so dry season drought has the potential to increase solar radiation if it causes reductions in canopy cover.
+            Tree mortality (CITATIONS) and litterfall (CITATIONS) in the Amazon increase following drought, which could increase solar radiation to the understory resulting in greater energy capture by *H. acuminata*.
+
+        3.  More work to be done on flowering responses to drought x light x season interactions.
+
 3.  Buffering
 
-    1.  We also found evidence that the reduction of microclimatic buffering by fragmentation has demographic consequences for understory plants. The effects of variation in SPEI were more extreme in fragments for survival and growth. We did not see this pattern with flowering probability, likely because flowering is overall much less likely in fragments, probably due to smaller plant size.
-
-MAJOR TAKE-HOME MESSAGES
-
-1.  Survival and growth rates are similar in CF and fragments, but more strongly effected by SPEI in fragments.
-
-2.  Flowering probability is higher in CF (overall and for averaged sized plants), but large plants have higher flowering probability in fragments than in CF.
-
-3.  Two dry seasons ago (lag of 15--20 months) is important for all three vital rates, but most clearly for flowering where drought in this period increases flowering probability (cite @nihadRelationshipStressFlowering2018 )
-
-    1.  In Manaus, canopy is as green or greener in dry season compared to wet season @guanPhotosyntheticSeasonalityGlobal2015. So probably direct rather than indirect effects of canopy openness (need to think about this still)
+    1.  We also found evidence that the reduction of microclimatic buffering by fragmentation has demographic consequences for understory plants.
+    2.  Mean survival and growth rates over the entire decade were similar in continuous forest and 1-ha fragments, but were more strongly affected by variation in SPEI in fragments. As climate becomes more variable, hot, and dry, drought frequency and severity is expected to increase in the Amazon (CITE IPCC?). Our results indicate that increasing drought frequency and severity will reduce *H. acuminata* growth and survival more in fragments compared to continuous forest.
+    3.  We did not see the same pattern with flowering probability, likely because flowering was overall much less likely in fragments where plants were smaller on average.
 
 Future directions/Caveats:
 
