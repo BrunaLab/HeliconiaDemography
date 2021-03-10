@@ -19,6 +19,7 @@ library(broom)
 library(gratia)
 library(latex2exp)
 library(parallel)
+library(statmod)
 
 conflict_prefer("filter", "dplyr")
 conflict_prefer("lag", "dplyr")

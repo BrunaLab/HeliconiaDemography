@@ -30,5 +30,7 @@ tar_plan(
   g_cf = fit_growth(model_data_cf),
   g_1ha = fit_growth(model_data_1ha),
   f_cf = fit_flwr(model_data_cf),
-  f_1ha = fit_flwr(model_data_1ha)
+  f_1ha = fit_flwr(model_data_1ha),
+  tar_render(validate_models, "doc/validate_models.Rmd"),
+  tar_render(model_summary, "doc/model_summary.Rmd")
 )

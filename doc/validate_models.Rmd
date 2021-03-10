@@ -1,0 +1,130 @@
+---
+title: "Model validation plots"
+author: "Eric R. Scott"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+## target knits Rmds in their own session, so load libraries here.
+source(here::here("packages.R"))
+library(gratia)
+```
+
+```{r load-targets}
+withr::with_dir(here(),{
+  tar_load(c(s_cf, s_1ha, g_cf, g_1ha, f_cf, f_1ha))
+  })
+```
+
+# Analysis
+
+## Survival
+
+Quantile residuals are more appropriate for binomial models.
+
+### Continuous Forest
+
+```{r}
+summary(s_cf)
+```
+
+
+```{r echo=TRUE}
+par(mfrow = c(2,2))
+#histogram
+plot(density(qresid(s_cf)))
+#QQ plot
+qqnorm(qresid(s_cf)); qqline(qresid(s_cf))
+#Fitted vs. residuals
+scatter.smooth(predict(s_cf, type = "response"), qresid(s_cf), col = "grey")
+```
+### Fragments
+
+```{r}
+summary(s_1ha)
+```
+
+
+```{r echo=TRUE}
+par(mfrow = c(2,2))
+#histogram
+plot(density(qresid(s_1ha)))
+#QQ plot
+qqnorm(qresid(s_1ha)); qqline(qresid(s_1ha))
+#Fitted vs. residuals
+scatter.smooth(predict(s_1ha, type = "response"), qresid(s_1ha), col = "grey")
+```
+
+## Growth
+### Continuous Forest
+```{r}
+summary(g_cf)
+```
+
+```{r}
+gratia::appraise(g_cf)
+```
+
+### Fragments
+
+```{r}
+summary(g_1ha)
+```
+
+```{r}
+appraise(g_1ha)
+```
+
+## Flowering
+
+Quantile residuals are more appropriate for binomial models.
+
+### Continuous Forest
+
+```{r}
+par(mfrow = c(2,2))
+#histogram
+plot(density(qresid(f_cf)))
+#QQ plot
+qqnorm(qresid(f_cf)); qqline(qresid(f_cf))
+#Fitted vs. residuals
+scatter.smooth(predict(f_cf, type = "response"), qresid(f_cf), col = "grey")
+```
+
+### Fragments
+
+```{r}
+par(mfrow = c(2,2))
+#histogram
+plot(density(qresid(f_1ha)))
+#QQ plot
+qqnorm(qresid(f_1ha)); qqline(qresid(f_1ha))
+#Fitted vs. residuals
+scatter.smooth(predict(f_1ha, type = "response"), qresid(f_1ha), col = "grey")
+```
+
+# Reproducibility
+
+<details><summary>Reproducibility receipt</summary>
+
+```{r}
+## datetime
+Sys.time()
+
+## repository
+if(requireNamespace('git2r', quietly = TRUE)) {
+  git2r::repository()
+} else {
+  c(
+    system2("git", args = c("log", "--name-status", "-1"), stdout = TRUE),
+    system2("git", args = c("remote", "-v"), stdout = TRUE)
+  )
+}
+
+## session info
+sessionInfo()
+```
+
+</details>
