@@ -78,26 +78,25 @@ Deforestation driven by the expansion of agriculture and other human activities 
 Deforestation also results in landscapes where the remaining forest can be highly fragmented, with remnants of different sizes embedded in a matrix of often highly-contrasting habitat.
 Although the local extinction of species from individual fragments is common [@haddadHabitatFragmentationIts2015]<!--# others? -->, the demographic mechanisms underlying these extinctions are poorly understood [@brunaHabitatFragmentationPlant2009]<!--# others? -->.
 However, it is often assumed that that the dramatically altered environmental conditions often observed in fragments can depress rates of reproduction or survivorship [@zartmanDroughtImpactsSurvivorship2015; @brunaSeedGerminationRainforest1999; @lauranceRainForestFragmentation1998], leading to local or regional population declines [@brunaHabitatFragmentationPlant2009]<!--# others? -->.
-This is thought to be particularly true in species-rich tropical forests [@lauranceEffectsStrongDrought2001; @didhamEdgeStructureDetermines1999] <!--# also cite "Does forest
-fragmentation cause an increase in forest temperature" -->, which continue to be cleared and fragmented at unprecedented rates.
+This is thought to be particularly true in species-rich tropical forests [@lauranceEffectsStrongDrought2001; @didhamEdgeStructureDetermines1999], which continue to be cleared and fragmented at unprecedented rates.
 For example, over 24 million ha of the Brazilian Amazon have been cleared in the last two decades *(CITATION_4)*, resulting in extensive fragmentation and creation of over 70,000 km of new forest edges annually [@broadbentForestFragmentationEdge2008].
 Despite this, evidence linking fragmentation-related changes in environmental conditions with population-level demographic responses remains scarce.
 
-<!-- CITATION_4: WRI Report? Or INPE, see here: https://rainforests.mongabay.com/amazon/deforestation_calculations.html-->
+<!--# CITATION_4: WRI Report? Or INPE, see here: https://rainforests.mongabay.com/amazon/deforestation_calculations.html or this: https://mapbiomas.org/en -->
 
 Populations in fragmented tropical landscapes are also at risk from climate change [@brodieClimateChangeTropical2012; @scheffersExtremeThermalHeterogeneity2017].
 These effects may be especially pronounced in Amazonia, parts of which have been experiencing a drying trend since the mid-1970s and where climate models for the 21st century predict substantial decreases in dry season precipitation [@malhi2008] and increases in both drought frequency and severity [@caiIncreasingFrequencyExtreme2014; @zengCausesImpacts20052008; @moraProjectedTimingClimate2013].
 All of these factors have the potential to exacerbate the microclimatic changes observed in forest fragments that are hypothesized to make populations demographically vulnerable.
-Plants, unlike animals, are unable to move in response to increased in air temperature, decreased relative humidity, reduced soil moisture, or the increased penetration of solar radiation in the forest understory resulting from fragmentation [@ewersFragmentationImpairsMicroclimate2013; @didhamEdgeStructureDetermines1999].
+Plants, unlike animals, are unable to move in response to increased in air temperature, decreased relative humidity, reduced soil moisture, or the increased penetration of solar radiation in the forest understory resulting from fragmentation [@ewersFragmentationImpairsMicroclimate2013; @didhamEdgeStructureDetermines1999; @arroyo-rodriguezDoesForestFragmentation2017].
 Alternatively, populations persisting in fragments may be more demographically resilient to drought than those in primary forest if the individuals susceptible to desiccation died quickly after fragment isolation [@betts2019].
 
 Whether plant populations in tropical forest fragments are particularly susceptible to drought remains unclear for three primary reasons.
-First, most studies of plants in fragments have focused on a single history-stage or process ***(CITATIONS)***, making it challenging to draw broader demographic conclusions.
+First, most studies of plants in fragments have focused on a single life-history stage or process ***(CITATIONS)***, making it challenging to draw broader demographic conclusions.
 Similarly, there is a growing literature on how tropical plants respond to droughts, but few studies have compared the responses of plants in continuous forest with those in forest fragments [@lauranceEffectsStrongDrought2001].
 Finally, the multi-year data needed to test population-level hypotheses about climate change and fragmentation are scant, especially for tropical systems [@salguero-gomezCOMPADREPlantMatrix2015; @croneHowPlantEcologists2011].
 These data are critical not only because they allow for capturing variation in climatic conditions and the resulting demographic responses [@morrisQuantitativeConservationBiology2002; @teller2016].
 They are also essential because while some demographic effects of fragmentation or drought can be detected immediately, others may take years to manifest [@gagnonGrowthUnderstoryHerb2011].
-Indeed, lagged responses of demographic vital rates to climate may in fact be the rule rather than the exception [@eversLaggedDormantSeason2021] <!--# add citations from María.Anderegg et al, Schwalm et al.  Kannenberg et al.-->.
+Indeed, lagged responses of demographic vital rates to climate may in fact be the rule rather than the exception [@eversLaggedDormantSeason2021; @andereggPervasiveDroughtLegacies2015; @schwalmGlobalPatternsDrought2017; @kannenbergGhostsHowDrought2020].
 
 We used a decade of demographic and climatic data to assess the effects of climate on populations of a tropical understory herb (*Heliconia acuminata*, Heliconiaceae) in an experimentally fragmented landscape in the Central Amazon.
 <!--# add a sentence about "famous" amazonian droughts --> Herbaceous plants represent up to 25% of plant diversity in tropical forests [@gentryContributionNontreesSpecies1987], are critical food and habitat for myriad species [@snowTropicalFrugivorousBirds1981], and are economically and culturally vital [@nakazonoExperiementalHarvestingNontimber2004; @ticktinRelationshipsNinoSouthern2003].
@@ -106,7 +105,7 @@ We addressed the following questions:
 
 1)  Does drought increase or decrease the growth, survival, and fertility of plant populations in continuous forest?
 
-2)  What lag times are most important in considering the effects of drought on vital rates? [Maybe: are there temporal delays effects in demographic responses to drought, and if so what lag times are most critical?]
+2)  Are there delayed effects of drought on demographic responses, and if so what lag times are most critical?
 
 3)  Are the effects of drought on the vital rates of populations in fragments similar in direction and magnitude to those in continuous forest?
 
@@ -376,8 +375,10 @@ The random effect of plot also had a significant effect in both habitats (p \< 0
 
 # Discussion
 
-Understanding how landscape structure and environmental conditions act to influence population dynamics is fundamental to many of the emerging conceptual frameworks for studying and conserving fragmented landscapes [7,8].
-<!-- Didham RK, Kapos V, Ewers RM  2012. Rethinking the conceptual foundations of habitat fragmentation research. Oikos 121:161-170. --> <!-- Driscoll DA, Banks SC, Barton PS, Lindenmayer DB, Smith AL  2013. Conceptual domain of the matrix in fragmented landscapes. Trends in Ecology & Evolution 28:605-613. -->
+<!--# in intro, questions are 1: what are effects on vital rates, 2: are effects delayed, 3: differences between habitats.  Keep the same order here? -->
+
+\
+Understanding how landscape structure and environmental conditions act to influence population dynamics is fundamental to many of the emerging conceptual frameworks for studying and conserving fragmented landscapes [@didhamRethinkingConceptualFoundations2012; @driscollConceptualDomainMatrix2013].
 
 1.  Consequences for demographers
 
@@ -395,9 +396,7 @@ Understanding how landscape structure and environmental conditions act to influe
     2.  Average flowering probability of plants in continuous forest is equivalent to flowering once every \_\_\_ years compared to once every \_\_\_ years in 1-ha fragments (assuming plant remains the same size and SPEI is average).
         <!--# from model intercepts -->
 
-        1.  Previous work has shown flowering probability to be an important vital rate.
-            Bruna (CITATION) showed that since smaller plants are less likely to flower, a decrease in plant size can result in a significant reduction in flowering.
-            <!--# re-skim this paper and flesh out. -->
+        1.  Previous work has shown flowering probability to be an important vital rate. Our results confirm those of Bruna and Kress [-@brunaHabitatFragmentationDemographic2002] showing that probability of flowering increases with plant size, and is higher in continuous forests due to the greater number of large plants compared to fragments.
 
     3.  Two dry seasons ago (lag of 15--20 months) is important for all three vital rates, but most clearly for flowering where drought in this period increases flowering probability.
 
@@ -408,6 +407,9 @@ Understanding how landscape structure and environmental conditions act to influe
             Tree mortality (CITATIONS) and litterfall (CITATIONS) in the Amazon increase following drought, which could increase solar radiation to the understory resulting in greater energy capture by *H. acuminata*.
 
         3.  More work to be done on flowering responses to drought x light x season interactions.
+
+    4.  Address how all but the smallest sizes are shrinking on average over the period of this study (Figure \@ref(fig:growth-size)).
+        Cite: @brunaExperimentalAssessmentHeliconia2002; Begg 1980; Wright 1996; Rundel et al. 1998.
 
 3.  Buffering
 
