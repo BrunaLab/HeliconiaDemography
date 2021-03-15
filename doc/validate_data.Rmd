@@ -1,0 +1,73 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(pointblank)
+library(here)
+# Use `validate_rmd()` here to set options for the
+# pointblank validation workflow within R Markdown documents
+```
+
+```{r}
+library(targets)
+withr::with_dir(here(), {
+  tar_load(c(
+    xa_done,
+    demog_done
+  ))
+})
+```
+
+# Demographic data
+
+`pointblank` validation on tidied demographic data
+
+`demog_done`: Tidied dataset on *Heliconia acuminata* demography.
+More details [here](https://github.com/embruna/HeliconiaDataPaper).
+
+-   `ranch` (factor): The name of the ranch the plot is in
+-   `bdffp_reserve_no` (factor): The officall BDFFP reserve number
+-   `plot` (factor): A plot ID
+-   `habitat` (factor): "cf" = continuous forest, "1-ha" = one hectare fragment
+-   `ha_id_number` (factor): unique plant identifier number
+-   `year` (integer): survey year
+-   `ht` (numeric): height in survey year (cm)
+-   `ht_prev` (numeric): height in previous year (cm)
+-   `shts` (integer): number of shoots in survey year
+-   `shts_prev` (integer): number of shoots in previous year
+-   `size` (numeric): shoots \* height
+-   `size_prev` (numeric): shoots \* height in previous year
+-   `log_size` (numeric): log(shoots \* height)
+-   `log_size_prev` (numeric): log(shoots \* height) in previous year
+-   `infl_num` (integer): number of inflorescences (if plant flowered)
+-   `flwr` (integer): binary. Did plant flower in survey year?
+-   `surv` (integer): binary. Did plant survive?
+-   `code_notes` (character): possible values include: "plant missing" meaning the plant could not be found in this survey; "dead" meaning the plant is confirmed dead in this survey; "ULY" meaning\_\_\_\_\_\_\_\_; and "tag missing" meaning the plant was missing a tag and given a new one (this does not affect the `ha_id_number` as these take into account plants given new tags)
+-   `code2` (character): possible value is "initial.tag.yr" indicating the beginning of data for that `ha_id_number`. Could be the first year of the survey, or could represent recruitment into the plot.
+
+```{r}
+demog_done
+```
+
+```{r processed}
+create_agent(
+  demog_done,
+  actions = action_levels(warn_at = 1, stop_at = 0.2)
+) %>% 
+  col_is_character(vars(row, code_notes, code2)) %>% 
+  col_is_factor(vars(ranch, bdffp_reserve_no, plot, habitat, ha_id_number)) %>% 
+  col_is_numeric(vars(ht, ht_prev, size, size_prev, log_size, log_size_prev)) %>%
+  col_is_integer(vars(year, shts, shts_prev, infl_num, surv, flwr)) %>% 
+  col_vals_in_set(vars(surv, flwr), c(0,1, NA)) %>% 
+  col_vals_in_set(vars(column), 1:10) %>% 
+  col_vals_in_set(vars(row), LETTERS[1:10]) %>% 
+  col_vals_in_set(vars(habitat), c("1-ha", "CF", "10-ha")) %>% 
+  col_vals_between(vars(shts, shts_prev), 1, 20, na_pass = TRUE) %>% 
+  col_vals_between(vars(ht, ht_prev), 0, 200, na_pass = TRUE) %>% 
+  rows_distinct() %>% 
+  interrogate()
+```

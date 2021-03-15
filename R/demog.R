@@ -51,14 +51,15 @@ add_size <- function(data) {
 tidy_demog <- function(data) {
   data %>% 
     #add binary column for flowering
-    mutate(infl = ifelse(is.na(infl) & (!is.na(shts) | !is.na(ht)), 0, infl)) %>% 
-    mutate(flwr = ifelse(infl > 0, 1, 0), .after = infl) %>% 
+    mutate(infl = if_else(is.na(infl) & (!is.na(shts) | !is.na(ht)), 0L, infl)) %>% 
+    mutate(flwr = if_else(infl > 0, 1L, 0L), .after = infl) %>% 
     #create factors
     mutate(across(c(ranch, bdffp_reserve_no, plot, habitat, ha_id_number), as.factor)) %>% 
     mutate(year_fac = as.factor(year)) %>% 
     # arrange columns
     select(ranch, bdffp_reserve_no, plot, habitat, #site level
-           row, column, x_09, y_09, ha_id_number, tag_number, #plot level
+           # row, column, x_09, y_09, 
+           ha_id_number, #plot level
            year,
            ht, ht_prev, shts, shts_prev, size, size_prev, log_size, log_size_prev, infl_num = infl, flwr, surv, code_notes, code2)
 }

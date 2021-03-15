@@ -28,6 +28,9 @@ tar_plan(
   model_data_cf = filter(model_data, habitat == "CF"),
   model_data_1ha = filter(model_data, habitat == "1-ha"),
   
+  # Data validation
+  tar_render(validate_data, "doc/validate_data.Rmd"),
+  
   # Fit demographic models
   s_cf = fit_surv(model_data_cf),
   s_1ha = fit_surv(model_data_1ha),
