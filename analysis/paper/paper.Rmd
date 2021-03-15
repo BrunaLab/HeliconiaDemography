@@ -411,6 +411,8 @@ Understanding how landscape structure and environmental conditions act to influe
     4.  Address how all but the smallest sizes are shrinking on average over the period of this study (Figure \@ref(fig:growth-size)).
         Cite: @brunaExperimentalAssessmentHeliconia2002; Begg 1980; Wright 1996; Rundel et al. 1998.
 
+    5.  cite Esteban et al. 2021 for negative effects of large positive SPEI
+
 3.  Buffering
 
     1.  We also found evidence that the reduction of microclimatic buffering by fragmentation has demographic consequences for understory plants.
