@@ -1,0 +1,30 @@
+---
+title: "Untitled Draft"
+author: "Report Author"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	fig.path = "../figures/",
+	message = FALSE,
+	warning = FALSE,
+	collapse = TRUE,
+	comment = "#>",
+	dpi = 300
+)
+library(targets)
+library(knitr)
+library(here)
+```
+
+```{r load-targets}
+withr::with_dir(here(), {
+  tar_load(c(
+    normals_plot
+  ))
+})
+```
