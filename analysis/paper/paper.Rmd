@@ -1,5 +1,4 @@
 ---
-ga---
 title: "Delayed effects of [responses to?] climate lead to demographic divergence in a fragmented Amazonian landscape"
 author:
   - Eric R. Scott:
@@ -39,9 +38,11 @@ keywords: |
   forest fragmentation; vital rates; *Heliconia acuminata*; drought; ENSO; edge effects
 highlights: |
   These are the highlights
+
 editor_options:
   markdown:
     wrap: sentence
+    canonical: true
 ---
 
 <!-- This is the format for text comments that will be ignored during renderings. Do not put R code in these comments because it will not be ignored. -->
@@ -91,7 +92,7 @@ Plants, unlike animals, are unable to move in response to increased in air tempe
 Alternatively, populations persisting in fragments may be more demographically resilient to drought than those in primary forest if the individuals susceptible to desiccation died quickly after fragment isolation [@betts2019].
 
 Whether plant populations in tropical forest fragments are particularly susceptible to drought remains unclear for three primary reasons.
-First, most studies of plants in fragments have focused on a single life-history stage or process ***(CITATIONS)***, making it challenging to draw broader demographic conclusions.
+First, most studies of plants in fragments have focused on a single life-history stage or process ***(CITATIONS)*** <!--# citations in proposal -->, making it challenging to draw broader demographic conclusions.
 Similarly, there is a growing literature on how tropical plants respond to droughts, but few studies have compared the responses of plants in continuous forest with those in forest fragments [@lauranceEffectsStrongDrought2001].
 Finally, the multi-year data needed to test population-level hypotheses about climate change and fragmentation are scant, especially for tropical systems [@salguero-gomezCOMPADREPlantMatrix2015; @croneHowPlantEcologists2011].
 These data are critical not only because they allow for capturing variation in climatic conditions and the resulting demographic responses [@morrisQuantitativeConservationBiology2002; @teller2016].
@@ -378,7 +379,7 @@ The random effect of plot also had a significant effect in both habitats (p \< 0
 <!--# in intro, questions are 1: what are effects on vital rates, 2: are effects delayed, 3: differences between habitats.  Keep the same order here? -->
 
 \
-Understanding how landscape structure and environmental conditions act to influence population dynamics is fundamental to many of the emerging conceptual frameworks for studying and conserving fragmented landscapes [@didhamRethinkingConceptualFoundations2012; @driscollConceptualDomainMatrix2013].
+Understanding how landscape structure and environmental conditions act to influence population dynamics is fundamental to many of the emerging conceptual frameworks for studying and conserving fragmented landscapes [@didhamRethinkingConceptualFoundations2012; @driscollConceptualDomainMatrix2013].<!--# flesh out -->
 
 1.  Consequences for demographers
 
@@ -400,7 +401,7 @@ Understanding how landscape structure and environmental conditions act to influe
 
     3.  Two dry seasons ago (lag of 15--20 months) is important for all three vital rates, but most clearly for flowering where drought in this period increases flowering probability.
 
-        1.  The increase in flowering rate of plants following a drought could be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018].
+        1.  The increase in flowering rate of plants following a drought could be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018] <!--# add another more general citation. e.g. S. Joe Wright trees flowering after ENSO -->.
 
         2.  Alternatively, the delayed effect of drought could be due to indirect effects mediated by canopy openness.
             In Manaus, canopy is as green or greener in dry season compared to wet season [@guanPhotosyntheticSeasonalityGlobal2015], so dry season drought has the potential to increase solar radiation if it causes reductions in canopy cover.
