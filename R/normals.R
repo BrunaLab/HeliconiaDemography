@@ -17,7 +17,7 @@ normals_data <- function() {
 }
 
 
-plot_normals <- function(normals, save = TRUE) {
+plot_normals <- function(normals) {
   precip <-
     ggplot(normals, aes(x = as.factor(month), y = precip)) + 
     geom_col(fill = "darkblue") +
@@ -36,9 +36,5 @@ plot_normals <- function(normals, save = TRUE) {
   p <- 
     (precip + theme(axis.title.x = element_blank(), axis.text.x = element_blank()))/
     (temp) + plot_annotation(tag_levels = "a", tag_suffix = ")")
-  
-  if(save == TRUE) {
-    ggsave(here("analysis", "figures", "manaus_normals.png"), p)
-  }
   return(p)
 }

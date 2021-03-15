@@ -167,13 +167,11 @@ plot_eda_flwr <- function(demog_post, date_lims) {
   flowering
 }
 
-plot_eda_combine <- function(..., save = TRUE) {
+plot_eda_combine <- function(...) {
   p <- wrap_plots(..., ncol = 1) +
     plot_layout(guides = "collect") &
     plot_annotation(tag_levels = "a", tag_suffix = ")") &
     theme(plot.margin = margin(2,1,1,1)) &
     guides(col = guide_legend(title = "Habitat"))
-  if(save == TRUE) {
-    ggsave(here("analysis", "figures", "eda.png"), height = 7, width = 10)
-  }
+  return(p)
 }
