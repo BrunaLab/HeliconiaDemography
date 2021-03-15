@@ -12,13 +12,13 @@ tar_option_set()
 tar_plan(
   # Prep SPEI data
   maxlag = 36,
-  tar_target(xa_file, here("analysis", "data", "raw_data", "xavier_daily_0.25x0.25.csv"), format = "file"),
+  tar_target(xa_file, here("data", "xavier_daily_0.25x0.25.csv"), format = "file"),
   xa_raw = read_csv(xa_file),
   xa_spei = calc_spei_xa(xa_raw),
   xa_lag = lag_spei(xa_spei, maxlag),
   
   # Prep demographic data
-  tar_target(demog_file, here("analysis", "data", "raw_data", "Ha_survey_with_Zombies.csv"), format = "file"),
+  tar_target(demog_file, here("data", "Ha_survey_with_Zombies.csv"), format = "file"),
   demog_raw = read_fix_demog(demog_file),
   demog_surv = add_surv(demog_raw),
   demog_surv_size = add_size(demog_surv),
