@@ -9,6 +9,10 @@ output:
     toc: yes
     toc_float: yes
     number_sections: yes
+editor_options:
+  markdown:
+    wrap: sentence
+    canonical: true
 ---
 
 ```{r setup, include=FALSE}
@@ -36,16 +40,15 @@ library(HeliconiaDemography) #load functions in this compendium
 # devtools::load_all()
 ```
 
-
 *Last compiled: `r Sys.Date()`*
 
 # TODO:
 
-- ~~Switch measure of plant size to shoots * height~~
-- ~~Change lag to 36 months (3 years)~~
-- Produce ridge plot
-- Heatmap for growth should be ∆size
-- try select = TRUE (after you understand it better? blog about it first)
+-   ~~Switch measure of plant size to shoots \* height~~
+-   ~~Change lag to 36 months (3 years)~~
+-   Produce ridge plot
+-   Heatmap for growth should be ∆size
+-   try select = TRUE (after you understand it better? blog about it first)
 
 # Purpose
 
@@ -53,14 +56,14 @@ Take a crack at modeling vital rates as a function of previous height and lagged
 
 # Load Data
 
-
 ```{r}
 demog_full <- read_rds(here("analysis", "data", "derived_data", "ha_spei_combined.rds"))
 ```
 
 ## Tidy
 
-There are plants with 0 shoots and 0 ht.  I will remove those, as having no above ground biomass is really not a size, but a different category.
+There are plants with 0 shoots and 0 ht.
+I will remove those, as having no above ground biomass is really not a size, but a different category.
 There's also a couple of plants that are probably data entry errors in height.
 
 ```{r}
@@ -78,7 +81,6 @@ demog_full <-
   mutate(size = shts*ht, size_prev = shts_prev * ht_prev, log_size = log(size), log_size_prev = log(size_prev))
 ```
 
-
 `gam` wants factors!
 
 ```{r}
@@ -88,7 +90,6 @@ demog_full <-
   mutate(year_fac = as.factor(year))
 # View(demog_full)
 ```
-
 
 # Splitting up data
 
@@ -108,10 +109,11 @@ demog_post_1ha <-
   filter(habitat == "1-ha")
 ```
 
-
 # Speed up models with bam()
 
-I'm going to start fitting these with `bam()` to speed things up.  This sets up the paralellization.  CAUTION: you may need to change these settings for your machine.
+I'm going to start fitting these with `bam()` to speed things up.
+This sets up the paralellization.
+CAUTION: you may need to change these settings for your machine.
 
 ```{r}
 library(parallel)
@@ -120,8 +122,10 @@ cl <- makeForkCluster(ncores - 2)
 ```
 
 # Survival
-`surv` is 1 in `year`s when a plant is alive and 0 in the first `year` when the plant is dead.  These GAMs model the survival of a plant (over the past year) as a function of size in the previous census and SPEI values starting at february of the current year going back 36 months.
-## Fit GAMs
+
+`surv` is 1 in `year`s when a plant is alive and 0 in the first `year` when the plant is dead.
+These GAMs model the survival of a plant (over the past year) as a function of size in the previous census and SPEI values starting at february of the current year going back 36 months.
+\#\# Fit GAMs
 
 ```{r}
 s_post_cf <-
@@ -139,7 +143,6 @@ s_post_cf <-
       select = TRUE,
       cluster = cl)
 ```
-
 
 ```{r}
 # appraise(s_post_cf)
@@ -173,6 +176,7 @@ s_post_1ha <-
       select = TRUE,
       cluster = cl)
 ```
+
 ```{r}
 #histogram
 plot(density(qresid(s_post_1ha)))
@@ -237,7 +241,8 @@ bind_rows("1-ha" = s_1ha_eval1, "CF" = s_cf_eval1, .id = "habitat") %>%
 ggsave(here("analysis", "figures", "surv_both_size.png"))
 ```
 
-Emilio suggested plotting curves from all 1-ha plots just to visualize the variation. But the random effect of plot is not significant, so there is actually very little variation among plots in the model.
+Emilio suggested plotting curves from all 1-ha plots just to visualize the variation.
+But the random effect of plot is not significant, so there is actually very little variation among plots in the model.
 
 ```{r}
 new_data <-
@@ -255,7 +260,9 @@ The wide confidence intervals are probably due to lower sample size at this size
 ## Crossbasis plot
 
 ### Setup for all crossbasis plots
-Ok, I want to add a lil strip on the bottom that shows dry and wet seasons.  Wet = November-may, dry = june-october.
+
+Ok, I want to add a lil strip on the bottom that shows dry and wet seasons.
+Wet = November-may, dry = june-october.
 
 ```{r}
 wet_xmaxs = c(3, 15, 27, 36)
@@ -272,12 +279,12 @@ season_bar <-
   theme_void()
 ```
 
-
 ```{r}
 breaks <- seq(0,36, by = 2)
 ```
 
 ### Get plot data
+
 `dist` isn't working yet in `smooth_estimates`, but that's ok because I don't need CI for these plots (yet).
 
 ```{r}
@@ -291,7 +298,6 @@ s_cf_eval <-
 surv_lims <- c(min(s_1ha_eval$est, s_cf_eval$est, na.rm = TRUE),
                   max(s_1ha_eval$est, s_cf_eval$est, na.rm = TRUE))
 ```
-
 
 ### 1ha
 
@@ -348,6 +354,7 @@ ggsave(here("analysis", "figures", "surv_both_spei.png"), width = 7, height = 5)
 ```
 
 ### Difference
+
 Try plotting a raster of the difference between CF and 1-ha
 
 ```{r}
@@ -375,15 +382,14 @@ s_diff_rotated <-
 ggsave(here("analysis", "figures", "surv_diff_spei.png"),plot = s_diff_rotated, width = 7, height = 2.5)
 ```
 
-
 # Growth
+
 For mature plants that are alive...
 
 ```{r}
 demog2_post_cf <- demog_post_cf %>% filter(surv == 1, !is.na(log_size))
 demog2_post_1ha <- demog_post_1ha %>% filter(surv == 1, !is.na(log_size))
 ```
-
 
 ## Fit GAMs
 
@@ -417,16 +423,15 @@ AIC(g_post_cf)
 appraise(g_post_cf)
 ```
 
-AIC for... 
-Gaussian: ~40909.27. looks leptokurtic
-scaled t: ~37284.47.  Waaay better
+AIC for... Gaussian: \~40909.27.
+looks leptokurtic scaled t: \~37284.47.
+Waaay better
 
 ```{r}
 summary(g_post_cf)
 ```
 
 Remember, R-sq is probably so high because size this year is a very good predictor of size next year.
-
 
 ```{r}
 g_post_1ha <-
@@ -455,7 +460,6 @@ summary(g_post_1ha)
 
 ## Covariate plots
 
-
 ```{r}
 g_1ha_eval1 <-
   smooth_estimates(g_post_1ha, smooth = "log_size_prev", unconditional = TRUE) %>% 
@@ -471,6 +475,7 @@ ggplot(g_1ha_eval1, aes(x = log_size_prev)) +
   labs(x = TeX("$log(size_t)$"), y = TeX("$log(size_{t+1})"), title = "1-ha fragments")
 ggsave(here("analysis", "figures", "growth_1ha_size.png"))
 ```
+
 ```{r}
 g_cf_eval1 <-
   smooth_estimates(g_post_cf, smooth = "log_size_prev", unconditional = TRUE) %>% 
@@ -504,11 +509,10 @@ bind_rows("1-ha" = g_1ha_eval1, "CF" = g_cf_eval1, .id = "habitat") %>%
 ggsave(here("analysis", "figures", "growth_both_size.png"))
 ```
 
-
-
 ## Crossbasis plot
 
 ### Get plot data
+
 `dist` isn't working yet in `smooth_estimates`, but that's ok because I don't need CI for these plots (yet).
 
 ```{r}
@@ -566,7 +570,9 @@ g_cf_rotated <-
 ```
 
 ### Combine
+
 combine
+
 ```{r}
 (g_cf_rotated + theme(axis.title.x = element_blank())) / 
   (g_1ha_rotated) + 
@@ -575,6 +581,7 @@ combine
   labs(title = NULL) #remove plot titles
 ggsave(here("analysis", "figures", "growth_both_spei.png"), width = 7, height = 5)
 ```
+
 ### Difference
 
 ```{r}
@@ -601,7 +608,6 @@ g_diff_rotated <-
   NULL
 ggsave(here("analysis", "figures", "growth_diff_spei.png"),plot = g_diff_rotated, width = 7, height = 2.5)
 ```
-
 
 # Flowering Probability
 
@@ -647,8 +653,6 @@ these residuals are troubling
 summary(f_post_cf)
 ```
 
-
-
 ```{r}
 f_post_1ha <-
   bam(flwr ~ 
@@ -682,6 +686,7 @@ summary(f_post_1ha)
 plogis(coef(f_post_1ha)[1])
 plogis(coef(f_post_cf)[1])
 ```
+
 Overall probability of flowering higher in continuous forest (0.008) compared to 1ha fragments (0.003)
 
 ## Covariate plots
@@ -736,6 +741,7 @@ bind_rows("1-ha" = f_1ha_eval1, "CF" = f_cf_eval1, .id = "habitat") %>%
   labs(x = TeX("$log(size_t)$"), y = "P(flowering)")
 ggsave(here("analysis", "figures", "flwr_both_size.png"))
 ```
+
 ```{r paged.print=FALSE}
 demog_full %>% filter(ht < 1)
 demog_full %>% 
@@ -750,7 +756,9 @@ coef(f_post_1ha)[1] %>% plogis()
 Opposite of what plot shows.
 
 ## Crossbasis plot
+
 ### Get plot data
+
 `dist` isn't working yet in `smooth_estimates`, but that's ok because I don't need CI for these plots (yet).
 
 ```{r}
@@ -787,6 +795,7 @@ f_1ha_rotated <-
 ```
 
 ### CF
+
 ```{r}
 f_cf_rotated <-
   ggplot(f_cf_eval, aes(y = spei_history, x = L, fill = est, z = est)) +
@@ -805,9 +814,11 @@ f_cf_rotated <-
   annotation_custom(grob = ggplotGrob(season_bar), ymin = -Inf, ymax = min(s_cf_eval$spei_history), xmin = -Inf, xmax = Inf) +
   NULL
 ```
+
 ### Combine
-combine
-`
+
+combine \`
+
 ```{r}
   (f_cf_rotated + theme(axis.title.x = element_blank())) / 
   (f_1ha_rotated) + 
@@ -816,6 +827,7 @@ combine
   labs(title = NULL) #remove plot titles
 ggsave(here("analysis", "figures", "flwr_both_spei.png"), width = 7, height = 5)
 ```
+
 ### Difference
 
 ```{r}
@@ -842,4 +854,3 @@ f_diff_rotated <-
   NULL
 ggsave(here("analysis", "figures", "flwr_diff_spei.png"),plot = f_diff_rotated, width = 7, height = 2.5)
 ```
-

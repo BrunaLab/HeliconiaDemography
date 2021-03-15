@@ -12,6 +12,10 @@ output:
       - --lua-filter=../templates/pagebreak.lua
 bibliography: references.bib
 csl: "../templates/ecology.csl" # Insert path for the bib-style
+editor_options:
+  markdown:
+    wrap: sentence
+    canonical: true
 ---
 
 ```{r setup, include=FALSE, echo=FALSE}
@@ -301,8 +305,7 @@ trmm_spei <-
   select(-cb)
 ```
 
-The Tropical Rainfall Measuring Mission (TRMM) is a satellite product of global precipitation data from 1998-2019 at a resolution of 0.25º x 0.25º <!--# make sentence better -->[@tropicalrainfallmeasuringmissiontrmmTRMMTMPA3B432011].
-Monthly precipitation data from the TRMM 3B43 product was used in combination with potential evapotranspiration data from Xavier et al. [-@xavierDailyGriddedMeteorological2016] to calculate SPEI at BDFFP.
+The Tropical Rainfall Measuring Mission (TRMM) is a satellite product of global precipitation data from 1998-2019 at a resolution of 0.25º x 0.25º <!--# make sentence better -->[@tropicalrainfallmeasuringmissiontrmmTRMMTMPA3B432011]. Monthly precipitation data from the TRMM 3B43 product was used in combination with potential evapotranspiration data from Xavier et al. [-@xavierDailyGriddedMeteorological2016] to calculate SPEI at BDFFP.
 
 ## Global SPEI
 
