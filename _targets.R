@@ -49,9 +49,29 @@ tar_plan(
   eda_surv = plot_eda_surv_cohort(demog_done, plot_dates),
   eda_size = plot_eda_size(model_data, plot_dates),
   eda_flwr = plot_eda_flwr(model_data, plot_dates),
-  eda_plot = plot_eda_combine(eda_size, eda_surv, eda_flwr, eda_spei)
+  eda_plot = plot_eda_combine(eda_size, eda_surv, eda_flwr, eda_spei),
   
   # Model output figures
+
+  ## Survival
+  s_covar_plot = plot_covar_smooth(frag_model = s_1ha, cf_model = s_cf, covar = "log_size_prev") + 
+                  labs(x = TeX("$log(size_t)$"), y = "P(survival)"),
+  s_cb_plot = plot_cb_2panel(s_cf, s_1ha, binwidth = 0.002, response_lab = "P(survival)"),
+  s_cb_diff_plot = plot_cb_diff(s_cf, s_1ha, binwidth = 0.002, response_lab = "∆P(survival) (CF – 1ha)"),
+
+  ## Growth
+  g_covar_plot = plot_covar_smooth(frag_model = g_1ha, cf_model = g_cf, covar = "log_size_prev") +
+                  labs(x = TeX("$log(size_t)$"), y = TeX("$log(size_{t+1})")),
+  g_cb_plot = plot_cb_2panel(g_cf, g_1ha, binwidth = 0.05, response_lab = TeX("$log(size_{t+1})$")),
+  g_cb_diff_plot = plot_cb_diff(g_cf, g_1ha, binwidth = 0.05, response_lab = TeX("$\\Delta log(size_{t+1})$ (CF – 1ha)")),
+
+  ## Flowering
+  f_covar_plot = plot_covar_smooth(frag_model = f_1ha, cf_model = f_cf, covar = "log_size_prev") +
+                  labs(x = TeX("$log(size_t)$"), y = "P(flowering)"),
+  f_cb_plot = plot_cb_2panel(f_cf, f_1ha, binwidth = 0.001, response_lab = "P(flowering)"),
+  f_cb_diff_plot = plot_cb_diff(f_cf, f_1ha, binwidth = 0.001, response_lab = "∆Flowering (CF – 1ha)"),
   
+  # Main text
+  tar_render(paper, "doc/paper.Rmd")
   
 )
