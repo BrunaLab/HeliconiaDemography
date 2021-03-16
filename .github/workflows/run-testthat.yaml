@@ -34,3 +34,7 @@ jobs:
       run: |
         if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
         renv::restore()
+    - name: Run Tests
+      shell: Rscript {0}
+      run: |
+        source("tests/testthat.R")
