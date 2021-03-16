@@ -6,7 +6,8 @@
 <!-- badges: start -->
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/BrunaLab/HeliconiaDemography/master?urlpath=rstudio)
-<!-- [![R build status](https://github.com/BrunaLab/HeliconiaDemography/workflows/R-CMD-check/badge.svg)](https://github.com/BrunaLab/HeliconiaDemography/actions) -->
+[![Run
+Tests](https://github.com/BrunaLab/HeliconiaDemography/actions/workflows/run-testthat.yaml/badge.svg)](https://github.com/BrunaLab/HeliconiaDemography/actions/workflows/run-testthat.yaml)
 
 <!-- badges: end -->
 

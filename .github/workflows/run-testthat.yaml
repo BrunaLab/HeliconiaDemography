@@ -11,7 +11,7 @@ on:
       - master
 
   
-name: Run Tests
+name: tests
 
 jobs:
   run-tests:
