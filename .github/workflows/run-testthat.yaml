@@ -19,10 +19,10 @@ jobs:
     env:
       RENV_PATHS_ROOT: ~/.local/share/renv
     steps:
+    - uses: r-lib/actions/setup-r@v1
     
     - name: Cache packages
-    - uses: r-lib/actions/setup-r@v1
-    - uses: actions/cache@v1
+      uses: actions/cache@v1
       with:
         path: ${{ env.RENV_PATHS_ROOT }}
         key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
