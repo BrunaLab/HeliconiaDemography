@@ -1,0 +1,71 @@
+---
+title: "Anova tables for models"
+author: "Eric R. Scott"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+## target knits Rmds in their own session, so load libraries here.
+source(here::here("packages.R"))
+```
+```{r load-targets}
+withr::with_dir(here(),{
+  tar_load(c(s_cf, s_1ha, g_cf, g_1ha, f_cf, f_1ha))
+  })
+```
+
+# Analysis
+## Survival
+### Continuous
+```{r}
+summary(s_cf)
+```
+### Fragments
+```{r}
+summary(s_1ha)
+```
+## Growth
+### Continuous
+```{r}
+summary(g_cf)
+```
+### Fragments
+```{r}
+summary(g_1ha)
+```
+## Flowering
+### Continuous
+```{r}
+summary(f_cf)
+```
+### Fragments
+```{r}
+summary(f_1ha)
+```
+
+
+# Reproducibility
+
+<details><summary>Reproducibility receipt</summary>
+
+```{r}
+## datetime
+Sys.time()
+
+## repository
+if(requireNamespace('git2r', quietly = TRUE)) {
+  git2r::repository()
+} else {
+  c(
+    system2("git", args = c("log", "--name-status", "-1"), stdout = TRUE),
+    system2("git", args = c("remote", "-v"), stdout = TRUE)
+  )
+}
+
+## session info
+sessionInfo()
+```
+
+</details>

@@ -1,0 +1,418 @@
+---
+title: "Appendix 1: Quantifying Drought"
+author: "Eric R. Scott"
+date: '2020-09-13'
+output: 
+    bookdown::word_document2:
+      fig_caption: yes
+      reference_docx: "templates/template.docx" # Insert path for the DOCX file
+      pandoc_args:
+      - --lua-filter=templates/scholarly-metadata.lua
+      - --lua-filter=templates/author-info-blocks.lua
+      - --lua-filter=templates/pagebreak.lua
+bibliography: references.bib
+csl: "templates/ecology.csl" # Insert path for the bib-style
+editor_options:
+  markdown:
+    wrap: sentence
+    canonical: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  include = TRUE,
+  echo = FALSE,
+  collapse = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.path = "",
+  dpi = 300)
+source(here::here("packages.R"))
+```
+
+*Last compiled: `r Sys.Date()`* \# TODO
+
+-   Write brief text
+-   Possibly make a figure S2 that compares SPEI across BDFFP from east to west (3 panels), using all data with similar resolution
+
+When looking for data to calculate SPEI for the BDFFP site, there were a number of possible options.
+A review of global precipitation datasets [@sunReviewGlobalPrecipitation2018] shows that ground-based products are more accurate compared to satellite products for Brazil specifically.
+
+We calculated 3-month SPEI data calculated from a number of sources for the BDFFP site including on-site rain gauges, nearby weather stations, a satellite product, and a gridded land-based product.
+We then compared the calculated SPEI values to each other and to reported qualitative drought severity from literature.
+
+## EMBRAPA
+
+```{r embrapa-spei}
+withr::with_dir(here(),{
+  tar_load(embrapa_wide)
+  tar_load(embrapa_mon)
+})
+```
+
+Two weather stations within \_\_\_ km of BDFFP had data available through EMBRAPA (*Empresa Brasileira de Pesquisa Agropecuária*): Rio Preto da Eva to the East (-2.65º, -59.65º) and the Manaus station to the West (-2.65º, -60.35º).
+We downloaded daily precipitation and potential evapotranspiration data through the *infoclima* portal (<https://www.cnpaf.embrapa.br/infoclima/>), aggregated it to monthly, and calculated 3 month SPEI for each station separately.
+We then averaged the SPEI values for two stations at each month to produce monthly estimates for the BDFFP site.
+
+## BDFFP rain gauge data
+
+```{r}
+withr::with_dir(here::here(), {
+  tar_load(bdffp_spei)
+})
+```
+
+We obtained rain gauge data collected from 1987--2010 at BDFFP camps <!--# cite eventual BDFFP rainfall package -->.
+The precipitation data has a high degree of missingness due to camps being visited infrequently and because not all camps were active from 1987--2010.
+There we also a large number of observations representing accumulated rainfall over two or more days.
+We removed multi-day accumulations as it was impossible to know how rainfall was distributed over the prior days.
+Missing values were then imputed after averaging rainfall data by ranch.
+This averaging was necessary as the degree of missingness was too high for imputation to proceed for some camps.
+Multiple imputation was performed using the `Amelia` package and was informed by lags/leads, and seasonality [@honakerAmeliaIIProgram2011].
+We produced 10 imputed datasets which were then each aggregated monthly and used for calculating SPEI using potential evapotranspiration averaged from the two EMBRAPA weather stations.
+Then, the 10 resulting SPEI datasets were averaged to produce a single dataset.
+
+## Xavier et al.
+
+```{r xa-spei}
+withr::with_dir(here::here(), {
+  tar_load(xa_spei)
+})
+```
+
+Gridded data from Xavier et al. [-@xavierDailyGriddedMeteorological2016] was used to calculate SPEI as described in the main text.
+For figure S1, we used an average of SPEI values across all grid cells.
+
+## TRMM
+
+```{r trmm-spei}
+withr::with_dir(here::here(),{
+  tar_load(trmm_spei)
+})
+```
+
+The Tropical Rainfall Measuring Mission (TRMM) is a satellite product of global precipitation data from 1998-2019 at a resolution of 0.25º x 0.25º <!--# make sentence better -->[@tropicalrainfallmeasuringmissiontrmmTRMMTMPA3B432011].
+Monthly precipitation data from the TRMM 3B43 product was used in combination with potential evapotranspiration data from Xavier et al. [-@xavierDailyGriddedMeteorological2016] to calculate SPEI at BDFFP.
+
+## Global SPEI
+
+```{r global-spei}
+withr::with_dir(here::here(), {
+  tar_load(gspei)
+})
+```
+
+Lastly, we downloaded SPEI data from the Global SPEI dataset [@begueriaSbegueriaSPEIbaseVersion2017].
+These calculations were made using precipitation data from a gridded product based on land stations and evapotranspiration estimated with the Pennman-Montieth method.
+
+# Combine into single tidy data frame
+
+```{r}
+# take average across site
+xa_df <-
+  xa_spei %>% 
+  as_tibble() %>% 
+  group_by(yearmonth) %>% 
+  #Summarize across grid cells
+  summarize(xa_spei = mean(spei))
+
+trmm_df <-
+  trmm_spei %>% 
+  group_by(yearmonth) %>% 
+  summarize(trmm_spei = mean(trmm_spei))
+
+comb <-
+  full_join(xa_df, gspei) %>% 
+  full_join(trmm_df) %>% 
+  full_join(embrapa_wide %>% select(yearmonth, st_spei)) %>% 
+  full_join(bdffp_spei %>% select(yearmonth, bdffp_spei)) %>% 
+  pivot_longer(c(-yearmonth), names_to = "dataset", values_to = "spei") %>% 
+  filter(yearmonth > yearmonth(ymd("1990-01-01"))) %>% 
+  mutate(year = year(yearmonth), .before = yearmonth)
+```
+
+<!-- Annotate worst droughts.\ -->
+
+<!-- Expected: -->
+
+<!-- -   2004 & 2006: weak ENSO -->
+
+<!-- -   2002 & 2009: moderate ENSO -->
+
+<!-- -   1997: severe ENSO -->
+
+<!-- -   2005 & 2010: severe SST -->
+
+```{r}
+spei_table <-
+  comb %>% 
+  group_by(year, dataset) %>% 
+  mutate(min = min(spei, na.rm = TRUE)) %>% 
+  filter(spei == min) %>% 
+  mutate(month = month(yearmonth, label = TRUE)) %>% 
+  # summarize(min = min, month = month) %>%
+  filter(year %in% c(2002, 2004, 2006, 2009, 1997, 2005, 2010)) %>% 
+  select(year, dataset, spei, month) %>% 
+  mutate(dataset = str_remove(dataset, "_spei")) %>% 
+  pivot_wider(names_from = dataset, values_from = c(spei, month)) %>% 
+  add_column(cause = c("ENSO", "ENSO", "ENSO", "AMO", "ENSO", "ENSO", "AMO"), .after = "year") %>% 
+  mutate(`Global SPEI` = glue("{round(spei_g, 2)} ({month_g})"),
+         `Xavier et al.` = glue("{round(spei_xa, 2)} ({month_xa})"),
+         EMBRAPA = glue("{round(spei_st, 2)} ({month_st})"),
+         TRMM = glue("{round(spei_trmm, 2)} ({month_trmm})"),
+         BDFFP = glue("{round(spei_bdffp, 2)} ({month_bdffp})")) %>% 
+  ungroup()
+```
+
+```{r}
+library(gt)
+table <- 
+  gt(spei_table) %>% 
+  tab_style(
+    style = list(
+      cell_fill(color = "#ffffb2")
+    ),
+    locations = list(
+      cells_body(
+        columns = vars(`Global SPEI`),
+        rows = spei_g < 0 & spei_g >= -1
+      ),
+      cells_body(
+        columns = vars(EMBRAPA),
+        rows = spei_st < 0 & spei_st >= -1
+      ),
+      cells_body(
+        columns = vars(`Xavier et al.`),
+        rows = spei_xa < 0 & spei_xa >= -1
+      ),
+      cells_body(
+        columns = vars(TRMM),
+        rows = spei_trmm < 0 & spei_trmm >= -1
+      ),
+      cells_body(
+        columns = vars(BDFFP),
+        rows = spei_bdffp < 0 & spei_bdffp >= -1
+      )
+    )
+  ) %>% 
+  tab_style(
+    style = list(
+      cell_fill(color = "#fecc5c")
+    ),
+    locations = list(
+      cells_body(
+        columns = vars(`Global SPEI`),
+        rows = spei_g < -1 & spei_g >= -1.5
+      ),
+      cells_body(
+        columns = vars(EMBRAPA),
+        rows = spei_st < -1 & spei_st >= -1.5
+      ),
+      cells_body(
+        columns = vars(`Xavier et al.`),
+        rows = spei_xa < -1 & spei_xa >= -1.5
+      ),
+      cells_body(
+        columns = vars(TRMM),
+        rows = spei_trmm < -1 & spei_trmm >= -1.5
+      ),
+      cells_body(
+        columns = vars(BDFFP),
+        rows = spei_bdffp < -1 & spei_bdffp >= -1.5
+      )
+    )
+  ) %>% 
+  tab_style(
+    style = list(
+      cell_fill(color = "#fd8d3c")
+    ),
+    locations = list(
+      cells_body(
+        columns = vars(`Global SPEI`),
+        rows = spei_g < -1.5 & spei_g >= -2
+      ),
+      cells_body(
+        columns = vars(EMBRAPA),
+        rows = spei_st < -1.5 & spei_st >= -2
+      ),
+      cells_body(
+        columns = vars(`Xavier et al.`),
+        rows = spei_xa < -1.5 & spei_xa >= -2
+      ),
+      cells_body(
+        columns = vars(TRMM),
+        rows = spei_trmm < -1.5 & spei_trmm >= -2
+      ),
+      cells_body(
+        columns = vars(BDFFP),
+        rows = spei_bdffp < -1.5 & spei_bdffp >= -2
+      )
+    )
+  ) %>% 
+  tab_style(
+    style = list(
+      cell_fill(color = "#e31a1c")
+    ),
+    locations = list(
+      cells_body(
+        columns = vars(`Global SPEI`),
+        rows = spei_g < -2
+      ),
+      cells_body(
+        columns = vars(EMBRAPA),
+        rows = spei_st < -2
+      ),
+      cells_body(
+        columns = vars(`Xavier et al.`),
+        rows = spei_xa < -2
+      ),
+      cells_body(
+        columns = vars(TRMM),
+        rows = spei_trmm < -2
+      ),
+      cells_body(
+        columns = vars(BDFFP),
+        rows = spei_bdffp < -2
+      )
+    )
+  ) %>% 
+  cols_hide(starts_with(c("spei_", "month_"))) %>% 
+  tab_spanner("Lowest SPEI for the year (Month)", vars(`Global SPEI`, EMBRAPA, `Xavier et al.`, TRMM, BDFFP))
+# table
+# gtsave(table, here("analysis", "supplementary-materials", "spei_table.png"))
+#TODO: add citations to this table as footnotes on `cause` or a new column.
+```
+
+```{r}
+cap <- "Comparison of SPEI values and drought categories across datasets for major drought events in the Amazon. Mild, moderate, severe, and extreme drought are represented by yellow, goldenrod, orange, and red, respectively. Cause indicates whether the drought was caused by the El Niño Southern Oscillation (ENSO) or Atlantic Sea Surface Temperatures (AMO). The lowest SPEI value for the year identified by each dataset is reported, along with the month that minimum value occurred in."
+```
+
+```{r spei-table, fig.cap=cap}
+# knitr::include_graphics(here("analysis", "supplementary-materials", "spei_table.png"))
+table
+```
+
+# Plot
+
+Create a plot comparing data sources with known drought years labeled.
+
+```{r}
+spei_plot <- 
+  comb %>% 
+  group_by(year) %>% 
+  mutate(min_mon = spei == min(spei, na.rm = TRUE)) %>% 
+  mutate(drought_label = case_when(
+    year %in% c(2004, 2006) & min_mon ~ "weak ENSO",
+    year %in% c(2002, 2009) & min_mon ~ "moderate ENSO",
+    year == 1997 & min_mon ~ "severe ENSO",
+    year %in% c(2005, 2010) & min_mon ~ "severe SST"
+    )) %>% 
+  mutate(dataset = case_when(
+    dataset == "g_spei"  ~ "Global SPEI",   
+    dataset == "xa_spei" ~ "Xavier et al.",
+    dataset == "st_spei" ~ "EMBRAPA",
+    dataset == "trmm_spei" ~ "TRMM",
+    dataset == "bdffp_spei" ~ "BDFFP imputed"
+  ))
+```
+
+```{r}
+cap <- "Three-month SPEI at BDFFP calculated using 5 precipitation datasets.  Drought categories mild, moderate, severe, and extreme drought are represented by yellow, goldenrod, orange, and red panels, respectively."
+```
+
+```{r spei-plot, fig.cap=cap, fig.height=5, fig.width=10}
+labs <-
+  spei_plot %>%
+  filter(!is.na(drought_label)) %>% 
+  group_by(drought_label) %>% 
+  mutate(xend = mean(yearmonth, na.rm = TRUE))
+
+p <-
+  ggplot(spei_plot, aes(x = yearmonth, y = spei)) +
+  geom_line(aes(color = dataset), size = 0.5) +
+  scale_x_yearmonth(
+    "Date",
+    date_breaks = "1 year",
+    # date_minor_breaks = "1 month"
+  ) +
+  scale_y_continuous(TeX("SPEI_3_"),
+                     breaks = seq(-2.5, 2.5, 0.5))+
+  scale_color_discrete_qualitative() +
+  coord_cartesian(xlim = c("1995-02-01", "2009-02-01")) +
+  labs(color = "Dataset", linetype = "Dataset") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+# p
+annotate_spei(p)
+# ggsave(here("analysis", "supplementary-materials", "spei_comparison.png"))
+```
+
+<!-- # Notes -->
+
+<!-- ### Meterological stations -->
+
+<!-- -   EMBRAPA stations -->
+
+<!--     -   Estacao Rio Preto da Eva: -2.65º, -59.65º -->
+
+<!--     -   Estacao Manaus: -2.65º, -60.35º (note, this is not in Manaus city, but NW of it.) -->
+
+<!--     -   Date Range: 1980-present -->
+
+<!--     -   Unclear how evapotranspiration is calculated from the [information provided](https://www.embrapa.br/en/busca-de-solucoes-tecnologicas/-/produto-servico/6044/infoclima---informacoes-climaticas). -->
+
+<!-- ### Ground-based gridded products -->
+
+<!-- -   Daily gridded meteorological variables in Brazil [@xavierDailyGriddedMeteorological2016] -->
+
+<!--     -   Resolution 0.25º x 0.25º -->
+
+<!--     -   Includes precipitation and potential evapotranspiration -->
+
+<!--     -   PET calculated by Pennman-Monteith method -->
+
+<!--     -   Source: 3,625 ground-based weather stations across Brazil -->
+
+<!--     -   Date range: 1980--2015 -->
+
+<!-- -   Global SPEI [@santiago2017] -->
+
+<!--     -   Resolution: 0.5º x 0.5º -->
+
+<!--     -   Provides SPEI calculated using monthly precipitation and potential evapotranspiration estimated with the Pennman-Monteith method, which is considered a superior method to Thornwaite, which only takes temperature into account. -->
+
+<!--     -   Source: Precipitation from CRU TS version 4.03, a gridded product based on land stations. -->
+
+<!--     -   Date range: 1901--2018 -->
+
+<!-- ### Satelite and reanalysis products -->
+
+<!-- -   TRMM 3B43 <!--# doesn't go back far enough.  Not worth using? -->
+
+--\>
+
+<!--     -   Source DOI: 10.5067/TRMM/TMPA/MONTH/7 -->
+
+<!--     -   Resolution: 0.25º x 0.25º -->
+
+<!--     -   Includes: Monthly precip -->
+
+<!--     -   Doesn't include PET, so I guess I'll take that from the ground stations?? -->
+
+<!--     -   Date range: 1998--2019 -->
+
+<!-- -   PERSIANN-CDR -->
+
+<!--     -   only rainfall, but recommended by [@zhaoEvaluatingDroughtMonitoringUtility2019] for Amazonia. -->
+
+<!--     -   0.25º resolution -->
+
+<!--     -   1983--present -->
+
+# References
+
+<!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
+
+::: {#refs}
+:::
