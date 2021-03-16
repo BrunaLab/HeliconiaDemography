@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
   warning = FALSE,
   message = FALSE,
   comment = "#>",
-  fig.path = "",
+  fig.path = "figures/",
   dpi = 300)
 source(here::here("packages.R"))
 ```
@@ -156,7 +156,8 @@ spei_table <-
   select(year, dataset, spei, month) %>% 
   mutate(dataset = str_remove(dataset, "_spei")) %>% 
   pivot_wider(names_from = dataset, values_from = c(spei, month)) %>% 
-  add_column(cause = c("ENSO", "ENSO", "ENSO", "AMO", "ENSO", "ENSO", "AMO"), .after = "year") %>% 
+  add_column(cause = c("ENSO", "ENSO", "ENSO", "AMO", "ENSO", "ENSO", "AMO"), 
+             .after = "year") %>% 
   mutate(`Global SPEI` = glue("{round(spei_g, 2)} ({month_g})"),
          `Xavier et al.` = glue("{round(spei_xa, 2)} ({month_xa})"),
          EMBRAPA = glue("{round(spei_st, 2)} ({month_st})"),
@@ -279,8 +280,6 @@ table <-
   ) %>% 
   cols_hide(starts_with(c("spei_", "month_"))) %>% 
   tab_spanner("Lowest SPEI for the year (Month)", vars(`Global SPEI`, EMBRAPA, `Xavier et al.`, TRMM, BDFFP))
-# table
-# gtsave(table, here("analysis", "supplementary-materials", "spei_table.png"))
 #TODO: add citations to this table as footnotes on `cause` or a new column.
 ```
 
@@ -334,7 +333,6 @@ p <-
   scale_x_yearmonth(
     "Date",
     date_breaks = "1 year",
-    # date_minor_breaks = "1 month"
   ) +
   scale_y_continuous(TeX("SPEI_3_"),
                      breaks = seq(-2.5, 2.5, 0.5))+
@@ -343,9 +341,8 @@ p <-
   labs(color = "Dataset", linetype = "Dataset") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-# p
+
 annotate_spei(p)
-# ggsave(here("analysis", "supplementary-materials", "spei_comparison.png"))
 ```
 
 <!-- # Notes -->

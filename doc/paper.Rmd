@@ -58,7 +58,7 @@ Highlights: `r rmarkdown::metadata$highlights`
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
 	echo = FALSE,
-	fig.path = "../figures/",
+	fig.path = "figures/",
 	message = FALSE,
 	warning = FALSE,
 	collapse = TRUE,
