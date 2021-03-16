@@ -9,18 +9,20 @@ on:
     branches:
       - main
       - master
-env:
-  RENV_PATHS_ROOT: ~/.local/share/renv
+
   
 name: Run Tests
 
 jobs:
   run-tests:
     runs-on: macOS-latest
+    env:
+      RENV_PATHS_ROOT: ~/.local/share/renv
     steps:
     
     - name: Cache packages
-      uses: actions/cache@v1
+      - uses: r-lib/actions/setup-r@v1
+      - uses: actions/cache@v1
       with:
         path: ${{ env.RENV_PATHS_ROOT }}
         key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
