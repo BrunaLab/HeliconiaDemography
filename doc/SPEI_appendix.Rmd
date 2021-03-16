@@ -5,20 +5,20 @@ date: '2020-09-13'
 output: 
     bookdown::word_document2:
       fig_caption: yes
-      reference_docx: "../templates/template.docx" # Insert path for the DOCX file
+      reference_docx: "templates/template.docx" # Insert path for the DOCX file
       pandoc_args:
-      - --lua-filter=../templates/scholarly-metadata.lua
-      - --lua-filter=../templates/author-info-blocks.lua
-      - --lua-filter=../templates/pagebreak.lua
+      - --lua-filter=templates/scholarly-metadata.lua
+      - --lua-filter=templates/author-info-blocks.lua
+      - --lua-filter=templates/pagebreak.lua
 bibliography: references.bib
-csl: "../templates/ecology.csl" # Insert path for the bib-style
+csl: "templates/ecology.csl" # Insert path for the bib-style
 editor_options:
   markdown:
     wrap: sentence
     canonical: true
 ---
 
-```{r setup, include=FALSE, echo=FALSE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   include = TRUE,
   echo = FALSE,
@@ -28,23 +28,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "",
   dpi = 300)
-library(tidyverse)
-library(here)
-library(conflicted)
-library(SPEI)
-library(tsibble)
-library(lubridate)
-library(glue)
-library(colorspace)
-library(latex2exp)
-library(janitor)
-library(Amelia)
-
-library(HeliconiaDemography)
-
-conflict_prefer("lag", "dplyr")
-conflict_prefer("filter", "dplyr")
-conflict_prefer("select", "dplyr")
+source(here::here("packages.R"))
 ```
 
 *Last compiled: `r Sys.Date()`* \# TODO
@@ -61,44 +45,10 @@ We then compared the calculated SPEI values to each other and to reported qualit
 ## EMBRAPA
 
 ```{r embrapa-spei}
-rpde <-
-  read_csv(here("analysis", "data", "raw_data", "embrapa", "Estacao_Rio Preto da Eva_1980-01-01_2016-12-31.csv")) %>% 
-  select(date = Data,
-         precip = Precipitacao,
-         eto = Evatotranspiracao,
-  )
-manaus <-
-  read_csv(here("analysis", "data", "raw_data", "embrapa", "Estacao_Manaus_1980-01-01_2016-12-31.csv"))%>% 
-  select(date = Data,
-         precip = Precipitacao,
-         eto = Evatotranspiracao,
-  )
-
-embrapa_mon <-
-  bind_rows("rpde" = rpde, "manaus" = manaus, .id = "station") %>% 
-  mutate(yearmonth = yearmonth(date), .after = date) %>% 
-  group_by(yearmonth, station) %>% 
-  summarize(across(c(precip, eto), sum), .groups = "drop") %>% 
-  as_tsibble(index = yearmonth, key = station)
-
-embrapa_spei <-
-  embrapa_mon %>% 
-  mutate(cb = precip - eto) %>% 
-  group_by(station) %>% 
-  group_nest() %>% 
-  mutate(st_spei = map(data, ~as.numeric(spei(.x$cb, scale = 3)$fitted))) %>% 
-  unnest(c(st_spei, data)) %>% 
-  select(-cb) 
-
-embrapa_wide <-
-  embrapa_spei %>% 
-  select(yearmonth, station, st_spei) %>% 
-  pivot_wider(names_from = station,
-              values_from = st_spei,
-              names_prefix = "spei_") %>% 
-  rowwise() %>% 
-  mutate(st_spei = mean(c(spei_manaus, spei_rpde))) %>% 
-  ungroup()
+withr::with_dir(here(),{
+  tar_load(embrapa_wide)
+  tar_load(embrapa_mon)
+})
 ```
 
 Two weather stations within \_\_\_ km of BDFFP had data available through EMBRAPA (*Empresa Brasileira de Pesquisa Agropecuária*): Rio Preto da Eva to the East (-2.65º, -59.65º) and the Manaus station to the West (-2.65º, -60.35º).
@@ -108,137 +58,9 @@ We then averaged the SPEI values for two stations at each month to produce month
 ## BDFFP rain gauge data
 
 ```{r}
-# Read in data 
-#Change to something like this once repo is public
-# bdffp_daily <- read_csv("https://raw.githubusercontent.com/BrunaLab/Heliconia-Drought/master/data_cleaned/daily_precip.csv")
-bdffp_daily <- read_csv(here("analysis", "data", "raw_data", "daily_precip.csv"))
-# Prep data for imputation ------------------------------------------------
-
-# remove accumulations
-bdffp2 <-
-  bdffp_daily %>% 
-  filter(!flag %in% c("A", "U"))
-
-# spread and add rows for missing dates
-bdffp_wide <- 
-  bdffp2 %>% 
-  #complete all the dates
-  as_tsibble(key = site, index = date) %>% 
-  fill_gaps() %>% 
-  select(date, site, precip) %>% 
-  as_tibble() %>% 
-  pivot_wider(names_from = site, values_from = precip) %>% 
-  clean_names()
-
-# Cluster sites by ranch to reduce missingness
-bdffp_wide2 <-
-  bdffp_wide %>% 
-  rowwise() %>% 
-  mutate(colosso_clust = mean(c(colosso, florestal, cabo_frio, gaviao),
-                              na.rm = TRUE),
-         km_clust = mean(c(km37, km41),
-                         na.rm = TRUE)) %>% 
-  mutate(across(colosso_clust:km_clust, ~ifelse(is.nan(.x), NA, .x))) %>% 
-  select(-cabo_frio, -colosso, -florestal, -gaviao, -km37, -km41)
-
-# add additional representations of time for Amelia.
-full_wide <- 
-  bdffp_wide2 %>% 
-  mutate(
-    year = year(date),
-    doy = yday(date),
-    yearmonth = yearmonth(date),
-    .before = everything()
-  )
-```
-
-```{r imputation, cache=TRUE}
-# Impute missing data -----------------------------------------------------
-# round(runif(1, 1, 1000))
-set.seed(937)
-all_cols <- colnames(select(full_wide, -year, -doy, -date))
-
-# histograms <-
-#   map(all_cols, ~{
-#     ggplot(full_wide, aes(full_wide[[.x]])) + geom_histogram() + labs(title = .x)
-#   })
-# histograms
-
-# variables with log-normal-ish distributions
-
-log_cols <-
-  all_cols[str_detect(all_cols, "precip") |
-             all_cols %in% c("km_clust", "colosso_clust", "porto_alegre", "dimona")]
-
-imp <- 
-  amelia(
-    as.data.frame(full_wide),
-    p2s = 0,
-    m = 10,
-    ts = "doy",
-    cs = "year",
-    intercs = TRUE,
-    polytime = 3,
-    logs = log_cols,
-    idvars = c("date"),
-    parallel = "multicore",
-    ncpus = detectCores() - 1,
-    empri = .01 * nrow(full_wide) #ridge penalty because of high degree of missingness
-  )
-# imp$imputations[[1]]
-```
-
-```{r}
-# Prep eto data for SPEI calculation
-# Aggregate by month
-imp_mon <-
-  map(imp$imputations, ~{
-    .x %>% 
-      rename_with(~paste0(., ".precip"), c(dimona, porto_alegre, colosso_clust, km_clust)) %>% 
-      select(date, ends_with(".precip")) %>% 
-      mutate(yearmonth = tsibble::yearmonth(date)) %>% 
-      group_by(yearmonth) %>% 
-      summarize(across(-date, ~sum(.x, na.rm = TRUE))) %>% 
-      #remove first and last month, as they aren't complete
-      slice(-1, -nrow(.))
-  })
-# Add mean ETO from EMBRAPA data
-imp_mon <-
-  map(imp_mon, ~ {
-    left_join(.x, embrapa_mon %>% summarize(eto = mean(eto)), by = "yearmonth")
-  }) %>% 
-  map(., ~{
-    mutate(.x, across(ends_with(".precip"),
-                      ~ .x - eto,
-                      .names = "{str_remove(col, '.precip')}.cb"))
-  })
-# imp_mon$imp1
-```
-
-```{r}
-# Calculate SPEI3 (i.e. 3-month window SPEI)
-
-imp_spei <-
-  map(imp_mon, ~{
-  .x %>% 
-    mutate(across(ends_with(".cb"), ~as.numeric(SPEI::spei(.x, scale = 3)$fitted),
-                  .names = "{str_remove(col, '.cb')}.spei")) %>%
-      select(yearmonth, ends_with(c(".precip", ".spi", ".spei")))
-}) 
-# imp_spei$imp1
-# Combine multiply imputed SPI and SPEI results by taking mean
-bdffp_spei <- 
-  imp_spei %>%
-  bind_rows(.id = "imp") %>% 
-  #replace any infinite values with NAs
-  mutate(across(ends_with(".spei"), ~ ifelse(is.infinite(.x), NA, .x))) %>% 
-  group_by(yearmonth) %>% 
-  summarize(across(where(is.numeric), ~mean(., na.rm = TRUE))) %>% 
-  #replace NaN's with NAs
-  mutate(across(ends_with(".spei"), ~ ifelse(is.nan(.x), NA, .x))) %>% 
-  rowwise() %>% 
-  mutate(bdffp_spei = mean(c_across(ends_with(".spei")))) %>% 
-  ungroup()
+withr::with_dir(here::here(), {
+  tar_load(bdffp_spei)
+})
 ```
 
 We obtained rain gauge data collected from 1987--2010 at BDFFP camps <!--# cite eventual BDFFP rainfall package -->.
@@ -254,24 +76,9 @@ Then, the 10 resulting SPEI datasets were averaged to produce a single dataset.
 ## Xavier et al.
 
 ```{r xa-spei}
-xa <- read_csv(here("analysis", "data", "raw_data", "xavier_daily_0.25x0.25.csv"))
-#aggregate monthly, then calculate climate water balance.
-xa_mon <-
-  xa %>% 
-  unite(latlon, lat, lon, sep = ", ") %>% 
-  mutate(yearmonth = yearmonth(date), .after = date) %>% 
-  group_by(yearmonth, latlon) %>% 
-  summarize(across(c(precip, eto), sum), .groups = "drop") %>% 
-  as_tsibble(index = yearmonth, key = latlon)
-
-xa_spei <-
-  xa_mon %>% 
-  mutate(cb = precip - eto) %>% 
-  group_by(latlon) %>%
-  group_nest() %>% 
-  mutate(xa_spei = map(data, ~as.numeric(spei(.x$cb, scale = 3)$fitted))) %>% 
-  unnest(c(xa_spei, data)) %>% 
-  select(-cb)
+withr::with_dir(here::here(), {
+  tar_load(xa_spei)
+})
 ```
 
 Gridded data from Xavier et al. [-@xavierDailyGriddedMeteorological2016] was used to calculate SPEI as described in the main text.
@@ -280,41 +87,20 @@ For figure S1, we used an average of SPEI values across all grid cells.
 ## TRMM
 
 ```{r trmm-spei}
-trmm <- read_csv(here("analysis", "data", "raw_data", "trmm.csv"))
-trmm2 <-
-  trmm %>% 
-  unite(latlon, lat, long, sep = ", ") %>% 
-  mutate(yearmonth = yearmonth(date), .after = date)
-# fortunately xa_mon has same latlon, so can join eto
-
-unique(xa_mon$latlon) %in% unique(trmm2$latlon)
-
-trmm_ts <- 
-  left_join(trmm2, xa_mon %>% select(yearmonth, latlon, eto), by = c("yearmonth", "latlon")) %>% 
-  #I guess I only need grid cells that are also in the Xavier et al. dataset?
-  filter(!is.na(eto)) %>% 
-  as_tsibble(index = yearmonth, key = latlon)
-
-trmm_spei <- 
-  trmm_ts %>% 
-  mutate(cb = precip - eto) %>% 
-  group_by(latlon) %>% 
-  group_nest() %>% 
-  mutate(trmm_spei = map(data, ~as.numeric(spei(.x$cb, scale = 3)$fitted))) %>% 
-  unnest(c(trmm_spei, data)) %>% 
-  select(-cb)
+withr::with_dir(here::here(),{
+  tar_load(trmm_spei)
+})
 ```
 
-The Tropical Rainfall Measuring Mission (TRMM) is a satellite product of global precipitation data from 1998-2019 at a resolution of 0.25º x 0.25º <!--# make sentence better -->[@tropicalrainfallmeasuringmissiontrmmTRMMTMPA3B432011]. Monthly precipitation data from the TRMM 3B43 product was used in combination with potential evapotranspiration data from Xavier et al. [-@xavierDailyGriddedMeteorological2016] to calculate SPEI at BDFFP.
+The Tropical Rainfall Measuring Mission (TRMM) is a satellite product of global precipitation data from 1998-2019 at a resolution of 0.25º x 0.25º <!--# make sentence better -->[@tropicalrainfallmeasuringmissiontrmmTRMMTMPA3B432011].
+Monthly precipitation data from the TRMM 3B43 product was used in combination with potential evapotranspiration data from Xavier et al. [-@xavierDailyGriddedMeteorological2016] to calculate SPEI at BDFFP.
 
 ## Global SPEI
 
 ```{r global-spei}
-gspei <-
-  read_delim(here("analysis", "data", "raw_data", "global_spei_-59.75_-2.25.csv"),
-             delim = ";") %>% 
-  rename(date = "days since 1900-1-1", g_spei = spei) %>% 
-  mutate(yearmonth = yearmonth(date), date = NULL)
+withr::with_dir(here::here(), {
+  tar_load(gspei)
+})
 ```
 
 Lastly, we downloaded SPEI data from the Global SPEI dataset [@begueriaSbegueriaSPEIbaseVersion2017].
@@ -326,9 +112,10 @@ These calculations were made using precipitation data from a gridded product bas
 # take average across site
 xa_df <-
   xa_spei %>% 
+  as_tibble() %>% 
   group_by(yearmonth) %>% 
   #Summarize across grid cells
-  summarize(xa_spei = mean(xa_spei))
+  summarize(xa_spei = mean(spei))
 
 trmm_df <-
   trmm_spei %>% 
@@ -340,7 +127,7 @@ comb <-
   full_join(trmm_df) %>% 
   full_join(embrapa_wide %>% select(yearmonth, st_spei)) %>% 
   full_join(bdffp_spei %>% select(yearmonth, bdffp_spei)) %>% 
-  pivot_longer(-yearmonth, names_to = "dataset", values_to = "spei") %>% 
+  pivot_longer(c(-yearmonth), names_to = "dataset", values_to = "spei") %>% 
   filter(yearmonth > yearmonth(ymd("1990-01-01"))) %>% 
   mutate(year = year(yearmonth), .before = yearmonth)
 ```
@@ -502,7 +289,8 @@ cap <- "Comparison of SPEI values and drought categories across datasets for maj
 ```
 
 ```{r spei-table, fig.cap=cap}
-knitr::include_graphics(here("analysis", "supplementary-materials", "spei_table.png"))
+# knitr::include_graphics(here("analysis", "supplementary-materials", "spei_table.png"))
+table
 ```
 
 # Plot
