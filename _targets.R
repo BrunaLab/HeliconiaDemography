@@ -67,9 +67,19 @@ tar_plan(
   f_cf = fit_flwr(model_data_cf),
   f_1ha = fit_flwr(model_data_1ha),
   
+  ## With flowering in previous year as covariate
+  
+  s_cf_flwr = fit_surv(model_data_cf, flwr_prev = TRUE),
+  s_1ha_flwr= fit_surv(model_data_1ha, flwr_prev = TRUE),
+  g_cf_flwr = fit_growth(model_data_cf, flwr_prev = TRUE),
+  g_1ha_flwr= fit_growth(model_data_1ha, flwr_prev = TRUE),
+  f_cf_flwr = fit_flwr(model_data_cf, flwr_prev = TRUE),
+  f_1ha_flwr= fit_flwr(model_data_1ha, flwr_prev = TRUE),
+  
   # Validate and summarize results
   tar_render(validate_models, "doc/validate_models.Rmd"),
   tar_render(model_summary, "doc/model_summary.Rmd"),
+  tar_render(cost_of_reproduction, "doc/cost_of_reproduction.Rmd"),
   
   # Descriptive / Exploratory Data Analysis Figures
   normals = normals_data(),
@@ -92,6 +102,7 @@ tar_plan(
 
   ## Growth
   g_covar_plot = plot_covar_smooth(frag_model = g_1ha, cf_model = g_cf, covar = "log_size_prev") +
+                  geom_abline(slope = 1, color = "red", linetype = 2) +
                   labs(x = TeX("$log(size_t)$"), y = TeX("$log(size_{t+1})")),
   g_spei_plot = plot_cb_2panel(g_cf, g_1ha, binwidth = 0.05, response_lab = TeX("$log(size_{t+1})$")),
   g_spei_diff_plot = plot_cb_diff(g_cf, g_1ha, binwidth = 0.05, response_lab = TeX("$\\Delta log(size_{t+1})$ (CF – 1ha)")),
