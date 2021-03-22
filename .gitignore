@@ -36,6 +36,7 @@
 # Figures and documents
 *.png
 *.docx
+!doc/templates/template.docx
 *.nb.html
 *.html
 
