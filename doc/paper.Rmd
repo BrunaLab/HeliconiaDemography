@@ -400,12 +400,13 @@ The random effect of plot also had a significant effect in both habitats (p \< 0
 
 #### Citations / information to allocate to appropriate paragraphs
 
--    @criley1994 : under hort conditions, shoots that flower in spring emerge in June/July the previous year.
+-   @criley1994 : under hort conditions, shoots that flower in spring emerge in June/July the previous year.
     \~6 months after shoot emergence that the developing infloresence is susceptible to adverse effects.
 
 -   @dowd (unpublished thesis, could write MB and ask for update): precipitation and fragmentations influenced fruit/seed production by Heliconia (one step past flaowering, so might be worth citing to say that there are other ways reprod. can be affected
 
--   Lots of great stuff about the importance of rhizomes, including for drought resistance, in @klimeová2018. Rhizome resistance to variability in environmental conditions also a conclusion in this study on invasion by another zingiberales ( @pinheiro2021
+-   Lots of great stuff about the importance of rhizomes, including for drought resistance, in @klimeová2018.
+    Rhizome resistance to variability in environmental conditions also a conclusion in this study on invasion by another zingiberales ( @pinheiro2021
 
 -   @westerband2017: *Heliconia* grew more at low than high precipitation.
     Leaf life span and biomass allocation did not differ among treatments.
@@ -438,9 +439,10 @@ The random effect of plot also had a significant effect in both habitats (p \< 0
 
 -   @rundel1998 Heliconia appear to allocate much of their above-ground biomass to leaf tissues and have a relatively low investment in support tissues.
     Investment in leaf form vs structure interpreted as a trade-off between economy and protection against tissue loss from falling branches; presence of below-ground rhizomes in Heliconia may be key.
-    See also @rundel2020 \
+    See also @rundel2020\
 
--    @stiles1975?: drought resulted in less flowering in Heliconia
+-   @stiles1975?:
+    drought resulted in less flowering in Heliconia
 
 -   @mulkey1996 and @bonal2016 will have goods stuff; haven't looked them over yet\
 
@@ -544,7 +546,7 @@ We thank ----, ----, ----, and --- anonymous reviewers for helpful discussions a
 We also thank the technicians and students who helped conduct the *Heliconia* censuses and the BDFFP and INPA for logistical support.
 Financial support was provided by the U.S.
 National Science Foundation (awards DEB-0614339, DEB-0614149, INT 98-06351, and DEB-1948607).
-This is publication No. ---- in the BDFFP Technical Series.
+This is publication No. ------ in the BDFFP Technical Series.
 
 If TRMM data is used, they suggest: "The TMPA data were provided by the\
 NASA/Goddard Space Flight Center's Mesoscale Atmospheric Processes Laboratory and\
