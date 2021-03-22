@@ -398,6 +398,52 @@ The random effect of plot also had a significant effect in both habitats (p \< 0
 
 # Discussion
 
+#### Citations / information to allocate to appropriate paragraphs
+
+-    @criley1994 : under hort conditions, shoots that flower in spring emerge in June/July the previous year.
+    \~6 months after shoot emergence that the developing infloresence is susceptible to adverse effects.
+
+-   @dowd (unpublished thesis, could write MB and ask for update): precipitation and fragmentations influenced fruit/seed production by Heliconia (one step past flaowering, so might be worth citing to say that there are other ways reprod. can be affected
+
+-   Lots of great stuff about the importance of rhizomes, including for drought resistance, in @klimeová2018. Rhizome resistance to variability in environmental conditions also a conclusion in this study on invasion by another zingiberales ( @pinheiro2021
+
+-   @westerband2017: *Heliconia* grew more at low than high precipitation.
+    Leaf life span and biomass allocation did not differ among treatments.
+    The effect of environmental variability was dependent on early life conditions as well as precipitation, suggesting that generalist species may experience high fitness as forest environments become more variable by maintaining high growth at the expense of survival.
+
+-   the observed effects on reproduction can have effects beyond demography, eg.
+    gene flow and genetic structure among and between plots already shaped by fragmentation ( @cortes2013, there can also be drought effects eg @sifres2006)
+
+-   There can be cascading effects on other species (hispine beetles that depend on Heliconia flowers/fruits, hummingbirds and seed dispersers ( @stiles1975
+
+-   @wright1992: seasonal drought.
+    experimental irrigation influences survival and growth of tropical herbs
+
+-   Effects of precip extremes on understory plants can be also be indirect:
+
+    -   high precip = lots of clouds, less photosynthesis, less or slower growth
+
+    -   low precip = trees lose leaves or die, more light gets through or gaps open.
+        This can be positive (more light = more growth) but not always ( @westerband2015) there is a threshold that can lead to photoinhibition ( @he1996, @mulkey1991).
+        Drought and herbivory effects can be additive, at least in seedlings ( @barton2020)
+
+-   @horvitz1988: no evidence for short term (next season) cost of reproduction in another understory monocot (Calathea) BUT
+
+-   @horvitz2002 Survival of juveniles was positively affected by plant size, but not by herbivory, local competition, or fruit production.
+    Survival of large stages was not generally affected by any of the factors.
+    Relative growth rates of all stages were negatively affected by plant size; larger plants grew more slowly than smaller plants.
+    Additionally, growth rate of juveniles was negatively affected by local competition, whereas growth rate of reproductives was positively affected by reproduction.
+    Next year's inflorescence production was positively affected by plant size for both pre-reproductive and reproductive stages.
+    For reproductives, it was additionally positively affected by current fruit production.
+
+-   @rundel1998 Heliconia appear to allocate much of their above-ground biomass to leaf tissues and have a relatively low investment in support tissues.
+    Investment in leaf form vs structure interpreted as a trade-off between economy and protection against tissue loss from falling branches; presence of below-ground rhizomes in Heliconia may be key.
+    See also @rundel2020 \
+
+-    @stiles1975?: drought resulted in less flowering in Heliconia
+
+-   @mulkey1996 and @bonal2016 will have goods stuff; haven't looked them over yet\
+
 <!--# in intro, questions are 1: what are effects on vital rates, 2: are effects delayed, 3: differences between habitats.  Keep the same order here? -->
 
 1.  Understanding how landscape structure and environmental conditions act to influence population dynamics is fundamental to many of the emerging conceptual frameworks for studying and conserving fragmented landscapes [@didhamRethinkingConceptualFoundations2012; @driscollConceptualDomainMatrix2013].
