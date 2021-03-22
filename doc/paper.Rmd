@@ -240,6 +240,8 @@ cap <- "Timeseries of demographic parameters and drought ocurrence. Mean plant s
 eda_plot
 ```
 
+<!--# consider boxplots or median ± IQR for panel a) -->
+
 The meteorological drought occurrences indicated by SPEI mostly agree with drought events in the Amazon reported in the literature.
 For example, the drought associated with the 1997 El Niño Southern Oscillation (ENSO) event was one of the most severe on record for the Amazon [@williamsonAmazonianTreeMortality2000]; correspondingly, 1997 has the lowest SPEI values in our timeseries (Figure \@ref(fig:eda)d).\
 The 2005 dry season (June--October) was also reported as an exceptionally dry year, although this drought mostly affected the south western Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008].
@@ -312,6 +314,8 @@ cap <- "Smooth effect of plant size in year t on plant size in year t+1 modeled 
 g_covar_plot
 ```
 
+<!--# Is growth really higher in fragments?  Probably, since fig2 shows size becoming more similar over time.   -->
+
 Size in year t was a significant predictor of size in year t+1 (p \< 0.001).
 The 95% confidence intervals for the effect of size in year t in fragments and continuous forest overlapped for most sizes, but was slightly higher in continuous forest for mid-sized plants (Figure \@ref(fig:growth-size)).
 
@@ -374,7 +378,7 @@ f_spei_plot
 Drought history had a significant effect on flowering probability in both habitat types (p \< 0.001).
 Flowering probability was overall higher at all values of SPEI in continuous forest compared to 1-ha fragments (Figure \@ref(fig:flwr-spei)).
 The effects of SPEI on flowering probability were also stronger and more complex in continuous forest compared to fragments (1-ha edf = 8.5, continuous forest edf = 10.5).
-In continuous forest, flowering probability was increased by recent drought (at lag = 0 with SPEI \< -1) and drought at lags 15--20 (Jun-Nov, the dry season in the previous year).
+In continuous forest, flowering probability was increased by recent drought (at lag = 0 with SPEI \< -1) and drought at lags 15--20 (Jun-Nov, two dry seasons ago).
 Drought at lags 7--13 reduced flowering probability.
 The shape of the crossbasis function was similar in 1-ha fragments, but significantly muted (Figure \@ref(fig:flwr-spei)a).
 That is, the variation in fitted values along the SPEI dimension was much lower at all values of the lag dimension in fragments.
@@ -400,45 +404,58 @@ The random effect of plot also had a significant effect in both habitats (p \< 0
 
 2.  Further evidence delayed effects may be the rule (emphasis on demographic modeling)
 
-    -   This study adds to the growing body of work that finds delayed effects of climate drivers on vital rates without *a priori* assumptions about the influence of particular climate windows [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
-    -   We found evidence for delayed effects of drought which are sometimes better predictors of vital rates than more recent conditions.
-    -   Delayed effects of climate on plant vital rates may be the rule, rather than the exception.
-    -   distributed lag non-linear models offer an unbiased way of identifying these delayed effects (but see @pierreCriticalWindowsMethod2020 for an alternative method). <!--# maybe the previous sentence goes in methods? -->
+    This study adds to the growing body of work that finds delayed effects of climate drivers on vital rates without *a priori* assumptions about the influence of particular climate windows [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
+    We found evidence for delayed effects of drought which, in our models, are sometimes stronger predictors of vital rates than more recent conditions.
+    Distributed lag non-linear models offer an unbiased way of identifying these delayed effects without overfitting (but see @pierreCriticalWindowsMethod2020 and @ogleQuantifyingEcologicalMemory2015a for alternative methods), yet few demographic studies have the data required for modeling lagged effects [@tellerLinkingDemographyDrivers2016; @croneHowPlantEcologists2011].
 
-3.  What makes our results important is that we went the next step: we not only found that there were delayed effects, but that these effects different by habitat and life-history stage.
+3.  What makes our results important is that we went the next step: we not only found that there were delayed effects, but that these effects different by habitat ~~and life-history stage~~ <!--# we didn't really do this.  This implies a size * SPEI interaction -->.
     [this lays out what these patterns are]
 
--   Growth v Survivorship v Flowering
+    -   Survival at mean SPEI was similar in fragments and continuous forest for all plant sizes.
+        Plants were smaller in forest fragments, but grew slightly faster than plants in continuous forest, closing the size gap over the decade of data.
 
--   What look like small changes in vital rates add up over time, especially for slow-growing, long-lived organisms [@gagnonGrowthUnderstoryHerb2011].
+    -   However, the effect of varying SPEI on survival and growth was much greater in fragments.
 
--   Average flowering probability of plants in continuous forest is equivalent to flowering once every \_\_\_ years compared to once every \_\_\_ years in 1-ha fragments (assuming plant remains the same size and SPEI is average).
-    <!--# from model intercepts -->
+    -   At all sizes, variation in SPEI had a greater impact on both growth and survival.
+        Both unusually wet and unusually dry conditions resulted in reductions in survival in fragments, with lagged effects of up to around 15 months.
+        Similarly for plant size, extremes in both directions in the census month caused reductions in growth in fragments.
+        However, the lagged effects of SPEI on plant size depended on season with the general pattern of unusually dry wet seasons and unusually wet dry seasons being beneficial to plant growth.
+        Together, this could possibly be explained by reduced microclimate buffering in forest fragments.
+        More research... <!--# add more, possibly move this whole paragraph. -->
 
--   Previous work has shown flowering probability to be an important vital rate.
-    Our results confirm those of Bruna and Kress [-@brunaHabitatFragmentationDemographic2002] showing that probability of flowering increases with plant size, and is higher in continuous forests due to the greater number of large plants compared to fragments.
+    -   What look like small changes in vital rates add up over time, especially for slow-growing, long-lived organisms [@gagnonGrowthUnderstoryHerb2011].
 
--   Two dry seasons ago (lag of 15--20 months) is important for all three vital rates, but most clearly for flowering where drought in this period increases flowering probability.
+    -   Our results confirm those of Bruna and Kress [-@brunaHabitatFragmentationDemographic2002] showing that probability of flowering increases with plant size, and is higher in continuous forests due to the greater number of large plants compared to fragments.
+        <!--# combine with first bullet point. -->
 
--   The increase in flowering rate of plants following a drought could be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018].
+    -   Average flowering probability of plants in continuous forest is equivalent to flowering once every \_\_\_ years compared to once every \_\_\_ years in 1-ha fragments (assuming plant remains the same size and SPEI is average).
+        <!--# from model intercepts -->
+
+    -   Two dry seasons ago (lag of 15--20 months) is important for all three vital rates, but most clearly for flowering where drought in this period increases flowering probability.
+
+    -   The increase in flowering rate of plants following a drought could be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018].
+
+    -   We also considered that some delayed effects could be a result of a cost of reproduction (triggered by an extreme SPEI) leading to reduced growth, survival, and/or flowering probability in the following season.
+        However, when flowering in the previous season is included as a covariate, it predicts higher growth and flowering probability---likely a reflection of size being a good predictor of these vital rates (Supplemental\_\_\_).
+        <!--# double-check against models and edit. -->
 
 4.  Mechanisms [this lays out the biological, fragmentation-related mechanisms underpinning these patterns]
 
--   I gather that in a good year, plants can store carbon and nutrients in rhizomes and then mobilize as needed and the opposite is true in a bad year.
-    Flowering is a big investment so perhaps flowering in one year means that you don't flower the following one.
-    If that is the case, it would make sense to include growth in the previous year as a covariate in all analyses rather than do this indirectly via a potential effect of past SPEI on past growth.
-    It will also be easier to explain as you write the paper.
-    **Emilio will look into physiological responses to light and H20 in the horticultural and ecological literature, eg. Westerband papers, esp if focusing on herbs** Basically anything on how more or less precip influences vital rates or how plants respond to them, esp if linked to changes in canopy openness, litterfall, flowering in ENSO years, Bruna transplant experiments, Heliconia germination in secondary forest, important to emphasize: results are often counter-intuitive.
+    -   I gather that in a good year, plants can store carbon and nutrients in rhizomes and then mobilize as needed and the opposite is true in a bad year.
+        Flowering is a big investment so perhaps flowering in one year means that you don't flower the following one.
+        If that is the case, it would make sense to include growth in the previous year as a covariate in all analyses rather than do this indirectly via a potential effect of past SPEI on past growth.
+        It will also be easier to explain as you write the paper.
+        **Emilio will look into physiological responses to light and H20 in the horticultural and ecological literature, eg. Westerband papers, esp if focusing on herbs** Basically anything on how more or less precip influences vital rates or how plants respond to them, esp if linked to changes in canopy openness, litterfall, flowering in ENSO years, Bruna transplant experiments, Heliconia germination in secondary forest, important to emphasize: results are often counter-intuitive.
 
--   cite Esteban et al. 2021 for negative effects of large positive SPEI
+    -   cite Esteban et al. 2021 for negative effects of large positive SPEI
 
--   The increase in flowering rate of plants following a drought could be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018] <!--# add another more general citation. e.g. S. Joe Wright trees flowering after ENSO -->.
+    -   The increase in flowering rate of plants following a drought could be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018] <!--# add another more general citation. e.g. S. Joe Wright trees flowering after ENSO -->.
 
--   Alternatively, the delayed effect of drought could be due to indirect effects mediated by canopy openness.
-    In Manaus, canopy is as green or greener in dry season compared to wet season [@guanPhotosyntheticSeasonalityGlobal2015], so dry season drought has the potential to increase solar radiation if it causes reductions in canopy cover.
-    Tree mortality (CITATIONS) and litterfall (CITATIONS) in the Amazon increase following drought, which could increase solar radiation to the understory resulting in greater energy capture by *H. acuminata*.
+    -   Alternatively, the delayed effect of drought could be due to indirect effects mediated by canopy openness.
+        In Manaus, canopy is as green or greener in dry season compared to wet season [@guanPhotosyntheticSeasonalityGlobal2015], so dry season drought has the potential to increase solar radiation if it causes reductions in canopy cover.
+        Tree mortality (CITATIONS) and litterfall (CITATIONS) in the Amazon increase following drought, which could increase solar radiation to the understory resulting in greater energy capture by *H. acuminata*.
 
-5.  Ecological Consequences of these patterns: an eye towards a drier future
+5.  Ecological Consequences of these patterns: an eye towards a drier/wetter future
 
 -   More work to be done on flowering responses to drought x light x season interactions.
 
