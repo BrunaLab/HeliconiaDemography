@@ -403,9 +403,9 @@ The random effect of plot also had a significant effect in both habitats (p \< 0
 -   @criley1994 : under hort conditions, shoots that flower in spring emerge in June/July the previous year.
     \~6 months after shoot emergence that the developing infloresence is susceptible to adverse effects.
 
--   @dowd (unpublished thesis, could write MB and ask for update): precipitation and fragmentations influenced fruit/seed production by Heliconia (one step past flaowering, so might be worth citing to say that there are other ways reprod. can be affected
+-   @dowd2020 (unpublished thesis, could write MB and ask for update): precipitation and fragmentations influenced fruit/seed production by Heliconia (one step past flaowering, so might be worth citing to say that there are other ways reprod. can be affected
 
--   Lots of great stuff about the importance of rhizomes, including for drought resistance, in @klimeová2018.
+-   Lots of great stuff about the importance of rhizomes, including for drought resistance, in @klimesova2018.
     Rhizome resistance to variability in environmental conditions also a conclusion in this study on invasion by another zingiberales ( @pinheiro2021
 
 -   @westerband2017: *Heliconia* grew more at low than high precipitation.
@@ -413,7 +413,7 @@ The random effect of plot also had a significant effect in both habitats (p \< 0
     The effect of environmental variability was dependent on early life conditions as well as precipitation, suggesting that generalist species may experience high fitness as forest environments become more variable by maintaining high growth at the expense of survival.
 
 -   the observed effects on reproduction can have effects beyond demography, eg.
-    gene flow and genetic structure among and between plots already shaped by fragmentation ( @cortes2013, there can also be drought effects eg @sifres2006)
+    gene flow and genetic structure among and between plots already shaped by fragmentation ( @cortes2013, there can also be drought effects eg @sifres2007)
 
 -   There can be cascading effects on other species (hispine beetles that depend on Heliconia flowers/fruits, hummingbirds and seed dispersers ( @stiles1975
 
