@@ -33,8 +33,6 @@ plot_normals <- function(normals) {
     scale_y_continuous("Temperature (ºC)", expand = expansion(mult = 0.3)) +
     theme_bw()
   
-  p <- 
     (precip + theme(axis.title.x = element_blank(), axis.text.x = element_blank()))/
     (temp) + plot_annotation(tag_levels = "a", tag_suffix = ")")
-  return(p)
 }
