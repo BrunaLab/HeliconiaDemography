@@ -1,3 +1,8 @@
+#' Read in and tidy rainfall data from EMBRAPA stations
+#'
+#' @param rpde EMBRAPA dataset for Rio Preta do Eva station
+#' @param manaus EMBRAPA dataset for Manaus station
+#'
 tidy_embrapa <- function(rpde, manaus) {
  rpde <- 
    rpde %>% 
@@ -19,14 +24,18 @@ tidy_embrapa <- function(rpde, manaus) {
    as_tsibble(index = yearmonth, key = station)
 }
 
-calc_spei_embrapa <- function(embrapa_mon) {
+#' Calculate SPEI
+#'
+#' @param embrapa_mon monthly aggregated data from EMBRAPA stations
+#'
+calc_spei_embrapa <- function(embrapa_mon, scale = 3) {
   embrapa_spei <-
     embrapa_mon %>% 
     #calculate climate balance
     mutate(cb = precip - eto) %>% 
     group_by(station) %>% 
     group_nest() %>% 
-    mutate(st_spei = map(data, ~as.numeric(spei(.x$cb, scale = 3)$fitted))) %>% 
+    mutate(st_spei = map(data, ~as.numeric(spei(.x$cb, scale = scale)$fitted))) %>% 
     unnest(c(st_spei, data)) %>% 
     select(-cb) 
   

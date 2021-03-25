@@ -1,3 +1,9 @@
+#' Prepare rain gauge data for imputation
+#' 
+#' Removes any multi-day precipitation accumulations (both explicit and implicit) and combines sites by averaging precipitation in order to reduce the missingness in the data.
+#'
+#' @param bdffp_daily the daily precipitation dataset found at https://github.com/BrunaLab/Heliconia-Drought/blob/master/data_complete/daily_imputed.csv
+#'
 prep_bdffp <- function(bdffp_daily) {
   # remove accumulations
   bdffp2 <-
@@ -36,6 +42,12 @@ prep_bdffp <- function(bdffp_daily) {
     )
 }
 
+#' Impute missing values in daily precipitation data
+#' 
+#' Uses the `amelia` package to impute missing values in daily precipitation data.
+#'
+#' @param bdffp_full output of prep_bdffp()
+#'
 impute_bdffp <- function(bdffp_full) {
   # Impute missing data -----------------------------------------------------
   # round(runif(1, 1, 1000))
@@ -63,7 +75,13 @@ impute_bdffp <- function(bdffp_full) {
   )
 }
 
-calc_spei_bdffp <- function(bdffp_imputations, embrapa_mon) {
+#' Calculate monthly SPEI
+#'
+#' @param bdffp_imputations Imputed daily precipitation data output from `impute_bdffp()`
+#' @param embrapa_mon Monthly data from EMBRAPA stations (output by `tidy_embrapa()`).
+#' @param scale The scale parameter, passed to `SPEI::spei()`
+#'
+calc_spei_bdffp <- function(bdffp_imputations, embrapa_mon, scale = 3) {
   imp_mon <-
     map(bdffp_imputations$imputations, ~{
       .x %>% 
@@ -81,16 +99,16 @@ calc_spei_bdffp <- function(bdffp_imputations, embrapa_mon) {
       left_join(.x, embrapa_mon %>% summarize(eto = mean(eto)), by = "yearmonth")
     }) %>% 
     map(., ~{
+      #Calculate climate balance as precipitation - evapotranspiration
       mutate(.x, across(ends_with(".precip"),
                         ~ .x - eto,
                         .names = "{str_remove(col, '.precip')}.cb"))
     })
   
-  
   imp_spei <-
     map(imp_mon, ~{
       .x %>% 
-        mutate(across(ends_with(".cb"), ~as.numeric(SPEI::spei(.x, scale = 3)$fitted),
+        mutate(across(ends_with(".cb"), ~as.numeric(SPEI::spei(.x, scale = scale)$fitted),
                       .names = "{str_remove(col, '.cb')}.spei")) %>%
         select(yearmonth, ends_with(c(".precip", ".spi", ".spei")))
     }) 

@@ -1,3 +1,7 @@
+#' Read in demography data and fix entry errors
+#'
+#' @param path location of file
+#'
 read_fix_demog <- function(path) {
   demog <- 
     read_csv(path, col_names = TRUE,
@@ -37,6 +41,12 @@ add_surv <- function(data, n_years = 3) {
     ungroup()
 }
 
+#' Add a size column
+#' 
+#' Size is calculated as number of shoots x height.  Also adds lagged height and size variables.
+#'
+#' @param data 
+#'
 add_size <- function(data) {
   data %>%
     # add height and number shoots in the next year for each observation
@@ -48,6 +58,12 @@ add_size <- function(data) {
     mutate(size = shts*ht, size_prev = shts_prev * ht_prev, log_size = log(size), log_size_prev = log(size_prev))
 }
 
+#' Tidy demography data
+#' 
+#' Adds a binary column for flowering and sets appropriate columns to factors.
+#'
+#' @param data 
+#'
 tidy_demog <- function(data) {
   data %>% 
     #add binary column for flowering

@@ -1,4 +1,10 @@
+#' Combine demographic data with lagged SPEI data
+#'
+#' @param demog completed demographic data
+#' @param xa lagged SPEI data calculated using data from Xavier et al.
+#'
 join_demog_spei <- function(demog, xa) {
+  #manually combine by which plots are in which grid cells.
   demog2 <-
     demog %>% 
     mutate(lon = case_when(
