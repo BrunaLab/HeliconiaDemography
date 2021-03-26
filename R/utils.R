@@ -40,7 +40,6 @@ annotate_spei <- function(p, ...) {
 #' @param n number of successive, trailing missing survey points required to consider an organism dead.
 #'
 #' @return a binary vector with 1 = alive and 0 = assumed dead
-#' @export
 #' @examples
 #' #Assume plants dead with after not detected for 2 years
 #' dead  <- c(1, 3, NA, NA, 1, 2, 1, NA, NA)

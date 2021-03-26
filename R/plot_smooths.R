@@ -55,20 +55,46 @@ make_season_bar <- function(wet_color = "black", dry_color = "white") {
   dry_xmins = c(3, 15, 27)
   df <- tibble(x = 0:36)
   ggplot(df, aes(x = x, y = 1)) +
-    annotate(geom = "rect", xmin = wet_xmins, xmax = wet_xmaxs, ymin = 0.975, ymax = 1.025, fill = wet_color) +
-    annotate(geom = "rect", xmin = dry_xmins, xmax = dry_xmaxs, ymin = 0.975, ymax = 1.025, fill = dry_color) +
+    annotate(
+      geom = "rect",
+      xmin = wet_xmins,
+      xmax = wet_xmaxs,
+      ymin = 0.975,
+      ymax = 1.025,
+      fill = wet_color
+    ) +
+    annotate(
+      geom = "rect",
+      xmin = dry_xmins,
+      xmax = dry_xmaxs,
+      ymin = 0.975,
+      ymax = 1.025,
+      fill = dry_color
+    )+
     scale_y_continuous(expand = c(0,0)) +
     scale_x_continuous(expand = c(0,0)) +
     theme_void()
 }
 
 
+#' Plot heatmap of SPEI crossbasis function
+#' 
+#' Creates figures from evaluated tensor product smooths
+#' 
+#'
+#' @param eval_df Evaluated smooth data
+#' @param fill_lims Shared limits for the color bar
+#' @param binwidth binwidth for contour lines
+#' @param response_lab label for response (color bar)
+#' @param breaks breaks for x-axis
+#'
 plot_spei_heatmap <-
   function(eval_df,
            fill_lims,
            binwidth,
            response_lab,
            breaks = seq(0, 36, by = 2)) {
+    
     season_bar <- make_season_bar()
     
     ggplot(eval_df, aes_string(y = "spei_history", x = "L")) +
@@ -90,6 +116,15 @@ plot_spei_heatmap <-
       )
   }
 
+#' Create 2-panel plots comparing evaluated crossbasis smooths for fragmented
+#' and continuous forest habitat
+#'
+#' @param cf_model model object for continuous forest
+#' @param frag_model model object for 1-ha fragment
+#' @param smooth name of smooth to evaluate
+#' @param response_lab response label (for color bar)
+#' @param binwidth binwidth for contour lines
+#'
 plot_cb_2panel <-
   function(cf_model, frag_model, smooth = "spei_history", response_lab, binwidth) {
     df_cf <- my_eval_smooth(cf_model, smooth, dist = 0.1)
@@ -121,6 +156,19 @@ plot_cb_2panel <-
     
   }
 
+#' Plot difference between evaluated crossbasis smooths in two habitats
+#'
+#' @param cf_model model object for continuous forest
+#' @param frag_model model object for 1-ha fragment
+#' @param smooth name of smooth
+#' @param response_lab label for response (color bar)
+#' @param binwidth binwidth for contour lines
+#' @param breaks breaks along lag axis
+#'
+#' @return
+#' @export
+#'
+#' @examples
 plot_cb_diff <- function(cf_model, frag_model, smooth = "spei_history", response_lab, binwidth, breaks = seq(0, 36, by = 2)) {
   df_cf <- my_eval_smooth(cf_model, smooth, dist = 0.1)
   df_frag <- my_eval_smooth(frag_model, smooth, dist = 0.1)

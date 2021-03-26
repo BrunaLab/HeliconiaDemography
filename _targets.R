@@ -86,7 +86,7 @@ tar_plan(
   normals_plot = plot_normals(normals),
   plot_dates = get_plot_daterange(model_data, maxlag),
   
-  eda_spei = plot_eda_spei(model_data, xa_lag, plot_dates),
+  eda_spei = plot_eda_spei(xa_lag, plot_dates),
   eda_surv = plot_eda_surv_cohort(demog_done, plot_dates),
   eda_size = plot_eda_size(model_data, plot_dates),
   eda_flwr = plot_eda_flwr(model_data, plot_dates),

@@ -1,4 +1,12 @@
 
+#' Fit survival GAM
+#'
+#' Fits the distributed lag non-linear model GAM for survival as a function of
+#' plant size in previous year and SPEI history.  Makes use of parallel
+#' computing with `mgcv::bam()`
+#' @param data prepped model data
+#' @param flwr_prev logical; include flowering in previous year as covariate?
+#'
 fit_surv <- function(data, flwr_prev = FALSE) {
   ncores <- detectCores()
   cl <- makeForkCluster(ncores - 2)
@@ -23,6 +31,15 @@ fit_surv <- function(data, flwr_prev = FALSE) {
       cluster = cl)
 }
 
+#' Fit size GAM
+#' 
+#' Fits the distributed lag non-linear model GAM for plant size as a function of
+#' plant size in previous year and SPEI history.  Makes use of parallel
+#' computing with `mgcv::bam()`
+#' 
+#' @param data prepared model data
+#' @param flwr_prev logical; include flowering in previous year as covariate?
+#'
 fit_growth <- function(data, flwr_prev = FALSE){
   ncores <- detectCores()
   cl <- makeForkCluster(ncores - 2)
@@ -51,6 +68,15 @@ fit_growth <- function(data, flwr_prev = FALSE){
       cluster = cl)
 }
 
+#' Fit size GAM
+#' 
+#' Fits the distributed lag non-linear model GAM for plant flowering probability
+#' as a function of plant size in previous year and SPEI history.  Makes use of
+#' parallel computing with `mgcv::bam()`
+#' 
+#' @param data prepared model data
+#' @param flwr_prev logical; include flowering in previous year as covariate?
+#' 
 fit_flwr <- function(data, flwr_prev = FALSE) {
   ncores <- detectCores()
   cl <- makeForkCluster(ncores - 2)

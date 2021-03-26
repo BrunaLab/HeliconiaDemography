@@ -1,10 +1,21 @@
+#' Read in and tidy TRMM weather data
+#'
+#' @param path file path
+#'
 read_tidy_trmm <- function(path) {
   read_csv(path) %>% 
     unite(latlon, lat, long, sep = "_") %>% 
     mutate(yearmonth = yearmonth(date), .after = date)
 }
 
-calc_spei_trmm <- function(trmm, xa_spei) {
+#' Calculate SPEI on TRMM data
+#'
+#' Uses evapotranspiration data from Xavier et al.
+#'
+#' @param trmm TRMM data
+#' @param xa_spei Xavier et al data
+#'
+calc_spei_trmm <- function(trmm, xa_spei, scale = 3) {
   # # fortunately xavier et al data has same resolution and overlap in latlon, so can join eto
   
   # unique(xa_spei$latlon) %in% unique(trmm2$latlon)
@@ -20,7 +31,7 @@ calc_spei_trmm <- function(trmm, xa_spei) {
     mutate(cb = precip - eto) %>% 
     group_by(latlon) %>% 
     group_nest() %>% 
-    mutate(trmm_spei = map(data, ~as.numeric(spei(.x$cb, scale = 3)$fitted))) %>% 
+    mutate(trmm_spei = map(data, ~as.numeric(spei(.x$cb, scale = scale)$fitted))) %>% 
     unnest(c(trmm_spei, data)) %>% 
     select(-cb)
 }

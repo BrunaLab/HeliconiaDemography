@@ -1,13 +1,30 @@
+#' Get range for x axis limits for plots
+#' 
+#' The range is the first date of the survey minus the maximum lag for the
+#' models to the last date of the survey data.
+#'
+#' @param demog_post 
+#' @param maxlag 
+#'
 get_plot_daterange <- function(demog_post, maxlag) {
   dates <-
     range(demog_post$year) %>%
     paste0(., "-02-01") %>%
     ymd()
-  dates[1] <- dates[1] - months(36)
+  dates[1] <- dates[1] - months(maxlag)
   dates
 }
 
-plot_eda_spei <- function(demog_post, xa, date_lims) {
+#' Plot SPEI
+#'
+#' @param xa SPEI data from Xavier et al.
+#' @param date_lims x-axis limits
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot_eda_spei <- function(xa, date_lims) {
 
   date_breaks <- seq(date_lims[1], date_lims[2], by = "year")
   
@@ -28,6 +45,10 @@ plot_eda_spei <- function(demog_post, xa, date_lims) {
   
 }
 
+#' Create data frame for plotting demographic data
+#'
+#' @param demog_post demography data filtered to only have post-seedlings
+#'
 eda_plot_df <- function(demog_post) {
   demog_plotdf <-  
     demog_post %>% 
@@ -38,6 +59,13 @@ eda_plot_df <- function(demog_post) {
   demog_plotdf
 }
 
+#' Survival time series plot
+#' 
+#' Plots mean survival rate over time in both habitats
+#'
+#' @param demog_post demography data
+#' @param dates_lims x-axis limits
+#'
 plot_eda_surv_ts <- function(demog_post, dates_lims) {
   
   date_breaks <- seq(date_lims[1], date_lims[2], by = "year")
@@ -50,7 +78,12 @@ plot_eda_surv_ts <- function(demog_post, dates_lims) {
     ggplot(aes(x = yearmonth, y = surv, color = habitat)) +
     stat_summary(geom = "line", fun = "mean", fun.args = list(na.rm = TRUE)) +
     stat_summary(geom = "pointrange", fatten = 1) +
-    scale_x_yearmonth(limits = date_lims, breaks = date_breaks, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
+    scale_x_yearmonth(
+      limits = date_lims,
+      breaks = date_breaks,
+      date_minor_breaks = "1 month",
+      expand = expansion(mult = 0.02)
+    ) +
     scale_y_continuous("P(survived)") +
     theme_bw() +
     theme(
@@ -63,11 +96,22 @@ plot_eda_surv_ts <- function(demog_post, dates_lims) {
   survival
 }
 
+#' Survival curves plots
+#' 
+#' plots survival curves for the 1998 cohort of plants
+#'
+#' @param demog demography data
+#' @param date_lims x-axis limits
+#'
 plot_eda_surv_cohort <- function(demog, date_lims) {
   
   date_breaks <- seq(date_lims[1], date_lims[2], by = "year")
   
-  cohort <- demog %>% filter(year == 1998) %>% pull(ha_id_number) %>% unique()
+  cohort <-
+    demog %>% 
+    filter(year == 1998) %>% 
+    pull(ha_id_number) %>% 
+    unique()
   
   surv_curve_df <-
     demog %>% 
@@ -83,7 +127,12 @@ plot_eda_surv_cohort <- function(demog, date_lims) {
   surv_curve <-
     ggplot(surv_curve_df, aes(x = yearmonth, y = p_surv, color = habitat)) +
     geom_step() +
-    scale_x_yearmonth(limits = date_lims, breaks = date_breaks, date_minor_breaks ="1 month", expand = expansion(mult = 0.04)) +
+    scale_x_yearmonth(
+      limits = date_lims,
+      breaks = date_breaks,
+      date_minor_breaks = "1 month",
+      expand = expansion(mult = 0.04)
+    ) +
     scale_y_continuous("P(survived)") +
     theme_bw() +
     theme(
@@ -97,6 +146,11 @@ plot_eda_surv_cohort <- function(demog, date_lims) {
 
 
 
+#' Mean size timeseries plot
+#'
+#' @param demog_post demography data
+#' @param date_lims x-axis limits
+#'
 plot_eda_size <- function(demog_post, date_lims) {
   date_breaks <- seq(date_lims[1], date_lims[2], by = "year")
   demog_plotdf <- eda_plot_df(demog_post)
@@ -110,7 +164,7 @@ plot_eda_size <- function(demog_post, date_lims) {
       fun.args = list(na.rm = TRUE),
       position = position_dodge(width = 100),
       aes(group = habitat)
-    )+
+    ) +
     stat_summary(
       geom = "pointrange",
       fatten = 1,
@@ -132,10 +186,16 @@ plot_eda_size <- function(demog_post, date_lims) {
       axis.ticks.x = element_blank(),
       panel.grid.minor.x = element_blank(),
       legend.position = "none"
-    ) +
-    NULL
+    )
 }
 
+#' Flowering rate plot
+#' 
+#' plots proportion of plants flowering over time
+#'
+#' @param demog_post demography data
+#' @param date_lims x-axis limits
+#'
 plot_eda_flwr <- function(demog_post, date_lims) {
   demog_plotdf <- eda_plot_df(demog_post)
   date_breaks <- seq(date_lims[1], date_lims[2], by = "year")
@@ -167,8 +227,16 @@ plot_eda_flwr <- function(demog_post, date_lims) {
   flowering
 }
 
+#' Combine exploratory data analysis plots
+#'
+#' @param ... The plots to combine
+#' 
+#' @import patchwork
+#' @import ggplot2
+#'
 plot_eda_combine <- function(...) {
-  p <- wrap_plots(..., ncol = 1) +
+  p <- 
+    wrap_plots(..., ncol = 1) +
     plot_layout(guides = "collect") &
     plot_annotation(tag_levels = "a", tag_suffix = ")") &
     theme(plot.margin = margin(2,1,1,1)) &

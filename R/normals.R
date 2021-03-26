@@ -17,6 +17,14 @@ normals_data <- function() {
 }
 
 
+#' Plot climate normals for Manaus.
+#' 
+#' Function to create figure 1.
+#'
+#' @param normals 
+#' @import patchwork
+#' @import ggplot2
+#'
 plot_normals <- function(normals) {
   precip <-
     ggplot(normals, aes(x = as.factor(month), y = precip)) + 
