@@ -66,6 +66,8 @@ add_size <- function(data) {
 #'
 tidy_demog <- function(data) {
   data %>% 
+    #only use 1ha fragments and continuous forest
+    filter(habitat %in% c("CF", "1-ha")) %>% 
     #add binary column for flowering
     mutate(infl = if_else(is.na(infl) & (!is.na(shts) | !is.na(ht)), 0L, infl)) %>% 
     mutate(flwr = if_else(infl > 0, 1L, 0L), .after = infl) %>% 
