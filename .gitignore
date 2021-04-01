@@ -37,6 +37,7 @@
 *.png
 *.docx
 !doc/templates/template.docx
+!doc/paper.docx
 *.nb.html
 *.html
 

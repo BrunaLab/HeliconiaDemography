@@ -466,10 +466,9 @@ The random effect of plot also had a significant effect in both habitats (p \< 0
 Understanding how landscape structure and environmental conditions act to influence population dynamics is fundamental to many of the emerging conceptual frameworks for studying and conserving fragmented landscapes [@didhamRethinkingConceptualFoundations2012; @driscollConceptualDomainMatrix2013].
 <!--# more here -->
 
-This study adds to the growing body of work that finds delayed effects of climate drivers on vital rates without *a priori* assumptions about the influence of particular climate windows [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
-We found evidence for delayed effects of drought which are sometimes stronger predictors of vital rates than more recent conditions.
-The approach we took offers an unbiased way of identifying these delayed effects without overfitting (but see @pierreCriticalWindowsMethod2020 and @ogleQuantifyingEcologicalMemory2015a for alternative methods), yet few demographic studies have the data required for modeling lagged effects [@tellerLinkingDemographyDrivers2016; @croneHowPlantEcologists2011].
+This study adds to the growing body of work that finds delayed effects of climate drivers on vital rates without *a priori* assumptions about the influence of particular climate windows [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021]. We found evidence for delayed effects of drought which are sometimes stronger predictors of vital rates than more recent conditions. The approach we took offers an unbiased way of identifying these delayed effects without overfitting (but see @pierreCriticalWindowsMethod2020 and @ogleQuantifyingEcologicalMemory2015a for alternative methods), yet few demographic studies have the data required for modeling lagged effects [@tellerLinkingDemographyDrivers2016; @croneHowPlantEcologists2011].
 This demonstrates the importance of long term demographic experiments in determining the effects of changing habitats on populations.
+<!--# Or something like "some of these long-term studies exist and are prime for doing these kinds of analyses" -->
 
 ```{r flwr-prob-quartile, include=FALSE}
 
@@ -519,9 +518,7 @@ For example, if extreme drought in the dry season before the census increases pl
 This explanation for delayed effects applies only to plant size and survival, as flowering occurs very close to the yearly demographic census (Jan--Apr).
 
 Second, these delayed effects may represent a physiological delayed effect of environmental conditions.
-Under horticultural conditions, flowering shoots of *Heliconia chartacea* that flower in Spring begin to emerge in June or July of the previous year, and the developing inflorescence may be aborted in response to adverse conditions up to 6 months after initiation [@criley1994].
-<!--# more here about general trends in physiological delays for plants witht tubers or rhizomes -->Although flowering occurs in late January through April in *H. acuminata*, the initiation of a primordial flowering shoot <!--# not sure this is the right term.  "Differentiation of the apical meristem" ? --> likely happens many months earlier.
-The increase in flowering rate of plants following a drought could also be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018] <!--# add another more general citation. e.g. S. Joe Wright trees flowering after ENSO -->.
+Under horticultural conditions, flowering shoots of *Heliconia chartacea* that flower in Spring begin to emerge in June or July of the previous year, and the developing inflorescence may be aborted in response to adverse conditions up to 6 months after initiation [@criley1994]. <!--# more here about general trends in physiological delays for plants witht tubers or rhizomes -->Although flowering occurs in late January through April in *H. acuminata*, the initiation of a primordial flowering shoot <!--# not sure this is the right term.  "Differentiation of the apical meristem" ? --> likely happens many months earlier. The increase in flowering rate of plants following a drought could also be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018] <!--# add another more general citation. e.g. S. Joe Wright trees flowering after ENSO -->.
 We also considered that some delayed effects could be a result of a cost of reproduction leading to reduced growth, survival, and/or flowering probability in the following season.
 However, when flowering in the previous season is included as a covariate, it predicts higher growth and flowering probability---likely a reflection of size being a good predictor of these vital rates (Supplemental\_\_\_).
 Our models show that drought two dry seasons prior to the census increase flowering probability.
@@ -534,9 +531,6 @@ This increase in light could then result in increased growth or flowering for un
 <!--# Heliconia grow better at edges, where there's more light -->Here, the delayed effect could be a combined delay of the response of canopy trees to drought and the response of *H. acuminata* to increased insolation.
 
 -   Ecological Consequences of these patterns: an eye towards a drier/wetter future
-
--   Address how all but the smallest sizes are shrinking on average over the period of this study <!--# this is not true.  A bug previously made it look like all plants were shrinking.  Keeping this because citations -->(Figure \@ref(fig:growth-size)).
-    Cite: @brunaExperimentalAssessmentHeliconia2002; Begg 1980; Wright 1996; Rundel et al. 1998.
 
 # Conclusions & Future Directions
 
