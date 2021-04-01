@@ -106,12 +106,12 @@ Despite this, evidence linking fragmentation-related changes in environmental co
 
 Populations in fragmented tropical landscapes are also at risk from climate change [@brodieClimateChangeTropical2012; @scheffersExtremeThermalHeterogeneity2017].
 These effects may be especially pronounced in Amazonia, parts of which have been experiencing a drying trend since the mid-1970s and where climate models for the 21st century predict substantial decreases in dry season precipitation [@malhiClimateChangeDeforestation2008] and increases in both drought frequency and severity [@caiIncreasingFrequencyExtreme2014; @zengCausesImpacts20052008; @moraProjectedTimingClimate2013].
-All of these factors have the potential to exacerbate the microclimatic changes observed in forest fragments that are hypothesized to make populations demographically vulnerable.
+<!--# Additionally, extreme wet episodes are becoming as severe and frequent as droughts in parts of the Amazon, and can also have negative effects on plants [@estebanOtherSideDroughts2021].  -->All of these factors have the potential to exacerbate the microclimatic changes observed in forest fragments that are hypothesized to make populations demographically vulnerable.
 Plants, unlike animals, are unable to move in response to increased in air temperature, decreased relative humidity, reduced soil moisture, or the increased penetration of solar radiation in the forest understory resulting from fragmentation [@ewersFragmentationImpairsMicroclimate2013; @didhamEdgeStructureDetermines1999; @arroyo-rodriguezDoesForestFragmentation2017].
 Alternatively, populations persisting in fragments may be more demographically resilient to drought than those in primary forest if the individuals susceptible to desiccation died quickly after fragment isolation [@bettsExtinctionFiltersMediate2019].
 
 Whether plant populations in tropical forest fragments are particularly susceptible to drought remains unclear for three primary reasons.
-First, most studies of plants in fragments have focused on a single life-history stage or process ***(CITATIONS)*** <!--# citations in proposal -->, making it challenging to draw broader demographic conclusions.
+First, most studies of plants in fragments have focused on a single life-history stage or process [@brunaHabitatFragmentationPlant2009; @ehrlenAdvancingEnvironmentallyExplicit2016], making it challenging to draw broader demographic conclusions.
 Similarly, there is a growing literature on how tropical plants respond to droughts, but few studies have compared the responses of plants in continuous forest with those in forest fragments [@lauranceEffectsStrongDrought2001].
 Finally, the multi-year data needed to test population-level hypotheses about climate change and fragmentation are scant, especially for tropical systems [@salguero-gomezCOMPADREPlantMatrix2015; @croneHowPlantEcologists2011].
 These data are critical not only because they allow for capturing variation in climatic conditions and the resulting demographic responses [@morrisQuantitativeConservationBiology2002; @tellerLinkingDemographyDrivers2016].
@@ -119,7 +119,8 @@ They are also essential because while some demographic effects of fragmentation 
 Indeed, lagged responses of demographic vital rates to climate may in fact be the rule rather than the exception [@eversLaggedDormantSeason2021; @andereggPervasiveDroughtLegacies2015; @schwalmGlobalPatternsDrought2017; @kannenbergGhostsHowDrought2020].
 
 We used a decade of demographic and climatic data to assess the effects of climate on populations of a tropical understory herb (*Heliconia acuminata*, Heliconiaceae) in an experimentally fragmented landscape in the Central Amazon.
-<!--# add a sentence about "famous" amazonian droughts --> Herbaceous plants represent up to 25% of plant diversity in tropical forests [@gentryContributionNontreesSpecies1987], are critical food and habitat for myriad species [@snowTropicalFrugivorousBirds1981], and are economically and culturally vital [@nakazonoExperiementalHarvestingNontimber2004; @ticktinRelationshipsNinoSouthern2003].
+This time series includes "famous" Amazonian droughts in 1997 [@mcphadenChildProdigy1997981999] and 2005[@marengoDroughtAmazonia20052008; @zengCausesImpacts20052008] that were called "once in a century" climate events.
+Herbaceous plants represent up to 25% of plant diversity in tropical forests [@gentryContributionNontreesSpecies1987], are critical food and habitat for myriad species [@snowTropicalFrugivorousBirds1981], and are economically and culturally vital [@nakazonoExperiementalHarvestingNontimber2004; @ticktinRelationshipsNinoSouthern2003].
 Nevertheless, the impacts of global change phenomena on their demography remain conspicuously understudied [***(CITATION Bruna, Gaoue)***]{.ul}.
 We addressed the following questions:
 
@@ -149,8 +150,6 @@ The BDFFP reserves are located in nonflooded (i.e., *terra firme*) tropical lowl
 The soils in the reserves are nutrient-poor xanthic ferrosols; their water retention capacity is poor despite having a high clay content.
 Mean annual temperature in the region is 26º C (range=19--39º C), and annual rainfall at the BDFFP reserves ranges from 1900-2300 mm.
 There is a pronounced dry season from June to October (Figure \@ref(fig:normals)).
-
-<!-- Rainfall data should prob be a figure in main text, since the paper deals with rainfall and seasonality. I’d think of citing the (eventual) BDFFP rain package -->
 
 ## Focal species
 
@@ -433,7 +432,7 @@ The random effect of plot also had a significant effect in both habitats (p \< 0
 
 -   @horvitz1988: no evidence for short term (next season) cost of reproduction in another understory monocot (Calathea) BUT
 
--   @horvitz2002 Survival of juveniles was positively affected by plant size, but not by herbivory, local competition, or fruit production.
+-   @horvitz2002 (*Calathea ovandensis*) Survival of juveniles was positively affected by plant size, but not by herbivory, local competition, or fruit production.
     Survival of large stages was not generally affected by any of the factors.
     Relative growth rates of all stages were negatively affected by plant size; larger plants grew more slowly than smaller plants.
     Additionally, growth rate of juveniles was negatively affected by local competition, whereas growth rate of reproductives was positively affected by reproduction.
@@ -492,7 +491,10 @@ newdf_1ha <-
 ```
 
 *Heliconia acuminata* individuals were smaller in forest fragments, although they grew slightly faster than plants in continuous forest, closing the size gap over the decade of demographic data.
-Our results confirm those of Bruna and Kress [-@brunaHabitatFragmentationDemographic2002], showing that probability of flowering increases with plant size and plant growth decreases with plant size <!--# other citations? -->. Flowering probability for the largest plants is actually higher in forest fragments; however, because there are fewer large plants in fragments overall flowering probability is much lower. The average fitted probability of flowering for plants in the upper quartile for size is 0.125 in continuous forest and 0.094 in forest fragments, equivalent to flowering once every 7.97 years and 10.63 years, respectively. Seemingly small differences in vital rates such as these can be extremely important as they compound over many years, especially in long-lived organisms[@gagnonGrowthUnderstoryHerb2011].
+Our results confirm those of Bruna and Kress [-@brunaHabitatFragmentationDemographic2002], showing that probability of flowering increases with plant size and plant growth decreases with plant size <!--# other citations? -->.
+Flowering probability for the largest plants is actually higher in forest fragments; however, because there are fewer large plants in fragments overall flowering probability is much lower.
+The average fitted probability of flowering for plants in the upper quartile for size is 0.125 in continuous forest and 0.094 in forest fragments, equivalent to flowering once every 7.97 years and 10.63 years, respectively.
+Seemingly small differences in vital rates such as these can be extremely important as they compound over many years, especially in long-lived organisms[@gagnonGrowthUnderstoryHerb2011].
 
 We found that the effects of variation in SPEI differed between forest fragments and continuous forest habitat.
 At mean SPEI, overall survival of plants was similar in fragments and continuous forest, but extremes in SPEI, both positive (wet) and negative (dry) had much greater detrimental effects on survival in habitat fragments.
@@ -518,7 +520,10 @@ First, delayed effects may represent a demographic delay since we do not know pr
 For example, if extreme drought in the dry season before the census increases plant mortality in that season, this would show up as a delayed effect in our models (e.g. in Figure \@ref(fig:surv-spei)b) despite the impact of drought potentially being immediate.
 This explanation for delayed effects applies only to plant size and survival, as flowering occurs very close to the yearly demographic census (Jan--Apr).
 
-Second, these delayed effects may represent a physiological delayed effect of environmental conditions. Under horticultural conditions, flowering shoots of *Heliconia chartacea* that flower in Spring begin to emerge in June or July of the previous year, and the developing inflorescence may be aborted in response to adverse conditions up to 6 months after initiation [@criley1994]. <!--# more here about general trends in physiological delays for plants witht tubers or rhizomes -->Although flowering occurs in late January through April in *H. acuminata*, the initiation of a primordial flowering shoot <!--# not sure this is the right term.  "Differentiation of the apical meristem" ? --> likely happens many months earlier. The increase in flowering rate of plants following a drought could also be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018] <!--# add another more general citation. e.g. S. Joe Wright trees flowering after ENSO -->.
+Second, these delayed effects may represent a physiological delayed effect of environmental conditions.
+Under horticultural conditions, flowering shoots of *Heliconia chartacea* that flower in Spring begin to emerge in June or July of the previous year, and the developing inflorescence may be aborted in response to adverse conditions up to 6 months after initiation [@criley1994].
+<!--# more here about general trends in physiological delays for plants witht tubers or rhizomes -->Although flowering occurs in late January through April in *H. acuminata*, the initiation of a primordial flowering shoot <!--# not sure this is the right term.  "Differentiation of the apical meristem" ? --> likely happens many months earlier.
+The increase in flowering rate of plants following a drought could also be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018] <!--# add another more general citation. e.g. S. Joe Wright trees flowering after ENSO -->.
 We also considered that some delayed effects could be a result of a cost of reproduction leading to reduced growth, survival, and/or flowering probability in the following season.
 However, when flowering in the previous season is included as a covariate, it predicts higher growth and flowering probability---likely a reflection of size being a good predictor of these vital rates (Supplemental\_\_\_).
 Our models show that drought two dry seasons prior to the census increase flowering probability.
