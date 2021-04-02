@@ -86,13 +86,6 @@
       "Repository": "CRAN",
       "Hash": "8772b10276b4b4a3dfaa5043f9ad94f8"
     },
-    "RcppEigen": {
-      "Package": "RcppEigen",
-      "Version": "0.3.3.9.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "ddfa72a87fdf4c80466a20818be91d00"
-    },
     "SPEI": {
       "Package": "SPEI",
       "Version": "1.7",
@@ -443,13 +436,6 @@
       "Repository": "CRAN",
       "Hash": "07a91f99e56951818ab911366db77700"
     },
-    "ggforce": {
-      "Package": "ggforce",
-      "Version": "0.3.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "4c64a588b497f8c088e1d308ddd40bc6"
-    },
     "ggplot2": {
       "Package": "ggplot2",
       "Version": "3.3.3",
@@ -658,13 +644,6 @@
       "Repository": "CRAN",
       "Hash": "7855d2dfcb1be6c8f4d6c45e22f6c65e"
     },
-    "log4r": {
-      "Package": "log4r",
-      "Version": "0.3.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "5ce4d2c11689134403962d6229395314"
-    },
     "lubridate": {
       "Package": "lubridate",
       "Version": "1.7.10",
@@ -793,22 +772,15 @@
     },
     "pointblank": {
       "Package": "pointblank",
-      "Version": "0.6.0.9000",
+      "Version": "0.7.0.9000",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteUsername": "rich-iannone",
       "RemoteRepo": "pointblank",
       "RemoteRef": "master",
-      "RemoteSha": "c7d4533cf3514b2f92648f2a4a6212d2af928c4d",
-      "Hash": "500de5b4bc659f1fda4dad3dec62a119"
-    },
-    "polyclip": {
-      "Package": "polyclip",
-      "Version": "1.10-0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "cb167f328b3ada4ec5cf67a7df4c900a"
+      "RemoteSha": "19ee2efe1a79255b6aed32d36cd0817604b8adea",
+      "Hash": "2bee537baf37e5f19c5e997e850ebe3f"
     },
     "praise": {
       "Package": "praise",
@@ -1110,13 +1082,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "6b08c6e665b97c55499ebaaaf055c613"
-    },
-    "tweenr": {
-      "Package": "tweenr",
-      "Version": "1.0.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "6cc663f970a529dbf776f11d5bcd1a2e"
     },
     "usethis": {
       "Package": "usethis",
