@@ -75,15 +75,13 @@ withr::with_dir(here(), {
   tar_load(c(
     normals_plot,
     eda_plot,
-    s_covar_plot,
     s_spei_plot,
     s_spei_diff_plot,
-    g_covar_plot,
     g_spei_plot,
     g_spei_diff_plot,
-    f_covar_plot,
     f_spei_plot,
-    f_spei_diff_plot
+    f_spei_diff_plot,
+    size_plot
   ))
 })
 ```
@@ -119,12 +117,15 @@ They are also essential because while some demographic effects of fragmentation 
 Indeed, lagged responses of demographic vital rates to climate may in fact be the rule rather than the exception [@eversLaggedDormantSeason2021; @andereggPervasiveDroughtLegacies2015; @schwalmGlobalPatternsDrought2017; @kannenbergGhostsHowDrought2020].
 
 We used a decade of demographic and climatic data to assess the effects of climate on populations of a tropical understory herb (*Heliconia acuminata*, Heliconiaceae) in an experimentally fragmented landscape in the Central Amazon.
-This time series includes "famous" Amazonian droughts in 1997 [@mcphadenChildProdigy1997981999] and 2005[@marengoDroughtAmazonia20052008; @zengCausesImpacts20052008] that were called "once in a century" climate events. Herbaceous plants represent up to 25% of plant diversity in tropical forests [@gentryContributionNontreesSpecies1987], are critical food and habitat for myriad species [@snowTropicalFrugivorousBirds1981], and are economically and culturally vital [@nakazonoExperiementalHarvestingNontimber2004; @ticktinRelationshipsNinoSouthern2003].
+This time series includes "famous" Amazonian droughts in 1997 [@mcphadenChildProdigy1997981999] and 2005[@marengoDroughtAmazonia20052008; @zengCausesImpacts20052008] that were called "once in a century" climate events.
+Herbaceous plants represent up to 25% of plant diversity in tropical forests [@gentryContributionNontreesSpecies1987], are critical food and habitat for myriad species [@snowTropicalFrugivorousBirds1981], and are economically and culturally vital [@nakazonoExperiementalHarvestingNontimber2004; @ticktinRelationshipsNinoSouthern2003].
 Nevertheless, the impacts of global change phenomena on their demography remain conspicuously understudied [***(CITATION Bruna, Gaoue)***]{.ul}.
 We addressed the following questions:\
 \
-<
-!--# Gaoue =?  Orou G. Gaoue, Carol C. Horvitz, Ulrich K. Steiner, Shripad Tuljapurkar, Climate, rather than human disturbance, is the main driver of age-specific mortality trajectories in a tropical tree, Ecological Modelling, Volume 400, 2019, Pages 34-40,https://doi.org/10.1016/j.ecolmodel.2019.03.007. -->
+\<
+!--\# Gaoue =
+? Orou G. Gaoue, Carol C. Horvitz, Ulrich K. Steiner, Shripad Tuljapurkar, Climate, rather than human disturbance, is the main driver of age-specific mortality trajectories in a tropical tree, Ecological Modelling, Volume 400, 2019, Pages 34-40,<https://doi.org/10.1016/j.ecolmodel.2019.03.007>. --
+\>
 
 1)  Does drought increase or decrease the growth, survival, and fertility of plant populations in continuous forest?
 
@@ -255,11 +256,11 @@ Two noticeable peaks in the proportion of flowering mature plants occur in sever
 ## Survival
 
 ```{r}
-cap <- "Smooth effect of plant size in the previous census on survival modeled by a cubic regression spline.  95% confidence intervals are shown and include uncertainty in the model intercept and uncertainty due to smoothness selection. The smooths for 1-ha fragments and continuous forest are fit in separate models. The model intercepts were added to the fitted values of the smooth and values are back-transformed to the response scale"
+cap <- "Smooth effect of plant size in the previous census on a) survival, b) log(size), and c) flowering probabiility, modeled by a cubic regression splines. Panel d) shows the smoothed density of different plant sizes in the two habitat types. 95% confidence intervals are shown and include uncertainty in the model intercept and uncertainty due to smoothness selection. The smooths for 1-ha fragments and continuous forest are fit in separate models. The model intercepts were added to the fitted values of the smooth and values are back-transformed to the response scale.  In b), a 1:1 line is shown in dashed red to indicate the line of no growth."
 ```
 
-```{r surv-size, fig.cap=cap}
-s_covar_plot
+```{r size-plot, fig.cap=cap, fig.height=8, fig.width=5}
+size_plot
 ```
 
 Overall survival rate across the entire dataset was the same (0.95) in both CF and 1-ha.
@@ -267,7 +268,7 @@ The proportion of surviving plants across both habitat types was lowest in 2004 
 The lowest survival for 1-ha fragment plots (0.93) was in the 2006 census corresponding to wetter than average conditions (SPEI \> 0.5), but with a moderate drought the preceding October.
 
 Log transformed plant size had a significant effect on survival in both continuous forest and 1-ha fragments (both p \< 0.001).
-Survival probability of large plants approached 1 in both habitat types (Figure \@ref(fig:surv-size)).
+Survival probability of large plants approached 1 in both habitat types (Figure \@ref(fig:size-plot)a).
 Survival of the smallest plants was higher in 1-ha fragments, but the 95% confidence intervals for 1-ha fragments and continuous forest overlapped for all sizes.
 
 ```{r}
@@ -307,18 +308,10 @@ Plants were on average larger in continuous forest compared to 1-ha fragments.
 In 1-ha fragments, plants had 2.5 ± 1.5 shoots on average and a mean height of 36.2 ± 24.1 cm and a mean size of 112 ± 141.
 The size difference between plants in continuous forest and 1-ha fragments was more dramatic early on in the timeseries with mean sizes becoming more similar over time (Figure \@ref(fig:eda)a).
 
-```{r}
-cap <- "Smooth effect of plant size in year t on plant size in year t+1 modeled by a cubic regression spline.  95% confidence intervals are shown and include uncertainty in the model intercept as well as uncertainty due to smoothness selection. The dashed red line represents a 1:1 line for reference. The smooths for 1-ha fragments and continuous forest are fit in separate models. Model intercepts were added to the fitted values of the smooths."
-```
-
-```{r growth-size, fig.cap=cap}
-g_covar_plot
-```
-
 <!--# Is growth really higher in fragments?  Probably, since fig2 shows size becoming more similar over time.   -->
 
 Size in year t was a significant predictor of size in year t+1 (p \< 0.001).
-The 95% confidence intervals for the effect of size in year t in fragments and continuous forest overlapped for most sizes, but was slightly higher in continuous forest for mid-sized plants (Figure \@ref(fig:growth-size)).
+The 95% confidence intervals for the effect of size in year t in fragments and continuous forest overlapped for most sizes, but was slightly higher in continuous forest for mid-sized plants (Figure \@ref(fig:size-plot)b).
 
 ```{r}
 cap <- "Smooth effect of lagged SPEI on plant growth for a) continuous forest and b) 1-ha fragments. Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function. Contour lines correspond to a change of 0.05. The bar on the bottom of each panel indicates wet seasons (black, November–May) and dry seasons (white, June–October)."
@@ -355,21 +348,10 @@ The most striking difference between habitat types in flowering proportion coinc
 The back-transformed model intercepts, representing the flowering probability of averaged sized plants in each habitat given average SPEI, showed a similar pattern with 0.008 for continuous forest and 0.004 for 1-ha fragments.
 <!--# not sure how necessary this is -->
 
-```{r}
-cap <- "Smooth effect of plant size in the previous census on flowering probability modeled by a cubic regression spline.  95% confidence intervals are shown and include uncertainty in the model intercept as well as uncertainty due to smoothness selection. The smooths for 1-ha fragments and continuous forest are fit in separate models. The model intercepts were added to the fitted values of the smooth and values are back-transformed to the response scale"
-```
-
-```{r flwr-size, fig.cap=cap}
-f_covar_plot
-```
-
-<!--# instead of rug plot, add second panel or margin with box plots or violin plots of size at both habitats -->
-
 Plant size had a significant effect on flowering probability in both habitats (p \< 0.001).
-Flowering probability increased rapidly with log-transformed plant size greater than 5 in both habitats (Figure \@ref(fig:flwr-size)).
+Flowering probability increased rapidly with log-transformed plant size greater than 5 in both habitats (Figure \@ref(fig:size-plot)c).
 Flowering probability of large plants (log(size) \> 5) was greater in 1-ha fragments compared to continuous forest.
-However, because mean plant size is larger in continuous forest, overall flowering probability was greater.
-<!--# idea: plot vertical lines representing mean or median size in each habitat -->
+However, because mean plant size is larger in continuous forest (Figure \@ref(fig:size-plot)d), overall flowering probability was greater.
 
 ```{r}
 cap <- "Smooth effect of lagged SPEI on flowering probability. Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale. Contour lines correspond to a change of 0.001. The bar on the bottom of each panel indicates wet seasons (black, November–May) and dry seasons (white, June–October)."
@@ -466,7 +448,9 @@ The random effect of plot also had a significant effect in both habitats (p \< 0
 Understanding how landscape structure and environmental conditions act to influence population dynamics is fundamental to many of the emerging conceptual frameworks for studying and conserving fragmented landscapes [@didhamRethinkingConceptualFoundations2012; @driscollConceptualDomainMatrix2013].
 <!--# more here -->
 
-This study adds to the growing body of work that finds delayed effects of climate drivers on vital rates without *a priori* assumptions about the influence of particular climate windows [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021]. We found evidence for delayed effects of drought which are sometimes stronger predictors of vital rates than more recent conditions. The approach we took offers an unbiased way of identifying these delayed effects without overfitting (but see @pierreCriticalWindowsMethod2020 and @ogleQuantifyingEcologicalMemory2015a for alternative methods), yet few demographic studies have the data required for modeling lagged effects [@tellerLinkingDemographyDrivers2016; @croneHowPlantEcologists2011].
+This study adds to the growing body of work that finds delayed effects of climate drivers on vital rates without *a priori* assumptions about the influence of particular climate windows [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
+We found evidence for delayed effects of drought which are sometimes stronger predictors of vital rates than more recent conditions.
+The approach we took offers an unbiased way of identifying these delayed effects without overfitting (but see @pierreCriticalWindowsMethod2020 and @ogleQuantifyingEcologicalMemory2015a for alternative methods), yet few demographic studies have the data required for modeling lagged effects [@tellerLinkingDemographyDrivers2016; @croneHowPlantEcologists2011].
 This demonstrates the importance of long term demographic experiments in determining the effects of changing habitats on populations.
 <!--# Or something like "some of these long-term studies exist and are prime for doing these kinds of analyses" -->
 
@@ -493,7 +477,10 @@ newdf_1ha <-
 
 *Heliconia acuminata* individuals were smaller in forest fragments, although they grew slightly faster than plants in continuous forest, closing the size gap over the decade of demographic data.
 Size regression became more likely as plants increased in size, which is typical of long-lived forest understory plants <!--# citations -->.
-Our results confirm those of Bruna and Kress [-@brunaHabitatFragmentationDemographic2002], showing that probability of flowering increases with plant size and plant growth decreases with plant size <!--# other citations? -->. Flowering probability for the largest plants is actually higher in forest fragments; however, because there are fewer large plants in fragments overall flowering probability is much lower. The average fitted probability of flowering for plants in the upper quartile for size is 0.125 in continuous forest and 0.094 in forest fragments, equivalent to flowering once every 7.97 years and 10.63 years, respectively. Seemingly small differences in vital rates such as these can be extremely important as they compound over many years, especially in long-lived organisms[@gagnonGrowthUnderstoryHerb2011].
+Our results confirm those of Bruna and Kress [-@brunaHabitatFragmentationDemographic2002], showing that probability of flowering increases with plant size and plant growth decreases with plant size <!--# other citations? -->.
+Flowering probability for the largest plants is actually higher in forest fragments; however, because there are fewer large plants in fragments overall flowering probability is much lower.
+The average fitted probability of flowering for plants in the upper quartile for size is 0.125 in continuous forest and 0.094 in forest fragments, equivalent to flowering once every 7.97 years and 10.63 years, respectively.
+Seemingly small differences in vital rates such as these can be extremely important as they compound over many years, especially in long-lived organisms[@gagnonGrowthUnderstoryHerb2011].
 
 We found that the effects of variation in SPEI differed between forest fragments and continuous forest habitat.
 At mean SPEI, overall survival of plants was similar in fragments and continuous forest, but extremes in SPEI, both positive (wet) and negative (dry) had much greater detrimental effects on survival in habitat fragments.
@@ -503,7 +490,10 @@ However, with few plants large enough to flower, it is likely we simply did not 
 Both variation in precipitation and extreme conditions are predicted to increase as climate change progresses ( <!--# cite IPCC? -->) and our results demonstrate that this may have a greater negative impact on understory plants in forest fragments compared to continuous forests.
 
 Reduced microclimate buffering could possibly explain the greater effects of variation in SPEI in fragments compared to continuous forest.
-A major consequence of forest fragmentation is reported alteration in microclimate near forest edges [@didhamEdgeStructureDetermines1999; @ewersFragmentationImpairsMicroclimate2013]. It is possible that increases in temperature, evaporative drying, wind speed, and solar radiation commonly found near forest edges exacerbated the effects of extremes in SPEI on *H. acuminata* growth and survival in fragments compared to continuous forest. It is also possible that the microclimate experienced by plants in continuous forest plots was simply more stable compared to that of 1 ha fragments. Bruna et al. [-@brunaExperimentalAssessmentHeliconia2002] found that the growth of transplanted *H. accuminata* plants transplanted near edges was reduced relative to continuous forest.
+A major consequence of forest fragmentation is reported alteration in microclimate near forest edges [@didhamEdgeStructureDetermines1999; @ewersFragmentationImpairsMicroclimate2013].
+It is possible that increases in temperature, evaporative drying, wind speed, and solar radiation commonly found near forest edges exacerbated the effects of extremes in SPEI on *H. acuminata* growth and survival in fragments compared to continuous forest.
+It is also possible that the microclimate experienced by plants in continuous forest plots was simply more stable compared to that of 1 ha fragments.
+Bruna et al. [-@brunaExperimentalAssessmentHeliconia2002] found that the growth of transplanted *H. accuminata* plants transplanted near edges was reduced relative to continuous forest.
 A greater understanding of the microclimatic changes in fragments during extreme climate events and their effects on understory plants is needed, but we believe differences in microclimate buffering are a likely explanation for the observed differences between fragments and continuous forest.
 
 Past climate conditions were important for survival, size, and flowering probability.
@@ -518,7 +508,9 @@ For example, if extreme drought in the dry season before the census increases pl
 This explanation for delayed effects applies only to plant size and survival, as flowering occurs very close to the yearly demographic census (Jan--Apr).
 
 Second, these delayed effects may represent a physiological delayed effect of environmental conditions.
-Under horticultural conditions, flowering shoots of *Heliconia chartacea* that flower in Spring begin to emerge in June or July of the previous year, and the developing inflorescence may be aborted in response to adverse conditions up to 6 months after initiation [@criley1994]. <!--# more here about general trends in physiological delays for plants witht tubers or rhizomes -->Although flowering occurs in late January through April in *H. acuminata*, the initiation of a primordial flowering shoot <!--# not sure this is the right term.  "Differentiation of the apical meristem" ? --> likely happens many months earlier. The increase in flowering rate of plants following a drought could also be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018] <!--# add another more general citation. e.g. S. Joe Wright trees flowering after ENSO -->.
+Under horticultural conditions, flowering shoots of *Heliconia chartacea* that flower in Spring begin to emerge in June or July of the previous year, and the developing inflorescence may be aborted in response to adverse conditions up to 6 months after initiation [@criley1994].
+<!--# more here about general trends in physiological delays for plants witht tubers or rhizomes -->Although flowering occurs in late January through April in *H. acuminata*, the initiation of a primordial flowering shoot <!--# not sure this is the right term.  "Differentiation of the apical meristem" ? --> likely happens many months earlier.
+The increase in flowering rate of plants following a drought could also be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018] <!--# add another more general citation. e.g. S. Joe Wright trees flowering after ENSO -->.
 We also considered that some delayed effects could be a result of a cost of reproduction leading to reduced growth, survival, and/or flowering probability in the following season.
 However, when flowering in the previous season is included as a covariate, it predicts higher growth and flowering probability---likely a reflection of size being a good predictor of these vital rates (Supplemental\_\_\_).
 Our models show that drought two dry seasons prior to the census increase flowering probability.

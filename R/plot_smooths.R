@@ -1,3 +1,5 @@
+
+
 #' Evaluate a smooth with confidence intervals and backtransform
 #'
 #' Evaluates a smooth, adds the model intercept, confidence intervals, and
@@ -16,7 +18,6 @@ my_eval_smooth <- function(model, smooth, ...) {
     add_confint() %>% 
     mutate(across(c(est, lower_ci, upper_ci), ~linkinv(.x + coef(model)[1])))
 }
-
 
 
 #' Plots smooth covariates from two models
@@ -39,6 +40,35 @@ plot_covar_smooth <- function(cf_model, frag_model, covar) {
     theme_bw()
   p
 }
+
+make_size_plot <- function(s, g, f, model_data) {
+  
+  d <-
+    ggplot(model_data, aes(x = log_size_prev, fill = habitat, color = habitat)) +
+    geom_density(alpha = 0.5) +
+    labs(y = "Density", x = TeX("$log(size_t)$")) +
+    theme_bw() +
+    theme(legend.position = "none")
+  
+  top <-
+    s /
+    g /
+    f & 
+    theme(axis.title.x = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank())
+  
+  top /
+    d +
+    plot_layout(guides = "collect", ) +
+    plot_annotation(tag_levels = "a", tag_suffix = ")") &
+    theme(plot.margin = margin()) &
+    # set color for all panels
+    scale_color_discrete_qualitative(palette = "Set 2",
+                                     aesthetics = c("color", "fill"))
+}
+
+
 
 #' Makes a little bar indicating wet and dry seasons.
 #'
