@@ -81,7 +81,9 @@ withr::with_dir(here(), {
     g_spei_diff_plot,
     f_spei_plot,
     f_spei_diff_plot,
-    size_plot
+    size_plot,
+    f_cf,
+    f_1ha
   ))
 })
 ```
@@ -158,7 +160,7 @@ There is a pronounced dry season from June to October (Figure \@ref(fig:normals)
 
 *Heliconia acuminata* (LC Rich.) (Heliconiaceae) is a perennial monocot distributed throughout Central Amazonia [@kressDiversityDistributionHeliconia1990] and is the most abundant understory herb at the BDFFP [@ribeiroInfluencePostclearingTreatment2010].
 While many *Heliconia* species grow in large patches along forest edges or in treefall gaps, others---such as *H. acuminata*---are found at lower densities in the darker and cooler forest understory.
-These species produce fewer infloresences and are pollinated by traplining rather than territorial hummingbirds [@berryHeliconiaIdentificationGuide1991a].
+These species produce fewer infloresences and are pollinated by traplining rather than territorial hummingbirds [@berryHeliconiaIdentificationGuide1991].
 While some *Heliconia* species are at least partially self-compatible [@kressSelfincompatibilitySystemsCentral1983], pollen transfer experiments indicate self-fertilization in *Heliconia acuminata* is extremely rare *[darrigo unpubl. data]*.
 
 In our sites *H. acuminata* is pollinated by *Phaeothornis superciliosus* and *P. bourcieri* [@brunaHeliconiaAcuminataReproductive2004].
@@ -187,7 +189,7 @@ SPEI is a proxy for meteorological drought that integrates precipitation and eva
 Positive SPEI values for a given month indicate conditions wetter than the historical average for that month, while negative values of SPEI indicate droughts with intensity categorized as mild (0 to -1), moderate (-1 to -1.5), severe (-1.5 to -2), or extreme (\< -2) [@mckeeRelationshipDroughtFrequency1993].
 SPEI can be calculated to represent different temporal scales of drought; we used 3-month SPEI because---given its shallow roots and rhizome---*H. acuminata* relies primarily on soil moisture rather than deeper water sources that can persist for longer timescales [@vicente-serranoMultiscalarDroughtIndex2010].
 SPEI calculations were done using the `SPEI` package in `r version$version.string` [@rcoreteamLanguageEnvironmentStatistical2020; @begueriaSPEICalculationStandardised2017].
-The timing of drought events based on these SPEI calculations is consistent with that resulting from SPEI calculated with other data sources (e.g., nearby weather stations, the global SPEI database [@begueriaSbegueriaSPEIbaseVersion2017], TRMM [@trmm3b43]), though the magnitude of drought can sometimes differ (**Supplemental \_\_**).
+The timing of drought events based on these SPEI calculations is consistent with that resulting from SPEI calculated with other data sources (e.g., nearby weather stations, the global SPEI database [@begueriaSbegueriaSPEIbaseVersion2017], TRMM [@trmmTMPA3B432011]), though the magnitude of drought can sometimes differ (**Supplemental \_\_**).
 <!--# maybe add a sentence emphasizing that SPEI is monthly calculation -->
 
 ## Statistical Modeling of Vital Rates
@@ -218,7 +220,7 @@ s_2(d_{i,t}, ..., d_{i,t-24}) = \sum_{l = l_0}^L f \cdot w(d_{i,t-l},l)
 $$
 
 where the crossbasis function, $f \cdot w (d,l)$, is composed of two marginal basis functions: the standard predictor-response function $f(d)$, and the additional lag-response function $w(l)$.
-These marginal functions are combined as a tensor product smooth such that the shape of one marginal function varies smoothly along the other dimension (see Wood [-@woodsimonn.ChapterSmoothers] and Gasparrini et al. [-@gasparriniPenalizedFrameworkDistributed2017] for more detail).
+These marginal functions are combined as a tensor product smooth such that the shape of one marginal function varies smoothly along the other dimension (see Wood [-@woodChapterSmoothers] and Gasparrini et al. [-@gasparriniPenalizedFrameworkDistributed2017] for more detail).
 Penalized cubic regression splines were used for both marginal bases of the crossbasis function, with 35 knots for the lag dimension (i.e. number of months) and 3 knots for the drought response dimension to restrict the fitted response to drought to bimodal when most complex <!--# You may want to say what the 3 knots can capture: increasing then decreasing, exp decline etc -->.
 Because of penalization, the number of knots is generally not important as long it is great enough to allow the smooth to represent the 'true' relationship [@woodGeneralizedAdditiveModels2017].
 A random effect of plot ID on the intercept is represented by $a_j$, allowing for plot characteristics to influence average vital rates.
@@ -341,7 +343,7 @@ The random effect of plot is significant in both habitat models (p \< 0.001).
 
 ## Flowering
 
-There was a pronounced threshold in flowering probability corresponding with a log size of about 5 (Figure \@ref(fig:flwr-size)).
+There was a pronounced threshold in flowering probability corresponding with a log size of about 5 (Figure \@ref(fig:size-plot)c).
 The mean proportion of flowering plants across all census years was generally higher in continuous forest (0.050 ± 0.021) compared to 1-ha fragments (0.036 ± 0.027).
 In fact, the proportion of flowering plants was higher in continuous forest in all survey years except 2006 and 2008 (Figure \@ref(fig:eda)c).
 The most striking difference between habitat types in flowering proportion coincided with a severe drought in 2003 when the percentage of flowering plants with four or more shoots was 24.1% in continuous forest and 12% in 1-ha fragments (Figure \@ref(fig:eda)c).
@@ -389,21 +391,21 @@ The random effect of plot also had a significant effect in both habitats (p \< 0
 -   @criley1994 : under hort conditions, shoots that flower in spring emerge in June/July the previous year.
     \~6 months after shoot emergence that the developing infloresence is susceptible to adverse effects.
 
--   @dowd2020 (unpublished thesis, could write MB and ask for update): precipitation and fragmentations influenced fruit/seed production (conditional on flowering) by *Heliconia* (one step past flowering, so might be worth citing to say that there are other ways reprod. can be affected
+-   @dowdInvestigatingSynergisticEffects2020 (unpublished thesis, could write MB and ask for update): precipitation and fragmentations influenced fruit/seed production (conditional on flowering) by *Heliconia* (one step past flowering, so might be worth citing to say that there are other ways reprod. can be affected
 
--   Lots of great stuff about the importance of rhizomes, including for drought resistance, in @klimesova2018.
-    Rhizome resistance to variability in environmental conditions also a conclusion in this study on invasion by another zingiberales ( @pinheiro2021
+-   Lots of great stuff about the importance of rhizomes, including for drought resistance, in @klimesovaBelowgroundPlantFunctional2018.
+    Rhizome resistance to variability in environmental conditions also a conclusion in this study on invasion by another zingiberales ( @pinheiroEffectRhizomeExposure2021
 
--   @westerband2017: *Heliconia* grew more at low than high precipitation.
+-   @westerbandEarlyLifeConditions2017: *Heliconia* grew more at low than high precipitation.
     Leaf life span and biomass allocation did not differ among treatments.
     The effect of environmental variability was dependent on early life conditions as well as precipitation, suggesting that generalist species may experience high fitness as forest environments become more variable by maintaining high growth at the expense of survival.
 
 -   the observed effects on reproduction can have effects beyond demography, eg.
-    gene flow and genetic structure among and between plots already shaped by fragmentation ( @cortes2013, there can also be drought effects eg @sifres2007)
+    gene flow and genetic structure among and between plots already shaped by fragmentation ( @cortesLowPlantDensity2013, there can also be drought effects eg @sifresGeneticStructureLycopersicon2007)
 
--   There can be cascading effects on other species (hispine beetles that depend on Heliconia flowers/fruits, hummingbirds and seed dispersers ( @stiles1975
+-   There can be cascading effects on other species (hispine beetles that depend on Heliconia flowers/fruits, hummingbirds and seed dispersers ( @stilesEcologyFloweringPhenology1975
 
--   @wright1992: seasonal drought.
+-   @wrightSeasonalDroughtSoil1992: seasonal drought.
     experimental irrigation influences survival and growth of tropical herbs
 
 -   Effects of precip extremes on understory plants can be also be indirect:
@@ -411,26 +413,26 @@ The random effect of plot also had a significant effect in both habitats (p \< 0
     -   high precip = lots of clouds, less photosynthesis, less or slower growth
 
     -   low precip = trees lose leaves or die, more light gets through or gaps open.
-        This can be positive (more light = more growth) but not always ( @westerband2015) there is a threshold that can lead to photoinhibition ( @he1996, @mulkey1991).
-        Drought and herbivory effects can be additive, at least in seedlings ( @barton2020)
+        This can be positive (more light = more growth) but not always ( @westerbandInteractionsPlantSize2015) there is a threshold that can lead to photoinhibition ( @hePhotoinhibitionHeliconiaNatural1996, @mulkeyComparativeLifeHistory1991).
+        Drought and herbivory effects can be additive, at least in seedlings ( @bartonAdditiveNonadditiveResponses2020)
 
--   @horvitz1988: no evidence for short term (next season) cost of reproduction in another understory monocot (Calathea) BUT
+-   @horvitzDemographicCostReproduction1988: no evidence for short term (next season) cost of reproduction in another understory monocot (Calathea) BUT
 
--   @horvitz2002 (*Calathea ovandensis*) Survival of juveniles was positively affected by plant size, but not by herbivory, local competition, or fruit production.
+-   @horvitzEffectsPlantSize2002 (*Calathea ovandensis*) Survival of juveniles was positively affected by plant size, but not by herbivory, local competition, or fruit production.
     Survival of large stages was not generally affected by any of the factors.
     Relative growth rates of all stages were negatively affected by plant size; larger plants grew more slowly than smaller plants.
     Additionally, growth rate of juveniles was negatively affected by local competition, whereas growth rate of reproductives was positively affected by reproduction.
     Next year's inflorescence production was positively affected by plant size for both pre-reproductive and reproductive stages.
     For reproductives, it was additionally positively affected by current fruit production.
 
--   @rundel1998 Heliconia appear to allocate much of their above-ground biomass to leaf tissues and have a relatively low investment in support tissues.
+-   @rundelStructuralPhysiologicalAdaptation1998 Heliconia appear to allocate much of their above-ground biomass to leaf tissues and have a relatively low investment in support tissues.
     Investment in leaf form vs structure interpreted as a trade-off between economy and protection against tissue loss from falling branches; presence of below-ground rhizomes in Heliconia may be key.
-    See also @rundel2020\
+    See also @rundelFunctionalTraitsBroadleaved2020\
 
 -   @stiles1975?:
     drought resulted in less flowering in Heliconia
 
--   @mulkey1996 and @bonal2016 will have goods stuff; haven't looked them over yet
+-   @mulkeyInfluenceSeasonalDrought1996 and @bonalResponseTropicalRainforests2016 will have goods stuff; haven't looked them over yet
 
 -   @wrightSeasonalNinoLonger2006: Increase in flower and seed production after El Niño events for trees and lianas.
     Might be due to increases solar irradiance.
@@ -450,16 +452,14 @@ Understanding how landscape structure and environmental conditions act to influe
 
 This study adds to the growing body of work that finds delayed effects of climate drivers on vital rates without *a priori* assumptions about the influence of particular climate windows [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
 We found evidence for delayed effects of drought which are sometimes stronger predictors of vital rates than more recent conditions.
-The approach we took offers an unbiased way of identifying these delayed effects without overfitting (but see @pierreCriticalWindowsMethod2020 and @ogleQuantifyingEcologicalMemory2015a for alternative methods), yet few demographic studies have the data required for modeling lagged effects [@tellerLinkingDemographyDrivers2016; @croneHowPlantEcologists2011].
+The approach we took offers an unbiased way of identifying these delayed effects without overfitting (but see @pierreCriticalWindowsMethod2020 and @ogleQuantifyingEcologicalMemory2015 for alternative methods), yet few demographic studies have the data required for modeling lagged effects [@tellerLinkingDemographyDrivers2016; @croneHowPlantEcologists2011].
 This demonstrates the importance of long term demographic experiments in determining the effects of changing habitats on populations.
 <!--# Or something like "some of these long-term studies exist and are prime for doing these kinds of analyses" -->
 
 ```{r flwr-prob-quartile, include=FALSE}
 
 #figure out flowering probability of largest quartile of plants in each habitat
-tar_load(f_cf)
-tar_load(f_1ha)
-
+library(tidyverse)
 newdf_cf <-
   f_cf$model %>% #use model data frame
   mutate(quartiles = ntile(log_size_prev, 4)) %>% 
@@ -508,7 +508,7 @@ For example, if extreme drought in the dry season before the census increases pl
 This explanation for delayed effects applies only to plant size and survival, as flowering occurs very close to the yearly demographic census (Jan--Apr).
 
 Second, these delayed effects may represent a physiological delayed effect of environmental conditions.
-Under horticultural conditions, flowering shoots of *Heliconia chartacea* that flower in Spring begin to emerge in June or July of the previous year, and the developing inflorescence may be aborted in response to adverse conditions up to 6 months after initiation [@criley1994].
+Under horticultural conditions, flowering shoots of *Heliconia chartacea* that flower in Spring begin to emerge in June or July of the previous year, and the developing inflorescence may be aborted in response to adverse conditions up to 6 months after initiation [@crileyYearProductionHigh1994].
 <!--# more here about general trends in physiological delays for plants witht tubers or rhizomes -->Although flowering occurs in late January through April in *H. acuminata*, the initiation of a primordial flowering shoot <!--# not sure this is the right term.  "Differentiation of the apical meristem" ? --> likely happens many months earlier.
 The increase in flowering rate of plants following a drought could also be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018] <!--# add another more general citation. e.g. S. Joe Wright trees flowering after ENSO -->.
 We also considered that some delayed effects could be a result of a cost of reproduction leading to reduced growth, survival, and/or flowering probability in the following season.
@@ -535,7 +535,7 @@ This increase in light could then result in increased growth or flowering for un
 
 -   Very few demographic studies have the data required to fit models that include delayed effects.
 
--   Looop back to: need whole-life-cycle approach to ID these effects, why fragmentologists don't do this is killing Emilio.
+-   Loop back to: need whole-life-cycle approach to ID these effects, why fragmentologists don't do this is killing Emilio.
 
 # Acknowledgments
 
