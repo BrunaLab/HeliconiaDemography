@@ -32,15 +32,12 @@ plot_covar_smooth <- function(cf_model, frag_model, covar) {
   
   data <- bind_rows("1-ha" = frag, "CF" = cf, .id = "habitat")
   
-  ggplot(data, aes_string(x = covar, color = "habitat")) +
+  p <- 
+    ggplot(data, aes_string(x = covar, color = "habitat")) +
     geom_line(aes_string(y = "est")) +
     geom_ribbon(aes_string(ymin = "lower_ci", ymax = "upper_ci", color = NULL, fill = "habitat"), alpha = 0.25) +
-    geom_rug(data = bind_rows(
-      "1-ha" = model.frame(frag_model),
-      "CF" = model.frame(cf_model), 
-      .id = "habitat"),
-      color = "black") +
     theme_bw()
+  p
 }
 
 #' Makes a little bar indicating wet and dry seasons.
