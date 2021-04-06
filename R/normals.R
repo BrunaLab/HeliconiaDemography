@@ -30,7 +30,7 @@ plot_normals <- function(normals) {
     ggplot(normals, aes(x = as.factor(month), y = precip)) + 
     geom_col(fill = "darkblue") +
     scale_y_continuous("Precipitation (mm)", expand = expansion(mult = c(0.05, 0.1))) +
-    theme_bw()
+    theme_classic()
   
   temp <- 
     ggplot(normals, aes(x = month)) +
@@ -39,7 +39,7 @@ plot_normals <- function(normals) {
     geom_line(aes(y = temp_max), color = "red", linetype = 2) +
     scale_x_continuous("Month", breaks = 1:12) +
     scale_y_continuous("Temperature (ºC)", expand = expansion(mult = 0.3)) +
-    theme_bw()
+    theme_classic()
   
     (precip + theme(axis.title.x = element_blank(), axis.text.x = element_blank()))/
     (temp) + plot_annotation(tag_levels = "a", tag_suffix = ")")

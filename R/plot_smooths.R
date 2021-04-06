@@ -37,7 +37,7 @@ plot_covar_smooth <- function(cf_model, frag_model, covar) {
     ggplot(data, aes_string(x = covar, color = "habitat")) +
     geom_line(aes_string(y = "est")) +
     geom_ribbon(aes_string(ymin = "lower_ci", ymax = "upper_ci", color = NULL, fill = "habitat"), alpha = 0.25) +
-    theme_bw()
+    theme_classic()
   p
 }
 
@@ -47,7 +47,7 @@ make_size_plot <- function(s, g, f, model_data) {
     ggplot(model_data, aes(x = log_size_prev, fill = habitat, color = habitat)) +
     geom_density(alpha = 0.5) +
     labs(y = "Density", x = TeX("$log(size_t)$")) +
-    theme_bw() +
+    theme_classic() +
     theme(legend.position = "none")
   
   top <-
@@ -133,7 +133,7 @@ plot_spei_heatmap <-
                          breaks = breaks,
                          expand = c(0, 0)) +
       scale_y_continuous(TeX("SPEI_3_"), expand = expansion(mult = c(0.025, 0))) + #leave room for season bar at bottom
-      theme_bw() +
+      theme_classic() +
       annotation_custom(
         grob = ggplotGrob(season_bar),
         ymin = -Inf,

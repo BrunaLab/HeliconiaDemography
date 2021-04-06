@@ -37,7 +37,7 @@ plot_eda_spei <- function(xa, date_lims) {
     stat_summary(geom = "line", fun = "mean") +
     scale_y_continuous("SPEI", expand = expansion(mult = c(0, 0.05), add = 0)) +
     scale_x_yearmonth("Date", limits = date_lims, breaks = date_breaks, date_minor_breaks ="1 month", expand = expansion(mult = 0.02)) +
-    theme_bw() +
+    theme_classic() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
   
   spei <- annotate_spei(spei)
@@ -85,12 +85,11 @@ plot_eda_surv_ts <- function(demog_post, dates_lims) {
       expand = expansion(mult = 0.02)
     ) +
     scale_y_continuous("P(survived)") +
-    theme_bw() +
+    theme_classic() +
     theme(
       axis.text.x = element_blank(),
       axis.title.x = element_blank(),
       axis.ticks.x = element_blank(),
-      panel.grid.minor.x = element_blank(),
       legend.position = "none"
     )
   survival
@@ -134,12 +133,11 @@ plot_eda_surv_cohort <- function(demog, date_lims) {
       expand = expansion(mult = 0.04)
     ) +
     scale_y_continuous("P(survived)") +
-    theme_bw() +
+    theme_classic() +
     theme(
       axis.text.x = element_blank(),
       axis.title.x = element_blank(),
-      axis.ticks.x = element_blank(),
-      panel.grid.minor.x = element_blank()
+      axis.ticks.x = element_blank()
     )
   surv_curve
 }
@@ -179,12 +177,11 @@ plot_eda_size <- function(demog_post, date_lims) {
     ) +
     scale_y_continuous("log(size)") +
     coord_cartesian(xlim = date_lims) + #limits here so points don't get removed
-    theme_bw() +
+    theme_classic() +
     theme(
       axis.text.x = element_blank(),
       axis.title.x = element_blank(),
       axis.ticks.x = element_blank(),
-      panel.grid.minor.x = element_blank(),
       legend.position = "none"
     )
 }
@@ -217,12 +214,11 @@ plot_eda_flwr <- function(demog_post, date_lims) {
       expand = expansion(mult = 0.04)
     ) +
     scale_y_continuous("P(flowering)") +
-    theme_bw() +
+    theme_classic() +
     theme(
       axis.text.x = element_blank(),
       axis.title.x = element_blank(),
-      axis.ticks.x = element_blank(),
-      panel.grid.minor.x = element_blank()
+      axis.ticks.x = element_blank()
     )
   flowering
 }
