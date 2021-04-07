@@ -206,10 +206,10 @@ The crossbasis function was fit to the data in the context of a generalized addi
 The general form of the vital rate models was as follows:
 
 $$
-\begin{gather}
-    g[ \textrm{E}(y_{i})] = \alpha_j + s_1(x_i) + s_2(d_{i,t}, ..., d_{i,t-36}) \\
-    \alpha_j \sim N(\mu_{\alpha_j}, \sigma^2_{\alpha_j}), \textrm{for plot }j 
-\end{gather}
+\begin{split}
+& g[ \textrm{E}(y_{i})] = \alpha_j + s_1(x_i) + s_2(d_{i,t}, ..., d_{i,t-36}) \\
+& \alpha_j \sim N(\mu_{\alpha_j}, \sigma^2_{\alpha_j}), \;\textrm{for plot }j 
+\end{split}
 $$
 
 where $s_1(x_i)$ is a smooth function of plant size (natural log of height $\times$ shoot number), fit using a penalized cubic regression spline, $s_2(\cdot)$ is the crossbasis function in which $d_{i,t}$ is the SPEI value during the census month of an observation (February) and $d_{i,t-l}$ is the SPEI $l$ months prior (see Gasparrini et al. 2017 for details).
