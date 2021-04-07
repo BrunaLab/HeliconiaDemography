@@ -443,7 +443,10 @@ The random effect of plot also had a significant effect in both habitats (p \< 0
     (refs within @wrightSeasonalNinoLonger2006. van Shaik et al. 1993; Wright and vanSchaik 1994).
     But *Heliconia* times reproduction so seeds only germinate at start of rainy season.
 
--   cite Esteban et al. 2021 for negative effects of large positive SPEI\
+-   [@estebanOtherSideDroughts2021] negative effects of large positive SPEI
+
+-   In Manaus, the canopy is as green or greener in the dry season compared to the wet season [@guanPhotosyntheticSeasonalityGlobal2015], so dry season drought may result in relatively large increases in light penetration to the understory.
+    \
 
 <!--# in intro, questions are 1: what are effects on vital rates, 2: are effects delayed, 3: differences between habitats.  Keep the same order here? -->
 
@@ -517,11 +520,23 @@ Our models show that drought two dry seasons prior to the census increase flower
 A greater understanding of the effects of light, drought, season, and their interactions on flowering in *H. acuminata* is needed to provide a probable mechanism for this pattern.
 
 Finally, delayed effects could be mediated by indirect effects and ecological interactions.
-<!--# I'm not sure if this is really an explanation for the *delay* per se.  Need to think about this. -->Drought in tropical forests can increase tree mortality and leaf drop, resulting in decreased canopy cover and increased light penetration (<!--# citations -->).
-In Manaus, the canopy is as green or greener in the dry season compared to the wet season [@guanPhotosyntheticSeasonalityGlobal2015], so dry season drought may result in relatively large increases in light penetration to the understory.
+<!--# I'm not sure if this is really an explanation for the *delay* per se.  Need to think about this. -->Drought in tropical forests can increase tree mortality and leaf drop, resulting in decreased canopy cover and increased light penetration to the understory (<!--# citations -->).
 This increase in light could then result in increased growth or flowering for understory plants ( <!--# citations -->).
-<!--# Heliconia grow better at edges, where there's more light -->Here, the delayed effect could be a combined delay of the response of canopy trees to drought and the response of *H. acuminata* to increased insolation.
+<!--# Heliconia grow better at edges, where there's more light --> Janssen et al. [@janssenDroughtEffectsLeaf2021] showed that increase in litterfall due to drought was delayed.
+Here, the delayed effect of drought on *H. acuminata* could be partly explained by a delay of the response of canopy trees to drought and the response of *H. acuminata* to increased insolation.
+Furthermore, literfall in response to drought has shown to be greater at forest edges compared to interiors, which could explain the increased delayed effects of SPEI on survival and growth in forest fragments.
+Drought is also associated with increased insolation, so negative SPEI could also be a proxy for increased insolation, which would be exacerbated at forest edges potentially.
 
+-   [@janssenDroughtEffectsLeaf2021] Used machine learning to combine remote sensing and ground surveys of literfall from published datasets.
+    Estimates green-up, literfall, growth, etc. for central and southern america including the Amazon.
+    Drought results in anomolously high leaf flushing at start of drought followed by increased litterfall durring the drought.
+    Dry season droughts result in green-up, but not wet season droughts.
+    During drought, old leaves are shed and new leaves are maintained.
+    2-5 months for newly flushed leaves to fully expand.
+
+```{=html}
+<!-- -->
+```
 -   Ecological Consequences of these patterns: an eye towards a drier/wetter future
 
 # Conclusions & Future Directions
