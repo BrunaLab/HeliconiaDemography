@@ -30,17 +30,21 @@ plot_normals <- function(normals) {
     ggplot(normals, aes(x = as.factor(month), y = precip)) + 
     geom_col(fill = "darkblue") +
     scale_y_continuous("Precipitation (mm)", expand = expansion(mult = c(0.05, 0.1))) +
-    theme_bw()
+    scale_x_discrete("Month", labels = lubridate::month(1:12, label = TRUE)) +
+    theme_classic()
   
   temp <- 
     ggplot(normals, aes(x = month)) +
     geom_line(aes(y = temp_mean), color = "red") +
+    geom_point(aes(y = temp_mean), color = "red", size = 1) +
     geom_line(aes(y = temp_min), color = "red", linetype = 2) +
+    geom_point(aes(y = temp_min), color = "red", size = 1) +
     geom_line(aes(y = temp_max), color = "red", linetype = 2) +
-    scale_x_continuous("Month", breaks = 1:12) +
+    geom_point(aes(y = temp_max), color = "red", size = 1) +
+    scale_x_continuous("Month", breaks = 1:12, labels = lubridate::month(1:12, label = TRUE)) +
     scale_y_continuous("Temperature (ºC)", expand = expansion(mult = 0.3)) +
-    theme_bw()
+    theme_classic()
   
-    (precip + theme(axis.title.x = element_blank(), axis.text.x = element_blank()))/
+    (precip + theme(axis.title.x = element_blank()))/
     (temp) + plot_annotation(tag_levels = "a", tag_suffix = ")")
 }

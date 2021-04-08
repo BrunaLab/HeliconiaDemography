@@ -75,15 +75,15 @@ withr::with_dir(here(), {
   tar_load(c(
     normals_plot,
     eda_plot,
-    s_covar_plot,
     s_spei_plot,
     s_spei_diff_plot,
-    g_covar_plot,
     g_spei_plot,
     g_spei_diff_plot,
-    f_covar_plot,
     f_spei_plot,
-    f_spei_diff_plot
+    f_spei_diff_plot,
+    size_plot,
+    f_cf,
+    f_1ha
   ))
 })
 ```
@@ -160,7 +160,7 @@ There is a pronounced dry season from June to October (Figure \@ref(fig:normals)
 
 *Heliconia acuminata* (LC Rich.) (Heliconiaceae) is a perennial monocot distributed throughout Central Amazonia [@kressDiversityDistributionHeliconia1990] and is the most abundant understory herb at the BDFFP [@ribeiroInfluencePostclearingTreatment2010].
 While many *Heliconia* species grow in large patches along forest edges or in treefall gaps, others---such as *H. acuminata*---are found at lower densities in the darker and cooler forest understory.
-These species produce fewer infloresences and are pollinated by traplining rather than territorial hummingbirds [@berryHeliconiaIdentificationGuide1991a].
+These species produce fewer infloresences and are pollinated by traplining rather than territorial hummingbirds [@berryHeliconiaIdentificationGuide1991].
 While some *Heliconia* species are at least partially self-compatible [@kressSelfincompatibilitySystemsCentral1983], pollen transfer experiments indicate self-fertilization in *Heliconia acuminata* is extremely rare *[darrigo unpubl. data]*.
 
 In our sites *H. acuminata* is pollinated by *Phaeothornis superciliosus* and *P. bourcieri* [@brunaHeliconiaAcuminataReproductive2004].
@@ -189,7 +189,7 @@ SPEI is a proxy for meteorological drought that integrates precipitation and eva
 Positive SPEI values for a given month indicate conditions wetter than the historical average for that month, while negative values of SPEI indicate droughts with intensity categorized as mild (0 to -1), moderate (-1 to -1.5), severe (-1.5 to -2), or extreme (\< -2) [@mckeeRelationshipDroughtFrequency1993].
 SPEI can be calculated to represent different temporal scales of drought; we used 3-month SPEI because---given its shallow roots and rhizome---*H. acuminata* relies primarily on soil moisture rather than deeper water sources that can persist for longer timescales [@vicente-serranoMultiscalarDroughtIndex2010].
 SPEI calculations were done using the `SPEI` package in `r version$version.string` [@rcoreteamLanguageEnvironmentStatistical2020; @begueriaSPEICalculationStandardised2017].
-The timing of drought events based on these SPEI calculations is consistent with that resulting from SPEI calculated with other data sources (e.g., nearby weather stations, the global SPEI database [@begueriaSbegueriaSPEIbaseVersion2017], TRMM [@trmm3b43]), though the magnitude of drought can sometimes differ (**Supplemental \_\_**).
+The timing of drought events based on these SPEI calculations is consistent with that resulting from SPEI calculated with other data sources (e.g., nearby weather stations, the global SPEI database [@begueriaSbegueriaSPEIbaseVersion2017], TRMM [@trmmTMPA3B432011]), though the magnitude of drought can sometimes differ (**Supplemental \_\_**).
 <!--# maybe add a sentence emphasizing that SPEI is monthly calculation -->
 
 ## Statistical Modeling of Vital Rates
@@ -206,10 +206,10 @@ The crossbasis function was fit to the data in the context of a generalized addi
 The general form of the vital rate models was as follows:
 
 $$
-\begin{gather}
-    g[ \textrm{E}(y_{i})] = \alpha_j + s_1(x_i) + s_2(d_{i,t}, ..., d_{i,t-36}) \\
-    \alpha_j \sim N(\mu_{\alpha_j}, \sigma^2_{\alpha_j}), \textrm{for plot }j 
-\end{gather}
+\begin{split}
+& g[ \textrm{E}(y_{i})] = \alpha_j + s_1(x_i) + s_2(d_{i,t}, ..., d_{i,t-36}) \\
+& \alpha_j \sim N(\mu_{\alpha_j}, \sigma^2_{\alpha_j}), \;\textrm{for plot }j 
+\end{split}
 $$
 
 where $s_1(x_i)$ is a smooth function of plant size (natural log of height $\times$ shoot number), fit using a penalized cubic regression spline, $s_2(\cdot)$ is the crossbasis function in which $d_{i,t}$ is the SPEI value during the census month of an observation (February) and $d_{i,t-l}$ is the SPEI $l$ months prior (see Gasparrini et al. 2017 for details).
@@ -220,7 +220,7 @@ s_2(d_{i,t}, ..., d_{i,t-24}) = \sum_{l = l_0}^L f \cdot w(d_{i,t-l},l)
 $$
 
 where the crossbasis function, $f \cdot w (d,l)$, is composed of two marginal basis functions: the standard predictor-response function $f(d)$, and the additional lag-response function $w(l)$.
-These marginal functions are combined as a tensor product smooth such that the shape of one marginal function varies smoothly along the other dimension (see Wood [-@woodsimonn.ChapterSmoothers] and Gasparrini et al. [-@gasparriniPenalizedFrameworkDistributed2017] for more detail).
+These marginal functions are combined as a tensor product smooth such that the shape of one marginal function varies smoothly along the other dimension (see Wood [-@woodChapterSmoothers] and Gasparrini et al. [-@gasparriniPenalizedFrameworkDistributed2017] for more detail).
 Penalized cubic regression splines were used for both marginal bases of the crossbasis function, with 35 knots for the lag dimension (i.e. number of months) and 3 knots for the drought response dimension to restrict the fitted response to drought to bimodal when most complex <!--# You may want to say what the 3 knots can capture: increasing then decreasing, exp decline etc -->.
 Because of penalization, the number of knots is generally not important as long it is great enough to allow the smooth to represent the 'true' relationship [@woodGeneralizedAdditiveModels2017].
 A random effect of plot ID on the intercept is represented by $a_j$, allowing for plot characteristics to influence average vital rates.
@@ -258,11 +258,11 @@ Two noticeable peaks in the proportion of flowering mature plants occur in sever
 ## Survival
 
 ```{r}
-cap <- "Smooth effect of plant size in the previous census on survival modeled by a cubic regression spline.  95% confidence intervals are shown and include uncertainty in the model intercept and uncertainty due to smoothness selection. The smooths for 1-ha fragments and continuous forest are fit in separate models. The model intercepts were added to the fitted values of the smooth and values are back-transformed to the response scale"
+cap <- "Smooth effect of plant size in the previous census on a) survival, b) log(size), and c) flowering probabiility, modeled by a cubic regression splines. Panel d) shows the smoothed density of different plant sizes in the two habitat types. 95% confidence intervals are shown and include uncertainty in the model intercept and uncertainty due to smoothness selection. The smooths for 1-ha fragments and continuous forest are fit in separate models. The model intercepts were added to the fitted values of the smooth and values are back-transformed to the response scale.  In b), a 1:1 line is shown in dashed red to indicate the line of no growth."
 ```
 
-```{r surv-size, fig.cap=cap}
-s_covar_plot
+```{r size-plot, fig.cap=cap, fig.height=8, fig.width=5}
+size_plot
 ```
 
 Overall survival rate across the entire dataset was the same (0.95) in both CF and 1-ha.
@@ -270,7 +270,7 @@ The proportion of surviving plants across both habitat types was lowest in 2004 
 The lowest survival for 1-ha fragment plots (0.93) was in the 2006 census corresponding to wetter than average conditions (SPEI \> 0.5), but with a moderate drought the preceding October.
 
 Log transformed plant size had a significant effect on survival in both continuous forest and 1-ha fragments (both p \< 0.001).
-Survival probability of large plants approached 1 in both habitat types (Figure \@ref(fig:surv-size)).
+Survival probability of large plants approached 1 in both habitat types (Figure \@ref(fig:size-plot)a).
 Survival of the smallest plants was higher in 1-ha fragments, but the 95% confidence intervals for 1-ha fragments and continuous forest overlapped for all sizes.
 
 ```{r}
@@ -310,18 +310,10 @@ Plants were on average larger in continuous forest compared to 1-ha fragments.
 In 1-ha fragments, plants had 2.5 ± 1.5 shoots on average and a mean height of 36.2 ± 24.1 cm and a mean size of 112 ± 141.
 The size difference between plants in continuous forest and 1-ha fragments was more dramatic early on in the timeseries with mean sizes becoming more similar over time (Figure \@ref(fig:eda)a).
 
-```{r}
-cap <- "Smooth effect of plant size in year t on plant size in year t+1 modeled by a cubic regression spline.  95% confidence intervals are shown and include uncertainty in the model intercept as well as uncertainty due to smoothness selection. The dashed red line represents a 1:1 line for reference. The smooths for 1-ha fragments and continuous forest are fit in separate models. Model intercepts were added to the fitted values of the smooths."
-```
-
-```{r growth-size, fig.cap=cap}
-g_covar_plot
-```
-
 <!--# Is growth really higher in fragments?  Probably, since fig2 shows size becoming more similar over time.   -->
 
 Size in year t was a significant predictor of size in year t+1 (p \< 0.001).
-The 95% confidence intervals for the effect of size in year t in fragments and continuous forest overlapped for most sizes, but was slightly higher in continuous forest for mid-sized plants (Figure \@ref(fig:growth-size)).
+The 95% confidence intervals for the effect of size in year t in fragments and continuous forest overlapped for most sizes, but was slightly higher in continuous forest for mid-sized plants (Figure \@ref(fig:size-plot)b).
 
 ```{r}
 cap <- "Smooth effect of lagged SPEI on plant growth for a) continuous forest and b) 1-ha fragments. Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function. Contour lines correspond to a change of 0.05. The bar on the bottom of each panel indicates wet seasons (black, November–May) and dry seasons (white, June–October)."
@@ -351,28 +343,17 @@ The random effect of plot is significant in both habitat models (p \< 0.001).
 
 ## Flowering
 
-There was a pronounced threshold in flowering probability corresponding with a log size of about 5 (Figure \@ref(fig:flwr-size)).
+There was a pronounced threshold in flowering probability corresponding with a log size of about 5 (Figure \@ref(fig:size-plot)c).
 The mean proportion of flowering plants across all census years was generally higher in continuous forest (0.050 ± 0.021) compared to 1-ha fragments (0.036 ± 0.027).
 In fact, the proportion of flowering plants was higher in continuous forest in all survey years except 2006 and 2008 (Figure \@ref(fig:eda)c).
 The most striking difference between habitat types in flowering proportion coincided with a severe drought in 2003 when the percentage of flowering plants with four or more shoots was 24.1% in continuous forest and 12% in 1-ha fragments (Figure \@ref(fig:eda)c).
 The back-transformed model intercepts, representing the flowering probability of averaged sized plants in each habitat given average SPEI, showed a similar pattern with 0.008 for continuous forest and 0.004 for 1-ha fragments.
 <!--# not sure how necessary this is -->
 
-```{r}
-cap <- "Smooth effect of plant size in the previous census on flowering probability modeled by a cubic regression spline.  95% confidence intervals are shown and include uncertainty in the model intercept as well as uncertainty due to smoothness selection. The smooths for 1-ha fragments and continuous forest are fit in separate models. The model intercepts were added to the fitted values of the smooth and values are back-transformed to the response scale"
-```
-
-```{r flwr-size, fig.cap=cap}
-f_covar_plot
-```
-
-<!--# instead of rug plot, add second panel or margin with box plots or violin plots of size at both habitats -->
-
 Plant size had a significant effect on flowering probability in both habitats (p \< 0.001).
-Flowering probability increased rapidly with log-transformed plant size greater than 5 in both habitats (Figure \@ref(fig:flwr-size)).
+Flowering probability increased rapidly with log-transformed plant size greater than 5 in both habitats (Figure \@ref(fig:size-plot)c).
 Flowering probability of large plants (log(size) \> 5) was greater in 1-ha fragments compared to continuous forest.
-However, because mean plant size is larger in continuous forest, overall flowering probability was greater.
-<!--# idea: plot vertical lines representing mean or median size in each habitat -->
+However, because mean plant size is larger in continuous forest (Figure \@ref(fig:size-plot)d), overall flowering probability was greater.
 
 ```{r}
 cap <- "Smooth effect of lagged SPEI on flowering probability. Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale. Contour lines correspond to a change of 0.001. The bar on the bottom of each panel indicates wet seasons (black, November–May) and dry seasons (white, June–October)."
@@ -414,21 +395,21 @@ Delayed effects, time lag, the lag...avoid lagged effects
 -   @criley1994 : under hort conditions, shoots that flower in spring emerge in June/July the previous year.
     \~6 months after shoot emergence that the developing infloresence is susceptible to adverse effects.
 
--   @dowd2020 (unpublished thesis, could write MB and ask for update): precipitation and fragmentations influenced fruit/seed production (conditional on flowering) by *Heliconia* (one step past flowering, so might be worth citing to say that there are other ways reprod. can be affected
+-   @dowdInvestigatingSynergisticEffects2020 (unpublished thesis, could write MB and ask for update): precipitation and fragmentations influenced fruit/seed production (conditional on flowering) by *Heliconia* (one step past flowering, so might be worth citing to say that there are other ways reprod. can be affected
 
--   Lots of great stuff about the importance of rhizomes, including for drought resistance, in @klimesova2018.
-    Rhizome resistance to variability in environmental conditions also a conclusion in this study on invasion by another zingiberales ( @pinheiro2021
+-   Lots of great stuff about the importance of rhizomes, including for drought resistance, in @klimesovaBelowgroundPlantFunctional2018.
+    Rhizome resistance to variability in environmental conditions also a conclusion in this study on invasion by another zingiberales ( @pinheiroEffectRhizomeExposure2021
 
--   @westerband2017: *Heliconia* grew more at low than high precipitation.
+-   @westerbandEarlyLifeConditions2017: *Heliconia* grew more at low than high precipitation.
     Leaf life span and biomass allocation did not differ among treatments.
     The effect of environmental variability was dependent on early life conditions as well as precipitation, suggesting that generalist species may experience high fitness as forest environments become more variable by maintaining high growth at the expense of survival.
 
 -   the observed effects on reproduction can have effects beyond demography, eg.
-    gene flow and genetic structure among and between plots already shaped by fragmentation ( @cortes2013, there can also be drought effects eg @sifres2007)
+    gene flow and genetic structure among and between plots already shaped by fragmentation ( @cortesLowPlantDensity2013, there can also be drought effects eg @sifresGeneticStructureLycopersicon2007)
 
--   There can be cascading effects on other species (hispine beetles that depend on Heliconia flowers/fruits, hummingbirds and seed dispersers ( @stiles1975
+-   There can be cascading effects on other species (hispine beetles that depend on Heliconia flowers/fruits, hummingbirds and seed dispersers ( @stilesEcologyFloweringPhenology1975
 
--   @wright1992: seasonal drought.
+-   @wrightSeasonalDroughtSoil1992: seasonal drought.
     experimental irrigation influences survival and growth of tropical herbs
 
 -   Effects of precip extremes on understory plants can be also be indirect:
@@ -436,26 +417,26 @@ Delayed effects, time lag, the lag...avoid lagged effects
     -   high precip = lots of clouds, less photosynthesis, less or slower growth
 
     -   low precip = trees lose leaves or die, more light gets through or gaps open.
-        This can be positive (more light = more growth) but not always ( @westerband2015) there is a threshold that can lead to photoinhibition ( @he1996, @mulkey1991).
-        Drought and herbivory effects can be additive, at least in seedlings ( @barton2020)
+        This can be positive (more light = more growth) but not always ( @westerbandInteractionsPlantSize2015) there is a threshold that can lead to photoinhibition ( @hePhotoinhibitionHeliconiaNatural1996, @mulkeyComparativeLifeHistory1991).
+        Drought and herbivory effects can be additive, at least in seedlings ( @bartonAdditiveNonadditiveResponses2020)
 
--   @horvitz1988: no evidence for short term (next season) cost of reproduction in another understory monocot (Calathea) BUT
+-   @horvitzDemographicCostReproduction1988: no evidence for short term (next season) cost of reproduction in another understory monocot (Calathea) BUT
 
--   @horvitz2002 (*Calathea ovandensis*) Survival of juveniles was positively affected by plant size, but not by herbivory, local competition, or fruit production.
+-   @horvitzEffectsPlantSize2002 (*Calathea ovandensis*) Survival of juveniles was positively affected by plant size, but not by herbivory, local competition, or fruit production.
     Survival of large stages was not generally affected by any of the factors.
     Relative growth rates of all stages were negatively affected by plant size; larger plants grew more slowly than smaller plants.
     Additionally, growth rate of juveniles was negatively affected by local competition, whereas growth rate of reproductives was positively affected by reproduction.
     Next year's inflorescence production was positively affected by plant size for both pre-reproductive and reproductive stages.
     For reproductives, it was additionally positively affected by current fruit production.
 
--   @rundel1998 Heliconia appear to allocate much of their above-ground biomass to leaf tissues and have a relatively low investment in support tissues.
+-   @rundelStructuralPhysiologicalAdaptation1998 Heliconia appear to allocate much of their above-ground biomass to leaf tissues and have a relatively low investment in support tissues.
     Investment in leaf form vs structure interpreted as a trade-off between economy and protection against tissue loss from falling branches; presence of below-ground rhizomes in Heliconia may be key.
-    See also @rundel2020\
+    See also @rundelFunctionalTraitsBroadleaved2020\
 
 -   @stiles1975?:
     drought resulted in less flowering in Heliconia
 
--   @mulkey1996 and @bonal2016 will have goods stuff; haven't looked them over yet
+-   @mulkeyInfluenceSeasonalDrought1996 and @bonalResponseTropicalRainforests2016 will have goods stuff; haven't looked them over yet
 
 -   @wrightSeasonalNinoLonger2006: Increase in flower and seed production after El Niño events for trees and lianas.
     Might be due to increases solar irradiance.
@@ -466,23 +447,26 @@ Delayed effects, time lag, the lag...avoid lagged effects
     (refs within @wrightSeasonalNinoLonger2006. van Shaik et al. 1993; Wright and vanSchaik 1994).
     But *Heliconia* times reproduction so seeds only germinate at start of rainy season.
 
--   cite Esteban et al. 2021 for negative effects of large positive SPEI\
+-   [@estebanOtherSideDroughts2021] negative effects of large positive SPEI
+
+-   In Manaus, the canopy is as green or greener in the dry season compared to the wet season [@guanPhotosyntheticSeasonalityGlobal2015], so dry season drought may result in relatively large increases in light penetration to the understory.
+    \
 
 <!--# in intro, questions are 1: what are effects on vital rates, 2: are effects delayed, 3: differences between habitats.  Keep the same order here? -->
 
 Understanding how landscape structure and environmental conditions act to influence population dynamics is fundamental to many of the emerging conceptual frameworks for studying and conserving fragmented landscapes [@didhamRethinkingConceptualFoundations2012; @driscollConceptualDomainMatrix2013].
 <!--# more here -->
 
-This study adds to the growing body of work that finds delayed effects of climate drivers on vital rates without *a priori* assumptions about the influence of particular climate windows [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021]. We found evidence for delayed effects of drought which are sometimes stronger predictors of vital rates than more recent conditions. The approach we took offers an unbiased way of identifying these delayed effects without overfitting (but see @pierreCriticalWindowsMethod2020 and @ogleQuantifyingEcologicalMemory2015a for alternative methods), yet few demographic studies have the data required for modeling lagged effects [@tellerLinkingDemographyDrivers2016; @croneHowPlantEcologists2011].
+This study adds to the growing body of work that finds delayed effects of climate drivers on vital rates without *a priori* assumptions about the influence of particular climate windows [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
+We found evidence for delayed effects of drought which are sometimes stronger predictors of vital rates than more recent conditions.
+The approach we took offers an unbiased way of identifying these delayed effects without overfitting (but see @pierreCriticalWindowsMethod2020 and @ogleQuantifyingEcologicalMemory2015 for alternative methods), yet few demographic studies have the data required for modeling lagged effects [@tellerLinkingDemographyDrivers2016; @croneHowPlantEcologists2011].
 This demonstrates the importance of long term demographic experiments in determining the effects of changing habitats on populations.
 <!--# Or something like "some of these long-term studies exist and are prime for doing these kinds of analyses" -->
 
 ```{r flwr-prob-quartile, include=FALSE}
 
 #figure out flowering probability of largest quartile of plants in each habitat
-tar_load(f_cf)
-tar_load(f_1ha)
-
+library(tidyverse)
 newdf_cf <-
   f_cf$model %>% #use model data frame
   mutate(quartiles = ntile(log_size_prev, 4)) %>% 
@@ -531,18 +515,32 @@ For example, if extreme drought in the dry season before the census increases pl
 This explanation for delayed effects applies only to plant size and survival, as flowering occurs very close to the yearly demographic census (Jan--Apr).
 
 Second, these delayed effects may represent a physiological delayed effect of environmental conditions.
-Under horticultural conditions, flowering shoots of *Heliconia chartacea* that flower in Spring begin to emerge in June or July of the previous year, and the developing inflorescence may be aborted in response to adverse conditions up to 6 months after initiation [@criley1994]. <!--# more here about general trends in physiological delays for plants witht tubers or rhizomes -->Although flowering occurs in late January through April in *H. acuminata*, the initiation of a primordial flowering shoot <!--# not sure this is the right term.  "Differentiation of the apical meristem" ? --> likely happens many months earlier. The increase in flowering rate of plants following a drought could also be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018] <!--# add another more general citation. e.g. S. Joe Wright trees flowering after ENSO -->.
+Under horticultural conditions, flowering shoots of *Heliconia chartacea* that flower in Spring begin to emerge in June or July of the previous year, and the developing inflorescence may be aborted in response to adverse conditions up to 6 months after initiation [@crileyYearProductionHigh1994].
+<!--# more here about general trends in physiological delays for plants witht tubers or rhizomes -->Although flowering occurs in late January through April in *H. acuminata*, the initiation of a primordial flowering shoot <!--# not sure this is the right term.  "Differentiation of the apical meristem" ? --> likely happens many months earlier.
+The increase in flowering rate of plants following a drought could also be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018] <!--# add another more general citation. e.g. S. Joe Wright trees flowering after ENSO -->.
 We also considered that some delayed effects could be a result of a cost of reproduction leading to reduced growth, survival, and/or flowering probability in the following season.
 However, when flowering in the previous season is included as a covariate, it predicts higher growth and flowering probability---likely a reflection of size being a good predictor of these vital rates (Supplemental\_\_\_).
 Our models show that drought two dry seasons prior to the census increase flowering probability.
 A greater understanding of the effects of light, drought, season, and their interactions on flowering in *H. acuminata* is needed to provide a probable mechanism for this pattern.
 
 Finally, delayed effects could be mediated by indirect effects and ecological interactions.
-<!--# I'm not sure if this is really an explanation for the *delay* per se.  Need to think about this. -->Drought in tropical forests can increase tree mortality and leaf drop, resulting in decreased canopy cover and increased light penetration (<!--# citations -->).
-In Manaus, the canopy is as green or greener in the dry season compared to the wet season [@guanPhotosyntheticSeasonalityGlobal2015], so dry season drought may result in relatively large increases in light penetration to the understory.
+<!--# I'm not sure if this is really an explanation for the *delay* per se.  Need to think about this. -->Drought in tropical forests can increase tree mortality and leaf drop, resulting in decreased canopy cover and increased light penetration to the understory (<!--# citations -->).
 This increase in light could then result in increased growth or flowering for understory plants ( <!--# citations -->).
-<!--# Heliconia grow better at edges, where there's more light -->Here, the delayed effect could be a combined delay of the response of canopy trees to drought and the response of *H. acuminata* to increased insolation.
+<!--# Heliconia grow better at edges, where there's more light --> Janssen et al. [@janssenDroughtEffectsLeaf2021] showed that increase in litterfall due to drought was delayed.
+Here, the delayed effect of drought on *H. acuminata* could be partly explained by a delay of the response of canopy trees to drought and the response of *H. acuminata* to increased insolation.
+Furthermore, literfall in response to drought has shown to be greater at forest edges compared to interiors, which could explain the increased delayed effects of SPEI on survival and growth in forest fragments.
+Drought is also associated with increased insolation, so negative SPEI could also be a proxy for increased insolation, which would be exacerbated at forest edges potentially.
 
+-   [@janssenDroughtEffectsLeaf2021] Used machine learning to combine remote sensing and ground surveys of literfall from published datasets.
+    Estimates green-up, literfall, growth, etc. for central and southern america including the Amazon.
+    Drought results in anomolously high leaf flushing at start of drought followed by increased litterfall durring the drought.
+    Dry season droughts result in green-up, but not wet season droughts.
+    During drought, old leaves are shed and new leaves are maintained.
+    2-5 months for newly flushed leaves to fully expand.
+
+```{=html}
+<!-- -->
+```
 -   Ecological Consequences of these patterns: an eye towards a drier/wetter future
 
 # Conclusions & Future Directions
@@ -556,7 +554,7 @@ This increase in light could then result in increased growth or flowering for un
 
 -   Very few demographic studies have the data required to fit models that include delayed effects.
 
--   Looop back to: need whole-life-cycle approach to ID these effects, why fragmentologists don't do this is killing Emilio.
+-   Loop back to: need whole-life-cycle approach to ID these effects, why fragmentologists don't do this is killing Emilio.
 
 # Acknowledgments
 

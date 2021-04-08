@@ -113,6 +113,10 @@ tar_plan(
   f_spei_plot = plot_cb_2panel(f_cf, f_1ha, binwidth = 0.001, response_lab = "P(flowering)"),
   f_spei_diff_plot = plot_cb_diff(f_cf, f_1ha, binwidth = 0.001, response_lab = "∆Flowering (CF – 1ha)"),
   
+  ## Size covariate
+  
+  size_plot = make_size_plot(s = s_covar_plot, g = g_covar_plot, f = f_covar_plot, model_data = model_data),
+  
   # Main text
   tar_render(paper, "doc/paper.Rmd")
   

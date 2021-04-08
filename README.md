@@ -16,14 +16,14 @@ This repository contains the data and code for our paper:
 > <https://doi.org/xxx/xxx>
 
 <!-- Our pre-print is online here: -->
-<!-- > Authors, (YYYY). *Title of your paper goes here*. Name of journal/book, Accessed 16 Mar 2021. Online at <https://doi.org/xxx/xxx> -->
+<!-- > Authors, (YYYY). *Title of your paper goes here*. Name of journal/book, Accessed 02 Apr 2021. Online at <https://doi.org/xxx/xxx> -->
 
 ### How to cite
 
 Please cite this compendium as:
 
 > Authors, (2021). *Compendium of R code and data for Title of your
-> paper goes here*. Accessed 16 Mar 2021. Online at
+> paper goes here*. Accessed 02 Apr 2021. Online at
 > <https://doi.org/xxx/xxx>
 
 ## How to run in your browser or download and run locally
@@ -34,22 +34,21 @@ installed on your computer the [R
 software](https://cloud.r-project.org/) itself and optionally [RStudio
 Desktop](https://rstudio.com/products/rstudio/download/).
 
-The simplest way to explore the text, code and data is to click on
-[binder](https://mybinder.org/v2/gh/BrunaLab/HeliconiaDemography/master?urlpath=rstudio)
-to open an instance of RStudio in your browser, which will have the
-compendium files ready to work with. Binder uses rocker-project.org
-Docker images to ensure a consistent and reproducible computational
-environment. These Docker images can also be used locally.
+<!-- The simplest way to explore the text, code and data is to click on [binder](https://mybinder.org/v2/gh/BrunaLab/HeliconiaDemography/master?urlpath=rstudio) to open an instance of RStudio in your browser, which will have the compendium files ready to work with. -->
+<!-- Binder uses rocker-project.org Docker images to ensure a consistent and reproducible computational environment. -->
+<!-- These Docker images can also be used locally. -->
 
 You can download the compendium as a zip from from this URL:
-[master.zip](/archive/master.zip). After unzipping:
+[master.zip](/archive/master.zip).
 
--   open the `.Rproj` file in RStudio
--   something about `renv`
--   something about `targets::tar_make()` and
-    `targets::tar_visnetwork()`
-    <!-- -   run `devtools::install()` to ensure you have the packages this analysis depends on (also listed in the [DESCRIPTION](/DESCRIPTION) file). -->
-    <!-- -   finally, open `analysis/paper/paper.Rmd` and knit to produce the `paper.docx`, or run `rmarkdown::render("analysis/paper/paper.Rmd")` in the R console -->
+To run the compendium and reproduce all outputs:
+
+-   Open the `.Rproj` file in RStudio
+-   Install the `renv` package if it’s not already installed and run
+    `renv::restore()` to install all package dependencies. (I’m not
+    actually sure that this step is necessar. Should auto-load because
+    of .Rprofile.)
+-   Run `targets::tar_make()` to run all code and produce all outputs.
 
 ### Licenses
 

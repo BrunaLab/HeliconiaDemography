@@ -1,3 +1,5 @@
+
+
 #' Evaluate a smooth with confidence intervals and backtransform
 #'
 #' Evaluates a smooth, adds the model intercept, confidence intervals, and
@@ -18,7 +20,6 @@ my_eval_smooth <- function(model, smooth, ...) {
 }
 
 
-
 #' Plots smooth covariates from two models
 #'
 #' @param cf_model gam model fit to continuous forest data
@@ -32,16 +33,42 @@ plot_covar_smooth <- function(cf_model, frag_model, covar) {
   
   data <- bind_rows("1-ha" = frag, "CF" = cf, .id = "habitat")
   
-  ggplot(data, aes_string(x = covar, color = "habitat")) +
+  p <- 
+    ggplot(data, aes_string(x = covar, color = "habitat")) +
     geom_line(aes_string(y = "est")) +
     geom_ribbon(aes_string(ymin = "lower_ci", ymax = "upper_ci", color = NULL, fill = "habitat"), alpha = 0.25) +
-    geom_rug(data = bind_rows(
-      "1-ha" = model.frame(frag_model),
-      "CF" = model.frame(cf_model), 
-      .id = "habitat"),
-      color = "black") +
-    theme_bw()
+    theme_classic()
+  p
 }
+
+make_size_plot <- function(s, g, f, model_data) {
+  
+  d <-
+    ggplot(model_data, aes(x = log_size_prev, fill = habitat, color = habitat)) +
+    geom_density(alpha = 0.5) +
+    labs(y = "Density", x = TeX("$log(size_t)$")) +
+    theme_classic() +
+    theme(legend.position = "none")
+  
+  top <-
+    s /
+    g /
+    f & 
+    theme(axis.title.x = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank())
+  
+  top /
+    d +
+    plot_layout(guides = "collect", ) +
+    plot_annotation(tag_levels = "a", tag_suffix = ")") &
+    theme(plot.margin = margin()) &
+    # set color for all panels
+    scale_color_discrete_qualitative(palette = "Set 2",
+                                     aesthetics = c("color", "fill"))
+}
+
+
 
 #' Makes a little bar indicating wet and dry seasons.
 #'
@@ -106,7 +133,7 @@ plot_spei_heatmap <-
                          breaks = breaks,
                          expand = c(0, 0)) +
       scale_y_continuous(TeX("SPEI_3_"), expand = expansion(mult = c(0.025, 0))) + #leave room for season bar at bottom
-      theme_bw() +
+      theme_classic() +
       annotation_custom(
         grob = ggplotGrob(season_bar),
         ymin = -Inf,
