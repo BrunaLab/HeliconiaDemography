@@ -15,7 +15,7 @@ my_eval_smooth <- function(model, smooth, ...) {
   linkinv <- model$family$linkinv
   
   gratia::smooth_estimates(model, smooth, ...) %>% 
-    add_confint() %>% 
+    gratia::add_confint() %>% 
     mutate(across(c(est, lower_ci, upper_ci), ~linkinv(.x + coef(model)[1])))
 }
 
