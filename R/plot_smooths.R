@@ -34,9 +34,9 @@ plot_covar_smooth <- function(cf_model, frag_model, covar) {
   data <- bind_rows("1-ha" = frag, "CF" = cf, .id = "habitat")
   
   p <- 
-    ggplot(data, aes_string(x = covar, color = "habitat")) +
+    ggplot(data, aes_string(x = covar, color = "habitat", linetype = "habitat")) +
     geom_line(aes_string(y = "est")) +
-    geom_ribbon(aes_string(ymin = "lower_ci", ymax = "upper_ci", color = NULL, fill = "habitat"), alpha = 0.25) +
+    geom_ribbon(aes_string(ymin = "lower_ci", ymax = "upper_ci", color = NULL, fill = "habitat"), alpha = 0.4) +
     theme_classic()
   p
 }
@@ -44,8 +44,8 @@ plot_covar_smooth <- function(cf_model, frag_model, covar) {
 make_size_plot <- function(s, g, f, model_data) {
   
   d <-
-    ggplot(model_data, aes(x = log_size_prev, fill = habitat, color = habitat)) +
-    geom_density(alpha = 0.5) +
+    ggplot(model_data, aes(x = log_size_prev, fill = habitat, color = habitat, linetype = habitat)) +
+    geom_density(alpha = 0.4) +
     labs(y = "Density", x = TeX("$log(size_t)$")) +
     theme_classic() +
     theme(legend.position = "none")
@@ -64,8 +64,8 @@ make_size_plot <- function(s, g, f, model_data) {
     plot_annotation(tag_levels = "a", tag_suffix = ")") &
     theme(plot.margin = margin()) &
     # set color for all panels
-    scale_color_discrete_qualitative(palette = "Set 2",
-                                     aesthetics = c("color", "fill"))
+    scale_color_manual(values = c("#E66101", "#5E3C99"),
+                       aesthetics = c("color", "fill"))
 }
 
 

@@ -102,7 +102,7 @@ tar_plan(
 
   ## Growth
   g_covar_plot = plot_covar_smooth(frag_model = g_1ha, cf_model = g_cf, covar = "log_size_prev") +
-                  geom_abline(slope = 1, color = "red", linetype = 2) +
+                  geom_abline(slope = 1, color = "grey50") +
                   labs(x = TeX("$log(size_t)$"), y = TeX("$log(size_{t+1})")),
   g_spei_plot = plot_cb_2panel(g_cf, g_1ha, binwidth = 0.05, response_lab = TeX("$log(size_{t+1})$")),
   g_spei_diff_plot = plot_cb_diff(g_cf, g_1ha, binwidth = 0.05, response_lab = TeX("$\\Delta log(size_{t+1})$ (CF – 1ha)")),

@@ -75,7 +75,7 @@ plot_eda_surv_ts <- function(demog_post, dates_lims) {
   survival <-
     demog_plotdf %>%  
     filter(shts_prev >= 4) %>%
-    ggplot(aes(x = yearmonth, y = surv, color = habitat)) +
+    ggplot(aes(x = yearmonth, y = surv, color = habitat, linetype = habitat)) +
     stat_summary(geom = "line", fun = "mean", fun.args = list(na.rm = TRUE)) +
     stat_summary(geom = "pointrange", fatten = 1) +
     scale_x_yearmonth(
@@ -124,7 +124,7 @@ plot_eda_surv_cohort <- function(demog, date_lims) {
            yearmonth = yearmonth(date))
   
   surv_curve <-
-    ggplot(surv_curve_df, aes(x = yearmonth, y = p_surv, color = habitat)) +
+    ggplot(surv_curve_df, aes(x = yearmonth, y = p_surv, color = habitat, linetype = habitat)) +
     geom_step() +
     scale_x_yearmonth(
       limits = date_lims,
@@ -155,7 +155,7 @@ plot_eda_size <- function(demog_post, date_lims) {
 
   size <-
     demog_plotdf %>% 
-    ggplot(aes(x = yearmonth, y = log(size), color = habitat)) +
+    ggplot(aes(x = yearmonth, y = log(size), color = habitat, linetype = habitat)) +
     stat_summary(
       geom = "line",
       fun = "mean",
@@ -205,7 +205,7 @@ plot_eda_flwr <- function(demog_post, date_lims) {
     mutate(prop_flwr = flwr/n)
   
   flowering <-
-    ggplot(flowering_df, aes(x = yearmonth, y = prop_flwr, color = habitat)) + 
+    ggplot(flowering_df, aes(x = yearmonth, y = prop_flwr, color = habitat, linetype = habitat)) + 
     geom_line() +
     scale_x_yearmonth(
       limits = date_lims,
@@ -236,6 +236,8 @@ plot_eda_combine <- function(...) {
     plot_layout(guides = "collect") &
     plot_annotation(tag_levels = "a", tag_suffix = ")") &
     theme(plot.margin = margin(2,1,1,1)) &
-    guides(col = guide_legend(title = "Habitat"))
+    scale_color_manual(values = c("#E66101", "#5E3C99"),
+                       aesthetics = c("color", "fill")) &
+    guides(col = guide_legend(title = "Habitat"), linetype = guide_legend(title = "Habitat"))
   return(p)
 }
