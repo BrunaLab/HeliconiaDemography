@@ -109,6 +109,8 @@ For instance, <!--#parts of the Amazon basin have experienced a drying trend sin
 These changes could exacerbate the altered environmental conditions in fragments thought to make populations demographically vulnerable - particularly for plants, which are unable to move in response to changes in local conditions.
 In contrast, other parts of the basin are predicted to see an increase in the frequency and severity of extreme precipitation events, which can also have detrimental consequences for plant survival and reproduction [@estebanOtherSideDroughts2021].
 
+Add here what is known about frag and drought effects - without setting it up so people expect a pval for an intearaciton tern
+
 Whether plant populations in tropical forest fragments are particularly susceptible to drought remains unclear for three primary reasons.
 First, most studies of plants in fragments have focused on a single life-history stage or process [@brunaHabitatFragmentationPlant2009; @ehrlenAdvancingEnvironmentallyExplicit2016], making it challenging to draw broader demographic conclusions.
 Similarly, there is a growing literature on how tropical plants respond to droughts, but few studies have compared the responses of plants in continuous forest with those in forest fragments [@lauranceEffectsStrongDrought2001].
@@ -195,6 +197,8 @@ This models a non-linear relationship between predictor and response (e.g. betwe
 Using the *dlnm* package [@gasparriniDistributedLagLinear2011; @rcoreteamLanguageEnvironmentStatistical2020], we created crossbasis functions with possible lags from 0--36 months.
 We chose 36 months as a maximum lag because prior transplant experiments with *H. acuminata* showed they typically recovered from transplant shock in less than 36 months [@brunaExperimentalAssessmentHeliconia2002] so this is a reasonable upper bound for lagged effects of drought.
 
+<!-- re 36 mos transpalnt shock justification; how are lag lengths typically chosen?  -->
+
 The crossbasis function was fit to the data in the context of a generalized additive model (GAM) with restricted maximum likelihood using the *mgcv* package [@woodGeneralizedAdditiveModels2017].
 The general form of the vital rate models was as follows:
 
@@ -249,38 +253,35 @@ The 2005 dry season (June--October) was also reported as an exceptionally dry ye
 Our SPEI data show the 2005 dry season to be a moderate drought (-1 \> SPEI \> -1.5).
 <!--#  I know I'm missing some literature here. Add more refs for more droughts. Any papers mentioning 2003 wet season drought? Also, Feb 2007?-->
 
-**THIS NEEDS TO BE BETTER LINKED TO THE INFO ABOVE:** Mean plant size dropped dramatically in 2003 in both habitat types, corresponding with a severe drought (-1.5 \> SPEI \> -2) during the February census (SPEI = -1.39) (Figure \@ref(fig:eda)d).
-Two noticeable peaks in the proportion of flowering mature plants occur in severe drought years (2003 and 2007) (Figure \@ref(fig:eda)c).
-
 ## Survival, growth, and flowering in continuous forest vs. fragments
 
-**Our dataset comprised XXXX plants in continuous forest and XXXX plants in forest fragments, with an plots in CF having on average X-fold more plants than plots in 1-ha fragments (mean per plot + SD in each) .** When summarizing across years and plots, *Heliconia acuminata* individuals had similarly high survival rates in both CF and 1-ha (0.95).
-The proportion of surviving plants was lowest in 2004 (0.92), which coincided with a moderate drought in Jan 2004 / Feb 2005 and a severe drought in Jan--Mar of 2004 (Figure \@ref(fig:eda)b,d).
-The lowest survival for 1-ha fragment plots (0.93) was for the 2005-2006 transition year, which corresponded to wetter than average conditions (SPEI \> 0.5) but with a moderate drought the preceding October.
-(october 2005?).
-Survival was size dependent in both continuous forest and 1-ha fragments (p \< 0.001 for the log-transformed effect of plant size in year t on suvival in year t+1).
+**Our dataset comprised XXXX plants in continuous forest and XXXX plants in forest fragments, with an plots in CF having on average X-fold more plants than plots in 1-ha fragments (mean per plot + SD in each) .** When summarizing across years and plots, the proportion of *Heliconia acuminata* that survived in CF and 1-ha was similarly high (P(surv) = 0.95).
+The proportion of surviving plants was lowest in the 2003-2004 transition year (P(surv) = 0.92), which coincided with droughts in both the 2003 and 2004 rainy seasons (Figure \@ref(fig:eda)b,d).
+The lowest survival for 1-ha fragment plots (p(surv) = 0.93) was for the 2005-2006 transition year, which encompassed a moderate drought in October 2005 and and wetter than average conditions (SPEI \> 0.5) in DOUBLE CHJECK DATES OF DROUGHT AND RAIN. Survival was size dependent in both continuous forest and 1-ha fragments (p \< 0.001 for the log-transformed effect of plant size in year t on suvival in year t+1).
 While the survival probability of large plants approached 1 in both habitat types (Figure \@ref(fig:size-plot)a), the survival of the smallest plants was higher in 1-ha fragments.
 However, the 95% confidence intervals for 1-ha fragments and continuous forest overlapped for all sizes.
 
 <!--# The proportion of surviving plants was lowest from 2004-2005 (0.92), which coincided with a moderate drought in Jan 2004 / Feb 2005 and a severe drought in Jan–Mar of 2004 (these dates overlap? -->
 
-Plants were in continuous forest were larger on average than those in 1-ha fragments.
-<!--# This is across the whole timeseries, which I'm not sure is actually that important. What summary statistics would be useful? --> Plants in continuous forest had an average of 2.9 shoots (± 1.8 SD) and were on average 40.6 cm tall (± 26.5 SD).
+<!--# This is across the whole timeseries, which I'm not sure is actually that important. What summary statistics would be useful? -->
+
+Plants in continuous forest had an average of 2.9 shoots (± 1.8 SD) and were on average 40.6 cm tall (± 26.5 SD).
 Plants in 1-ha fragments had on average **\~XX% fewer** shoots (2.5 ± 1.5 SD) and **were XX% shorter** (36.2 cm ± 24.1 SD).
-Because the proxy for plant size used in our models was the product of these two metrics, plants in fragments were significantly larger than those in forest fragments (150 ± 175 SD vs. 112 ± 141 SD, respectively).
-This disparity in plant size was most notable in the initial years of our surveys and then diminished over time (Figure \@ref(fig:eda)a).
-As with survival, size in year t was a significant predictor of size in year t+1 (p \< 0.001).
+Because the proxy for plant size used in our models was the product of these two metrics, plants in fragments were consequently significantly larger than those in forest fragments (150 ± 175 SD vs. 112 ± 141 SD, respectively).
+This disparity in plant size was most notable in the initial years of our surveys and then diminished over time (Figure \@ref(fig:eda)a), likely due to a combination of greater seedling recruitment in CF and plant mortality or shrinkage As with survival, size in year t was a significant predictor of size in year t+1 (p \< 0.001).
 While the effect was generally similar across size classes and habitat types, the impact of plant size on growth was greatest for mid-sized plants in continuous forest (Figure \@ref(fig:size-plot)b).
 
 <!--# Is growth really higher in fragments?  Probably, since fig2 shows size becoming more similar over time.   -->
 
 While the overall proportion of plants flowering was very low, it was nevertheless almost 40% higher in continuous forest than 1-ha fragments (0.050 ± 0.021 vs. 0.036 ± 0.027, respectively).
 This was true in all survey years except 2006 and 2008 (Figure \@ref(fig:eda)c).
-This disparity was largely due to the fact that flowering is size-dependent (p \< 0.001), with the probability of flowering increasing dramatically once plants reached the threshold value of log 5\_\_\_\_ (Figure \@ref(fig:size-plot)c).
+This disparity was largely due to the fact that flowering is size-dependent (p \< 0.001), with the probability of flowering increasing dramatically once plants reached the threshold value of log 5\_\_\_\_ (Figure \@ref(fig:size-plot)c), which corresponds roughly to \_\_\_\_ shoots.
 Even though flowering probability of large plants (log(size) \> 5) was greater in 1-ha fragments compared to continuous forest, there were proportionally far fewer plants above the reproductive threshold size in forest fragments (Figure \@ref(fig:size-plot)d).
 Indeed, the most striking difference between habitat types coincided with a severe drought in 2003, when the percentage of flowering plants with four or more shoots was 24.1% in continuous forest vs. only 12% in 1-ha fragments (Figure \@ref(fig:eda)c).
 The back-transformed model intercepts, representing the flowering probability of averaged sized plants in each habitat given average SPEI, showed a similar pattern with 0.008 for continuous forest and 0.004 for 1-ha fragments.
 <!--# not sure how necessary this is. EB: same-->
+
+<!-- This paragraphis talkng about size, but not really growth -->
 
 <!--# There was a pronounced threshold in flowering probability corresponding with a log size of about 5...is this 5 shoots? What abvout the proxy size? -->
 
@@ -377,6 +378,9 @@ FInally, with the exception of growth in 1-ha fragments (p = 0.257), the delayed
 
 # Discussion
 
+Mean plant size dropped dramatically in 2003 in both habitat types, corresponding with a severe drought (-1.5 \> SPEI \> -2) during the February census (SPEI = -1.39) (Figure \@ref(fig:eda)d).
+Two noticeable peaks in the proportion of flowering mature plants occur in severe drought years (2003 and 2007) (Figure \@ref(fig:eda)c).
+
 #### Vocab
 
 This seems tacked on here and perhaps better in the discussion: populations persisting in fragments may be more demographically resilient to drought than those in primary forest if the individuals susceptible to desiccation died quickly after fragment isolation [@bettsExtinctionFiltersMediate2019].
@@ -459,8 +463,25 @@ Delayed effects, time lag, the lag...avoid lagged effects
 
 <!--# in intro, questions are 1: what are effects on vital rates, 2: are effects delayed, 3: differences between habitats.  Keep the same order here? -->
 
-Understanding how landscape structure and environmental conditions act to influence population dynamics is fundamental to many of the emerging conceptual frameworks for studying and conserving fragmented landscapes [@didhamRethinkingConceptualFoundations2012; @driscollConceptualDomainMatrix2013].
-<!--# more here -->
+Understanding how landscape structure and environmental conditions act to influence population dynamics is fundamental to many of the conceptual frameworks for studying and conserving fragmented landscapes [@didhamRethinkingConceptualFoundations2012; @driscollConceptualDomainMatrix2013].
+<!--# more here -->.
+Despite this, surprisingly few studies have compared the structure and demography of populations in habitat fragments and continuous habitat; those that have are typically short term (i.e., \<4 years).
+Using a decadal dataset of plant demography, we show that some - but not all - results from short-term studies can be extrapolated to longer times scales.
+Our results also add to the emerging body of work showing delayed effects of climate drivers on demographic vital rates [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
+Most Finally, we show for the first time that the magnitude, direction, and temporal lag in demographic responses to drought differs between forest fragments and continuous forest.
+
+# Temporal variation in demographic responses to forest fragmentation
+
+Decadal comparisons of *Heliconia acuminata* growth and survival largely mirrored those of prior experiments and surveys [@brunaHabitatFragmentationDemographic2002].
+In contrast, conclusions regarding the effect of fragmentation on flowering differed substantially from those based on short-term surveys [@brunaHabitatFragmentationDemographic2002].
+While in some years the probability a plant flowered was far lower in fragments than in continuous forest, in others it was comparable or even higher in fragments.
+The probability that individual plants flowered continued to be size-dependent, with a similar size threshold below which plants were unlikely to produce inflorescences.
+However, while in our initial three-year survey the relationship between plant size and probability of flowering was similar in both habitat types [@brunaHabitatFragmentationDemographic2002], when using the decadal dataset were found that flowering probability for the largest plants is actually higher in forest fragments (i.e., average fitted probability of flowering for plants in upper size quartile = 0.125 in CF vs. 0.094 in FF).
+These size-dependent differences in flowering probability had only a modest effect on the previously observed disparities in flowering plant abundance - populations in fragments are smaller, and they have proportionately fewer of these large plants [@brunaHabitatFragmentationDemographic2002].
+However, these differences in flowering probability could potentially lead to major habitat-specific differences in lifetime reproductive effort for these long-lived plants, as they translate into flowering once every 7.97 years in fragments vs. every 10.63 years in continuous forest.
+Our results underscore why caution is needed when using short-term studies to draw conclusions regarding the effects of fragmentation on long-lived organisms: seemingly small (i.e., non-significant) differences in vital rates, when compounded over multiple years, can lead to demographic divergence among populations [@gagnonGrowthUnderstoryHerb2011].
+
+# Delayed effects of climate on demographic vital rates
 
 This study adds to the growing body of work that finds delayed effects of climate drivers on vital rates without *a priori* assumptions about the influence of particular climate windows [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
 We found evidence for delayed effects of drought which are sometimes stronger predictors of vital rates than more recent conditions.
@@ -486,13 +507,6 @@ newdf_1ha <-
 1/predict(f_cf, newdata = newdf_cf) %>% mean() %>% plogis()
 1/predict(f_1ha, newdata = newdf_1ha) %>% mean() %>% plogis()
 ```
-
-*Heliconia acuminata* individuals were smaller in forest fragments, although they grew slightly faster than plants in continuous forest, closing the size gap over the decade of demographic data.
-Size regression became more likely as plants increased in size, which is typical of long-lived forest understory plants <!--# citations -->.
-Our results confirm those of Bruna and Kress [-@brunaHabitatFragmentationDemographic2002], showing that probability of flowering increases with plant size and plant growth decreases with plant size <!--# other citations? -->.
-Flowering probability for the largest plants is actually higher in forest fragments; however, because there are fewer large plants in fragments overall flowering probability is much lower.
-The average fitted probability of flowering for plants in the upper quartile for size is 0.125 in continuous forest and 0.094 in forest fragments, equivalent to flowering once every 7.97 years and 10.63 years, respectively.
-Seemingly small differences in vital rates such as these can be extremely important as they compound over many years, especially in long-lived organisms[@gagnonGrowthUnderstoryHerb2011].
 
 We found that the effects of variation in SPEI differed between forest fragments and continuous forest habitat.
 At mean SPEI, overall survival of plants was similar in fragments and continuous forest, but extremes in SPEI, both positive (wet) and negative (dry) had much greater detrimental effects on survival in habitat fragments.
