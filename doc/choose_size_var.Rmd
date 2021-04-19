@@ -1,0 +1,246 @@
+---
+title: "Untitled Draft"
+author: "Report Author"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, paged.print = FALSE)
+## target knits Rmds in their own session, so load libraries here.
+source(here::here("packages.R"))
+withr::with_dir(here::here(), {
+  targets::tar_load(model_data)
+})
+library(performance)
+```
+
+\#TODO: The last part with the transplant experiment data is probably enough.
+Probably delete the GAM comparisons and make the last bit work with `targets` by adding that data file as a `target`.
+
+## What proxy of size is best?
+
+The goal is to determine whether plant height, number of shoots, or their product (shoots \* height) is a good proxy for plant biomass.
+First, using the 10 year demographic dataset, we can see how vital rate models fit using each of these as a predictor perform.
+
+## Set up
+
+Create columns for log-transformed size variables.
+
+```{r}
+df <- 
+  model_data %>% 
+  mutate(log_ht_prev = log(ht_prev),
+         log_ht = log(ht),
+         log_shts_prev = log(shts_prev),
+         log_shts = log(shts))
+```
+
+Set up parallel computation
+
+```{r}
+ncores <- detectCores()
+cl <- makeForkCluster(ncores - 2)
+```
+
+### Build formulas
+
+```{r}
+s_size <- surv ~ 
+  s(log_size_prev, bs = "cr") +
+  s(plot, bs = "re") + #random intercept
+  s(spei_history, L,
+    bs = "cb",
+    k = c(3, 35),  #bimodal response (at most) to drought, one knot per month lag.
+    xt = list(bs = "cr"))
+
+s_ht <- surv ~ 
+  s(log_ht_prev, bs = "cr") +
+  s(plot, bs = "re") + #random intercept
+  s(spei_history, L,
+    bs = "cb",
+    k = c(3, 35),  #bimodal response (at most) to drought, one knot per month lag.
+    xt = list(bs = "cr"))
+
+s_shts <- surv ~ 
+  s(log_shts_prev, bs = "cr") +
+  s(plot, bs = "re") + #random intercept
+  s(spei_history, L,
+    bs = "cb",
+    k = c(3, 35),  #bimodal response (at most) to drought, one knot per month lag.
+    xt = list(bs = "cr"))
+```
+
+## Survival
+
+```{r}
+m_size <- 
+  bam(s_size,
+      family = binomial,
+      data = df,
+      method = "REML",
+      select = TRUE,
+      cluster = cl)
+
+m_ht <- 
+  bam(s_ht,
+      family = binomial,
+      data = df,
+      method = "REML",
+      select = TRUE,
+      cluster = cl)
+
+m_shts <- 
+  bam(s_shts,
+      family = binomial,
+      data = df,
+      method = "REML",
+      select = TRUE,
+      cluster = cl)
+```
+
+### Compare performance
+
+```{r}
+compare_performance(m_size, m_ht, m_shts, metrics = c("AIC", "R2", "RMSE"), rank = TRUE)
+```
+
+log(size) has lowest AIC, similar R2 to height.
+Number of shoots is worst fit to survival.
+
+## Flowering
+
+```{r}
+f_ht <- update(s_ht, flwr ~ .)
+f_size <- update(s_size, flwr ~ .)
+f_shts <- update(s_shts, flwr ~ .)
+```
+
+Use only live plants for flowering probability.
+
+```{r}
+df2 <- df %>% filter(surv == 1)
+```
+
+```{r}
+m_size <- 
+  bam(f_size,
+      family = binomial,
+      data = df2,
+      method = "REML",
+      select = TRUE,
+      cluster = cl)
+
+m_ht <- 
+  bam(f_ht,
+      family = binomial,
+      data = df2,
+      method = "REML",
+      select = TRUE,
+      cluster = cl)
+
+m_shts <- 
+  bam(f_shts,
+      family = binomial,
+      data = df2,
+      method = "REML",
+      select = TRUE,
+      cluster = cl)
+```
+
+### Compare performance
+
+```{r}
+compare_performance(m_size, m_ht, m_shts, metrics = c("AIC", "R2", "RMSE"), rank = TRUE)
+```
+
+## Data approach
+
+Which is a better predictor of leaf area, stem number, height, or size (stem number\* height)?
+
+Using data from transplant experiment (CITATION)
+
+```{r}
+library(readxl)
+library(janitor)
+la <- read_excel(here("data", "HA-la-stems-ht.xlsx")) %>% clean_names()
+la <- 
+  la %>%
+  rename(leaf_area = leaf_area_feb_99,
+         leaves = leaves_feb_99,
+         ht = height_feb_99,
+         shts = stems_feb_99) %>% 
+  mutate(size = shts * ht) %>% 
+  mutate(across(c(leaf_area, leaves, ht, shts, size), list(log = log), .names = "{.fn}_{.col}")) %>% 
+  mutate(log_leaves_ht = log(leaves * ht))
+
+la$exp %>% unique()
+```
+
+```{r}
+ggplot(la, aes(x = ht, y = leaf_area)) + geom_point()
+ggplot(la, aes(x = shts, y = leaf_area)) + geom_point()
+ggplot(la, aes(x = size, y = leaf_area)) + geom_point()
+ggplot(la, aes(x = leaves, y = leaf_area)) + geom_point()
+```
+
+I can already tell size is going to be the best
+
+```{r}
+hist(la$leaf_area)
+hist(la$log_leaf_area)
+```
+
+I'll use log_leaf_area as response
+
+```{r}
+m_ht <- lm(log_leaf_area ~ log_ht, data = la)
+m_shts <- lm(log_leaf_area ~ log_shts, data = la)
+m_size <- lm(log_leaf_area ~ log_size, data = la)
+```
+
+Options we don't have (because we don't have leaf number), but might be better proxies of plant size:
+
+```{r}
+m_leaves <- lm(log_leaf_area ~ log_leaves, data = la)
+m_leaves_ht <- lm(log_leaf_area ~ log_leaves_ht, data = la)
+m_leaves_shts <- lm(log_leaf_area ~ I(log(leaves*shts)), data = la)
+```
+
+```{r}
+AIC(m_leaves_ht)
+```
+
+```{r}
+compare_performance(m_ht, m_shts, m_size, m_leaves, m_leaves_ht,m_leaves_shts, metrics = "common", rank = TRUE)
+```
+
+## Reproducibility
+
+<details>
+
+<summary>
+
+Reproducibility receipt
+
+</summary>
+
+```{r}
+## datetime
+Sys.time()
+
+## repository
+if(requireNamespace('git2r', quietly = TRUE)) {
+  git2r::repository()
+} else {
+  c(
+    system2("git", args = c("log", "--name-status", "-1"), stdout = TRUE),
+    system2("git", args = c("remote", "-v"), stdout = TRUE)
+  )
+}
+
+## session info
+sessionInfo()
+```
+
+</details>

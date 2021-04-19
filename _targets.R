@@ -17,6 +17,7 @@ tar_plan(
   xa_spei = calc_spei_xa(xa_raw),
   xa_lag = lag_spei(xa_spei, maxlag),
 
+  tar_render(choose_size_var, "doc/choose_size_var.Rmd"),
   
   
   # SPEI supplemental
