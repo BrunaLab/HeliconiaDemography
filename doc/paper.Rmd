@@ -480,9 +480,31 @@ To address this, researchers have begun to use a number of statistical methods t
 However, while it appeared that delayed effects of climate on demographic vital rates were ubiquitous, the extent to which they vary spatially or with habitat remained an open question [@eversLaggedDormantSeason2021]. Our results clearly indicate that they can, with habitat-specific differences in how environmental conditions influenced future vital rates. For example, [delete this phrase? the overall survival of plants was similar in continuous forest and forest fragments, and] although extreme values of SPEI - both positive (unusually high precipitation) and negative (drought conditions) - led to declines in the probability of individual survival both habitat types.
 However, the magnitude of these declines was far greater in forest fragments.
 Similarly, the detrimental effects on growth rates of variation in SPEI, in this case unusually rainy wet seasons and dry seasons with unusually low precipitation, were also more severe in fragments.
-In contrast, variation in SPEI had a far stronger effect on populations in continuous forests, though it is is important to recognize that because there are fewer plants in fragments above the threshold-size for flowering it is possible we lacked the statistical power to detect the full effects of SPEI in fragments.
+In contrast, the effect of variation in SPEI on flowering probability was far stronger in continuous forest than frragments; these results should be interpreted with some caution, however, as the relatively low number of plants in fragments that are above the threshold-size for flowering could limit the power to detect delayed effects.
 
-Both variation in precipitation and extreme conditions are predicted to increase as climate change progresses ( <!--# cite IPCC? -->) and our results demonstrate that this may have a greater negative impact on understory plants in forest fragments compared to continuous forests.
+There are several, non-mutually-exclusive explanations for the effects of SPEI on vital rates could take months or even years to manifest.
+First, these delayed effects may represent a physiological delayed effect of environmental conditions.
+Under horticultural conditions, flowering shoots of *Heliconia chartacea* that flower in Spring begin to emerge in June or July of the previous year, and the developing inflorescence may be aborted in response to adverse conditions up to 6 months after initiation [@crileyYearProductionHigh1994]. <!--# more here about general trends in physiological delays for plants witht tubers or rhizomes -->Although flowering occurs in late January through April in *H. acuminata*, the initiation of a primordial flowering shoot <!--# not sure this is the right term.  "Differentiation of the apical meristem" ? --> likely happens many months earlier. The increase in flowering rate of plants following a drought could also be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018] <!--# add another more general citation. e.g. S. Joe Wright trees flowering after ENSO -->.
+We also considered that some delayed effects could be a result of a cost of reproduction leading to reduced growth, survival, and/or flowering probability in the following season.
+However, when flowering in the previous season is included as a covariate, it predicts higher growth and flowering probability---likely a reflection of size being a good predictor of these vital rates (Supplemental\_\_\_).
+Our models show that drought two dry seasons prior to the census increase flowering probability.
+A greater understanding of the effects of light, drought, season, and their interactions on flowering in *H. acuminata* is needed to provide a probable mechanism for this pattern.
+
+Second, delayed effects could be mediated by indirect effects and ecological interactions.
+<!--# I'm not sure if this is really an explanation for the *delay* per se.  Need to think about this. -->Drought in tropical forests can increase tree mortality and leaf drop, resulting in decreased canopy cover and increased light penetration to the understory (<!--# citations -->).
+This increase in light could then result in increased growth or flowering for understory plants ( <!--# citations -->).
+<!--# Heliconia grow better at edges, where there's more light --> Janssen et al. [@janssenDroughtEffectsLeaf2021] showed that increase in litterfall due to drought was delayed.
+Here, the delayed effect of drought on *H. acuminata* could be partly explained by a delay of the response of canopy trees to drought and the response of *H. acuminata* to increased insolation.
+Furthermore, literfall in response to drought has shown to be greater at forest edges compared to interiors, which could explain the increased delayed effects of SPEI on survival and growth in forest fragments.
+Drought is also associated with increased insolation, so negative SPEI could also be a proxy for increased insolation, which would be exacerbated at forest edges potentially.
+
+Finally, it could be an artefact of the timing of responses vis-à-vis the census date.
+If extreme drought in the dry season before the census increases plant mortality in that season, for example, this would show up as a delayed effect in our models (e.g. in Figure \@ref(fig:surv-spei)b) despite the impact of drought potentially being immediate.
+This explanation for delayed effects applies only to plant size and survival, as plots were surveyed regularly throughout the reproductive season to identify flowering plants.
+
+# Implications of delayed effects of climate on demography 
+
+Both extreme values and variation in SPEI are predicted to increase as climate change progresses ( <!--# cite IPCC? -->) and our results demonstrate that this may have a greater negative impact on understory plants in forest fragments compared to continuous forests.
 
 ```{r flwr-prob-quartile, include=FALSE}
 
@@ -512,26 +534,6 @@ Extremes in SPEI in the 15 months prior to the census reduced survival in forest
 Extremes in SPEI in the past 36 months affected plant size, although the direction of the effects was seasonally dependent (Figure \@ref(fig:growth-spei)).
 Generally, unusually dry dry seasons and unusually wet wet seasons had negative impacts on plant size, and this pattern was more extreme in fragments compared to continuous forest.
 For flowering, the SPEI of the current wet season and the dry season two dry seasons ago (lag of 15--20 months) had the strongest influence on flowering probability with dry weather corresponding to an increase in flowering (Figure \@ref(fig:flwr-spei))<!--# wondering if this is more of a results paragraph? Alternatively it goes *after* the next paragraph and includes more speculation about why each specific delayed effect exists.  Might end up integrating with a later paragraph. -->.
-
-There are several possible non-mutually-exclusive explanations for delayed effects of SPEI on vital rates.
-First, delayed effects may represent a demographic delay since we do not know precisely when since the previous survey the plant died or changed size.
-For example, if extreme drought in the dry season before the census increases plant mortality in that season, this would show up as a delayed effect in our models (e.g. in Figure \@ref(fig:surv-spei)b) despite the impact of drought potentially being immediate.
-This explanation for delayed effects applies only to plant size and survival, as flowering occurs very close to the yearly demographic census (Jan--Apr).
-
-Second, these delayed effects may represent a physiological delayed effect of environmental conditions.
-Under horticultural conditions, flowering shoots of *Heliconia chartacea* that flower in Spring begin to emerge in June or July of the previous year, and the developing inflorescence may be aborted in response to adverse conditions up to 6 months after initiation [@crileyYearProductionHigh1994]. <!--# more here about general trends in physiological delays for plants witht tubers or rhizomes -->Although flowering occurs in late January through April in *H. acuminata*, the initiation of a primordial flowering shoot <!--# not sure this is the right term.  "Differentiation of the apical meristem" ? --> likely happens many months earlier. The increase in flowering rate of plants following a drought could also be a bet-hedging strategy in response to stress [@nihadRelationshipStressFlowering2018] <!--# add another more general citation. e.g. S. Joe Wright trees flowering after ENSO -->.
-We also considered that some delayed effects could be a result of a cost of reproduction leading to reduced growth, survival, and/or flowering probability in the following season.
-However, when flowering in the previous season is included as a covariate, it predicts higher growth and flowering probability---likely a reflection of size being a good predictor of these vital rates (Supplemental\_\_\_).
-Our models show that drought two dry seasons prior to the census increase flowering probability.
-A greater understanding of the effects of light, drought, season, and their interactions on flowering in *H. acuminata* is needed to provide a probable mechanism for this pattern.
-
-Finally, delayed effects could be mediated by indirect effects and ecological interactions.
-<!--# I'm not sure if this is really an explanation for the *delay* per se.  Need to think about this. -->Drought in tropical forests can increase tree mortality and leaf drop, resulting in decreased canopy cover and increased light penetration to the understory (<!--# citations -->).
-This increase in light could then result in increased growth or flowering for understory plants ( <!--# citations -->).
-<!--# Heliconia grow better at edges, where there's more light --> Janssen et al. [@janssenDroughtEffectsLeaf2021] showed that increase in litterfall due to drought was delayed.
-Here, the delayed effect of drought on *H. acuminata* could be partly explained by a delay of the response of canopy trees to drought and the response of *H. acuminata* to increased insolation.
-Furthermore, literfall in response to drought has shown to be greater at forest edges compared to interiors, which could explain the increased delayed effects of SPEI on survival and growth in forest fragments.
-Drought is also associated with increased insolation, so negative SPEI could also be a proxy for increased insolation, which would be exacerbated at forest edges potentially.
 
 -   [@janssenDroughtEffectsLeaf2021] Used machine learning to combine remote sensing and ground surveys of literfall from published datasets.
     Estimates green-up, literfall, growth, etc. for central and southern america including the Amazon.
