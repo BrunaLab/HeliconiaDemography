@@ -145,6 +145,17 @@ comb <-
 <!-- -   2005 & 2010: severe SST -->
 
 ```{r}
+citations <- tribble(~year, ~Reference,
+                     2005, "Marengo et al. 2008; Zeng et al. 2008",
+                     2010, "Lewis et al. 2011",
+                     1997, "McPhaden 1999",
+                     2002, NA,
+                     2009, NA,
+                     2004, NA,
+                     2006, NA) 
+```
+
+```{r}
 spei_table <-
   comb %>% 
   group_by(year, dataset) %>% 
@@ -164,6 +175,8 @@ spei_table <-
          TRMM = glue("{round(spei_trmm, 2)} ({month_trmm})"),
          BDFFP = glue("{round(spei_bdffp, 2)} ({month_bdffp})")) %>% 
   ungroup()
+
+spei_table <- left_join(spei_table, citations)
 ```
 
 ```{r}

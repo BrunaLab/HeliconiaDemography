@@ -17,6 +17,10 @@ tar_plan(
   xa_spei = calc_spei_xa(xa_raw),
   xa_lag = lag_spei(xa_spei, maxlag),
 
+  # Choice of size supplemental
+  tar_target(la_file, here("data", "HA-la-stems-ht.xlsx"), format = "file"),
+  la_data = read_tidy_la(la_file),
+    tar_render(choose_size_var, "doc/choose_size_var.Rmd"),
   
   
   # SPEI supplemental

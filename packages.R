@@ -23,6 +23,7 @@ library(statmod)
 library(rmarkdown)
 library(colorspace)
 library(Amelia)
+library(readxl)
 
 conflict_prefer("select", "dplyr")
 conflict_prefer("filter", "dplyr")
