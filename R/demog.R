@@ -14,19 +14,28 @@ read_fix_demog <- function(path) {
                   HA_ID_Number = col_character())) %>% 
     clean_names() 
   
-  # A few entries don't read in because x_09 was entered with a comma or semicolon instead of a decimal.
+  # A few entries don't read in because x_09 was entered with a comma or
+  # semicolon instead of a decimal.
   fails <- problems(demog)
   fails <-
     fails %>% 
     mutate(corrected = str_replace(actual, "[\\,;]", "\\."))
   
   demog$x_09[fails$row] <- fails$corrected
+  
+  #If ht is between 0 and 1, round up to 1 cm. All other data is recorded to the
+  #nearest cm, so these values should be as well.
+  demog <-
+    demog %>% 
+    mutate(ht = if_else(ht < 1 & ht > 0, 1, ht))
+
   return(demog)
 }
 
 
 #' Calculate a binary survival column
-#' The `surv` column should be 1 if a plant is currently alive in `year` and 0 if it's dead in `year`.
+#' The `surv` column should be 1 if a plant is currently alive in `year` and 0
+#' if it's dead in `year`.
 #'
 #' @param data the heliconia demography data
 #' @param n_years number of years missing before assumed dead (at last year recorded)
@@ -43,7 +52,8 @@ add_surv <- function(data, n_years = 3) {
 
 #' Add a size column
 #' 
-#' Size is calculated as number of shoots x height.  Also adds lagged height and size variables.
+#' Size is calculated as number of shoots x height.  Also adds lagged height and
+#' size variables.
 #'
 #' @param data 
 #'
@@ -55,7 +65,12 @@ add_size <- function(data) {
            shts_prev = lag(shts)) %>% 
     ungroup() %>% 
     #add size
-    mutate(size = shts*ht, size_prev = shts_prev * ht_prev, log_size = log(size), log_size_prev = log(size_prev))
+    mutate(
+      size = shts * ht,
+      size_prev = shts_prev * ht_prev,
+      log_size = log(size),
+      log_size_prev = log(size_prev)
+    )
 }
 
 #' Tidy demography data
@@ -73,7 +88,10 @@ tidy_demog <- function(data) {
     mutate(flwr = if_else(infl > 0, 1L, 0L), .after = infl) %>% 
     mutate(flwr_prev = lag(flwr)) %>% 
     #create factors
-    mutate(across(c(ranch, bdffp_reserve_no, plot, habitat, ha_id_number, flwr_prev), as.factor)) %>% 
+    mutate(across(
+      c(ranch, bdffp_reserve_no, plot, habitat, ha_id_number, flwr_prev),
+      as.factor
+    )) %>%
     mutate(year_fac = as.factor(year)) %>% 
     # arrange columns
     select(ranch, bdffp_reserve_no, plot, habitat, #site level
