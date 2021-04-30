@@ -66,8 +66,12 @@ knitr::opts_chunk$set(
 	dpi = 300
 )
 library(targets)
+library(tidyverse)
+library(tsibble)
+library(lubridate)
 library(knitr)
 library(here)
+library(patchwork)
 ```
 
 ```{r load-targets}
@@ -83,7 +87,9 @@ withr::with_dir(here(), {
     f_spei_diff_plot,
     size_plot,
     f_cf,
-    f_1ha
+    f_1ha,
+    model_data,
+    xa_spei
   ))
 })
 ```
@@ -220,12 +226,12 @@ To assess the effects of drought history on plant vital rates we used Distribute
 DLNMs capture how potentially delayed effects of predictor variables (e.g. SPEI) affect an outcome (e.g. growth) well beyond the event period.
 They do so by fitting a bi-dimensional predictor-lag-response association spline, referred to as a crossbasis function.
 This models a non-linear relationship between predictor and response (e.g. between SPEI and vital rates) and allows the shape of that relationship to vary smoothly over lag time.
-Using the *dlnm* package [@gasparriniDistributedLagLinear2011; @rcoreteamLanguageEnvironmentStatistical2020], we created crossbasis functions with possible lags from 0--36 months.
+Using the `dlnm` package [@gasparriniDistributedLagLinear2011; @rcoreteamLanguageEnvironmentStatistical2020], we created crossbasis functions with possible lags from 0--36 months.
 We chose 36 months as a maximum lag because prior transplant experiments with *H. acuminata* showed they typically recovered from transplant shock in less than 36 months [@brunaExperimentalAssessmentHeliconia2002] so this is a reasonable upper bound for lagged effects of drought.
 
 <!--# re 36 mos transpalnt shock justification; how are lag lengths typically chosen?  -->
 
-The crossbasis function was fit to the data in the context of a generalized additive model (GAM) with restricted maximum likelihood using the *mgcv* package [@woodGeneralizedAdditiveModels2017].
+The crossbasis function was fit to the data in the context of a generalized additive model (GAM) with restricted maximum likelihood using the `mgcv` package [@woodGeneralizedAdditiveModels2017].
 The general form of the vital rate models was as follows:
 
 $$
@@ -285,35 +291,65 @@ Our SPEI data show the 2005 dry season to be a moderate drought (-1 \> SPEI \> -
 
 ## Survival, growth, and flowering in continuous forest vs. fragments
 
-**Our dataset comprised XXXX plants in continuous forest and XXXX plants in forest fragments, with an plots in CF having on average X-fold more plants than plots in 1-ha fragments (mean per plot + SD in each) .** When summarizing across years and plots, the proportion of *Heliconia acuminata* that survived in CF and 1-ha was similarly high (P(surv) = 0.95).
+```{r include=FALSE}
+summary_stats <-
+  model_data %>%
+  group_by(habitat) %>%
+  summarize(across(c(ht, shts, size, flwr, surv),
+                   .fns = list(mean = mean, sd = sd),
+                   na.rm = TRUE)) %>%
+  right_join(model_data %>% count(habitat)) %>%
+  mutate(across(ends_with("_mean") | ends_with("_sd"),
+                                ~round(.x, 2)))
+summary_stats <- 
+  full_join(
+  summary_stats,
+  model_data %>%
+    count(habitat, plot) %>%
+    group_by(habitat) %>%
+    summarize(n_mean = mean(n), n_sd = sd(n)) %>%
+    mutate(across(where(is.numeric), round))
+)
+summary_stats
+
+by_year <-
+  model_data %>% 
+  group_by(year, habitat) %>% 
+  summarize(prop_surv = mean(surv)) %>% 
+    arrange(prop_surv)
+by_year
+
+xa_spei %>% ungroup() %>%
+  summarize(across(everything(), mean)) %>%
+  filter(year(yearmonth)==2005)
+
+```
+
+Our dataset comprised `r summary_stats$n[2]` plants in continuous forest and `r summary_stats$n[1]` plants in forest fragments, with plots in CF having on average 2.6-fold more plants than plots in 1-ha fragments (CF = `r summary_stats$n_mean[2]` ± `r summary_stats$n_sd[2]` 1-ha = `r summary_stats$n_mean[1]` ± `r summary_stats$n_sd[1]` ).
+When summarizing across years and plots, the proportion of *Heliconia acuminata* that survived in CF and 1-ha was similarly high (P(surv) = 0.95).
 The proportion of surviving plants was lowest in the 2003-2004 transition year (P(surv) = 0.92), which coincided with droughts in both the 2003 and 2004 rainy seasons (Figure \@ref(fig:eda)b,d).
-The lowest survival for 1-ha fragment plots (p(surv) = 0.93) was for the 2005-2006 transition year, which encompassed a moderate drought in October 2005 and and wetter than average conditions (SPEI \> 0.5) in DOUBLE CHJECK DATES OF DROUGHT AND RAIN. Survival was size dependent in both continuous forest and 1-ha fragments (p \< 0.001 for the log-transformed effect of plant size in year t on suvival in year t+1).
+The lowest survival for 1-ha fragment plots (P(surv) = 0.93) was for the 2005-2006 transition year, which encompassed a moderate drought in October 2005 and and wetter than average conditions (SPEI \> 0.5) in December 2005 and January 2006.
+Survival was size dependent in both continuous forest and 1-ha fragments (p \< 0.001 for the log-transformed effect of plant size in year t on suvival in year t+1).
 While the survival probability of large plants approached 1 in both habitat types (Figure \@ref(fig:size-plot)a), the survival of the smallest plants was higher in 1-ha fragments.
 However, the 95% confidence intervals for 1-ha fragments and continuous forest overlapped for all sizes.
 
-<!--# The proportion of surviving plants was lowest from 2004-2005 (0.92), which coincided with a moderate drought in Jan 2004 / Feb 2005 and a severe drought in Jan–Mar of 2004 (these dates overlap? -->
-
-<!--# This is across the whole timeseries, which I'm not sure is actually that important. What summary statistics would be useful? -->
-
 Plants in continuous forest had an average of 2.9 shoots (± 1.8 SD) and were on average 40.6 cm tall (± 26.5 SD).
-Plants in 1-ha fragments had on average **\~XX% fewer** shoots (2.5 ± 1.5 SD) and **were XX% shorter** (36.2 cm ± 24.1 SD).
-Because the proxy for plant size used in our models was the product of these two metrics, plants in fragments were consequently significantly larger than those in forest fragments (150 ± 175 SD vs. 112 ± 141 SD, respectively).
+Plants in 1-ha fragments had on average \~`r (1 - (2.5/2.9))*100 %>% round()`% fewer shoots (2.5 ± 1.5 SD) and were \~`r (1 - (36.2/40.6))*100 %>% round()`% shorter (36.3 cm ± 24.1 SD).
+Because the proxy for plant size used in our models was the product of these two metrics, plants in fragments were consequently substantially larger than those in forest fragments (150 ± 175 SD vs. 112 ± 141 SD, respectively).
 This disparity in plant size was most pronounced in the initial years of our surveys and then diminished over time (Figure \@ref(fig:eda)a), likely due to a combination of greater seedling recruitment in CF and plant mortality or shrinkage As with survival, size in year t was a significant predictor of size in year t+1 (p \< 0.001).
 While the effect was generally similar across size classes and habitat types, the impact of plant size on growth was greatest for mid-sized plants in continuous forest (Figure \@ref(fig:size-plot)b).
 
 <!--# Is growth really higher in fragments?  Probably, since fig2 shows size becoming more similar over time.   -->
 
-While the overall proportion of plants flowering was very low, it was nevertheless almost 40% higher in continuous forest than 1-ha fragments (0.050 ± 0.021 vs. 0.036 ± 0.027, respectively).
+While the overall proportion of plants flowering was very low, it was nevertheless almost 40% higher in continuous forest than 1-ha fragments (`r summary_stats$flwr_mean[2]` ± `r summary_stats$flwr_sd[2]` vs. `r summary_stats$flwr_mean[1]` ± `r summary_stats$flwr_sd[1]`, respectively).
 This was true in all survey years except 2006 and 2008 (Figure \@ref(fig:eda)c).
-This disparity was largely due to the fact that flowering is size-dependent (p \< 0.001), with the probability of flowering increasing dramatically once plants reached the threshold value of log 5\_\_\_\_ (Figure \@ref(fig:size-plot)c), which corresponds roughly to \_\_\_\_ shoots.
-Even though flowering probability of large plants (log(size) \> 5) was greater in 1-ha fragments compared to continuous forest, there were proportionally far fewer plants above the reproductive threshold size in forest fragments (Figure \@ref(fig:size-plot)d).
+This disparity was largely due to the fact that flowering is size-dependent (p \< 0.001), with the probability of flowering increasing dramatically once plants reached the threshold size of about 148 [log(size) \> 5] (Figure \@ref(fig:size-plot)c), which corresponds roughly to \_\_\_\_ shoots <!--# not sure I can/should fill in that blank -->.
+Even though flowering probability of large plants [log(size) \> 5] was greater in 1-ha fragments compared to continuous forest, there were proportionally far fewer plants above the reproductive threshold size in forest fragments (Figure \@ref(fig:size-plot)d).
 Indeed, the most striking difference between habitat types coincided with a severe drought in 2003, when the percentage of flowering plants with four or more shoots was 24.1% in continuous forest vs. only 12% in 1-ha fragments (Figure \@ref(fig:eda)c).
 The back-transformed model intercepts, representing the flowering probability of averaged sized plants in each habitat given average SPEI, showed a similar pattern with 0.008 for continuous forest and 0.004 for 1-ha fragments.
 <!--# not sure how necessary this is. EB: same-->
 
 <!-- This paragraphis talkng about size, but not really growth -->
-
-<!--# There was a pronounced threshold in flowering probability corresponding with a log size of about 5...is this 5 shoots? What abvout the proxy size? -->
 
 ## Delayed effects of drought on demographic vital rates
 

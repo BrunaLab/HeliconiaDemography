@@ -91,6 +91,7 @@ tar_plan(
   plot_dates = get_plot_daterange(model_data, maxlag),
   
   eda_spei = plot_eda_spei(xa_lag, plot_dates),
+  eda_surv_ts = plot_eda_surv_ts(model_data, plot_dates),
   eda_surv = plot_eda_surv_cohort(demog_done, plot_dates),
   eda_size = plot_eda_size(model_data, plot_dates),
   eda_flwr = plot_eda_flwr(model_data, plot_dates),
