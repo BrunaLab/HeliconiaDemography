@@ -66,7 +66,7 @@ eda_plot_df <- function(demog_post) {
 #' @param demog_post demography data
 #' @param dates_lims x-axis limits
 #'
-plot_eda_surv_ts <- function(demog_post, dates_lims) {
+plot_eda_surv_ts <- function(demog_post, date_lims) {
   
   date_breaks <- seq(date_lims[1], date_lims[2], by = "year")
   
