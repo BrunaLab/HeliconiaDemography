@@ -368,8 +368,8 @@ g_spei_plot
 ```
 
 Drought history also had a significant effect on plant size in both habitats (p \< 0.001).
-The fitted crossbasis functions for fragments and continuous forest showed somewhat similar patterns, although the surface for 1-ha fragments was much more complex (edf = 17.9 for 1-ha fragments; edf = 5.9 for continuous forest; see also Figure \@ref(fig:growth-spei)).
-Drought at lags 8--11 (March - June, the end of the wet season) increase growth in both habitats, but more strongly in 1-ha fragments.
+The fitted crossbasis functions for fragments and continuous forest showed somewhat similar patterns, although the surface for 1-ha fragments was much more complex (edf = 17.9 for 1-ha fragments; edf = 13.1 for continuous forest; see also Figure \@ref(fig:growth-spei)).
+Drought at lags 8--11 (March--June, the end of the wet season) increase growth in both habitats, but more strongly in 1-ha fragments.
 
 ```{r}
 cap <- "The difference between predicted effects of SPEI history on plant size in continuous forest and 1-ha fragments."
@@ -410,7 +410,7 @@ f_spei_diff_plot
 Plotting the difference between the crossbasis smooths for continuous forest and 1-ha fragments revealed that flowering probability is higher in continuous forest compared to 1-ha fragments and is increased by recent drought and drought during the dry season 15--20 months prior to the census (Figure \@ref(fig:flwr-diff)).
 The least difference between habitat types occurs when there is strong drought at about 8--12 months lag or very wet conditions at 15--20 months lag.
 
-FInally, with the exception of growth in 1-ha fragments (p = 0.257), the delayed effects of SPEI on all three vital rates varied significantly between plots (p \< 0.001 for the random effect of plot).
+FInally, with the exception of survival in 1-ha fragments (p = 0.257), the delayed effects of SPEI on all three vital rates varied significantly between plots (p \< 0.001 for the random effect of plot).
 
 # Discussion
 
