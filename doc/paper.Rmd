@@ -126,7 +126,8 @@ They are also essential because while some demographic effects of fragmentation 
 Indeed, lagged responses of demographic vital rates to climate may in fact be the rule rather than the exception [@eversLaggedDormantSeason2021; @andereggPervasiveDroughtLegacies2015; @schwalmGlobalPatternsDrought2017; @kannenbergGhostsHowDrought2020].
 
 Herbaceous plants represent up to 25% of plant diversity in tropical forests [@gentryContributionNontreesSpecies1987], are critical food and habitat for myriad species [@snowTropicalFrugivorousBirds1981], and are economically and culturally vital [@nakazonoExperiementalHarvestingNontimber2004; @ticktinRelationshipsNinoSouthern2003].
-Nevertheless, the impacts of global change phenomena on their demography remain conspicuously understudied [***(CITATION Bruna, Gaoue)***] We used a decade of demographic and climatic data from an experimentally fragmented landscape in the Central Amazon to assess the effects of climate on populations of a tropical understory herb (*Heliconia acuminata*, Heliconiaceae).
+Nevertheless, the impacts of global change phenomena on their demography remain conspicuously understudied [@brunaHabitatFragmentationPlant2009] <!--# Emilio had written "Gaoue" as potential reference, but the on I have in Zotero is about trees, not understory plants -->.
+We used a decade of demographic and climatic data from an experimentally fragmented landscape in the Central Amazon to assess the effects of climate on populations of a tropical understory herb (*Heliconia acuminata*, Heliconiaceae).
 This time series, which included the severe droughts of 1997 [@mcphadenChildProdigy1997981999] and 2005 [@marengoDroughtAmazonia20052008; @zengCausesImpacts20052008], allowed us to address the following questions:\
 
 1)  Does drought increase or decrease the growth, survival, and fertility of plant populations in continuous forest?
@@ -421,10 +422,10 @@ Two noticeable peaks in the proportion of flowering mature plants occur in sever
 
 This seems tacked on here and perhaps better in the discussion: populations persisting in fragments may be more demographically resilient to drought than those in primary forest if the individuals susceptible to desiccation died quickly after fragment isolation [@bettsExtinctionFiltersMediate2019].
 
-\< !--
-\# Gaoue = ?
+Gaoue = ?
 Orou G. Gaoue, Carol C. Horvitz, Ulrich K. Steiner, Shripad Tuljapurkar, Climate, rather than human disturbance, is the main driver of age-specific mortality trajectories in a tropical tree, Ecological Modelling, Volume 400, 2019, Pages 34-40,<https://doi.org/10.1016/j.ecolmodel.2019.03.007>.
--- \>
+
+-   Eric: I don't think so. It was a reference supporting that understory plants are understudied.
 
 Delayed effects, time lag, the lag...avoid lagged effects
 
@@ -446,7 +447,7 @@ Delayed effects, time lag, the lag...avoid lagged effects
 
     -   low precip = trees lose leaves or die, more light gets through or gaps open.
         This can be positive (more light = more growth) but not always ( @westerbandInteractionsPlantSize2015) there is a threshold that can lead to photoinhibition ( @hePhotoinhibitionHeliconiaNatural1996, @mulkeyComparativeLifeHistory1991).
-        Drought and herbivory effects can be additive, at least in seedlings ( @bartonAdditiveNonadditiveResponses20
+        Drought and herbivory effects can be additive, at least in seedlings ( @bartonAdditiveNonadditiveResponses2020 )
 
 -   @rundelStructuralPhysiologicalAdaptation1998 Heliconia appear to allocate much of their above-ground biomass to leaf tissues and have a relatively low investment in support tissues.
     Investment in leaf form vs structure interpreted as a trade-off between economy and protection against tissue loss from falling branches; presence of below-ground rhizomes in Heliconia may be key.
@@ -474,8 +475,6 @@ Delayed effects, time lag, the lag...avoid lagged effects
     Similar increase in continuous and (large) fragments.
     Increase in turnover more variable in fragments.
     Coarse woody debris increased 62% during drought.\
-
-<!--# in intro, questions are 1: what are effects on vital rates, 2: are effects delayed, 3: differences between habitats.  Keep the same order here? -->
 
 Understanding how landscape structure and environmental conditions act to influence population dynamics is fundamental to many of the conceptual frameworks for studying and conserving fragmented landscapes [@didhamRethinkingConceptualFoundations2012; @driscollConceptualDomainMatrix2013].
 <!--# more here -->.
@@ -526,7 +525,7 @@ Instead, we believe that the delayed demographic effects we observed are indirec
 For example, the mortality rate of tropical trees can spike in the year following a severe drought.
 The growth and flowering rates of understory plants would only increase years later, when the canopy gaps resulting from delayed leaf drop [@janssenDroughtEffectsLeaf2021] and treefalls increase light penetration to the forest understory (**CITATIONS)**.
 Drought-driven litterfall is also greater at forest edges than forest interiors (**CITATIONS)**, which could explain the increased delayed effects of SPEI on survival and growth in forest fragments <!--#  (question about wording - does this mean the delay is relatively greater, or the magnitude of the effect is greater?)-->.
-Unfortunately, experiments disentangling the complex ways in which light, environmental conditions, and ecological neighborhood influence temporal variation in vital rates are rare (sensu @westerband2015, @westerbandEarlyLifeConditions2017, @horvitzEffectsPlantSize2002, @gagnon).
+Unfortunately, experiments disentangling the complex ways in which light, environmental conditions, and ecological neighborhood influence temporal variation in vital rates are rare [sensu @westerband2015; @westerbandEarlyLifeConditions2017; @horvitzEffectsPlantSize2002; @gagnonGrowthUnderstoryHerb2011]<!--# what is this "sensu" in reference to?  The definition of vital rates?  of "rare"? --> .
 Without such experiments, generalizations about whether delayed effects are driven by direct or indirect mechanisms will continue to prove elusive.
 
 Finally, demographic delays could be an artefact of the timing of responses vis-à-vis the census date.
