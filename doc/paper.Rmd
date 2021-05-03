@@ -31,7 +31,7 @@ output:
       - --lua-filter=templates/pagebreak.lua
 linkcolor: blue
 bibliography: references.bib
-csl: "templates/ecology.csl" # Insert path for the bib-style
+csl: "templates/global-change-biology.csl" # Insert path for the bib-style
 abstract: |
   Text of abstract
 keywords: |
