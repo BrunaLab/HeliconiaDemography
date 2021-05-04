@@ -63,6 +63,7 @@ knitr::opts_chunk$set(
 	warning = FALSE,
 	collapse = TRUE,
 	comment = "#>",
+	# fig.show = "hide" #hide all figures until the end
 	dpi = 300
 )
 library(targets)
@@ -142,10 +143,10 @@ In addition to large areas of continuous forest, the BDFFP has forest fragment r
 In subsequent decades the vegetation regenerating around fragments has been periodically cleared to ensure fragment isolation [@bierregaardLessonsAmazoniaEcology2001].
 
 ```{r}
-cap <- "Weather normals for Manaus, Brazil (3º6'S, 60º1'W) for 1981–2010. Precipitation (a) shows a marked dry seasons from June through October. Temperature (b) varies less throughout the year. Mean monthly temperature is shown in the solid red line and monthly minimum and maximum temperatures are shown with the lower and upper dashed lines, respectively. Data from Brazilian National Institute of Meterology (INMET)."
+normals_cap <- "Weather normals for Manaus, Brazil (3º6'S, 60º1'W) for 1981–2010. Precipitation (a) shows a marked dry seasons from June through October. Temperature (b) varies less throughout the year. Mean monthly temperature is shown in the solid red line and monthly minimum and maximum temperatures are shown with the lower and upper dashed lines, respectively. Data from Brazilian National Institute of Meterology (INMET)."
 ```
 
-```{r normals, fig.cap=cap}
+```{r normals, fig.cap=normals_cap}
 normals_plot
 ```
 
@@ -242,10 +243,10 @@ We therefore fit separate models for plants in fragments and in continuous fores
 # Results
 
 ```{r}
-cap <- "Timeseries of demographic parameters and drought ocurrence. Mean plant size ± standard deviation (a) shows that plants were smaller in fragments (red) than continuous forest (blue). (b) shows the survival curve for the 1998 cohort of plants in both fragments and continuous forest. c) shows the proportion of plants with 4 or more shoots flowering each census. In d), monthly 3-month SPEI is plotted. Light grey lines represent values from different grid cells encompassing BDFFP and the dark line is the site mean. Yellow, orange, dark orange, and red stripes show mild, moderate, severe, and extreme drought, respectively."
+eda_cap <- "Timeseries of demographic parameters and drought ocurrence. Mean plant size ± standard deviation (a) shows that plants were smaller in fragments (red) than continuous forest (blue). (b) shows the survival curve for the 1998 cohort of plants in both fragments and continuous forest. c) shows the proportion of plants with 4 or more shoots flowering each census. In d), monthly 3-month SPEI is plotted. Light grey lines represent values from different grid cells encompassing BDFFP and the dark line is the site mean. Yellow, orange, dark orange, and red stripes show mild, moderate, severe, and extreme drought, respectively."
 ```
 
-```{r eda, fig.cap=cap, fig.height=7, fig.width=10}
+```{r eda, fig.cap=eda_cap, fig.height=7, fig.width=10}
 eda_plot
 ```
 
@@ -322,19 +323,19 @@ The back-transformed model intercepts, representing the flowering probability of
 ## Delayed effects of drought on demographic vital rates
 
 ```{r}
-cap <- "Smooth effect of plant size in the previous census on a) survival, b) log(size), and c) flowering probabiility, modeled by a cubic regression splines. Panel d) shows the smoothed density of different plant sizes in the two habitat types. 95% confidence intervals are shown and include uncertainty in the model intercept and uncertainty due to smoothness selection. The smooths for 1-ha fragments and continuous forest are fit in separate models. The model intercepts were added to the fitted values of the smooth and values are back-transformed to the response scale.  In b), a 1:1 line is shown in dashed red to indicate the line of no growth."
+size_cap <- "Smooth effect of plant size in the previous census on a) survival, b) log(size), and c) flowering probabiility, modeled by a cubic regression splines. Panel d) shows the smoothed density of different plant sizes in the two habitat types. 95% confidence intervals are shown and include uncertainty in the model intercept and uncertainty due to smoothness selection. The smooths for 1-ha fragments and continuous forest are fit in separate models. The model intercepts were added to the fitted values of the smooth and values are back-transformed to the response scale.  In b), a 1:1 line is shown in dashed red to indicate the line of no growth."
 ```
 
-```{r size-plot, fig.cap=cap, fig.height=8, fig.width=5}
+```{r size-plot, fig.cap=size_cap, fig.height=8, fig.width=5}
 size_plot
 ```
 
 ```{r}
-cap <- "Smooth effect of lagged SPEI on survival in a) continuous forest and b) 1-ha fragments. Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale. Contour lines correspond to a change of 0.002. The bar on the bottom of each panel indicates wet seasons (black, November–May) and dry seasons (white, June–October)."
+s_spei_cap <- "Smooth effect of lagged SPEI on survival in a) continuous forest and b) 1-ha fragments. Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale. Contour lines correspond to a change of 0.002. The bar on the bottom of each panel indicates wet seasons (black, November–May) and dry seasons (white, June–October)."
 
 ```
 
-```{r surv-spei, fig.cap=cap, fig.height=5, fig.width=7}
+```{r surv-spei, fig.cap=s_spei_cap, fig.height=5, fig.width=7}
 s_spei_plot
 ```
 
@@ -347,10 +348,10 @@ Plants in both continuous forest and 1-ha fragments showed an increase in surviv
 However, it should be noted that only the first year of census data (1999) had an SPEI value greater than 2 within 36 months in the past.
 
 ```{r}
-cap <- "The difference between predicted effects of SPEI history on survival in continuous forest and 1-ha fragments."
+s_spei_diff_cap <- "The difference between predicted effects of SPEI history on survival in continuous forest and 1-ha fragments."
 ```
 
-```{r surv-diff, fig.cap=cap, fig.height=2.5, fig.width=7}
+```{r surv-diff, fig.cap=s_spei_diff_cap, fig.height=2.5, fig.width=7}
 s_spei_diff_plot
 ```
 
@@ -358,10 +359,10 @@ Subtracting the estimated contribution of SPEI history to survival in fragments 
 However, under extreme conditions, survival probability is higher in continuous forest by up to 0.02.
 
 ```{r}
-cap <- "Smooth effect of lagged SPEI on plant growth for a) continuous forest and b) 1-ha fragments. Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function. Contour lines correspond to a change of 0.05. The bar on the bottom of each panel indicates wet seasons (black, November–May) and dry seasons (white, June–October)."
+g_spei_cap <- "Smooth effect of lagged SPEI on plant growth for a) continuous forest and b) 1-ha fragments. Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function. Contour lines correspond to a change of 0.05. The bar on the bottom of each panel indicates wet seasons (black, November–May) and dry seasons (white, June–October)."
 ```
 
-```{r growth-spei, fig.cap=cap, fig.height=5, fig.width=7}
+```{r growth-spei, fig.cap=g_spei_cap, fig.height=5, fig.width=7}
 g_spei_plot
 ```
 
@@ -370,10 +371,10 @@ The fitted crossbasis functions for fragments and continuous forest showed somew
 Drought at lags 8--11 (March--June, the end of the wet season) increase growth in both habitats, but more strongly in 1-ha fragments.
 
 ```{r}
-cap <- "The difference between predicted effects of SPEI history on plant size in continuous forest and 1-ha fragments."
+g_spei_diff_cap <- "The difference between predicted effects of SPEI history on plant size in continuous forest and 1-ha fragments."
 ```
 
-```{r growth-diff, fig.cap=cap, fig.height=2.5, fig.width=7}
+```{r growth-diff, fig.cap=g_spei_diff_cap, fig.height=2.5, fig.width=7}
 g_spei_diff_plot
 ```
 
@@ -382,10 +383,10 @@ However, growth in continuous forests is higher by up to log(size) = 0.57 when t
 This is due to reduced growth in fragments under wet conditions.
 
 ```{r}
-cap <- "Smooth effect of lagged SPEI on flowering probability. Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale. Contour lines correspond to a change of 0.001. The bar on the bottom of each panel indicates wet seasons (black, November–May) and dry seasons (white, June–October)."
+f_spei_cap <- "Smooth effect of lagged SPEI on flowering probability. Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale. Contour lines correspond to a change of 0.001. The bar on the bottom of each panel indicates wet seasons (black, November–May) and dry seasons (white, June–October)."
 ```
 
-```{r flwr-spei, fig.cap=cap, fig.height=5, fig.width=7}
+```{r flwr-spei, fig.cap=f_spei_cap, fig.height=5, fig.width=7}
 f_spei_plot
 ```
 
@@ -398,10 +399,10 @@ The shape of the crossbasis function was similar in 1-ha fragments, but signific
 That is, the variation in fitted values along the SPEI dimension was much lower at all values of the lag dimension in fragments.
 
 ```{r}
-cap <- "The difference between predicted effects of SPEI history on flowering probability in continuous forest and 1-ha fragments."
+f_spei_diff_cap <- "The difference between predicted effects of SPEI history on flowering probability in continuous forest and 1-ha fragments."
 ```
 
-```{r flwr-diff, fig.cap=cap, fig.height=2.5, fig.width=7}
+```{r flwr-diff, fig.cap=f_spei_diff_cap, fig.height=2.5, fig.width=7}
 f_spei_diff_plot
 ```
 
@@ -422,7 +423,7 @@ Finally, we show for the first time that the magnitude, direction, and temporal 
 Understanding how landscape structure and environmental conditions act to influence population dynamics is fundamental to many of the conceptual frameworks for studying and conserving fragmented landscapes [@didhamRethinkingConceptualFoundations2012; @driscollConceptualDomainMatrix2013].
 Using a decadal dataset of plant demography, we show for the first time that the magnitude, direction, and temporal lag in demographic responses to drought differs between forest fragments and continuous forest.
 
-# Temporal variation in demographic responses to forest fragmentation
+## Temporal variation in demographic responses to forest fragmentation
 
 Decadal comparisons of *Heliconia acuminata* growth and survival largely mirrored those of prior experiments and surveys [@brunaHabitatFragmentationDemographic2002].
 In contrast, conclusions regarding the effect of fragmentation on flowering differed substantially from those based on short-term surveys [@brunaHabitatFragmentationDemographic2002].
@@ -434,7 +435,7 @@ These size-dependent differences in flowering probability had only a modest effe
 However, they could potentially lead to major habitat-specific differences in lifetime reproductive effort for these long-lived plants, as they translate into flowering once every 7.97 years in fragments vs. every 10.63 years in continuous forest.
 Our results underscore why caution is needed when using short-term studies to draw conclusions regarding the effects of fragmentation on long-lived organisms: seemingly small (i.e., non-significant) differences in vital rates, when compounded over multiple years, can lead to demographic divergence among populations [@gagnonGrowthUnderstoryHerb2011].
 
-# Delayed effects of climate on demographic vital rates
+## Delayed effects of climate on demographic vital rates
 
 Precipitation extremes and other climatic factors are known to have immediate effects on the growth, survival, or reproduction of plants [@wrightSeasonalNinoLonger2006; @estebanOtherSideDroughts2021], including *Heliconia* [@stiles1975; @westerbandEarlyLifeConditions2017] and other tropical herbs [@wrightSeasonalDroughtSoil1992].
 These effects can be complex or even contradictory - mild droughts can increase the growth rates of tropical trees, perhaps due to reductions in cloud cover [@condit2004], but in severe drought years growth can be extremely low and mortality can be sharply elevated (see also @connell2000; @engelbrecht2002; @edwards2006]. There is also evidence that the effects can persist for multiple years [@phillips2010], such as a boom in drought-year fruit production followed by severe post-drought "famine" @wright1999; see also @pau2013].
@@ -506,7 +507,7 @@ newdf_1ha <-
 1/predict(f_1ha, newdata = newdf_1ha) %>% mean() %>% plogis()
 ```
 
-# Conclusions & Future Directions
+## Conclusions & Future Directions
 
 Climate models for the Amazon predict a future of extremes - increases in the frequency and geographic extent of droughts, but also increases in the frequency and area affected by periods of unusual wetness [@duffy2015].
 Our results support the hypothesis that populations in fragments could be more susceptible to the effects of changing climate than those in continuous forest [@laurance2014].
@@ -533,6 +534,12 @@ NASA/Goddard Space Flight Center's Mesoscale Atmospheric Processes Laboratory an
 PPS, which develop and compute the TMPA as a contribution to TRMM.
 "
 
+# Figures
+
+```{r}
+
+```
+
 # References
 
 <!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
@@ -542,7 +549,7 @@ PPS, which develop and compute the TMPA as a contribution to TRMM.
 
 \newpage
 
-### Left-over text
+# Left-over text
 
 -   populations persisting in fragments may be more demographically resilient to drought than those in primary forest if the individuals susceptible to desiccation died quickly after fragment isolation [@bettsExtinctionFiltersMediate2019].
 -   While the alteration of microclimate near forest edges is one of the fundamental results to have emerged from the study of fragmented landscapes [@didhamEdgeStructureDetermines1999; @ewersFragmentationImpairsMicroclimate2013], little is known regarding how variable it is. It We hypothesize that the microclimate in continuous forest plots is more stable than that in 1 ha fragments, and that this stability will demographically buffers populations in forest interiors [@brunaExperimentalAssessmentHeliconia2002].
@@ -550,7 +557,7 @@ PPS, which develop and compute the TMPA as a contribution to TRMM.
 -   eg. gene flow and genetic structure among and between plots already shaped by fragmentation ( @cortesLowPlantDensity2013, there can also be drought effects eg @sifresGeneticStructureLycopersicon2007)
 -   [@janssenDroughtEffectsLeaf2021] Used machine learning to combine remote sensing and ground surveys of literfall from published datasets. Estimates green-up, literfall, growth, etc. for central and southern america including the Amazon. Drought results in anomolously high leaf flushing at start of drought followed by increased litterfall durring the drought. Dry season droughts result in green-up, but not wet season droughts. During drought, old leaves are shed and new leaves are maintained. 2-5 months for newly flushed leaves to fully expand
 
-#### Citations / information could allocate to appropriate paragraphs
+# Citations / information could allocate to appropriate paragraphs
 
 -   @dowdInvestigatingSynergisticEffects2020 (unpublished thesis, could write MB and ask for update): precipitation and fragmentations influenced fruit/seed production (conditional on flowering) by *Heliconia* (one step past flowering, so might be worth citing to say that there are other ways reprod. can be affected
 
