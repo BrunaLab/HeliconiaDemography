@@ -63,7 +63,7 @@ knitr::opts_chunk$set(
 	warning = FALSE,
 	collapse = TRUE,
 	comment = "#>",
-	# fig.show = "hide" #hide all figures until the end
+	fig.show = "hide", #don't knit figures for now.
 	dpi = 300
 )
 library(targets)
@@ -111,7 +111,7 @@ Despite this, evidence linking changes population-level demographic responses wi
 
 Climate change can alter the demographic of species in temperate zones [@doak2010; @sletvold2005; @selwood2015; @williams2015], and these effects can be exacerbated in fragmented landscapes [@oliver2015 @holyoak2016].
 While the demographic consequences for tropical species are expected to be similarly severe [@brodieClimateChangeTropical2012; @scheffersExtremeThermalHeterogeneity2017], surprisingly little is known about the consequences of changing climates for taxa in tropical biomes, including Amazonia [@paniw2021].
-Climate models for the next 50-100 years predict that some parts of the Amazon basin will experience more frequent and severe droughts as well as more frequent periods of high precipitation [@caiIncreasingFrequencyExtreme2014; @zengCausesImpacts20052008; @moraProjectedTimingClimate2013 @duffy2015a].
+Climate models for the next 50-100 years predict that some parts of the Amazon basin will experience more frequent and severe droughts as well as more frequent periods of high precipitation [@caiIncreasingFrequencyExtreme2014; @zengCausesImpacts20052008; @moraProjectedTimingClimate2013 @duffy2015].
 These changes could exacerbate the altered environmental conditions in fragments thought to make populations demographically vulnerable - particularly for plants, for which an increase in the frequency and severity of extreme precipitation events can have detrimental consequences for survival and reproduction [@estebanOtherSideDroughts2021; @gaoue2019].
 These results, coupled with evidence that growth and survivorship are already lower in fragments [@laurance1998; @brunaExperimentalAssessmentHeliconia2002; @zartman2015], has led to speculation that plants in forest fragments are particualrly at risk from drought and other climatic extremes [@lauranceEffectsStrongDrought2001; @opdam2004, @selwood2015].
 
@@ -246,7 +246,7 @@ We therefore fit separate models for plants in fragments and in continuous fores
 eda_cap <- "Timeseries of demographic parameters and drought ocurrence. Mean plant size ± standard deviation (a) shows that plants were smaller in fragments (red) than continuous forest (blue). (b) shows the survival curve for the 1998 cohort of plants in both fragments and continuous forest. c) shows the proportion of plants with 4 or more shoots flowering each census. In d), monthly 3-month SPEI is plotted. Light grey lines represent values from different grid cells encompassing BDFFP and the dark line is the site mean. Yellow, orange, dark orange, and red stripes show mild, moderate, severe, and extreme drought, respectively."
 ```
 
-```{r eda, fig.cap=eda_cap, fig.height=7, fig.width=10}
+```{r eda, fig.cap=eda_cap}
 eda_plot
 ```
 
@@ -326,7 +326,7 @@ The back-transformed model intercepts, representing the flowering probability of
 size_cap <- "Smooth effect of plant size in the previous census on a) survival, b) log(size), and c) flowering probabiility, modeled by a cubic regression splines. Panel d) shows the smoothed density of different plant sizes in the two habitat types. 95% confidence intervals are shown and include uncertainty in the model intercept and uncertainty due to smoothness selection. The smooths for 1-ha fragments and continuous forest are fit in separate models. The model intercepts were added to the fitted values of the smooth and values are back-transformed to the response scale.  In b), a 1:1 line is shown in dashed red to indicate the line of no growth."
 ```
 
-```{r size-plot, fig.cap=size_cap, fig.height=8, fig.width=5}
+```{r size-plot, fig.cap=size_cap, fig.height=6, fig.width=5}
 size_plot
 ```
 
@@ -438,7 +438,7 @@ Our results underscore why caution is needed when using short-term studies to dr
 ## Delayed effects of climate on demographic vital rates
 
 Precipitation extremes and other climatic factors are known to have immediate effects on the growth, survival, or reproduction of plants [@wrightSeasonalNinoLonger2006; @estebanOtherSideDroughts2021], including *Heliconia* [@stiles1975; @westerbandEarlyLifeConditions2017] and other tropical herbs [@wrightSeasonalDroughtSoil1992].
-These effects can be complex or even contradictory - mild droughts can increase the growth rates of tropical trees, perhaps due to reductions in cloud cover [@condit2004], but in severe drought years growth can be extremely low and mortality can be sharply elevated (see also @connell2000; @engelbrecht2002; @edwards2006]. There is also evidence that the effects can persist for multiple years [@phillips2010], such as a boom in drought-year fruit production followed by severe post-drought "famine" @wright1999; see also @pau2013].
+These effects can be complex or even contradictory - mild droughts can increase the growth rates of tropical trees, perhaps due to reductions in cloud cover [@conditTropicalForestDynamics2004], but in severe drought years growth can be extremely low and mortality can be sharply elevated (see also @connell2000; @engelbrecht2002; @edwards2006]. There is also evidence that the effects can persist for multiple years [@phillips2010], such as a boom in drought-year fruit production followed by severe post-drought "famine" @wright1999; see also @pau2013].
 
 Despite this, models of population dynamics have rarely included the effects of environmental drivers.
 This has largely been due to the challenge - both ecologically and statistically - of detecting any demographic responses to climatic extremes that are delayed for multiple growing seasons.
@@ -510,7 +510,7 @@ newdf_1ha <-
 ## Conclusions & Future Directions
 
 Climate models for the Amazon predict a future of extremes - increases in the frequency and geographic extent of droughts, but also increases in the frequency and area affected by periods of unusual wetness [@duffy2015].
-Our results support the hypothesis that populations in fragments could be more susceptible to the effects of changing climate than those in continuous forest [@laurance2014].
+Our results support the hypothesis that populations in fragments could be more susceptible to the effects of changing climate than those in continuous forest [@lauranceApparentEnvironmentalSynergism2014].
 However, they also indicate that the demographic responses to climate change of populations in fragmented landscapes may be far more complex than previously appreciated.
 Multi-factorial, multi-season experiments are needed to determine if habitat-specific differences in environmental conditions and local ecological neighborhood interact to delay the demographic responses of plants to climatic variability and the mechanisms underlying these responses [sensu @brunaCompensatoryResponsesUnderstory2005; @markewitz2010; @westerbandInteractionsPlantSize2015; @westerbandEarlyLifeConditions2017)
 
