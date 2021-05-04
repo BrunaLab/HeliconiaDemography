@@ -94,20 +94,9 @@ withr::with_dir(here(), {
 
 # Introduction
 
-Deforestation driven by the expansion of agriculture and other human activities is a primary driver of biodiversity loss worldwide [@haddadHabitatFragmentationIts2015]. Deforestation also results in landscapes where the remaining forest can be highly fragmented, with remnants of different sizes embedded in a matrix of often highly-contrasting habitat. Although the local extinction of species from individual fragments is common [@haddadHabitatFragmentationIts2015]<!--# others? -->, the demographic mechanisms underlying these extinctions are poorly understood [@brunaHabitatFragmentationPlant2009]<!--# others? -->. However, it is often assumed that that the dramatically altered environmental conditions often observed in fragments -- e.g., increased air temperature, decreased relative humidity, reduced soil moisture, increased solar radiation [@ewersFragmentationImpairsMicroclimate2013; @didhamEdgeStructureDetermines1999; @arroyo-rodriguezDoesForestFragmentation2017] -- can depress rates of reproduction or survivorship [@zartmanDroughtImpactsSurvivorship2015; @brunaSeedGerminationRainforest1999; @lauranceRainForestFragmentation1998], leading to local or regional population declines [@brunaHabitatFragmentationPlant2009]<!--# others? -->. This is thought to be particularly true in species-rich tropical forests [@lauranceEffectsStrongDrought2001; @didhamEdgeStructureDetermines1999], which continue to be cleared and fragmented at unprecedented rates. For example, over 24 million ha of the Brazilian Amazon have been cleared in the last two decades *(CITATION_4)*, resulting in their extensive fragmentation and the creation of over 70,000 km of new forest edges annually [@broadbentForestFragmentationEdge2008].
-Despite this, evidence linking changes population-level demographic responses with changes in environmental conditions remains scarce.
+Deforestation driven by the expansion of agriculture and other human activities is a primary driver of biodiversity loss worldwide [@haddadHabitatFragmentationIts2015]. Deforestation also results in landscapes where the remaining forest can be highly fragmented, with remnants of different sizes embedded in a matrix of often highly-contrasting habitat. Although the local extinction of species from individual fragments can be common [@haddadHabitatFragmentationIts2015 @fletcher2018], the demographic mechanisms underlying these extinctions are poorly understood [@brunaHabitatFragmentationPlant2009]. However, it is often assumed that that the dramatically altered environmental conditions often observed in fragments -- e.g., increased air temperature, decreased relative humidity, reduced soil moisture, increased solar radiation [@ewersFragmentationImpairsMicroclimate2013; @didhamEdgeStructureDetermines1999; @arroyo-rodriguezDoesForestFragmentation2017] -- can depress rates of reproduction or survivorship [@zartmanDroughtImpactsSurvivorship2015; @brunaSeedGerminationRainforest1999; @lauranceRainForestFragmentation1998], leading to local or regional population declines [@brunaHabitatFragmentationPlant2009]. This is thought to be particularly true in species-rich tropical forests [@lauranceEffectsStrongDrought2001; @didhamEdgeStructureDetermines1999], which continue to be cleared and fragmented at unprecedented rates. For example, over 24 million ha of the Brazilian Amazon have been cleared in the last two decades [@silvajunior2021], resulting in their extensive fragmentation and the creation of over 70,000 km of new forest edges annually [@broadbentForestFragmentationEdge2008]. Despite this, evidence linking changes population-level demographic responses with changes in environmental conditions remains scarce.
 
-<!--# CITATION_4: WRI Report? Or INPE, see here: https://rainforests.mongabay.com/amazon/deforestation_calculations.html or this: https://mapbiomas.org/en -->
-
-Populations in fragmented tropical landscapes are also at risk from climate change [@brodieClimateChangeTropical2012; @scheffersExtremeThermalHeterogeneity2017], which can have complex or even contrasting effects across the same tropical biome. For instance, <!--#parts of th      e Amazon basin have experienced a drying trend since the mid-1970's, and --> climate models for the next 50-100 years predict that some parts of Amazonia will experience decreases in dry season precipitation [@malhiClimateChangeDeforestation2008] and increases in the frequency and severity of droughts [@caiIncreasingFrequencyExtreme2014; @zengCausesImpacts20052008; @moraProjectedTimingClimate2013]. These changes could exacerbate the altered environmental conditions in fragments thought to make populations demographically vulnerable - particularly for plants, which are unable to move in response to changes in local conditions. In contrast, other parts of the basin are predicted to see an increase in the frequency and severity of extreme precipitation events, which can also have detrimental consequences for plant survival and reproduction [@estebanOtherSideDroughts2021].
-
-Several studies have demonstrated that climate change can have major effects on the population dynamics of species in the temperate zone (Doak and Morris 2010, Sletvold et al. 2013, Selwood et al. 2015, Williams et al. 2015).
-In contrast, almost nothing is known about the consequences of changing climates for the population dynamics of tropical species.
-Mild droughts have been shown to increase the growth rates of tropical trees, perhaps due to reductions in cloud cover (Condit et al. 2004).
-However, in severe drought years growth can be extremely low while mortality can be sharply elevated, with this increased mortality persisting for several years (Phillips et al. 2010).
-The observed effects of mild droughts on reproduction are more complex, but include decreases in the abundance of pollinators (Stiles 1992, Jevanandam et al. 2013) and a boom in drought-year fruit production followed by severe post-drought "famine" (Wright et al. 1999, Pau et al. 2013).
-In addition, while some studies have shown negligible effects of droughts on seedling recruitment and survivorship (Connell and Green 2000, Engelbrecht et al. 2002), others have shown survivorship decreases significantly during droughts (Edwards and Krockenberger 2006).
-These results, coupled with evidence that the growth and survivorship of plants can be lower in fragments (Laurance et al. 1998, Bruna 2002, Zartman et al. 2015) and that droughts can exacerbate this disparity (Laurance et al. 2011), has led to the ***hypothesis that as drought frequency or intensity increases, the viability of plant populations in fragments will decrease relative to that of populations in continuous forest***(Laurance and Williamson 2001, Opdam and Wascher 2004, Selwood et al. 2015).
+Climate change can alter the demographic of species in temperate zones [@doak2010; @sletvold2005; @selwood2015; @williams2015], and these effects can be exacerbated in fragmented landscapes [@oliver2015 @holyoak2016]. While the demographic consequences for tropical species are expected to be similarly severe [@brodieClimateChangeTropical2012; @scheffersExtremeThermalHeterogeneity2017], surprisingly little is known about the consequences of changing climates for taxa in tropical biomes, including Amazonia [@paniw2021]. Climate models for the next 50-100 years predict that some parts of the Amazon basin will experience more frequent and severe droughts as well as more frequent periods of high precipitation [@caiIncreasingFrequencyExtreme2014; @zengCausesImpacts20052008; @moraProjectedTimingClimate2013 @duffy2015a]. These changes could exacerbate the altered environmental conditions in fragments thought to make populations demographically vulnerable - particularly for plants, for which an increase in the frequency and severity of extreme precipitation events can have detrimental consequences for survival and reproduction [@estebanOtherSideDroughts2021; @gaoue2019]. These results, coupled with evidence that growth and survivorship are already lower in fragments [@laurance1998; @bruna2002; @zartman2015], has led to speculation that plants in forest fragments are particualrly at risk from drought and other climatic extremes [@laurance2001; @opdam2004, @selwood2015].
 
 Whether plant populations in tropical forest fragments are more susceptible to drought remains unclear for three primary reasons.
 First, most studies of plants in fragments have focused on a single life-history stage or process [@brunaHabitatFragmentationPlant2009; @ehrlenAdvancingEnvironmentallyExplicit2016], making it challenging to draw broader demographic conclusions. Similarly, there is a growing literature on how tropical plants respond to droughts, but few studies have compared the responses of plants in continuous forest with those in forest fragments [@lauranceEffectsStrongDrought2001]. Finally, the multi-year data needed to test population-level hypotheses about climate change and fragmentation are scant, especially for tropical systems [@salguero-gomezCOMPADREPlantMatrix2015; @croneHowPlantEcologists2011]. These data are critical not simply because they allow for capturing variation in climatic conditions and the resulting demographic responses [@morrisQuantitativeConservationBiology2002; @tellerLinkingDemographyDrivers2016]. They are also essential because while some demographic effects of fragmentation or drought can be detected immediately, others may take years to manifest [@gagnonGrowthUnderstoryHerb2011]. Indeed, lagged responses of demographic vital rates to climate may in fact be the rule rather than the exception [@eversLaggedDormantSeason2021; @andereggPervasiveDroughtLegacies2015; @schwalmGlobalPatternsDrought2017; @kannenbergGhostsHowDrought2020].
@@ -351,46 +340,6 @@ FInally, with the exception of growth in 1-ha fragments (p = 0.257), the delayed
 
 # Discussion
 
-Mean plant size dropped dramatically in 2003 in both habitat types, corresponding with a severe drought (-1.5 \> SPEI \> -2) during the February census (SPEI = -1.39) (Figure \@ref(fig:eda)d).
-Two noticeable peaks in the proportion of flowering mature plants occur in severe drought years (2003 and 2007) (Figure \@ref(fig:eda)c).
-
-#### Vocab: Delayed effects, time lag, the lag...avoid lagged effects
-
-\< !--
-\# Gaoue = ?
-Orou G. Gaoue, Carol C. Horvitz, Ulrich K. Steiner, Shripad Tuljapurkar, Climate, rather than human disturbance, is the main driver of age-specific mortality trajectories in a tropical tree, Ecological Modelling, Volume 400, 2019, Pages 34-40,<https://doi.org/10.1016/j.ecolmodel.2019.03.007>.
-\>
-
-#### Citations / information to allocate to appropriate paragraphs
-
--   @dowdInvestigatingSynergisticEffects2020 (unpublished thesis, could write MB and ask for update): precipitation and fragmentations influenced fruit/seed production (conditional on flowering) by *Heliconia* (one step past flowering, so might be worth citing to say that there are other ways reprod. can be affected
-
--   Effects of precip extremes on understory plants can be also be indirect:
-
-    -   high precip = lots of clouds, less photosynthesis, less or slower growth
-
-    -   low precip = trees lose leaves or die, more light gets through or gaps open.
-        This can be positive (more light = more growth) but not always ( @westerbandInteractionsPlantSize2015) there is a threshold that can lead to photoinhibition ( @hePhotoinhibitionHeliconiaNatural1996, @mulkeyComparativeLifeHistory1991).
-        Drought and herbivory effects can be additive, at least in seedlings ( @bartonAdditiveNonadditiveResponses20
-
--   @mulkeyInfluenceSeasonalDrought1996 and @bonalResponseTropicalRainforests2016 will have goods stuff; haven't looked them over yet
-
--   @wrightSeasonalNinoLonger2006: Increase in flower and seed production after El Niño events for trees and lianas.
-    Might be due to increases solar irradiance.
-    Maybe evidence of lagged effects?
-    Table 2 is inconsistent with text, so not sure...
-
--   [@estebanOtherSideDroughts2021] negative effects of large positive SPEI
-
--   In Manaus, the canopy is as green or greener in the dry season compared to the wet season [@guanPhotosyntheticSeasonalityGlobal2015], so dry season drought may result in relatively large increases in light penetration to the understory.
-
--   @leitoldNinoDroughtIncreased2018 increased canopy turnover during drought.
-    Similar increase in continuous and (large) fragments.
-    Increase in turnover more variable in fragments.
-    Coarse woody debris increased 62% during drought.\
-
-<!--# in intro, questions are 1: what are effects on vital rates, 2: are effects delayed, 3: differences between habitats.  Keep the same order here? -->
-
 Understanding how landscape structure and environmental conditions act to influence population dynamics is fundamental to many of the conceptual frameworks for studying and conserving fragmented landscapes [@didhamRethinkingConceptualFoundations2012; @driscollConceptualDomainMatrix2013]. <!--# more here -->. Despite this, surprisingly few studies have compared the structure and demography of populations in habitat fragments and continuous habitat; those that have are typically short term (i.e., \<4 years). Using a decadal dataset of plant demography, we show that some - but not all - results from short-term studies can be extrapolated to longer times scales. Our results also add to the emerging body of work showing delayed effects of climate drivers on demographic vital rates [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
 Finally, we show for the first time that the magnitude, direction, and temporal lag in demographic responses to drought differs between forest fragments and continuous forest.
 
@@ -405,7 +354,9 @@ These size-dependent differences in flowering probability had only a modest effe
 
 # Delayed effects of climate on demographic vital rates
 
-Precipitation extremes and other climatic factors are known to have immediate effects on the growth, survival, or reproduction of plants [@wrightSeasonalNinoLonger2006; @estebanOtherSideDroughts2021], including *Heliconia* [@stiles1975; @westerbandEarlyLifeConditions2017] and other tropical herbs [@wrightSeasonalDroughtSoil1992]. Despite this, models of population dynamics have rarely included the effects of environmental drivers. This has largely been due to the challenge - both ecologically and statistically - of detecting any demographic responses to climatic extremes that are delayed for multiple growing seasons. To address this, researchers have begun to use a number of statistical methods that test for time lags in demographic responses without *a priori* assumptions about the influence of any particular climate window [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
+Precipitation extremes and other climatic factors are known to have immediate effects on the growth, survival, or reproduction of plants [@wrightSeasonalNinoLonger2006; @estebanOtherSideDroughts2021], including *Heliconia* [@stiles1975; @westerbandEarlyLifeConditions2017] and other tropical herbs [@wrightSeasonalDroughtSoil1992]. These effects can be complex or even contradictory - mild droughts can increase the growth rates of tropical trees, perhaps due to reductions in cloud cover [@condit2004], but in severe drought years growth can be extremely low and mortality can be sharply elevated (see also @connell2000; @engelbrecht2002; @edwards2006]. There is also evidence that the effects can persist for multiple years [ @phillips2010], such as a boom in drought-year fruit production followed by severe post-drought "famine" @wright1999; see also @pau2013].
+
+Despite this, models of population dynamics have rarely included the effects of environmental drivers. This has largely been due to the challenge - both ecologically and statistically - of detecting any demographic responses to climatic extremes that are delayed for multiple growing seasons. To address this, researchers have begun to use a number of statistical methods that test for time lags in demographic responses without *a priori* assumptions about the influence of any particular climate window [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
 Our expansion of this approach, which offers an unbiased way of identifying these delayed effects without overfitting (but see @pierreCriticalWindowsMethod2020 and @ogleQuantifyingEcologicalMemory2015 for alternative methods) yielded results consistent with this emerging literature -- that the effects of precipitation extremes on the demography of *Heliconia acuminata* could be delayed for up to **XXX growing seasons**.
 
 However, while it appears that delayed effects of climate on demographic vital rates may be ubiquitous [@eversLaggedDormantSeason2021], the extent to which they vary spatially or with habitat remains an open question.
@@ -428,7 +379,10 @@ In our case, this potential explanation for delayed effects applies only to plan
 This is possibility is not unique to our study, rather it is a consequence of conducting demographic censuses on an annual scale while the climate is quantified monthly or seasonally.
 While the very slow growth and extremely low mortality rates of *H. acuminata* mean this effect is unlikely to be acting in our system, it may be that for some species it will be important to conduct demographic surveys at the same temporal scale at which climate is aggregated.
 
-*THIS PARAGRAPH HAS INFO THAT NEEDS TO BE WORKED IN SOMEWHERE ABOVE*
+***THIS INFO PROB NEEDS TO BE WORKED IN SOMEWHERE ABOVE***
+
+Mean plant size dropped dramatically in 2003 in both habitat types, corresponding with a severe drought (-1.5 \> SPEI \> -2) during the February census (SPEI = -1.39) (Figure \@ref(fig:eda)d).
+Two noticeable peaks in the proportion of flowering mature plants occur in severe drought years (2003 and 2007) (Figure \@ref(fig:eda)c).
 
 Past climate conditions were important for survival, size, and flowering probability.
 Extremes in SPEI in the 15 months prior to the census reduced survival in forest fragments (Figure \@ref(fig:surv-spei)).
@@ -464,15 +418,8 @@ Multi-factorial, multi-season experiments are needed to determine if habitat-spe
 Also needed are statistical tools that can test for synergistic effects of fragmentation and climate in vital rates, as those currently available do not allow for including interaction terms (cite `dlnm`).
 They also don't allow for modeling interactions between \_\_\_\_ and plant size; although plant responses to both fragmentation and climatic extremes can be size-specific [@brunaDemographicEffectsHabitat2005; @schwartzFragmentationForestStructure2019], the ability to identify size-specific lagged responses may be especially complicated given size and growth are rarely measured at the same time scale as SPEI and other putative climatic drivers.
 
-Finally, no analytical approcah for testign for climate lags can compensate for a lack of data (eveers tenhumberg)and long-term demographic data collected in fragmented landscapes [@bruna2005; @laurance1998]. Unfortunately, both of these are rare [@brunaHabitatFragmentationPlant2009], suggesting generalizations regarding the causes and consequences of delayed effects will continue to prove elusive.
-
--   few demographic studies have the data required for modeling lagged effects .
-    This demonstrates the importance of long term demographic experiments in determining the effects of changing habitats on populations.
-    <!--# Or something like "some of these long-term studies exist and are prime for doing these kinds of analyses" -->
-
--   Loop back to: need whole-life-cycle approach to ID these effects, why fragmentologists don't do this is killing Emilio
-
--   
+Finally, no analytical approach assessing the potential for demographic lags can compensate for a lack of long-term data [@tenhumberg2018; @evers2021]. Unfortunately, long-term data monitoring the entire life-cycle of tropical taxa are rare, and those doing so in fragmented landscapes are virtually nonexistent [@bruna2005].
+Without investing in collecting such data, generalizations regarding the demographic consequences of climate change in these species rich and increasingly fragmented habitats will continue to prove elusive.
 
 # Acknowledgments
 
@@ -503,6 +450,34 @@ PPS, which develop and compute the TMPA as a contribution to TRMM.
 -   There can be cascading effects on other species (hispine beetles that depend on Heliconia flowers/fruits, hummingbirds and seed dispersers ( @stilesEcologyFloweringPhenology1975
 -   eg. gene flow and genetic structure among and between plots already shaped by fragmentation ( @cortesLowPlantDensity2013, there can also be drought effects eg @sifresGeneticStructureLycopersicon2007)
 -   [@janssenDroughtEffectsLeaf2021] Used machine learning to combine remote sensing and ground surveys of literfall from published datasets. Estimates green-up, literfall, growth, etc. for central and southern america including the Amazon. Drought results in anomolously high leaf flushing at start of drought followed by increased litterfall durring the drought. Dry season droughts result in green-up, but not wet season droughts. During drought, old leaves are shed and new leaves are maintained. 2-5 months for newly flushed leaves to fully expand
+
+#### Citations / information could allocate to appropriate paragraphs
+
+-   @dowdInvestigatingSynergisticEffects2020 (unpublished thesis, could write MB and ask for update): precipitation and fragmentations influenced fruit/seed production (conditional on flowering) by *Heliconia* (one step past flowering, so might be worth citing to say that there are other ways reprod. can be affected
+
+-   Effects of precip extremes on understory plants can be also be indirect:
+
+    -   high precip = lots of clouds, less photosynthesis, less or slower growth
+
+    -   low precip = trees lose leaves or die, more light gets through or gaps open.
+        This can be positive (more light = more growth) but not always ( @westerbandInteractionsPlantSize2015) there is a threshold that can lead to photoinhibition ( @hePhotoinhibitionHeliconiaNatural1996, @mulkeyComparativeLifeHistory1991).
+        Drought and herbivory effects can be additive, at least in seedlings ( @bartonAdditiveNonadditiveResponses20
+
+-   @mulkeyInfluenceSeasonalDrought1996 and @bonalResponseTropicalRainforests2016 will have goods stuff; haven't looked them over yet
+
+-   @wrightSeasonalNinoLonger2006: Increase in flower and seed production after El Niño events for trees and lianas.
+    Might be due to increases solar irradiance.
+    Maybe evidence of lagged effects?
+    Table 2 is inconsistent with text, so not sure...
+
+-   [@estebanOtherSideDroughts2021] negative effects of large positive SPEI
+
+-   In Manaus, the canopy is as green or greener in the dry season compared to the wet season [@guanPhotosyntheticSeasonalityGlobal2015], so dry season drought may result in relatively large increases in light penetration to the understory.
+
+-   @leitoldNinoDroughtIncreased2018 increased canopy turnover during drought.
+    Similar increase in continuous and (large) fragments.
+    Increase in turnover more variable in fragments.
+    Coarse woody debris increased 62% during drought.
 
 \newpage
 
