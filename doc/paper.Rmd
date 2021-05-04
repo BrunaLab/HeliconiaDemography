@@ -113,7 +113,7 @@ Climate change can alter the demographic of species in temperate zones [@doak201
 While the demographic consequences for tropical species are expected to be similarly severe [@brodieClimateChangeTropical2012; @scheffersExtremeThermalHeterogeneity2017], surprisingly little is known about the consequences of changing climates for taxa in tropical biomes, including Amazonia [@paniw2021].
 Climate models for the next 50-100 years predict that some parts of the Amazon basin will experience more frequent and severe droughts as well as more frequent periods of high precipitation [@caiIncreasingFrequencyExtreme2014; @zengCausesImpacts20052008; @moraProjectedTimingClimate2013 @duffy2015].
 These changes could exacerbate the altered environmental conditions in fragments thought to make populations demographically vulnerable - particularly for plants, for which an increase in the frequency and severity of extreme precipitation events can have detrimental consequences for survival and reproduction [@estebanOtherSideDroughts2021; @gaoue2019].
-These results, coupled with evidence that growth and survivorship are already lower in fragments [@laurance1998; @brunaExperimentalAssessmentHeliconia2002; @zartman2015], has led to speculation that plants in forest fragments are particualrly at risk from drought and other climatic extremes [@lauranceEffectsStrongDrought2001; @opdam2004, @selwood2015].
+These results, coupled with evidence that growth and survivorship are already lower in fragments [@lauranceRainForestFragmentation1998; @brunaExperimentalAssessmentHeliconia2002; @zartmanDroughtImpactsSurvivorship2015], has led to speculation that plants in forest fragments are particualrly at risk from drought and other climatic extremes [@lauranceEffectsStrongDrought2001; @opdam2004, @selwood2015].
 
 Whether plant populations in tropical forest fragments are more susceptible to drought remains unclear for three primary reasons.
 First, most studies of plants in fragments have focused on a single life-history stage or process [@brunaHabitatFragmentationPlant2009; @ehrlenAdvancingEnvironmentallyExplicit2016], making it challenging to draw broader demographic conclusions.
@@ -222,7 +222,7 @@ s_2(d_{i,t}, ..., d_{i,t-24}) = \sum_{l = l_0}^L f \cdot w(d_{i,t-l},l)
 $$
 
 where the crossbasis function, $f \cdot w (d,l)$, is composed of two marginal basis functions: the standard predictor-response function $f(d)$, and the additional lag-response function $w(l)$.
-These marginal functions are combined as a tensor product smooth such that the shape of one marginal function varies smoothly along the other dimension (see @woodChapterSmoothers and @gasparriniPenalizedFrameworkDistributed2017 for more detail).
+These marginal functions are combined as a tensor product smooth such that the shape of one marginal function varies smoothly along the other dimension (see chapter 5 of @woodGeneralizedAdditiveModels2017 and @gasparriniPenalizedFrameworkDistributed2017 for more detail).
 Penalized cubic regression splines were used for both marginal bases of the crossbasis function, with 35 knots for the lag dimension (i.e. number of months) and 3 knots for the drought response dimension to restrict the fitted response to drought to bimodal when most complex <!--# You may want to say what the 3 knots can capture: increasing then decreasing, exp decline etc -->.
 Because of penalization, the number of knots is generally not important as long it is great enough to allow the smooth to represent the 'true' relationship [@woodGeneralizedAdditiveModels2017].
 
@@ -438,7 +438,7 @@ Our results underscore why caution is needed when using short-term studies to dr
 ## Delayed effects of climate on demographic vital rates
 
 Precipitation extremes and other climatic factors are known to have immediate effects on the growth, survival, or reproduction of plants [@wrightSeasonalNinoLonger2006; @estebanOtherSideDroughts2021], including *Heliconia* [@stiles1975; @westerbandEarlyLifeConditions2017] and other tropical herbs [@wrightSeasonalDroughtSoil1992].
-These effects can be complex or even contradictory - mild droughts can increase the growth rates of tropical trees, perhaps due to reductions in cloud cover [@conditTropicalForestDynamics2004], but in severe drought years growth can be extremely low and mortality can be sharply elevated (see also @connell2000; @engelbrecht2002; @edwards2006]. There is also evidence that the effects can persist for multiple years [@phillips2010], such as a boom in drought-year fruit production followed by severe post-drought "famine" @wright1999; see also @pau2013].
+These effects can be complex or even contradictory - mild droughts can increase the growth rates of tropical trees, perhaps due to reductions in cloud cover [@conditTropicalForestDynamics2004], but in severe drought years growth can be extremely low and mortality can be sharply elevated (see also @connell2000; @engelbrecht2002; @edwards2006]. There is also evidence that the effects can persist for multiple years [@phillipsDroughtMortalityRelationships2010], such as a boom in drought-year fruit production followed by severe post-drought "famine" @wright1999; see also @pau2013].
 
 Despite this, models of population dynamics have rarely included the effects of environmental drivers.
 This has largely been due to the challenge - both ecologically and statistically - of detecting any demographic responses to climatic extremes that are delayed for multiple growing seasons.
@@ -517,7 +517,7 @@ Multi-factorial, multi-season experiments are needed to determine if habitat-spe
 Also needed are statistical tools that can test for synergistic effects of fragmentation and climate in vital rates, as those currently available do not allow for including interaction terms (cite `dlnm`).
 They also don't allow for modeling interactions between \_\_\_\_ and plant size; although plant responses to both fragmentation and climatic extremes can be size-specific [@brunaDemographicEffectsHabitat2005; @schwartzFragmentationForestStructure2019], the ability to identify size-specific lagged responses may be especially complicated given size and growth are rarely measured at the same time scale as SPEI and other putative climatic drivers.
 
-Finally, no analytical approach assessing the potential for demographic lags can compensate for a lack of long-term data [@tenhumberg2018; @eversLaggedDormantSeason2021].
+Finally, no analytical approach assessing the potential for demographic lags can compensate for a lack of long-term data [@tenhumbergTimelaggedEffectsWeather2018; @eversLaggedDormantSeason2021].
 Unfortunately, long-term data monitoring the entire life-cycle of tropical taxa are rare, and those doing so in fragmented landscapes are virtually nonexistent [@brunaCompensatoryResponsesUnderstory2005].
 Without investing in collecting such data, generalizations regarding the demographic consequences of climate change in these species rich and increasingly fragmented habitats will continue to prove elusive.
 
