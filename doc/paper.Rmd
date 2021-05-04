@@ -109,15 +109,19 @@ For instance, <!--#parts of th      e Amazon basin have experienced a drying tre
 These changes could exacerbate the altered environmental conditions in fragments thought to make populations demographically vulnerable - particularly for plants, which are unable to move in response to changes in local conditions.
 In contrast, other parts of the basin are predicted to see an increase in the frequency and severity of extreme precipitation events, which can also have detrimental consequences for plant survival and reproduction [@estebanOtherSideDroughts2021].
 
-Add here what is known about frag and drought effects - without setting it up so people expect a pval for an intearaciton tern
+Several studies have demonstrated that climate change can have major effects on the population dynamics of species in the temperate zone (Doak and Morris 2010, Sletvold et al. 2013, Selwood et al. 2015, Williams et al. 2015).
+In contrast, almost nothing is known about the consequences of changing climates for the population dynamics of tropical species.
+Mild droughts have been shown to increase the growth rates of tropical trees, perhaps due to reductions in cloud cover (Condit et al. 2004).
+However, in severe
+drought years growth can be extremely low while mortality can be sharply elevated, with this increased mortality persisting for several years (Phillips et al. 2010).
+The observed effects of mild droughts on reproduction are more complex, but include decreases in the abundance of pollinators (Stiles 1992, Jevanandam et al. 2013) and a boom in drought-year fruit production followed by severe post-drought "famine" (Wright et al. 1999, Pau et al. 2013).
+In addition, while some studies have shown negligible effects of droughts on seedling recruitment and survivorship (Connell and Green 2000, Engelbrecht et al. 2002), others have shown survivorship decreases significantly during droughts (Edwards and Krockenberger 2006).
+These results, coupled with evidence that the growth and survivorship of plants can be lower in
+fragments (Laurance et al. 1998, Bruna 2002, Zartman et al. 2015) and that droughts can exacerbate this disparity (Laurance et al. 2011), has led to the ***hypothesis that as drought frequency or intensity increases, the viability of plant populations in fragments will decrease relative to that of populations in continuous forest***(Laurance and Williamson 2001, Opdam and Wascher 2004, Selwood et al.
+2015).
 
-Whether plant populations in tropical forest fragments are particularly susceptible to drought remains unclear for three primary reasons.
-First, most studies of plants in fragments have focused on a single life-history stage or process [@brunaHabitatFragmentationPlant2009; @ehrlenAdvancingEnvironmentallyExplicit2016], making it challenging to draw broader demographic conclusions.
-Similarly, there is a growing literature on how tropical plants respond to droughts, but few studies have compared the responses of plants in continuous forest with those in forest fragments [@lauranceEffectsStrongDrought2001].
-Finally, the multi-year data needed to test population-level hypotheses about climate change and fragmentation are scant, especially for tropical systems [@salguero-gomezCOMPADREPlantMatrix2015; @croneHowPlantEcologists2011].
-These data are critical not simply because they allow for capturing variation in climatic conditions and the resulting demographic responses [@morrisQuantitativeConservationBiology2002; @tellerLinkingDemographyDrivers2016].
-They are also essential because while some demographic effects of fragmentation or drought can be detected immediately, others may take years to manifest [@gagnonGrowthUnderstoryHerb2011].
-Indeed, lagged responses of demographic vital rates to climate may in fact be the rule rather than the exception [@eversLaggedDormantSeason2021; @andereggPervasiveDroughtLegacies2015; @schwalmGlobalPatternsDrought2017; @kannenbergGhostsHowDrought2020].
+Whether plant populations in tropical forest fragments are more susceptible to drought remains unclear for three primary reasons.
+First, most studies of plants in fragments have focused on a single life-history stage or process [@brunaHabitatFragmentationPlant2009; @ehrlenAdvancingEnvironmentallyExplicit2016], making it challenging to draw broader demographic conclusions. Similarly, there is a growing literature on how tropical plants respond to droughts, but few studies have compared the responses of plants in continuous forest with those in forest fragments [@lauranceEffectsStrongDrought2001]. Finally, the multi-year data needed to test population-level hypotheses about climate change and fragmentation are scant, especially for tropical systems [@salguero-gomezCOMPADREPlantMatrix2015; @croneHowPlantEcologists2011]. These data are critical not simply because they allow for capturing variation in climatic conditions and the resulting demographic responses [@morrisQuantitativeConservationBiology2002; @tellerLinkingDemographyDrivers2016]. They are also essential because while some demographic effects of fragmentation or drought can be detected immediately, others may take years to manifest [@gagnonGrowthUnderstoryHerb2011]. Indeed, lagged responses of demographic vital rates to climate may in fact be the rule rather than the exception [@eversLaggedDormantSeason2021; @andereggPervasiveDroughtLegacies2015; @schwalmGlobalPatternsDrought2017; @kannenbergGhostsHowDrought2020].
 
 Herbaceous plants represent up to 25% of plant diversity in tropical forests [@gentryContributionNontreesSpecies1987], are critical food and habitat for myriad species [@snowTropicalFrugivorousBirds1981], and are economically and culturally vital [@nakazonoExperiementalHarvestingNontimber2004; @ticktinRelationshipsNinoSouthern2003].
 Nevertheless, the impacts of global change phenomena on their demography remain conspicuously understudied [***(CITATION Bruna, Gaoue)***] We used a decade of demographic and climatic data from an experimentally fragmented landscape in the Central Amazon to assess the effects of climate on populations of a tropical understory herb (*Heliconia acuminata*, Heliconiaceae).
@@ -381,23 +385,16 @@ FInally, with the exception of growth in 1-ha fragments (p = 0.257), the delayed
 Mean plant size dropped dramatically in 2003 in both habitat types, corresponding with a severe drought (-1.5 \> SPEI \> -2) during the February census (SPEI = -1.39) (Figure \@ref(fig:eda)d).
 Two noticeable peaks in the proportion of flowering mature plants occur in severe drought years (2003 and 2007) (Figure \@ref(fig:eda)c).
 
-#### Vocab
-
-This seems tacked on here and perhaps better in the discussion: populations persisting in fragments may be more demographically resilient to drought than those in primary forest if the individuals susceptible to desiccation died quickly after fragment isolation [@bettsExtinctionFiltersMediate2019].
+#### Vocab: Delayed effects, time lag, the lag...avoid lagged effects
 
 \< !--
 \# Gaoue = ?
 Orou G. Gaoue, Carol C. Horvitz, Ulrich K. Steiner, Shripad Tuljapurkar, Climate, rather than human disturbance, is the main driver of age-specific mortality trajectories in a tropical tree, Ecological Modelling, Volume 400, 2019, Pages 34-40,<https://doi.org/10.1016/j.ecolmodel.2019.03.007>.
--- \>
-
-Delayed effects, time lag, the lag...avoid lagged effects
+\>
 
 #### Citations / information to allocate to appropriate paragraphs
 
 -   @dowdInvestigatingSynergisticEffects2020 (unpublished thesis, could write MB and ask for update): precipitation and fragmentations influenced fruit/seed production (conditional on flowering) by *Heliconia* (one step past flowering, so might be worth citing to say that there are other ways reprod. can be affected
-
--   Lots of great stuff about the importance of rhizomes, including for drought resistance, in @klimesovaBelowgroundPlantFunctional2018.
-    Rhizome resistance to variability in environmental conditions also a conclusion in this study on invasion by another zingiberales ( @pinheiroEffectRhizomeExposure2021
 
 -   Effects of precip extremes on understory plants can be also be indirect:
 
@@ -407,27 +404,16 @@ Delayed effects, time lag, the lag...avoid lagged effects
         This can be positive (more light = more growth) but not always ( @westerbandInteractionsPlantSize2015) there is a threshold that can lead to photoinhibition ( @hePhotoinhibitionHeliconiaNatural1996, @mulkeyComparativeLifeHistory1991).
         Drought and herbivory effects can be additive, at least in seedlings ( @bartonAdditiveNonadditiveResponses20
 
--   @rundelStructuralPhysiologicalAdaptation1998 Heliconia appear to allocate much of their above-ground biomass to leaf tissues and have a relatively low investment in support tissues.
-    Investment in leaf form vs structure interpreted as a trade-off between economy and protection against tissue loss from falling branches; presence of below-ground rhizomes in Heliconia may be key.
-    See also @rundelFunctionalTraitsBroadleaved2020\
-
-    @mulkeyInfluenceSeasonalDrought1996 and @bonalResponseTropicalRainforests2016 will have goods stuff; haven't looked them over yet
+-   @mulkeyInfluenceSeasonalDrought1996 and @bonalResponseTropicalRainforests2016 will have goods stuff; haven't looked them over yet
 
 -   @wrightSeasonalNinoLonger2006: Increase in flower and seed production after El Niño events for trees and lianas.
     Might be due to increases solar irradiance.
     Maybe evidence of lagged effects?
     Table 2 is inconsistent with text, so not sure...
 
--   Many humid tropical forest species time reproduction to coincide with dry season peak to avoid low irradiance in wet season.
-    (refs within @wrightSeasonalNinoLonger2006. van Shaik et al. 1993; Wright and vanSchaik 1994).
-    But *Heliconia* times reproduction so seeds only germinate at start of rainy season.
-
 -   [@estebanOtherSideDroughts2021] negative effects of large positive SPEI
 
 -   In Manaus, the canopy is as green or greener in the dry season compared to the wet season [@guanPhotosyntheticSeasonalityGlobal2015], so dry season drought may result in relatively large increases in light penetration to the understory.
-
--   refs in @leitoldNinoDroughtIncreased2018 peak in tree mortality can happen up to 3 years after drought event in experimental studies.
-    Observational studies show mortality happening in same year as 2007 and 2010 droughts.
 
 -   @leitoldNinoDroughtIncreased2018 increased canopy turnover during drought.
     Similar increase in continuous and (large) fragments.
@@ -448,11 +434,7 @@ Using a decadal dataset of plant demography, we show for the first time that the
 
 # Temporal variation in demographic responses to forest fragmentation
 
-Decadal comparisons of *Heliconia acuminata* growth and survival largely mirrored those of prior experiments and surveys [@brunaHabitatFragmentationDemographic2002].
-In contrast, conclusions regarding the effect of fragmentation on flowering differed substantially from those based on short-term surveys [@brunaHabitatFragmentationDemographic2002].
-While in some years the probability a plant flowered was far lower in fragments than in continuous forest, in others it was comparable or even higher.
-The probability that individual plants flowered continued to be size-dependent, with a similar size threshold below which plants were unlikely to produce inflorescences.
-However, while in our initial three-year survey the relationship between plant size and probability of flowering was similar in both habitat types [@brunaHabitatFragmentationDemographic2002], when using the decadal dataset were found that flowering probability for the largest plants is actually higher in forest fragments (i.e., average fitted probability of flowering for plants in upper size quartile = 0.125 in CF vs. 0.094 in FF).
+Decadal comparisons of *Heliconia acuminata* growth and survival largely mirrored those of prior experiments and surveys [@brunaHabitatFragmentationDemographic2002]. In contrast, conclusions regarding the effect of fragmentation on flowering differed substantially from those based on short-term surveys [@brunaHabitatFragmentationDemographic2002]. While in some years the probability a plant flowered was far lower in fragments than in continuous forest, in others it was comparable or even higher. The probability that individual plants flowered continued to be size-dependent, with a similar size threshold below which plants were unlikely to produce inflorescences. However, while in our initial three-year survey the relationship between plant size and probability of flowering was similar in both habitat types [@brunaHabitatFragmentationDemographic2002], when using the decadal dataset were found that flowering probability for the largest plants is actually higher in forest fragments (i.e., average fitted probability of flowering for plants in upper size quartile = 0.125 in CF vs. 0.094 in FF).
 
 These size-dependent differences in flowering probability had only a modest effect on the previously observed disparities in flowering plant abundance - populations in fragments are smaller, and they have proportionately fewer of these large plants [@brunaHabitatFragmentationDemographic2002].
 However, they could potentially lead to major habitat-specific differences in lifetime reproductive effort for these long-lived plants, as they translate into flowering once every 7.97 years in fragments vs. every 10.63 years in continuous forest.
@@ -460,34 +442,20 @@ Our results underscore why caution is needed when using short-term studies to dr
 
 # Delayed effects of climate on demographic vital rates
 
-Precipitation extremes and other climatic factors are known to have immediate effects on the growth, survival, or reproduction of plants [@wrightSeasonalNinoLonger2006; @estebanOtherSideDroughts2021], including tropical understory herbs [@wrightSeasonalDroughtSoil1992].
-For instance, @westerbandEarlyLifeConditions2017: found that *Heliconia* grew more at low than high precipitation, while @stiles1975: observed reductions in flowering as a result of drought.
-Despite this, models of population dynamics have rarely included the effects of environmental drivers.
-This has largely been due to the challenge - both ecologically and statistically - of detecting any demographic responses to climatic extremes that are delayed for multiple growing seasons.
-To address this, researchers have begun to use a number of statistical methods that test for time lags in demographic responses without *a priori* assumptions about the influence of any particular climate window [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
+Precipitation extremes and other climatic factors are known to have immediate effects on the growth, survival, or reproduction of plants [@wrightSeasonalNinoLonger2006; @estebanOtherSideDroughts2021], including *Heliconia* [@stiles1975; @westerbandEarlyLifeConditions2017] and other tropical herbs [@wrightSeasonalDroughtSoil1992]. Despite this, models of population dynamics have rarely included the effects of environmental drivers. This has largely been due to the challenge - both ecologically and statistically - of detecting any demographic responses to climatic extremes that are delayed for multiple growing seasons. To address this, researchers have begun to use a number of statistical methods that test for time lags in demographic responses without *a priori* assumptions about the influence of any particular climate window [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
 Our expansion of this approach, which offers an unbiased way of identifying these delayed effects without overfitting (but see @pierreCriticalWindowsMethod2020 and @ogleQuantifyingEcologicalMemory2015 for alternative methods) yielded results consistent with this emerging literature -- that the effects of precipitation extremes on the demography of *Heliconia acuminata* could be delayed for up to **XXX growing seasons**.
 
-While it appears that delayed effects of climate on demographic vital rates are ubiquitous, however, the extent to which they vary spatially or with habitat remains an open question [@eversLaggedDormantSeason2021].
-Our results clearly indicate that they can, with habitat-specific differences in how environmental conditions influenced future vital rates.
-For example, [delete this phrase?
-the overall survival of plants was similar in continuous forest and forest fragments, and] although extreme values of SPEI - both positive (unusually high precipitation) and negative (drought conditions) - led to declines in the probability of individual survival both habitat types.
+However, while it appears that delayed effects of climate on demographic vital rates may be ubiquitous [@eversLaggedDormantSeason2021], the extent to which they vary spatially or with habitat remains an open question. Our results clearly indicate that they can, with habitat-specific differences in how environmental conditions influenced future vital rates. For example, although extreme values of SPEI - both positive (unusually high precipitation) and negative (drought conditions) - led to declines in the probability of individual survival both habitat types.
 However, the magnitude of these declines was far greater in forest fragments.
 Similarly, the detrimental effects on growth rates of variation in SPEI, in this case unusually rainy wet seasons and dry seasons with unusually low precipitation, were also more severe in fragments.
 In contrast, the effect of variation in SPEI on flowering probability was far stronger in continuous forest than fragments; these results should be interpreted with some caution, however, as the relatively low number of plants in fragments that are above the threshold-size for flowering could limit the power to detect delayed effects.
 
 There are several, non-mutually-exclusive explanations for delayed effects of SPEI on demography.
-The first is that the physiological processes underlying vital rates might be initiated long before they are demographically apparent.
-For example, the flowering shoots of *Heliconia chartacea* begin to develop 6-10 prior to the appearance of infloresences.
-Adverse conditions during 6 months following initiation, rather than the months when infloresences are starting expand, is what leads to the aborted reproduction of flowering shoots [@crileyYearProductionHigh1994].
-Interestingly, we observed the opposite effect - drought conditions increased the probability of flowering two years later.
-While this could reflect bet-hedging in response to stress [@nihad2018], this does not appear to be the case, as growth or survival do not appear to decrease following reproduction (see also [@horvitzDemographicCostReproduction1988]. In fact, flowering in one year is associated with increased reproduction and growth in the next. **(is this an acceptable colloquial way to interpret the covariate effect?)**.
+The first is that the physiological processes underlying vital rates might be initiated long before they are demographically apparent [@evers2021], and hence be shaped by climatic events at any point in that physiological window. For example, the flowering shoots of *Heliconia chartacea* begin to develop 6-10 prior to the appearance of infloresences. Adverse conditions during the 6 months following initiation, rather than the months when infloresences are starting expand, leads to the aborted reproduction of flowering shoots [@crileyYearProductionHigh1994]. Interestingly, we observed the opposite effect - drought conditions increased the probability of flowering two years later. While this could reflect bet-hedging in response to stress [@nihad2018], this does not appear to be the case, as growth or survival do not appear to decrease following reproduction (see also [@horvitzDemographicCostReproduction1988]. In fact, flowering in one year is associated with increased reproduction and growth in the next. **(is this an acceptable colloquial way to interpret the covariate effect?)**.
 
-Instead, we believe that the delayed demographic effects we observed are indirectly mediated by the effect of SPEI on others species.
-For example, the mortality rate of tropical trees can spike in the year following a severe drought.
-The growth and flowering rates of understory plants would only increase years later, when the canopy gaps resulting from delayed leaf drop [@janssenDroughtEffectsLeaf2021] and treefalls increase light penetration to the forest understory (**CITATIONS)**.
-Drought-driven litterfall is also greater at forest edges than forest interiors (**CITATIONS)**, which could explain the increased delayed effects of SPEI on survival and growth in forest fragments (**question about wording** - does this mean the delay is relatively greater, or the magnitude of the effect is greater?**)**.
-Unfortunately, experiments disentangling the complex ways in which light, environmental conditions, and ecological neighborhood influence temporal variation in vital rates are rare (sensu @westerband2015, @westerbandEarlyLifeConditions2017, @horvitzEffectsPlantSize2002, @gagnon).
-Without such experiments, generalizations about whether delayed effects are driven by direct or indirect mechanisms will continue to prove elusive.
+Demographic responses will also be delayed if abiotic stress causes plants to invest in below-ground rhizomes [sensu @pumisutapon2012]. The carbohydrates stored in rhizomes allow *Heliconia* to regenerate above-ground biomass following damage [@rundelStructuralPhysiologicalAdaptation1998] and protect the buds that give rise to new shoots from stressful conditions [@klimeová2018]. This may be why drought led to delayed increases in growth - by shedding shoots and leaves [@bruna2002] and investing in rhizomes, plants are generating proportionately more buds with which to regenerate when conditions improve. This would also be consistent with the results of prior experiments, in which the growth rates of *H. acuminata* 8 months after they were mechanically damaged far exceeded those of control plants [@bruna2005].
+
+Third, it may be that the delayed demographic effects we observed are indirectly mediated by the effect of SPEI on other species rather than the direct effects on individual physiology [@evers2021]. For example, while droughts can kill some tropical trees immediately [@laurance2001], others take three years or more [@crileyYearProductionHigh1994]. This will potentially lead to a boom in growth and flowering years after the drought, when the canopy gaps resulting from delayed leaf drop [@janssenDroughtEffectsLeaf2021] and treefalls allow for light penetration to the forest understory [@canham1990]. Similar delayed changes in the local environment could also influence the foraging behavior of *H. acuminata*'s pollinators [@bruna2004; @stouffer1996] and seed dispersers [@uriarte2011]. While more work is needed to explain why the delayed effects of SPEI on survival and growth are greater in forest fragments than interiors, [**question about wording** - does this mean the delay is relatively greater, or the magnitude of the effect is greater?**]** it may be due to the proportionately greater amount of litterfall on edges [@vasconcelos2004] altering the abundance of pathogens or mycorrhizae.
 
 Finally, demographic delays could be an artefact of the timing of responses vis-à-vis the census date.
 If extreme drought in the dry season before the census increased plant mortality during that season, for example, this would nevertheless appear in models as a delayed effect (e.g. in Figure \@ref(fig:surv-spei)b).
@@ -495,9 +463,13 @@ In our case, this potential explanation for delayed effects applies only to plan
 This is possibility is not unique to our study, rather it is a consequence of conducting demographic censuses on an annual scale while the climate is quantified monthly or seasonally.
 While the very slow growth and extremely low mortality rates of *H. acuminata* mean this effect is unlikely to be acting in our system, it may be that for some species it will be important to conduct demographic surveys at the same temporal scale at which climate is aggregated.
 
-# Implications of delayed effects of climate on demography
+*THIS PARAGRAPH HAS INFO THAT NEEDS TO BE WORKED IN SOMEWHERE ABOVE*
 
-Both extreme values and variation in SPEI are predicted to increase as climate change progresses ( <!--# cite IPCC? -->) and our results demonstrate that this may have a greater negative impact on understory plants in forest fragments compared to continuous forests.
+Past climate conditions were important for survival, size, and flowering probability.
+Extremes in SPEI in the 15 months prior to the census reduced survival in forest fragments (Figure \@ref(fig:surv-spei)).
+Extremes in SPEI in the past 36 months affected plant size, although the direction of the effects was seasonally dependent (Figure \@ref(fig:growth-spei)).
+Generally, unusually dry dry seasons and unusually wet wet seasons had negative impacts on plant size, and this pattern was more extreme in fragments compared to continuous forest.
+For flowering, the SPEI of the current wet season and the dry season two dry seasons ago (lag of 15--20 months) had the strongest influence on flowering probability with dry weather corresponding to an increase in flowering (Figure \@ref(fig:flwr-spei))<!--# wondering if this is more of a results paragraph? Alternatively it goes *after* the next paragraph and includes more speculation about why each specific delayed effect exists.  Might end up integrating with a later paragraph. -->.
 
 ```{r flwr-prob-quartile, include=FALSE}
 
@@ -518,47 +490,22 @@ newdf_1ha <-
 1/predict(f_1ha, newdata = newdf_1ha) %>% mean() %>% plogis()
 ```
 
-Reduced microclimate buffering could possibly explain the greater effects of variation in SPEI in fragments compared to continuous forest.
-A major consequence of forest fragmentation is reported alteration in microclimate near forest edges [@didhamEdgeStructureDetermines1999; @ewersFragmentationImpairsMicroclimate2013].
-It is possible that increases in temperature, evaporative drying, wind speed, and solar radiation commonly found near forest edges exacerbated the effects of extremes in SPEI on *H. acuminata* growth and survival in fragments compared to continuous forest.
-It is also possible that the microclimate experienced by plants in continuous forest plots was simply more stable compared to that of 1 ha fragments.
-Bruna et al. [-@brunaExperimentalAssessmentHeliconia2002] found that the growth of transplanted *H. accuminata* plants transplanted near edges was reduced relative to continuous forest.
-A greater understanding of the microclimatic changes in fragments during extreme climate events and their effects on understory plants is needed, but we believe differences in microclimate buffering are a likely explanation for the observed differences between fragments and continuous forest.
-
-Past climate conditions were important for survival, size, and flowering probability.
-Extremes in SPEI in the 15 months prior to the census reduced survival in forest fragments (Figure \@ref(fig:surv-spei)).
-Extremes in SPEI in the past 36 months affected plant size, although the direction of the effects was seasonally dependent (Figure \@ref(fig:growth-spei)).
-Generally, unusually dry dry seasons and unusually wet wet seasons had negative impacts on plant size, and this pattern was more extreme in fragments compared to continuous forest.
-For flowering, the SPEI of the current wet season and the dry season two dry seasons ago (lag of 15--20 months) had the strongest influence on flowering probability with dry weather corresponding to an increase in flowering (Figure \@ref(fig:flwr-spei))<!--# wondering if this is more of a results paragraph? Alternatively it goes *after* the next paragraph and includes more speculation about why each specific delayed effect exists.  Might end up integrating with a later paragraph. -->.
-
--   [@janssenDroughtEffectsLeaf2021] Used machine learning to combine remote sensing and ground surveys of literfall from published datasets. Estimates green-up, literfall, growth, etc. for central and southern america including the Amazon. Drought results in anomolously high leaf flushing at start of drought followed by increased litterfall durring the drought. Dry season droughts result in green-up, but not wet season droughts. During drought, old leaves are shed and new leaves are maintained. 2-5 months for newly flushed leaves to fully expand
-
-Effects beyond Ha
-
--   the observed effects on reproduction can have effects beyond demography, eg.
-    gene flow and genetic structure among and between plots already shaped by fragmentation ( @cortesLowPlantDensity2013, there can also be drought effects eg @sifresGeneticStructureLycopersicon2007)
-
--   There can be cascading effects on other species (hispine beetles that depend on Heliconia flowers/fruits, hummingbirds and seed dispersers ( @stilesEcologyFloweringPhenology1975
-
 # Conclusions & Future Directions
 
--   Ecological Consequences of these patterns: an eye towards a drier/wetter future
+Climate models for the Amazon predict a future of extremes - increases in the frequency and geographic extent of droughts, but also increases in the frequency and area affected by periods of unusual wetness [@duffy2015]. Our results support the hypothesis that populations in fragments could be more susceptible to the effects of changing climate than those in continuous forest [@laurance2014]. However, they also indicate that the demographic responses to climate change of populations in fragmented landscapes may be far more complex than previously appreciated. Multi-factorial, multi-season experiments are needed to determine if habitat-specific differences in environmental conditions and local ecological neighborhood interact to delay the demographic responses of plants to climatic variability and the mechanisms underlying these responses [sensu @bruna2005a; @markewitz2010; @westerband2015; @westerbandEarlyLifeConditions2017)
 
--   There could be size-specific effects: Fragmentation affects plant size (in *Heliconia* [@brunaDemographicEffectsHabitat2005] and trees [@schwartzFragmentationForestStructure2019]).
-    Smaller/larger plants might be more susceptible to drought.
-    So differential effects of drought in fragments and continuous forest could be due to an interaction between drought and plant size.
-    The `dlnm` package does not currently allow for modeling of interactions, and we lacked data on plant size at the same time scale as SPEI (monthly), so interactions with size were not included in this analysis.
+Also needed are statistical tools that can test for synergistic effects of fragmentation and climate in vital rates, as those currently available do not allow for including interaction terms (cite `dlnm`).
+They also don't allow for modeling interactions between \_\_\_\_ and plant size; although plant responses to both fragmentation and climatic extremes can be size-specific [@brunaDemographicEffectsHabitat2005; @schwartzFragmentationForestStructure2019], the ability to identify size-specific lagged responses may be especially complicated given size and growth are rarely measured at the same time scale as SPEI and other putative climatic drivers.
 
--   Synergistic effects of fragmentation and climate (need the stats to catch up with us) "Organisms simultaneously experience multiple forms of disturbance. While work investigating the demographic effects of individual factors is common, studies investigating how multiple factors interact to influence population dynamics remains poorly understood. They could act in concert to exacerbate or dampen population dynamics."
+Finally, no analytical approcah for testign for climate lags can compensate for a lack of data (eveers tenhumberg)and long-term demographic data collected in fragmented landscapes [@bruna2005; @laurance1998]. Unfortunately, both of these are rare [@brunaHabitatFragmentationPlant2009], suggesting generalizations regarding the causes and consequences of delayed effects will continue to prove elusive.
 
--   few demographic studies have the data required for modeling lagged effects [@tellerLinkingDemographyDrivers2016; @croneHowPlantEcologists2011].
+-   few demographic studies have the data required for modeling lagged effects .
     This demonstrates the importance of long term demographic experiments in determining the effects of changing habitats on populations.
     <!--# Or something like "some of these long-term studies exist and are prime for doing these kinds of analyses" -->
 
--   More experiments like westerband that try and see how contiions today influence growth in future years Generalizations about the direction and magnitude of delayed demographic responses will continue to prove elusive.
-    Without experiments designed greater understanding of the complex ways in which light, environmental conditions, and other ecological conditions interactions to influence plant vital rates (sensu @westerband2015, @westerbandEarlyLifeConditions2017, @horvitzEffectsPlantSize2002),
+-   Loop back to: need whole-life-cycle approach to ID these effects, why fragmentologists don't do this is killing Emilio
 
--   Loop back to: need whole-life-cycle approach to ID these effects, why fragmentologists don't do this is killing Emilio.
+-   
 
 # Acknowledgments
 
@@ -579,6 +526,16 @@ PPS, which develop and compute the TMPA as a contribution to TRMM.
 
 ::: {#refs}
 :::
+
+\newpage
+
+### Left-over text
+
+-   populations persisting in fragments may be more demographically resilient to drought than those in primary forest if the individuals susceptible to desiccation died quickly after fragment isolation [@bettsExtinctionFiltersMediate2019].
+-   While the alteration of microclimate near forest edges is one of the fundamental results to have emerged from the study of fragmented landscapes [@didhamEdgeStructureDetermines1999; @ewersFragmentationImpairsMicroclimate2013], little is known regarding how variable it is. It We hypothesize that the microclimate in continuous forest plots is more stable than that in 1 ha fragments, and that this stability will demographically buffers populations in forest interiors [@brunaExperimentalAssessmentHeliconia2002].
+-   There can be cascading effects on other species (hispine beetles that depend on Heliconia flowers/fruits, hummingbirds and seed dispersers ( @stilesEcologyFloweringPhenology1975
+-   eg. gene flow and genetic structure among and between plots already shaped by fragmentation ( @cortesLowPlantDensity2013, there can also be drought effects eg @sifresGeneticStructureLycopersicon2007)
+-   [@janssenDroughtEffectsLeaf2021] Used machine learning to combine remote sensing and ground surveys of literfall from published datasets. Estimates green-up, literfall, growth, etc. for central and southern america including the Amazon. Drought results in anomolously high leaf flushing at start of drought followed by increased litterfall durring the drought. Dry season droughts result in green-up, but not wet season droughts. During drought, old leaves are shed and new leaves are maintained. 2-5 months for newly flushed leaves to fully expand
 
 \newpage
 
