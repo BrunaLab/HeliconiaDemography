@@ -466,7 +466,7 @@ This would also be consistent with the results of prior experiments, in which th
 Third, it may be that the delayed demographic effects we observed are indirectly mediated by the effect of SPEI on other species rather than the direct effects on individual physiology [@eversLaggedDormantSeason2021].
 For example, while droughts can kill some tropical trees immediately [@lauranceEffectsStrongDrought2001], others take three years or more [@crileyYearProductionHigh1994].
 This will potentially lead to a boom in growth and flowering years after the drought, when the canopy gaps resulting from delayed leaf drop [@janssenDroughtEffectsLeaf2021] and treefalls allow for light penetration to the forest understory [@canham1990].
-Similar delayed changes in the local environment could also influence the foraging behavior of *H. acuminata*'s pollinators [@bruna2004; @stouffer1996] and seed dispersers [@uriarteDisentanglingDriversReduced2011].
+Similar delayed changes in the local environment could also influence the foraging behavior of *H. acuminata*'s pollinators [@brunaHeliconiaAcuminataReproductive2004; @stouffer1996] and seed dispersers [@uriarteDisentanglingDriversReduced2011].
 While more work is needed to explain why the delayed effects of SPEI on survival and growth are greater in forest fragments than interiors, [**question about wording** - does this mean the delay is relatively greater, or the magnitude of the effect is greater?\*
 \*]\*\* it may be due to the proportionately greater amount of litterfall on edges [@vasconcelos2004] altering the abundance of pathogens or mycorrhizae.
 
@@ -560,7 +560,7 @@ PPS, which develop and compute the TMPA as a contribution to TRMM.
 
     -   low precip = trees lose leaves or die, more light gets through or gaps open.
         This can be positive (more light = more growth) but not always ( @westerbandInteractionsPlantSize2015) there is a threshold that can lead to photoinhibition ( @hePhotoinhibitionHeliconiaNatural1996, @mulkeyComparativeLifeHistory1991).
-        Drought and herbivory effects can be additive, at least in seedlings ( @bartonAdditiveNonadditiveResponses20
+        Drought and herbivory effects can be additive, at least in seedlings ( @bartonAdditiveNonadditiveResponses2020
 
 -   @mulkeyInfluenceSeasonalDrought1996 and @bonalResponseTropicalRainforests2016 will have goods stuff; haven't looked them over yet
 
