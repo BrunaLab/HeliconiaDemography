@@ -200,12 +200,12 @@ The general form of the vital rate models was as follows: <!--# add flowering co
 
 $$
 \begin{split}
-& g[ \textrm{E}(y_{i})] = \alpha_j + s_1(x_i) + s_2(d_{i,t}, ..., d_{i,t-36}) \\
+& g[ \textrm{E}(y_{i})] = \alpha_j + s_1(z_i) + s_2(d_{i,t}, ..., d_{i,t-36}) + \beta x_i \\
 & \alpha_j \sim N(\mu_{\alpha_j}, \sigma^2_{\alpha_j}), \;\textrm{for plot }j 
 \end{split}
 $$
 
-where $s_1(x_i)$ is a smooth function of plant size (natural log of height $\times$ shoot number), fit using a penalized cubic regression spline, $s_2(\cdot)$ is the crossbasis function in which $d_{i,t}$ is the SPEI value during the census month of an observation (February) and $d_{i,t-l}$ is the SPEI $l$ months prior (see Gasparrini et al. 2017 for details).
+where $s_1(z_i)$ is a smooth function of plant size (natural log of height $\times$ shoot number), fit using a penalized cubic regression spline, $s_2(\cdot)$ is the crossbasis function in which $d_{i,t}$ is the SPEI value during the census month of an observation (February) and $d_{i,t-l}$ is the SPEI $l$ months prior (see Gasparrini et al. 2017 for details).
 The crossbasis function, $s_2(\cdot)$ can also be written:
 
 $$
@@ -224,6 +224,7 @@ This was modeled with a scaled t family error distribution and the natural log o
 A scaled t family was chosen because residuals were leptokurtic with a Gaussian error structure.
 For reproduction in year t our response variable was whether or not a plant had any inflorescences (i.e., 1 for ≥1 inflorescence, 0 for no inflorescences).
 We modeled both reproduction and survival (i.e., from year t to year t+1) using a binomial family error distribution with a logit link function.
+We modeled a potential cost of reproduction by including flowering in the previous year as covariate, $x_i$.
 
 In the process of fitting the models, the penalty on the crossbasis smooth (and other smoothed terms) is optimized such that more linear shapes are favored unless the data supports non-linearity [@woodGeneralizedAdditiveModels2017].
 We applied an additional penalty to shrink linear portions toward zero with the `select=TRUE` option to the `gam()` function, and inferred statistical significance of model terms with p-values from the `summary.gam()` function as recommended in @marraPracticalVariableSelection2011.
@@ -278,7 +279,7 @@ Our dataset comprised `r format(summary_stats$n[2], big.mark = ",")` plants in c
 When summarizing across years and plots, the proportion of *Heliconia acuminata* that survived in CF and 1-ha was similarly high (P(surv) = 0.95).
 The proportion of surviving plants was lowest in the 2003--2004 transition year ($P\_{surv} = 0.92$), which coincided with droughts in both the 2003 and 2004 rainy seasons (Figure \@ref(fig:eda)b,d).
 The lowest survival for 1-ha fragment plots ($P_{surv} = 0.93$) was for the 2005--2006 transition year, which encompassed a moderate drought in October 2005 and and wetter than average conditions (SPEI \> 0.5) in December 2005 and January 2006.
-Survival was size dependent in both continuous forest and 1-ha fragments ($p < 0.001$ for the effect of log-transformed plant size in year t on suvival in year t+1).
+Survival was size dependent in both continuous forest and 1-ha fragments ($p < 0.001$ for the effect of log-transformed plant size in year t on suvival in year t+1 in both habitats).
 While the survival probability of large plants approached 1 in both habitat types (Figure \@ref(fig:size-plot)a), the survival of the smallest plants was higher in 1-ha fragments.
 However, the 95% confidence intervals for 1-ha fragments and continuous forest overlapped for all sizes.
 
@@ -287,17 +288,17 @@ Plants in 1-ha fragments had on average \~`r format((1 - (2.5/2.9))*100, digits 
 Because the proxy for plant size used in our models was the product of these two metrics, plants in fragments were consequently substantially larger than those in forest fragments (150 ± 175 SD vs. 112 ± 141 SD, respectively).
 This disparity in plant size was most pronounced in the initial years of our surveys and then diminished over time (Figure \@ref(fig:eda)a), likely due to a combination of greater seedling recruitment in CF and plant mortality or shrinkage.
 Mean plant size dropped dramatically in 2003 in both habitat types, corresponding with a severe drought during the February census (SPEI = -1.39) (Figure \@ref(fig:eda)d).
-As with survival, size in year t was a significant predictor of size in year t+1 ($p < 0.001$).
+As with survival, size in year t was a significant predictor of size in year t+1 ($p < 0.001$ in both habitats).
 While the effect was generally similar across size classes and habitat types, the impact of plant size on growth was greatest for mid-sized plants in continuous forest (Figure \@ref(fig:size-plot)b).
 
 While the overall proportion of plants flowering was very low, it was nevertheless almost 40% higher in continuous forest than 1-ha fragments (`r summary_stats$flwr_mean[2]` ± `r summary_stats$flwr_sd[2]` vs. `r summary_stats$flwr_mean[1]` ± `r summary_stats$flwr_sd[1]`, respectively).
-This disparity was largely due to the fact that flowering is size-dependent ($p < 0.001$), with the probability of flowering increasing dramatically once plants reached the threshold size of about 148 [log(size) \> 5] (Figure \@ref(fig:size-plot)c), which corresponds roughly to \_\_\_\_ shoots <!--# This requires a supplemental figure, probably.  A plot of shoots vs. log(size) -->.
+This disparity was largely due to the fact that flowering is size-dependent ($p < 0.001$ in both habitats), with the probability of flowering increasing dramatically once plants reached the threshold size of about 148 [log(size) \> 5] (Figure \@ref(fig:size-plot)c), which corresponds roughly to \_\_\_\_ shoots <!--# This requires a supplemental figure, probably.  A plot of shoots vs. log(size) -->.
 Even though flowering probability of large plants [log(size) \> 5] was greater in 1-ha fragments compared to continuous forest, there were proportionally far fewer plants above the reproductive threshold size in forest fragments (Figure \@ref(fig:size-plot)d).
 Indeed, the most striking difference between habitat types coincided with a severe drought in 2003, when the percentage of flowering plants with four or more shoots was 24.1% in continuous forest vs. only 12% in 1-ha fragments (Figure \@ref(fig:eda)c).
 
 ## Delayed effects of drought on demographic vital rates
 
-Drought history had a significant effect on survival in both habitats (P \< 0.001), but the shape of the crossbasis surface differed.
+Drought history had a significant effect on survival in both habitats ($p < 0.001$), but the shape of the crossbasis surface differed.
 For 1-ha fragments, recent SPEI values (i.e. within the past 0--12 months) had the strongest effect on survival, with the highest survival near SPEI of 0 and decreasing survival when plants were exposed to either drier or wetter conditions over the prior 0--12 months (Figure \@ref(fig:surv-spei)a).
 In continuous forest, recent SPEI had a weaker effect with only SPEI \< -1 leading to slightly reduced survival probabilities (Figure \@ref(fig:surv-spei)b).
 However, SPEI at a lag time of 15--20 months, corresponding to June--October of the previous year (i.e. not the most recent dry season, but the one before that), also affected survival probabilities in continuous forest.
@@ -307,16 +308,16 @@ However, it should be noted that only the first year of census data (1999) had a
 Subtracting the estimated contribution of SPEI history to survival in fragments from that in continuous forest shows that in average conditions (SPEI = 0), there is little difference in survival probability between continuous forest and fragments (Figure \@ref(fig:surv-diff)).
 However, under extreme conditions, survival probability is higher in continuous forest by up to 0.02.
 
-Drought history also had a significant effect on plant size in both habitats (p \< 0.001).
-The fitted crossbasis functions for fragments and continuous forest showed somewhat similar patterns, although the surface for 1-ha fragments was much more complex (edf = 17.9 for 1-ha fragments; edf = 13.1 for continuous forest; see also Figure \@ref(fig:growth-spei)).
+Drought history also had a significant effect on plant size in both habitats ($p < 0.001$).
+The fitted crossbasis functions for fragments and continuous forest showed somewhat similar patterns, although the surface for 1-ha fragments was much more complex (edf = 17.9 for 1-ha fragments; edf = 12.9 for continuous forest; see also Figure \@ref(fig:growth-spei)).
 Drought at lags 8--11 (March--June, the end of the wet season) increase growth in both habitats, but more strongly in 1-ha fragments.
 The difference between the effects of SPEI history in continuous forest and 1-ha fragments shows that growth is equal or slightly higher in continuous forest for average conditions (SPEI = 0) over all lag periods (Figure \@ref(fig:growth-diff).
 However, growth in continuous forests is higher by up to log(size) = 0.57 when the current wet season is unusually wet (SPEI\>2).
 This is due to reduced growth in fragments under wet conditions.
 
-Drought history had a significant effect on flowering probability in both habitat types (p \< 0.001).
+Drought history had a significant effect on flowering probability in both habitat types ($p < 0.001$).
 Flowering probability was overall higher at all values of SPEI in continuous forest compared to 1-ha fragments (Figure \@ref(fig:flwr-spei)).
-The effects of SPEI on flowering probability were also stronger and more complex in continuous forest compared to fragments (1-ha edf = 8.5, continuous forest edf = 10.5).
+The effects of SPEI on flowering probability were also stronger and more complex in continuous forest compared to fragments (1-ha edf = 8.1, continuous forest edf = 10.3).
 In continuous forest, flowering probability was increased by recent drought (at lag = 0 with SPEI \< -1) and drought at lags 15--20 (Jun-Nov, two dry seasons ago).
 Drought at lags 7--13 reduced flowering probability.
 The shape of the crossbasis function was similar in 1-ha fragments, but substantially muted (Figure \@ref(fig:flwr-spei)a).
@@ -324,8 +325,9 @@ That is, the variation in fitted values along the SPEI dimension was much lower 
 Plotting the difference between the crossbasis smooths for continuous forest and 1-ha fragments revealed that flowering probability is higher in continuous forest compared to 1-ha fragments and is increased by recent drought and drought during the dry season 15--20 months prior to the census (Figure \@ref(fig:flwr-diff)).
 The least difference between habitat types occurs when there is strong drought at about 8--12 months lag or very wet conditions at 15--20 months lag.
 
-FInally, with the exception of survival in 1-ha fragments (p = 0.257), the delayed effects of SPEI on all three vital rates varied significantly among plots (p \< 0.001 for the random effect of plot).
-<!--# add sentence about flwr_prev covariate -->
+FInally, with the exception of survival in 1-ha fragments ($p = 0.252$), the delayed effects of SPEI on all three vital rates varied significantly among plots ($p < 0.001$ for the random effect of plot).
+We did not see evidence for a cost of reproduction.
+Flowering in the previous year was a significant predictor of growth ($p = 0.048$ for continuous forest, $p = 0.031$ for fragments) and flowering ($p < 0.001$ in both continuous forest and fragments), but the coefficients were positive, indicating that flowering in the previous year was positively related to both size and flowering probability in the current year.
 
 # Discussion
 
@@ -372,7 +374,7 @@ The first is that the physiological processes underlying vital rates might be in
 For example, the flowering shoots of *Heliconia chartacea* begin to develop 6-10 months prior to the appearance of infloresences.
 Adverse conditions during the 6 months following initiation, rather than the months when infloresences are starting expand, leads to the aborted production of flowering shoots [@crileyYearProductionHigh1994].
 Interestingly, we observed the opposite effect---drought conditions increased the probability of flowering two years later.
-While this could reflect bet-hedging in response to stress [@nihadRelationshipStressFlowering2018], this does not appear to be the case, as growth or survival do not appear to decrease following reproduction (see also [@horvitzDemographicCostReproduction1988]. In fact, flowering in one year is associated with increased reproduction and growth in the next. <!--# need to add to methods and results and double-check this is correct -->
+While this could reflect bet-hedging in response to stress [@nihadRelationshipStressFlowering2018], this does not appear to be the case, as growth or survival do not appear to decrease following reproduction (see also [@horvitzDemographicCostReproduction1988]. In fact, flowering in one year is associated with increased reproduction and growth in the next.
 
 Demographic responses will also be delayed if abiotic stress causes plants to invest in below-ground rhizomes [<!--# emilio had "sensu" here, but not sure what definition that refers to --> @pumisutapon2012].
 The carbohydrates stored in rhizomes allow *Heliconia* to regenerate above-ground biomass following damage [@rundelStructuralPhysiologicalAdaptation1998] and protect the buds that give rise to new shoots from stressful conditions [@klimesovaBelowgroundPlantFunctional2018].
