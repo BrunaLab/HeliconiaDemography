@@ -215,7 +215,7 @@ Estimated degrees of freedom (edf) represent the 'true' complexity of the smooth
 
 To determine if plot characteristics influenced average vital rates we included a random effect of plot ID on the intercept; this was represented by $a_j$.
 We determined the effects of SPEI on plant growth using plant size in year t+1 as a response variable.
-This was modeled with a scaled t family error distribution and the natural log of height $\times$ shoot number as our proxy for plant size.
+This was modeled with a scaled t family error distribution and the natural log of height $\times$ shoot number as our proxy for plant size <!--# reference supplemental about plant size? -->.
 A scaled t family was chosen because residuals were leptokurtic with a Gaussian error structure.
 For reproduction in year t our response variable was whether or not a plant had any inflorescences (i.e., 1 for ≥1 inflorescence, 0 for no inflorescences).
 We modeled both reproduction and survival (i.e., from year t to year t+1) using a binomial family error distribution with a logit link function.
@@ -372,7 +372,7 @@ Adverse conditions during the 6 months following initiation, rather than the mon
 Interestingly, we observed the opposite effect---drought conditions increased the probability of flowering two years later.
 While this could reflect bet-hedging in response to stress [@nihadRelationshipStressFlowering2018], this does not appear to be the case, as growth or survival do not appear to decrease following reproduction (see also [@horvitzDemographicCostReproduction1988]. In fact, flowering in one year is associated with increased reproduction and growth in the next.
 
-Demographic responses will also be delayed if abiotic stress causes plants to invest in below-ground rhizomes [<!--# emilio had "sensu" here, but not sure what definition that refers to --> @pumisutapon2012].
+Demographic responses will also be delayed if abiotic stress causes plants to invest in below-ground rhizomes [*sensu* @pumisutapon2012].
 The carbohydrates stored in rhizomes allow *Heliconia* to regenerate above-ground biomass following damage [@rundelStructuralPhysiologicalAdaptation1998] and protect the buds that give rise to new shoots from stressful conditions [@klimesovaBelowgroundPlantFunctional2018].
 This may be why drought led to delayed increases in growth---by shedding shoots and leaves [@brunaExperimentalAssessmentHeliconia2002] and investing in rhizomes, plants are generating proportionately more buds with which to regenerate when conditions improve.
 This would also be consistent with the results of prior experiments, in which the growth rates of *H. acuminata* 8 months after they were mechanically damaged far exceeded those of control plants [@brunaCompensatoryResponsesUnderstory2005].
@@ -422,7 +422,7 @@ newdf_1ha <-
 Climate models for the Amazon predict a future of extremes---increases in the frequency and geographic extent of droughts, but also increases in the frequency and area affected by periods of unusual wetness [@duffy2015].
 Our results support the hypothesis that populations in fragments could be more susceptible to the effects of changing climate than those in continuous forest [@lauranceApparentEnvironmentalSynergism2014].
 However, they also indicate that the demographic responses to climate change of populations in fragmented landscapes may be far more complex than previously appreciated.
-Multi-factorial, multi-season experiments are needed to determine if habitat-specific differences in environmental conditions and local ecological neighborhood interact to delay the demographic responses of plants to climatic variability and the mechanisms underlying these responses [<!--# Emilio had "sensu", but not sure what definition it refered to --> @brunaCompensatoryResponsesUnderstory2005; @markewitz2010; @westerbandInteractionsPlantSize2015; @westerbandEarlyLifeConditions2017]
+Multi-factorial, multi-season experiments are needed to determine if habitat-specific differences in environmental conditions and local ecological neighborhood interact to delay the demographic responses of plants to climatic variability and the mechanisms underlying these responses [*sensu* @brunaCompensatoryResponsesUnderstory2005; @markewitz2010; @westerbandInteractionsPlantSize2015; @westerbandEarlyLifeConditions2017]
 
 Also needed are statistical tools that can test for synergistic effects of fragmentation and climate in vital rates, as those currently available do not allow for including interaction terms.
 This also limits the ability to include size by climate interactions in a DLNM; although plant responses to both fragmentation and climatic extremes can be size-specific [@brunaDemographicEffectsHabitat2005; @schwartzFragmentationForestStructure2019].
