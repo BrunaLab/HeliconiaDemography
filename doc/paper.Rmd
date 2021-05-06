@@ -22,6 +22,7 @@ institute:
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
     bookdown::word_document2:
+      linenumbers: yes
       number_sections: no
       fig_caption: yes
       reference_docx: "templates/template.docx" # Insert path for the DOCX file
@@ -38,7 +39,7 @@ keywords: |
   forest fragmentation; demographic vital rates; *Heliconia acuminata*; drought; ENSO; delayed effects; distributed lag non-linear models
 highlights: |
   These are the highlights
-
+  
 editor_options:
   markdown:
     wrap: sentence
@@ -124,15 +125,11 @@ They are also essential because while some demographic effects of fragmentation 
 Indeed, lagged responses of demographic vital rates to climate may in fact be the rule rather than the exception [@eversLaggedDormantSeason2021; @andereggPervasiveDroughtLegacies2015; @schwalmGlobalPatternsDrought2017; @kannenbergGhostsHowDrought2020].
 
 Herbaceous plants represent up to 25% of plant diversity in tropical forests [@gentryContributionNontreesSpecies1987], are critical food and habitat for myriad species [@snowTropicalFrugivorousBirds1981], and are economically and culturally vital [@nakazonoExperiementalHarvestingNontimber2004; @ticktinRelationshipsNinoSouthern2003].
-Nevertheless, the impacts of global change phenomena on their demography remain conspicuously understudied [@brunaHabitatFragmentationPlant2009] <!--# Emilio had written "Gaoue" as potential reference, but the on I have in Zotero is about trees, not understory plants -->.
+Nevertheless, the impacts of global change phenomena on their demography remain conspicuously understudied [@brunaHabitatFragmentationPlant2009].
 We used a decade of demographic and climatic data from an experimentally fragmented landscape in the Central Amazon to assess the effects of climate on populations of a tropical understory herb (*Heliconia acuminata*, Heliconiaceae).
-This time series, which included the severe droughts of 1997 [@mcphadenChildProdigy1997981999] and 2005 [@marengoDroughtAmazonia20052008; @zengCausesImpacts20052008], allowed us to address the following questions:\
-
-1)  Does drought increase or decrease the growth, survival, and fertility of plant populations in continuous forest?
-
-2)  Are there delayed effects of drought on demographic vital rates, and if so what lag times are most critical?
-
-3)  Are the effects of drought on the vital rates of populations in fragments similar in direction and magnitude to those in continuous forest?
+This time series, which included the severe droughts of 1997 [@mcphadenChildProdigy1997981999] and 2005 [@marengoDroughtAmazonia20052008; @zengCausesImpacts20052008], allowed us to address the following questions: (1) Does drought increase or decrease the growth, survival, and fertility of plant populations in continuous forest?
+(2) Are there delayed effects of drought on demographic vital rates, and if so what lag times are most critical?
+(3) Are the effects of drought on the vital rates of populations in fragments similar in direction and magnitude to those in continuous forest?
 
 # Methods
 
@@ -193,10 +190,8 @@ This models a non-linear relationship between predictor and response (e.g. betwe
 Using the `dlnm` package [@gasparriniDistributedLagLinear2011; @rcoreteamLanguageEnvironmentStatistical2020], we created crossbasis functions with possible lags from 0--36 months.
 We chose 36 months as a maximum lag because prior transplant experiments with *H. acuminata* showed they typically recovered from transplant shock in less than 36 months [@brunaExperimentalAssessmentHeliconia2002] so this is a reasonable upper bound for lagged effects of drought.
 
-<!--# re 36 mos transpalnt shock justification; how are lag lengths typically chosen?  -->
-
 The crossbasis function was fit to the data in the context of a generalized additive model (GAM) with restricted maximum likelihood using the `mgcv` package [@woodGeneralizedAdditiveModels2017].
-The general form of the vital rate models was as follows: <!--# add flowering covariate? -->
+The general form of the vital rate models was as follows:
 
 $$
 \begin{split}
@@ -236,7 +231,8 @@ We therefore fit separate models for plants in fragments and in continuous fores
 # Results
 
 Meteorological droughts in our focal region, as indicated by SPEI, are generally consistent with those reported in the literature.
-For example, the drought associated with the 1997 El Niño Southern Oscillation (ENSO) event was one of the most severe on record for the Amazon [@williamsonAmazonianTreeMortality2000]; correspondingly, 1997 has the lowest SPEI values in our timeseries (Figure \@ref(fig:eda)d). The 2005 dry season (June--October) was also reported as an exceptionally dry year, although this drought mostly affected the south western Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008].
+For example, the drought associated with the 1997 El Niño Southern Oscillation (ENSO) event was one of the most severe on record for the Amazon [@williamsonAmazonianTreeMortality2000]; correspondingly, 1997 has the lowest SPEI values in our timeseries (Figure \@ref(fig:eda)d).
+The 2005 dry season (June--October) was also reported as an exceptionally dry year, although this drought mostly affected the south western Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008].
 Our SPEI data show the 2005 dry season to be a moderate drought (-1 \> SPEI \> -1.5).
 
 ## Survival, growth, and flowering in continuous forest vs. fragments
