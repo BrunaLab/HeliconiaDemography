@@ -64,33 +64,25 @@ tar_plan(
   tar_render(validate_data, "doc/validate_data.Rmd"),
   
   # Fit demographic models
-  s_cf = fit_surv(model_data_cf),
-  s_1ha = fit_surv(model_data_1ha),
-  g_cf = fit_growth(model_data_cf),
-  g_1ha = fit_growth(model_data_1ha),
-  f_cf = fit_flwr(model_data_cf),
-  f_1ha = fit_flwr(model_data_1ha),
   
-  ## With flowering in previous year as covariate
-  
-  s_cf_flwr = fit_surv(model_data_cf, flwr_prev = TRUE),
-  s_1ha_flwr= fit_surv(model_data_1ha, flwr_prev = TRUE),
-  g_cf_flwr = fit_growth(model_data_cf, flwr_prev = TRUE),
-  g_1ha_flwr= fit_growth(model_data_1ha, flwr_prev = TRUE),
-  f_cf_flwr = fit_flwr(model_data_cf, flwr_prev = TRUE),
-  f_1ha_flwr= fit_flwr(model_data_1ha, flwr_prev = TRUE),
+  s_cf = fit_surv(model_data_cf, flwr_prev = TRUE),
+  s_1ha = fit_surv(model_data_1ha, flwr_prev = TRUE),
+  g_cf  = fit_growth(model_data_cf, flwr_prev = TRUE),
+  g_1ha = fit_growth(model_data_1ha, flwr_prev = TRUE),
+  f_cf  = fit_flwr(model_data_cf, flwr_prev = TRUE),
+  f_1ha = fit_flwr(model_data_1ha, flwr_prev = TRUE),
   
   # Validate and summarize results
   tar_render(validate_models, "doc/validate_models.Rmd"),
   tar_render(model_summary, "doc/model_summary.Rmd"),
-  tar_render(cost_of_reproduction, "doc/cost_of_reproduction.Rmd"),
-  
+
   # Descriptive / Exploratory Data Analysis Figures
   normals = normals_data(),
   normals_plot = plot_normals(normals),
   plot_dates = get_plot_daterange(model_data, maxlag),
   
   eda_spei = plot_eda_spei(xa_lag, plot_dates),
+  eda_surv_ts = plot_eda_surv_ts(model_data, plot_dates),
   eda_surv = plot_eda_surv_cohort(demog_done, plot_dates),
   eda_size = plot_eda_size(model_data, plot_dates),
   eda_flwr = plot_eda_flwr(model_data, plot_dates),

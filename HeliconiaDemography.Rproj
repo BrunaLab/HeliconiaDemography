@@ -17,4 +17,6 @@ PackageUseDevtools: Yes
 PackageInstallArgs: --no-multiarch --with-keep.source
 PackageRoxygenize: rd,collate,namespace
 
-ZoteroLibraries: "Heliconia-Frag-Drought","My Library"
+MarkdownWrap: Sentence
+
+ZoteroLibraries: "My Library","Heliconia-Frag-Drought"

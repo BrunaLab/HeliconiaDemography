@@ -29,12 +29,15 @@ knitr::opts_chunk$set(
   fig.path = "figures/",
   dpi = 300)
 source(here::here("packages.R"))
+source(here::here("R", "utils.R"))
 ```
 
-*Last compiled: `r Sys.Date()`* \# TODO
+*Last compiled: `r Sys.Date()`*
+
+# TODO
 
 -   Write brief text
--   Possibly make a figure S2 that compares SPEI across BDFFP from east to west (3 panels), using all data with similar resolution
+-   Convert table to `kableExtra` so it knits in word and pdf
 
 When looking for data to calculate SPEI for the BDFFP site, there were a number of possible options.
 A review of global precipitation datasets [@sunReviewGlobalPrecipitation2018] shows that ground-based products are more accurate compared to satellite products for Brazil specifically.
@@ -302,7 +305,7 @@ cap <- "Comparison of SPEI values and drought categories across datasets for maj
 
 ```{r spei-table, fig.cap=cap}
 # knitr::include_graphics(here("analysis", "supplementary-materials", "spei_table.png"))
-table
+table #only works when knit to HTML
 ```
 
 # Plot
