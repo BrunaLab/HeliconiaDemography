@@ -398,7 +398,7 @@ normals_cap <- "Weather normals for Manaus, Brazil (3º6'S, 60º1'W) for 1981–
 ```
 
 ```{r normals, fig.cap=normals_cap}
-normals_plot
+normals_plot & theme(text = element_text(size = 10))
 ```
 
 <!--# maria suggests moving normals figure to appendix -->
@@ -411,8 +411,8 @@ eda_cap <- "Timeseries of demographic parameters and drought ocurrence. Mean pla
 
 <!--# Maria would prefer survival rates for all plants rather than tracking 1998 cohort survivorship -->
 
-```{r eda, fig.cap=eda_cap}
-eda_plot
+```{r eda, fig.cap=eda_cap, fig.width=7, fig.height=7}
+eda_plot & theme(text = element_text(size = 10))
 ```
 
 ```{r}
@@ -420,8 +420,8 @@ size_cap <- "Smooth effect of plant size in the previous census on a) survival, 
 
 ```
 
-```{r size-plot, fig.cap=size_cap, fig.height=6, fig.width=5}
-size_plot
+```{r size-plot, fig.cap=size_cap, fig.width=7, fig.height=7}
+size_plot & theme(text = element_text(size = 10))
 ```
 
 ```{r}
@@ -430,7 +430,7 @@ s_spei_cap <- "Smooth effect of lagged SPEI on survival in a) continuous forest 
 ```
 
 ```{r surv-spei, fig.cap=s_spei_cap, fig.height=5, fig.width=7}
-s_spei_plot
+s_spei_plot & theme(text = element_text(size = 10))
 ```
 
 ```{r}
@@ -438,7 +438,7 @@ s_spei_diff_cap <- "The difference between predicted effects of SPEI history on 
 ```
 
 ```{r surv-diff, fig.cap=s_spei_diff_cap, fig.height=2.5, fig.width=7}
-s_spei_diff_plot
+s_spei_diff_plot  & theme(text = element_text(size = 10))
 ```
 
 ```{r}
@@ -446,7 +446,7 @@ g_spei_cap <- "Smooth effect of lagged SPEI on plant growth for a) continuous fo
 ```
 
 ```{r growth-spei, fig.cap=g_spei_cap, fig.height=5, fig.width=7}
-g_spei_plot
+g_spei_plot & theme(text = element_text(size = 10))
 ```
 
 ```{r}
@@ -454,7 +454,7 @@ g_spei_diff_cap <- "The difference between predicted effects of SPEI history on 
 ```
 
 ```{r growth-diff, fig.cap=g_spei_diff_cap, fig.height=2.5, fig.width=7}
-g_spei_diff_plot
+g_spei_diff_plot & theme(text = element_text(size = 10))
 ```
 
 ```{r}
@@ -462,7 +462,7 @@ f_spei_cap <- "Smooth effect of lagged SPEI on flowering probability. Surface is
 ```
 
 ```{r flwr-spei, fig.cap=f_spei_cap, fig.height=5, fig.width=7}
-f_spei_plot
+f_spei_plot & theme(text = element_text(size = 10))
 ```
 
 ```{r}
@@ -470,7 +470,7 @@ f_spei_diff_cap <- "The difference between predicted effects of SPEI history on 
 ```
 
 ```{r flwr-diff, fig.cap=f_spei_diff_cap, fig.height=2.5, fig.width=7}
-f_spei_diff_plot
+f_spei_diff_plot & theme(text = element_text(size = 10))
 ```
 
 # References
