@@ -208,5 +208,6 @@ plot_cb_diff <- function(cf_model, frag_model, smooth = "spei_history", response
     mutate(est = cf_est - frag_est) %>%
     select(est, L = cf_L, spei_history = cf_spei_history)
   
-  plot_spei_heatmap(df, fill_lims = NULL, binwidth = binwidth, response_lab = response_lab)    
+  plot_spei_heatmap(df, fill_lims = NULL, binwidth = binwidth, response_lab = response_lab) +
+    scale_fill_distiller(response_lab, palette = "PuOr")
 }
