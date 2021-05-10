@@ -30,6 +30,7 @@ output:
       - --lua-filter=templates/scholarly-metadata.lua
       - --lua-filter=templates/author-info-blocks.lua
       - --lua-filter=templates/pagebreak.lua
+      - -Fpandoc-crossref
 linkcolor: blue
 bibliography: references.bib
 csl: "templates/global-change-biology.csl" # Insert path for the bib-style
@@ -197,14 +198,14 @@ $$
   & g[ \textrm{E}(y_{i})] = \alpha_j + s_1(z_i) + s_2(d_{i,t}, ..., d_{i,t-36}) + \beta x_i \\
   & \alpha_j \sim N(\mu_{\alpha_j}, \sigma^2_{\alpha_j}), \;\textrm{for plot }j 
   \end{split}
-$$
+$${\#eq:eqn1}
 
 where $s_1(z_i)$ is a smooth function of plant size (natural log of height $\times$ shoot number), fit using a penalized cubic regression spline, $s_2(\cdot)$ is the crossbasis function in which $d_{i,t}$ is the SPEI value during the census month of an observation (February) and $d_{i,t-l}$ is the SPEI $l$ months prior (see Gasparrini et al. 2017 for details).
 The crossbasis function, $s_2(\cdot)$ can also be written:
 
 $$
 s_2(d_{i,t}, ..., d_{i,t-24}) = \sum_{l = l_0}^L f \cdot w(d_{i,t-l},l) 
-$$
+$${\#eq:eqn2}
 
 where the crossbasis function, $f \cdot w (d,l)$, is composed of two marginal basis functions: the standard predictor-response function $f(d)$, and the additional lag-response function $w(l)$.
 These marginal functions are combined as a tensor product smooth such that the shape of one marginal function varies smoothly along the other dimension (see chapter 5 of @woodGeneralizedAdditiveModels2017 and @gasparriniPenalizedFrameworkDistributed2017 for more detail).
@@ -212,7 +213,7 @@ Penalized cubic regression splines were used for both marginal bases of the cros
 Because of penalization, the number of knots is generally not important as long it is large enough to allow the smooth to represent the 'true' relationship [@woodGeneralizedAdditiveModels2017].
 Estimated degrees of freedom (edf) represent the 'true' complexity of the smooth after penalization with edf = 1 being equivalent to a straight line and larger numbers representing more complex curves.
 
-To determine if plot characteristics influenced average vital rates we included a random effect of plot ID on the intercept; this was represented by $a_j$.
+To determine if plot characteristics influenced average vital rates we included a random effect of plot ID on the intercept; this was represented by $a_j$ in @eq:eqn1.
 We determined the effects of SPEI on plant growth using plant size in year t+1 as a response variable.
 This was modeled with a scaled t family error distribution and the natural log of height $\times$ shoot number as our proxy for plant size <!--# reference supplemental about plant size? -->.
 A scaled t family was chosen because residuals were leptokurtic with a Gaussian error structure.

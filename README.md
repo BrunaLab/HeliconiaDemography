@@ -16,14 +16,14 @@ This repository contains the data and code for our paper:
 > <https://doi.org/xxx/xxx>
 
 <!-- Our pre-print is online here: -->
-<!-- > Authors, (YYYY). *Title of your paper goes here*. Name of journal/book, Accessed 02 Apr 2021. Online at <https://doi.org/xxx/xxx> -->
+<!-- > Authors, (YYYY). *Title of your paper goes here*. Name of journal/book, Accessed 10 May 2021. Online at <https://doi.org/xxx/xxx> -->
 
 ### How to cite
 
 Please cite this compendium as:
 
 > Authors, (2021). *Compendium of R code and data for Title of your
-> paper goes here*. Accessed 02 Apr 2021. Online at
+> paper goes here*. Accessed 10 May 2021. Online at
 > <https://doi.org/xxx/xxx>
 
 ## How to run in your browser or download and run locally
@@ -49,6 +49,14 @@ To run the compendium and reproduce all outputs:
     actually sure that this step is necessar. Should auto-load because
     of .Rprofile.)
 -   Run `targets::tar_make()` to run all code and produce all outputs.
+
+## Notes
+
+-   Equation numbering and in-text references in `paper.Rmd` is handled
+    by [`pandoc-crossref`](https://github.com/lierdakil/pandoc-crossref)
+    which I don’t think is part of the standard RStudio pandoc
+    installation. You might need to install it for the main text to knit
+    correctly to Word.
 
 ### Licenses
 
