@@ -460,12 +460,8 @@ normals_plot & theme(text = element_text(size = 10))
 <!--# maria suggests moving normals figure to appendix -->
 
 ```{r}
-eda_cap <- "Timeseries of demographic parameters and drought ocurrence. Mean plant size ± standard deviation (a) shows that plants were smaller in fragments (red) than continuous forest (blue). (b) shows the survival curve for the 1998 cohort of plants in fragments and continuous forest. c) shows the proportion of plants with 4 or more shoots flowering each census. In d), monthly 3-month SPEI is plotted. Light grey lines represent values from different grid cells encompassing BDFFP and the dark line is the site mean. Yellow, orange, dark orange, and red stripes show mild, moderate, severe, and extreme drought, respectively."
+eda_cap <- "Timeseries of demographic parameters and drought ocurrence. Mean plant size ± standard deviation (a) shows that plants were smaller in fragments (orange, solid) than continuous forest (blue, dashed). The proportion of plants surviving each transition year (b) shows that average survival is high and was lowest in the 2004 census. The proportion of reproductive sized plants (c) is on average low and fluctuates substantially year to year. The cutoff for reproductive size plants in panel (c) is defined as the upper 90th percentile size of flowering plants in all years. Monthly 3-month SPEI is shown (d) with grey lines representing values from different grid cells encompassing BDFFP and the dark line representing the site mean. Yellow, orange, dark orange, and red stripes show mild, moderate, severe, and extreme drought, respectively."
 ```
-
-<!--# standard deviation not shown in a), but mentioned in caption. Why? -->
-
-<!--# Maria would prefer survival rates for all plants rather than tracking 1998 cohort survivorship -->
 
 ```{r eda, fig.cap=eda_cap, fig.width=7, fig.height=7}
 eda_plot & theme(text = element_text(size = 10))
