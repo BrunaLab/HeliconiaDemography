@@ -36,7 +36,16 @@ plot_covar_smooth <- function(cf_model, frag_model, covar) {
   p <- 
     ggplot(data, aes_string(x = covar, color = "habitat", linetype = "habitat")) +
     geom_line(aes_string(y = "est")) +
-    geom_ribbon(aes_string(ymin = "lower_ci", ymax = "upper_ci", color = NULL, fill = "habitat"), alpha = 0.4) +
+    geom_ribbon(
+      aes_string(
+        ymin = "lower_ci",
+        ymax = "upper_ci",
+        color = NULL,
+        fill = "habitat"
+      ),
+      alpha = 0.4,
+      key_glyph = "path"
+    )+
     theme_classic()
   p
 }
@@ -45,7 +54,7 @@ make_size_plot <- function(s, g, f, model_data) {
   
   d <-
     ggplot(model_data, aes(x = log_size_prev, fill = habitat, color = habitat, linetype = habitat)) +
-    geom_density(alpha = 0.4) +
+    geom_density(alpha = 0.4, key_glyph = "path") +
     labs(y = "Density", x = TeX("$log(size_t)$")) +
     theme_classic() +
     theme(legend.position = "none")
