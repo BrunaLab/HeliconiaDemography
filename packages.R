@@ -24,6 +24,7 @@ library(rmarkdown)
 library(colorspace)
 library(Amelia)
 library(readxl)
+library(Hmisc)
 
 conflict_prefer("select", "dplyr")
 conflict_prefer("filter", "dplyr")
