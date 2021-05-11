@@ -79,7 +79,6 @@ library(patchwork)
 ```{r load-targets}
 withr::with_dir(here(), {
   tar_load(c(
-    normals_plot,
     eda_plot,
     s_spei_plot,
     g_spei_plot,
@@ -140,7 +139,7 @@ In subsequent decades the vegetation regenerating around fragments has been peri
 The BDFFP reserves are located in nonflooded (i.e., *terra firme*) tropical lowland forest with a 30--37m tall canopy [@rankin-de-meronaPreliminaryResultsLargescale1992] and an understory dominated by stemless palms [@scariotForestFragmentationEffects1999].
 The soils in the reserves are nutrient-poor xanthic ferrosols; their water retention capacity is poor despite having a high clay content.
 Mean annual temperature in the region is 26º C (range=19--39º C), and annual rainfall at the BDFFP reserves ranges from 1900--2300 mm.
-There is a pronounced dry season from June to October (Figure \@ref(fig:normals)).
+There is a pronounced dry season from June to October (Figure S1 <!--# update figure number manually -->).
 
 ## Focal species
 
@@ -231,8 +230,7 @@ We therefore fit separate models for plants in fragments and in continuous fores
 # Results
 
 Meteorological droughts in our focal region, as indicated by SPEI, are generally consistent with those reported in the literature.
-For example, the drought associated with the 1997 El Niño Southern Oscillation (ENSO) event was one of the most severe on record for the Amazon [@williamsonAmazonianTreeMortality2000]; correspondingly, 1997 has the lowest SPEI values in our timeseries (Figure \@ref(fig:eda)d).
-The 2005 dry season (June--October) was also reported as an exceptionally dry year, although this drought mostly affected the south western Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008].
+For example, the drought associated with the 1997 El Niño Southern Oscillation (ENSO) event was one of the most severe on record for the Amazon [@williamsonAmazonianTreeMortality2000]; correspondingly, 1997 has the lowest SPEI values in our timeseries (Figure \@ref(fig:eda)d). The 2005 dry season (June--October) was also reported as an exceptionally dry year, although this drought mostly affected the south western Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008].
 Our SPEI data show the 2005 dry season to be a moderate drought (-1 \> SPEI \> -1.5).
 
 ## Survival, growth, and flowering in continuous forest vs. fragments
@@ -448,16 +446,6 @@ PPS, which develop and compute the TMPA as a contribution to TRMM. "\<
 \>
 
 # Figures
-
-```{r}
-normals_cap <- "Weather normals for Manaus, Brazil (3º6'S, 60º1'W) for 1981–2010. Precipitation (a) shows a marked dry seasons from June through October. Temperature (b) varies less throughout the year. Mean monthly temperature is shown in the solid red line and monthly minimum and maximum temperatures are shown with the lower and upper dashed lines, respectively. Data from Brazilian National Institute of Meterology (INMET)."
-```
-
-```{r normals, fig.cap=normals_cap}
-normals_plot & theme(text = element_text(size = 10))
-```
-
-<!--# maria suggests moving normals figure to appendix -->
 
 ```{r}
 eda_cap <- "Timeseries of demographic parameters and drought ocurrence. Mean plant size ± standard deviation (a) shows that plants were smaller in fragments (orange, solid) than continuous forest (blue, dashed). The proportion of plants surviving each transition year (b) shows that average survival is high and was lowest in the 2004 census. The proportion of reproductive sized plants (c) is on average low and fluctuates substantially year to year. The cutoff for reproductive size plants in panel (c) is defined as the upper 90th percentile size of flowering plants in all years. Monthly 3-month SPEI is shown (d) with grey lines representing values from different grid cells encompassing BDFFP and the dark line representing the site mean. Yellow, orange, dark orange, and red stripes show mild, moderate, severe, and extreme drought, respectively."
