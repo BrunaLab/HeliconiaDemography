@@ -238,6 +238,7 @@ plot_eda_combine <- function(...) {
     theme(plot.margin = margin(2,1,1,1)) &
     scale_color_manual(values = c("#E66101", "#5E3C99"),
                        aesthetics = c("color", "fill")) &
-    guides(col = guide_legend(title = "Habitat"), linetype = guide_legend(title = "Habitat"))
+    guides(col = guide_legend(title = "Habitat"),
+           linetype = guide_legend(title = "Habitat"))
   return(p)
 }

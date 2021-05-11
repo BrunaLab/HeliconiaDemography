@@ -65,7 +65,11 @@ make_size_plot <- function(s, g, f, model_data) {
     theme(plot.margin = margin()) &
     # set color for all panels
     scale_color_manual(values = c("#E66101", "#5E3C99"),
-                       aesthetics = c("color", "fill"))
+                       aesthetics = c("color", "fill")) &
+    guides(col = guide_legend(title = "Habitat"),
+           linetype = guide_legend(title = "Habitat"),
+           fill = guide_legend(title = "Habitat"))
+    
 }
 
 
