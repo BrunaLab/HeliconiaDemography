@@ -74,10 +74,10 @@ plot_eda_surv_ts <- function(demog_post, date_lims) {
   
   survival <-
     demog_plotdf %>%  
-    filter(shts_prev >= 4) %>%
+    # filter(shts_prev >= 4) %>%
     ggplot(aes(x = yearmonth, y = surv, color = habitat, linetype = habitat)) +
     stat_summary(geom = "line", fun = "mean", fun.args = list(na.rm = TRUE)) +
-    stat_summary(geom = "pointrange", fatten = 1) +
+    # stat_summary(geom = "pointrange", fatten = 1) + #not sure plot-level SD makes sense
     scale_x_yearmonth(
       limits = date_lims,
       breaks = date_breaks,
@@ -190,16 +190,19 @@ plot_eda_size <- function(demog_post, date_lims) {
 #' 
 #' plots proportion of plants flowering over time
 #'
-#' @param demog_post demography data
+#' @param data demography data
 #' @param date_lims x-axis limits
-#'
-plot_eda_flwr <- function(demog_post, date_lims) {
-  demog_plotdf <- eda_plot_df(demog_post)
+#' @param repro_size a size cutoff for plants that are considered reproductive.
+#'  The default, 168, corresponds to the upper 90th percentile of the size of
+#'  all flowering plants in the dataset.
+#'  
+plot_eda_flwr <- function(data, date_lims, repro_size = 168) {
+  demog_plotdf <- eda_plot_df(data)
   date_breaks <- seq(date_lims[1], date_lims[2], by = "year")
   
    flowering_df <-
     demog_plotdf %>% 
-    filter(shts >= 4) %>% 
+    filter(size >= repro_size) %>% 
     group_by(yearmonth, habitat) %>% 
     summarize(n = n(), flwr = sum(flwr == 1, na.rm = TRUE)) %>% 
     mutate(prop_flwr = flwr/n)
