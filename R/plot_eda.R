@@ -102,9 +102,7 @@ plot_eda_surv_ts <- function(demog_post, date_lims) {
 #' @param demog demography data
 #' @param date_lims x-axis limits
 #'
-plot_eda_surv_cohort <- function(demog, date_lims) {
-  
-  date_breaks <- seq(date_lims[1], date_lims[2], by = "year")
+plot_eda_surv_cohort <- function(demog) {
   
   cohort <-
     demog %>% 
@@ -124,21 +122,22 @@ plot_eda_surv_cohort <- function(demog, date_lims) {
            yearmonth = yearmonth(date))
   
   surv_curve <-
-    ggplot(surv_curve_df, aes(x = yearmonth, y = p_surv, color = habitat, linetype = habitat)) +
+    ggplot(surv_curve_df, aes(x = date, y = p_surv, color = habitat, linetype = habitat)) +
     geom_step() +
-    scale_x_yearmonth(
-      limits = date_lims,
-      breaks = date_breaks,
+    scale_x_date(
+      "Census Year",
+      date_breaks = "1 year",
+      date_labels = "%Y",
       date_minor_breaks = "1 month",
       expand = expansion(mult = 0.04)
     ) +
     scale_y_continuous("P(survived)") +
+    scale_color_manual(values = c("#E66101", "#5E3C99"),
+                        aesthetics = c("color", "fill")) +
+    guides(col = guide_legend(title = "Habitat"),
+           linetype = guide_legend(title = "Habitat")) +
     theme_classic() +
-    theme(
-      axis.text.x = element_blank(),
-      axis.title.x = element_blank(),
-      axis.ticks.x = element_blank()
-    )
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
   surv_curve
 }
 

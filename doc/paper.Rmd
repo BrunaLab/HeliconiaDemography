@@ -77,9 +77,10 @@ library(patchwork)
 ```
 
 ```{r load-targets}
-withr::with_dir(here(), {
+withr::with_dir(here::here(), {
   tar_load(c(
     eda_plot,
+    surv_curve,
     s_spei_plot,
     g_spei_plot,
     f_spei_plot,
@@ -453,6 +454,14 @@ eda_cap <- "Timeseries of demographic parameters and drought ocurrence. Mean pla
 
 ```{r eda, fig.cap=eda_cap, fig.width=7, fig.height=7}
 eda_plot & theme(text = element_text(size = 10))
+```
+
+```{r}
+surv_curve_cap <- "Survivorship of plants labeled in the first survey year, 1998, which comprise 49% of the plants in the full dataset. After 10 years, 79.7% (1629/2055) of plants in continuous forest survived and 72.4% (393/543) of plants in fragments survived."
+```
+
+```{r surv_curve, fig.cap=surv_curve_cap, fig.width=7, fig.height=3.5}
+surv_curve + theme(text = element_text(size = 10))
 ```
 
 ```{r}

@@ -83,10 +83,11 @@ tar_plan(
   
   eda_spei = plot_eda_spei(xa_lag, plot_dates),
   eda_surv_ts = plot_eda_surv_ts(model_data, plot_dates),
-  eda_surv = plot_eda_surv_cohort(demog_done, plot_dates),
   eda_size = plot_eda_size(model_data, plot_dates),
   eda_flwr = plot_eda_flwr(model_data, plot_dates),
   eda_plot = plot_eda_combine(eda_size, eda_surv_ts, eda_flwr, eda_spei),
+  
+  surv_curve = plot_eda_surv_cohort(demog_done),
   
   # Model output figures
 
