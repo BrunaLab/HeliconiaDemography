@@ -36,7 +36,16 @@ plot_covar_smooth <- function(cf_model, frag_model, covar) {
   p <- 
     ggplot(data, aes_string(x = covar, color = "habitat", linetype = "habitat")) +
     geom_line(aes_string(y = "est")) +
-    geom_ribbon(aes_string(ymin = "lower_ci", ymax = "upper_ci", color = NULL, fill = "habitat"), alpha = 0.4) +
+    geom_ribbon(
+      aes_string(
+        ymin = "lower_ci",
+        ymax = "upper_ci",
+        color = NULL,
+        fill = "habitat"
+      ),
+      alpha = 0.4,
+      key_glyph = "path"
+    )+
     theme_classic()
   p
 }
@@ -45,7 +54,7 @@ make_size_plot <- function(s, g, f, model_data) {
   
   d <-
     ggplot(model_data, aes(x = log_size_prev, fill = habitat, color = habitat, linetype = habitat)) +
-    geom_density(alpha = 0.4) +
+    geom_density(alpha = 0.4, key_glyph = "path") +
     labs(y = "Density", x = TeX("$log(size_t)$")) +
     theme_classic() +
     theme(legend.position = "none")
@@ -65,7 +74,11 @@ make_size_plot <- function(s, g, f, model_data) {
     theme(plot.margin = margin()) &
     # set color for all panels
     scale_color_manual(values = c("#E66101", "#5E3C99"),
-                       aesthetics = c("color", "fill"))
+                       aesthetics = c("color", "fill")) &
+    guides(col = guide_legend(title = "Habitat"),
+           linetype = guide_legend(title = "Habitat"),
+           fill = guide_legend(title = "Habitat"))
+    
 }
 
 
@@ -126,7 +139,7 @@ plot_spei_heatmap <-
     
     ggplot(eval_df, aes_string(y = "spei_history", x = "L")) +
       geom_raster(aes_string(fill = "est")) +
-      geom_contour(aes_string(z = "est"), color = "black", binwidth = binwidth) +
+      geom_contour(aes_string(z = "est"), color = "black", binwidth = binwidth, size = 0.3) +
       geom_hline(aes(yintercept = 0), color = "grey", linetype = 2) +
       scale_fill_viridis_c(response_lab, option = "viridis", limits = fill_lims) +
       scale_x_continuous("lag (months before census)",
@@ -152,7 +165,7 @@ plot_spei_heatmap <-
 #' @param response_lab response label (for color bar)
 #' @param binwidth binwidth for contour lines
 #'
-plot_cb_2panel <-
+plot_cb_3panel <-
   function(cf_model, frag_model, smooth = "spei_history", response_lab, binwidth) {
     df_cf <- my_eval_smooth(cf_model, smooth, dist = 0.1)
     df_frag <- my_eval_smooth(frag_model, smooth, dist = 0.1)
@@ -165,48 +178,37 @@ plot_cb_2panel <-
         df_frag,
         binwidth = binwidth,
         fill_lims = fill_lims,
-        response_lab = response_lab
+        response_lab = TeX(response_lab)
       )
     cf_plot <-
       plot_spei_heatmap(
         df_cf,
         binwidth = binwidth,
         fill_lims = fill_lims,
-        response_lab = response_lab
+        response_lab = TeX(response_lab)
       )
     
-    (cf_plot + theme(axis.title.x = element_blank())) /
-      (frag_plot) +
-      plot_layout(guides = "collect") +
-      plot_annotation(tag_levels = "a", tag_suffix = ")") &
-      labs(title = NULL) #remove plot titles
+    diff_df <-
+      bind_cols(
+        df_cf %>% rename_with(.fn = ~glue("cf_{.}")),
+        df_frag %>% rename_with(.fn = ~glue("frag_{.}"))
+      ) %>%
+      mutate(est = cf_est - frag_est) %>%
+      select(est, L = cf_L, spei_history = cf_spei_history)
     
+    diff_plot <-
+      plot_spei_heatmap(
+        diff_df,
+        fill_lims = NULL,
+        binwidth = binwidth,
+        response_lab = ""
+      ) +
+      scale_fill_distiller(TeX(glue::glue("$\\Delta${response_lab} (CF-1ha)")), palette = "PuOr")
+    
+    cf_plot / 
+      (frag_plot + theme(legend.position = "none")) /
+      diff_plot + plot_layout(guides = "keep") &
+      theme(legend.justification = "left") &
+      plot_annotation(tag_levels = "a", tag_suffix = ")") &
+      theme(legend.justification = "left")
   }
-
-#' Plot difference between evaluated crossbasis smooths in two habitats
-#'
-#' @param cf_model model object for continuous forest
-#' @param frag_model model object for 1-ha fragment
-#' @param smooth name of smooth
-#' @param response_lab label for response (color bar)
-#' @param binwidth binwidth for contour lines
-#' @param breaks breaks along lag axis
-#'
-#' @return
-#' @export
-#'
-#' @examples
-plot_cb_diff <- function(cf_model, frag_model, smooth = "spei_history", response_lab, binwidth, breaks = seq(0, 36, by = 2)) {
-  df_cf <- my_eval_smooth(cf_model, smooth, dist = 0.1)
-  df_frag <- my_eval_smooth(frag_model, smooth, dist = 0.1)
-  season_bar <- make_season_bar()
-  df <-
-    bind_cols(
-      df_cf %>% rename_with(.fn = ~glue("cf_{.}")),
-      df_frag %>% rename_with(.fn = ~glue("frag_{.}"))
-    ) %>%
-    mutate(est = cf_est - frag_est) %>%
-    select(est, L = cf_L, spei_history = cf_spei_history)
-  
-  plot_spei_heatmap(df, fill_lims = NULL, binwidth = binwidth, response_lab = response_lab)    
-}

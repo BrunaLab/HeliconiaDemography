@@ -74,10 +74,10 @@ plot_eda_surv_ts <- function(demog_post, date_lims) {
   
   survival <-
     demog_plotdf %>%  
-    filter(shts_prev >= 4) %>%
+    # filter(shts_prev >= 4) %>%
     ggplot(aes(x = yearmonth, y = surv, color = habitat, linetype = habitat)) +
     stat_summary(geom = "line", fun = "mean", fun.args = list(na.rm = TRUE)) +
-    stat_summary(geom = "pointrange", fatten = 1) +
+    # stat_summary(geom = "pointrange", fatten = 1) + #not sure plot-level SD makes sense
     scale_x_yearmonth(
       limits = date_lims,
       breaks = date_breaks,
@@ -102,9 +102,7 @@ plot_eda_surv_ts <- function(demog_post, date_lims) {
 #' @param demog demography data
 #' @param date_lims x-axis limits
 #'
-plot_eda_surv_cohort <- function(demog, date_lims) {
-  
-  date_breaks <- seq(date_lims[1], date_lims[2], by = "year")
+plot_eda_surv_cohort <- function(demog) {
   
   cohort <-
     demog %>% 
@@ -124,21 +122,22 @@ plot_eda_surv_cohort <- function(demog, date_lims) {
            yearmonth = yearmonth(date))
   
   surv_curve <-
-    ggplot(surv_curve_df, aes(x = yearmonth, y = p_surv, color = habitat, linetype = habitat)) +
+    ggplot(surv_curve_df, aes(x = date, y = p_surv, color = habitat, linetype = habitat)) +
     geom_step() +
-    scale_x_yearmonth(
-      limits = date_lims,
-      breaks = date_breaks,
+    scale_x_date(
+      "Census Year",
+      date_breaks = "1 year",
+      date_labels = "%Y",
       date_minor_breaks = "1 month",
       expand = expansion(mult = 0.04)
     ) +
     scale_y_continuous("P(survived)") +
+    scale_color_manual(values = c("#E66101", "#5E3C99"),
+                        aesthetics = c("color", "fill")) +
+    guides(col = guide_legend(title = "Habitat"),
+           linetype = guide_legend(title = "Habitat")) +
     theme_classic() +
-    theme(
-      axis.text.x = element_blank(),
-      axis.title.x = element_blank(),
-      axis.ticks.x = element_blank()
-    )
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
   surv_curve
 }
 
@@ -190,16 +189,19 @@ plot_eda_size <- function(demog_post, date_lims) {
 #' 
 #' plots proportion of plants flowering over time
 #'
-#' @param demog_post demography data
+#' @param data demography data
 #' @param date_lims x-axis limits
-#'
-plot_eda_flwr <- function(demog_post, date_lims) {
-  demog_plotdf <- eda_plot_df(demog_post)
+#' @param repro_size a size cutoff for plants that are considered reproductive.
+#'  The default, 168, corresponds to the upper 90th percentile of the size of
+#'  all flowering plants in the dataset.
+#'  
+plot_eda_flwr <- function(data, date_lims, repro_size = 168) {
+  demog_plotdf <- eda_plot_df(data)
   date_breaks <- seq(date_lims[1], date_lims[2], by = "year")
   
    flowering_df <-
     demog_plotdf %>% 
-    filter(shts >= 4) %>% 
+    filter(size >= repro_size) %>% 
     group_by(yearmonth, habitat) %>% 
     summarize(n = n(), flwr = sum(flwr == 1, na.rm = TRUE)) %>% 
     mutate(prop_flwr = flwr/n)
@@ -238,6 +240,7 @@ plot_eda_combine <- function(...) {
     theme(plot.margin = margin(2,1,1,1)) &
     scale_color_manual(values = c("#E66101", "#5E3C99"),
                        aesthetics = c("color", "fill")) &
-    guides(col = guide_legend(title = "Habitat"), linetype = guide_legend(title = "Habitat"))
+    guides(col = guide_legend(title = "Habitat"),
+           linetype = guide_legend(title = "Habitat"))
   return(p)
 }

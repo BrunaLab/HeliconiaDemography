@@ -32,7 +32,26 @@ source(here::here("packages.R"))
 source(here::here("R", "utils.R"))
 ```
 
+# Normals
+
+```{r}
+normals_cap <- "Weather normals for Manaus, Brazil (3º6'S, 60º1'W) for 1981–2010. Precipitation (a) shows a marked dry seasons from June through October. Temperature (b) varies less throughout the year. Mean monthly temperature is shown in the solid red line and monthly minimum and maximum temperatures are shown with the lower and upper dashed lines, respectively. Data from Brazilian National Institute of Meterology (INMET)."
+```
+
+```{r normals, fig.cap=normals_cap}
+withr::with_dir(here::here(), {
+  tar_load(normals_plot)
+})
+normals_plot & theme(text = element_text(size = 10))
+```
+
 *Last compiled: `r Sys.Date()`*
+
+If TRMM data is used, they suggest: "The TMPA data were provided by the\
+NASA/Goddard Space Flight Center's Mesoscale Atmospheric Processes Laboratory and\
+PPS, which develop and compute the TMPA as a contribution to TRMM. "\<
+!--\# this can go in supplemental --
+\>
 
 # TODO
 
