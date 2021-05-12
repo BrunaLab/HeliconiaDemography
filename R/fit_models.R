@@ -103,3 +103,40 @@ fit_flwr <- function(data, flwr_prev = FALSE) {
       select = TRUE,
       cluster = cl)
 }
+
+
+# fit_recruit <- function(data) {
+#   
+#   anon_recruit <-
+#     data %>%
+#     group_by(plot, year) %>%
+#     summarize(total_sdlgs = sum(code_notes == "sdlg (1)", na.rm = TRUE),
+#               total_infl = sum(infl_num, na.rm = TRUE)) %>%
+#     mutate(total_infl_prev = lag(total_infl))
+#   
+#   #keep weather history
+#   weather <-
+#     data %>%
+#     group_by(plot, year) %>%
+#     slice(1) %>% select(spei_history, L)
+#   
+#   df <- full_join(anon_recruit, weather, by = c("plot", "year")) %>% 
+#     filter(!is.na(total_infl_prev))
+#   
+#   #fit poisson model
+#   m <- gam(total_sdlgs ~ 
+#         s(plot, bs = "re") +
+#         # s(total_infl_prev, bs = "cr") +
+#         total_infl_prev +
+#         s(spei_history, L,
+#           bs = "cb",
+#           k = c(3, 35),
+#           xt = list(bs = "cr")),
+#       # offset = log(total_infl_prev),
+#       family = poisson,
+#       select = TRUE,
+#       method = "REML",
+#       data = df)
+#   
+#   
+# }
