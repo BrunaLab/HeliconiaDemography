@@ -47,6 +47,12 @@ normals_plot & theme(text = element_text(size = 10))
 
 *Last compiled: `r Sys.Date()`*
 
+If TRMM data is used, they suggest: "The TMPA data were provided by the\
+NASA/Goddard Space Flight Center's Mesoscale Atmospheric Processes Laboratory and\
+PPS, which develop and compute the TMPA as a contribution to TRMM. "\<
+!--\# this can go in supplemental --
+\>
+
 # TODO
 
 -   Write brief text
