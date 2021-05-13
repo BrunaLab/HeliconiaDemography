@@ -1,0 +1,251 @@
+---
+title: "Supplement to 'Delayed effects of climate on vital rates leads to demographic divergence in Amazonian forest fragments'"
+author: 
+  - Eric R. Scott
+  - María Uriarte
+  - Emilio M. Bruna
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+    bookdown::word_document2:
+      linenumbers: no
+      number_sections: no
+      fig_caption: yes
+      # reference_docx: "templates/template.docx" # Insert path for the DOCX file
+      pandoc_args:
+      - --lua-filter=templates/scholarly-metadata.lua
+      - --lua-filter=templates/author-info-blocks.lua
+      - --lua-filter=templates/pagebreak.lua
+linkcolor: blue
+bibliography: references.bib
+csl: "templates/global-change-biology.csl" # Insert path for the bib-style
+nocite: |
+  @mcphadenChildProdigy1997981999, marengoDroughtAmazonia20052008, zengCausesImpacts20052008, lewis2010AmazonDrought2011
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
+
+withr::with_dir(here::here(), {
+  targets::tar_load(c(
+    normals_plot,
+    embrapa_wide,
+    xa_spei,
+    trmm_spei,
+    gspei
+    ))
+})
+
+library(tidyverse)
+library(patchwork)
+library(flextable)
+library(tsibble)
+library(lubridate)
+library(latex2exp)
+library(colorspace)
+library(glue)
+source(here::here("R", "utils.R"))
+```
+
+# BDFFP plot map
+
+Map here
+
+Map caption here
+
+\pagebreak
+
+# Climate Normals for BDFFP
+
+```{r normals}
+normals_plot & theme(text = element_text(size = 10))
+```
+
+Figure S1.
+Weather normals for Manaus, Brazil (3º6'S, 60º1'W) for 1981--2010.
+Precipitation (a) shows a marked dry seasons from June through October.
+Temperature (b) varies less throughout the year.
+Mean monthly temperature is shown in the solid red line and monthly minimum and maximum temperatures are shown with the lower and upper dashed lines, respectively.
+Data from Brazilian National Institute of Meterology (INMET).
+<!--# citation needed? -->
+
+\pagebreak
+
+# Comparison of SPEI calculated from different data sources
+
+```{r}
+# combine data
+xa_df <-
+  xa_spei %>% 
+  as_tibble() %>% 
+  group_by(yearmonth) %>% 
+  #Summarize across grid cells
+  summarize(xa_spei = mean(spei))
+
+trmm_df <-
+  trmm_spei %>% 
+  group_by(yearmonth) %>% 
+  summarize(trmm_spei = mean(trmm_spei))
+
+comb <-
+  full_join(xa_df, gspei) %>% 
+  full_join(trmm_df) %>% 
+  full_join(embrapa_wide %>% select(yearmonth, st_spei)) %>% 
+  pivot_longer(c(-yearmonth), names_to = "dataset", values_to = "spei") %>% 
+  filter(yearmonth > yearmonth(ymd("1990-01-01"))) %>% 
+  mutate(year = year(yearmonth), .before = yearmonth)
+```
+
+```{r}
+# data for plot
+spei_plot <- 
+  comb %>% 
+  group_by(year) %>% 
+  mutate(min_mon = spei == min(spei, na.rm = TRUE)) %>% 
+  mutate(dataset = case_when(
+    dataset == "g_spei"  ~ "Global SPEI",   
+    dataset == "xa_spei" ~ "Xavier et al.",
+    dataset == "st_spei" ~ "EMBRAPA",
+    dataset == "trmm_spei" ~ "TRMM"
+  ))
+```
+
+```{r spei-plot, fig.width=7, fig.height=3.5}
+
+p <-
+  ggplot(spei_plot, aes(x = yearmonth, y = spei)) +
+  geom_line(aes(color = dataset), size = 0.5) +
+  scale_x_yearmonth(
+    "Date",
+    date_breaks = "1 year",
+  ) +
+  scale_y_continuous(TeX("SPEI_3_"),
+                     breaks = seq(-2.5, 2.5, 0.5))+
+  scale_color_discrete_qualitative() +
+  coord_cartesian(xlim = c("1995-02-01", "2009-02-01")) +
+  labs(color = "Dataset", linetype = "Dataset") +
+  theme_bw() +
+  theme(text = element_text(size = 11), axis.text.x = element_text(angle = 45, hjust = 1))
+
+annotate_spei(p)
+```
+
+Figure S2.
+Three-month SPEI at BDFFP calculated using 4 datasets.
+"EMBRAPA" (red) is the average of SPEI calculated using precipitation and evapotranspiration from two weather stations near BDFFP---Estacao Rio Preto da Eva ( -2.65º, -59.65º) and Estacao Manaus (-2.65º, -60.35º).
+The data was accessed from the EMBRAPA Infoclima data portal (<https://www.cnpaf.embrapa.br/infoclima/>).
+"Global SPEI" (green) is from the SPEI global database[@vicente-serranoNewGlobalGridded2010; @begueriaMultiscalarGlobalDrought2010].
+"TRMM" (blue) SPEI uses precipitation data from TRMM [@trmmTMPA3B432011] and evapotranspiration data from @xavierDailyGriddedMeteorological2016 to calculate 3-month SPEI.
+Note that TRMM data only goes back to 1998.
+@xavierDailyGriddedMeteorological2016 is the SPEI source described in the main text.
+Drought categories mild, moderate, severe, and extreme drought are represented by yellow, goldenrod, orange, and red panels, respectively.
+
+\pagebreak
+
+```{r}
+citations <- tribble(~year, ~Reference,
+                     2005, "Marengo et al. 2008; Zeng et al. 2008",
+                     2010, "Lewis et al. 2011",
+                     1997, "McPhaden 1999",
+                     2002, NA,
+                     2009, NA,
+                     2004, NA,
+                     2006, NA) 
+```
+
+```{r}
+spei_table <-
+  comb %>% 
+  group_by(year, dataset) %>% 
+  mutate(min = min(spei)) %>% 
+  filter(spei == min) %>% 
+  mutate(month = month(yearmonth, label = TRUE)) %>% 
+  # summarize(min = min, month = month) %>%
+  filter(year %in% c(2002, 2004, 2006, 2009, 1997, 2005, 2010)) %>% 
+  select(year, dataset, spei, month) %>% 
+  mutate(dataset = str_remove(dataset, "_spei")) %>% 
+  pivot_wider(names_from = dataset, values_from = c(spei, month)) %>% 
+  add_column(cause = c("ENSO", "ENSO", "ENSO", "AMO", "ENSO", "ENSO", "AMO"), 
+             .after = "year") %>% 
+  mutate(`Global SPEI` = glue("{round(spei_g, 2)} ({month_g})"),
+         `Xavier et al.` = glue("{round(spei_xa, 2)} ({month_xa})"),
+         EMBRAPA = glue("{round(spei_st, 2)} ({month_st})"),
+         TRMM = glue("{round(spei_trmm, 2)} ({month_trmm})")) %>% 
+  mutate(TRMM = if_else(TRMM == "NA (NA)", glue("–"), TRMM)) %>% 
+  ungroup()
+
+spei_table <- left_join(spei_table, citations)
+```
+
+```{r}
+set_flextable_defaults(big.mark = "")
+table <- 
+  spei_table %>% 
+  # select(-starts_with("month_"), -starts_with("spei_")) %>% 
+  flextable(
+    col_keys = c("year", "cause", "Global SPEI", "Xavier et al.", "EMBRAPA", "TRMM", "BDFFP")
+  ) %>% 
+  add_header_row(colwidths = c(1,1, 5),
+                 values = c("", "", "Lowest SPEI for the year (month)")) %>% 
+  align(i = 1, part = "header", align = "center") %>% 
+  #extreme drought
+  bg(~ spei_g < -2, ~`Global SPEI`, bg = "#e31a1c") %>% 
+  bg(~ spei_xa < -2, ~ `Xavier et al.`, bg = "#e31a1c") %>% 
+  bg(~ spei_st < -2, ~ EMBRAPA, bg = "#e31a1c") %>% 
+  bg(~spei_trmm < -2, ~TRMM, bg = "#e31a1c") %>% 
+
+  #severe drought
+  bg(~ between(spei_g,     -2, -1.5), ~ `Global SPEI`, bg = "#fd8d3c") %>% 
+  bg(~ between(spei_xa,    -2, -1.5), ~ `Xavier et al.`, bg = "#fd8d3c") %>% 
+  bg(~ between(spei_st,    -2, -1.5), ~ EMBRAPA, bg = "#fd8d3c") %>% 
+  bg(~ between(spei_trmm,  -2, -1.5), ~ TRMM, bg = "#fd8d3c") %>% 
+
+  #moderate drought
+  bg(~ between(spei_g,     -1.5, -1), ~ `Global SPEI`, bg = "#fecc5c") %>% 
+  bg(~ between(spei_xa,    -1.5, -1), ~ `Xavier et al.`, bg = "#fecc5c") %>% 
+  bg(~ between(spei_st,    -1.5, -1), ~ EMBRAPA, bg = "#fecc5c") %>% 
+  bg(~ between(spei_trmm,  -1.5, -1), ~ TRMM, bg = "#fecc5c") %>% 
+
+  #mild drought
+  bg(~ between(spei_g,     -1, 0), ~ `Global SPEI`, bg = "#ffffb2") %>% 
+  bg(~ between(spei_xa,    -1, 0), ~ `Xavier et al.`, bg = "#ffffb2") %>% 
+  bg(~ between(spei_st,    -1, 0), ~ EMBRAPA, bg = "#ffffb2") %>% 
+  bg(~ between(spei_trmm,  -1, 0), ~ TRMM, bg = "#ffffb2") 
+```
+
+Table S1.
+Comparison of SPEI values and drought categories across datasets for major drought events in the Amazon.
+Mild, moderate, severe, and extreme drought are represented by yellow, goldenrod, orange, and red, respectively.
+Cause indicates whether the drought was caused by the El Niño Southern Oscillation (ENSO) or Atlantic Sea Surface Temperatures (AMO).
+The lowest SPEI value for the year identified by each dataset is reported, along with the month that minimum value occurred in.
+Datasets are described in the legend for Figure S2.
+
+```{r spei-table}
+table %>%
+  set_table_properties(layout = "autofit") %>%
+  align(align = "center", j = 3:6) %>%
+  border_remove() %>% 
+  hline_bottom() %>% 
+  hline_top() %>% 
+  hline(j = 3:6, part = "header") %>% 
+  footnote(j = 2, i = c(1, 4, 7), value = as_paragraph(
+    c("McPhaden 1999",
+      "Marengo et al. 2008; Zeng et al. 2008",
+      "Lewis et al. 2011")),
+    ref_symbols = c("a", "b", "c"),
+    part = "body", inline = TRUE
+  )
+```
+
+\pagebreak
+
+# Choice of variable for plant size
+
+include contents of `choose_size_var.Rmd` here.
+Ask Emilio about citaiton for dataset.
+
+# References
+
+::: {#refs}
+:::
