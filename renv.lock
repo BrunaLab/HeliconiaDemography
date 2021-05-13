@@ -30,6 +30,13 @@
       "Repository": "CRAN",
       "Hash": "030aaec5bc6553f35347cbb1e70b1a17"
     },
+    "DEoptimR": {
+      "Package": "DEoptimR",
+      "Version": "1.0-8",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "4fdd17df6c1b897cb59bdd9cf6621a43"
+    },
     "Formula": {
       "Package": "Formula",
       "Version": "1.2-4",
@@ -408,6 +415,13 @@
       "Repository": "CRAN",
       "Hash": "77bd60a6157420d4ffa93b27cf6a58b8"
     },
+    "flextable": {
+      "Package": "flextable",
+      "Version": "0.6.5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "789adf172256facbc92cb3ef6ab71ee1"
+    },
     "forcats": {
       "Package": "forcats",
       "Version": "0.5.1",
@@ -435,6 +449,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "bc3bc77ea458de0a6efe94e8e7e9c641"
+    },
+    "gdtools": {
+      "Package": "gdtools",
+      "Version": "0.2.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "12a524de5a491ff39debb9311fc0763f"
     },
     "generics": {
       "Package": "generics",
@@ -798,6 +819,13 @@
       "Repository": "CRAN",
       "Hash": "df58958f293b166e4ab885ebcad90e02"
     },
+    "officer": {
+      "Package": "officer",
+      "Version": "0.3.18",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "da173b709a249ee1a0d122000c98cf92"
+    },
     "openssl": {
       "Package": "openssl",
       "Version": "1.4.4",
@@ -908,6 +936,13 @@
       "Repository": "CRAN",
       "Hash": "97def703420c8ab10d8f0e6c72101e02"
     },
+    "qqplotr": {
+      "Package": "qqplotr",
+      "Version": "0.0.5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "679abf2c2bf9031206e03e5ef3fe47a3"
+    },
     "rappdirs": {
       "Package": "rappdirs",
       "Version": "0.3.3",
@@ -984,6 +1019,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "edbf4cb1aefae783fd8d3a008ae51943"
+    },
+    "robustbase": {
+      "Package": "robustbase",
+      "Version": "0.93-7",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "eed524235ccf3c4a0775791cd9499d65"
     },
     "roxygen2": {
       "Package": "roxygen2",
@@ -1096,6 +1138,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "b227d13e29222b4574486cfcbde077fa"
+    },
+    "systemfonts": {
+      "Package": "systemfonts",
+      "Version": "1.0.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "6e899d7c097698d50ec87b1d8e65f246"
     },
     "tarchetypes": {
       "Package": "tarchetypes",

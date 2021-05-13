@@ -25,6 +25,7 @@ library(colorspace)
 library(Amelia)
 library(readxl)
 library(Hmisc)
+library(qqplotr)
 
 conflict_prefer("select", "dplyr")
 conflict_prefer("filter", "dplyr")

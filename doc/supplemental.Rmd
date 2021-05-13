@@ -33,7 +33,8 @@ withr::with_dir(here::here(), {
     embrapa_wide,
     xa_spei,
     trmm_spei,
-    gspei
+    gspei,
+    la_data
     ))
 })
 
@@ -45,6 +46,7 @@ library(lubridate)
 library(latex2exp)
 library(colorspace)
 library(glue)
+library(performance)
 source(here::here("R", "utils.R"))
 ```
 
@@ -52,6 +54,7 @@ source(here::here("R", "utils.R"))
 
 Map here
 
+Figure S1.
 Map caption here
 
 \pagebreak
@@ -62,7 +65,7 @@ Map caption here
 normals_plot & theme(text = element_text(size = 10))
 ```
 
-Figure S1.
+Figure S2.
 Weather normals for Manaus, Brazil (3º6'S, 60º1'W) for 1981--2010.
 Precipitation (a) shows a marked dry seasons from June through October.
 Temperature (b) varies less throughout the year.
@@ -131,7 +134,7 @@ p <-
 annotate_spei(p)
 ```
 
-Figure S2.
+Figure S3.
 Three-month SPEI at BDFFP calculated using 4 datasets.
 "EMBRAPA" (red) is the average of SPEI calculated using precipitation and evapotranspiration from two weather stations near BDFFP---Estacao Rio Preto da Eva ( -2.65º, -59.65º) and Estacao Manaus (-2.65º, -60.35º).
 The data was accessed from the EMBRAPA Infoclima data portal (<https://www.cnpaf.embrapa.br/infoclima/>).
@@ -244,6 +247,41 @@ table %>%
 
 include contents of `choose_size_var.Rmd` here.
 Ask Emilio about citaiton for dataset.
+
+```{r}
+m_ht <-   lm(log_leaf_area ~ log_ht,   data = la_data)
+m_shts <- lm(log_leaf_area ~ log_shts, data = la_data)
+m_size <- lm(log_leaf_area ~ log_size, data = la_data)
+```
+
+```{r include=FALSE}
+check_model(m_ht)
+check_model(m_shts)
+check_model(m_size)
+```
+
+Table S2.
+Using data from transplant experiments of *Heliconia acuminata* [@brunaExperimentalAssessmentHeliconia2002 <!--# and doi for unpublished data -->] we fit linear regressions with log(leaf area) as the response variable and either log(height), log(shoot number) or log(shoot number x height) as the predictor.
+Using the log of size (shoot number $\times$ height) as a predictor gives the lowest AIC, BIC, root mean squared error (RMSE) and highest $R^2$ indicating that it is the best proxy for predicting log(leaf area) as a response.
+
+```{r size-table}
+compare_performance(m_ht, m_shts, m_size, metrics = "common", rank = TRUE) %>%
+  select(-Model) %>% 
+  add_column(
+    "Model" = c(
+      "log(leaf area) ~ log(shoot number x height)",
+      "log(leaf area) ~ log(height)",
+      "log(leaf area) ~ log(shoot number)"
+    )
+  ) %>%
+  mutate(dAIC = AIC - min(AIC), dBIC = BIC- min(BIC)) %>% 
+  mutate(across(c(dAIC, dBIC, R2), ~round(.x, 2)), RMSE = round(RMSE, 3)) %>% 
+  select(Model, dAIC, dBIC, R2, RMSE) %>% 
+  flextable() %>% 
+  set_table_properties(layout = "autofit") 
+```
+
+\pagebreak
 
 # References
 
