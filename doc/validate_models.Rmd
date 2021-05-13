@@ -8,12 +8,14 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ## target knits Rmds in their own session, so load libraries here.
-source(here::here("packages.R"))
+library(targets)
+library(statmod)
+library(tidyverse)
 library(gratia)
 ```
 
 ```{r load-targets}
-withr::with_dir(here(),{
+withr::with_dir(here::here(),{
   tar_load(c(s_cf, s_1ha, g_cf, g_1ha, f_cf, f_1ha))
   })
 ```
@@ -30,6 +32,9 @@ Quantile residuals are more appropriate for binomial models.
 summary(s_cf)
 ```
 
+```{r}
+draw(s_cf)
+```
 
 ```{r echo=TRUE}
 par(mfrow = c(2,2))
@@ -40,12 +45,16 @@ qqnorm(qresid(s_cf)); qqline(qresid(s_cf))
 #Fitted vs. residuals
 scatter.smooth(predict(s_cf, type = "response"), qresid(s_cf), col = "grey")
 ```
+
 ### Fragments
 
 ```{r}
 summary(s_1ha)
 ```
 
+```{r}
+draw(s_1ha)
+```
 
 ```{r echo=TRUE}
 par(mfrow = c(2,2))
@@ -58,9 +67,15 @@ scatter.smooth(predict(s_1ha, type = "response"), qresid(s_1ha), col = "grey")
 ```
 
 ## Growth
+
 ### Continuous Forest
+
 ```{r}
 summary(g_cf)
+```
+
+```{r}
+draw(g_cf)
 ```
 
 ```{r}
@@ -74,6 +89,10 @@ summary(g_1ha)
 ```
 
 ```{r}
+draw(g_1ha)
+```
+
+```{r}
 appraise(g_1ha)
 ```
 
@@ -82,6 +101,14 @@ appraise(g_1ha)
 Quantile residuals are more appropriate for binomial models.
 
 ### Continuous Forest
+
+```{r}
+summary(f_cf)
+```
+
+```{r}
+draw(f_cf)
+```
 
 ```{r}
 par(mfrow = c(2,2))
@@ -96,6 +123,14 @@ scatter.smooth(predict(f_cf, type = "response"), qresid(f_cf), col = "grey")
 ### Fragments
 
 ```{r}
+summary(f_1ha)
+```
+
+```{r}
+draw(f_1ha)
+```
+
+```{r}
 par(mfrow = c(2,2))
 #histogram
 plot(density(qresid(f_1ha)))
@@ -107,7 +142,13 @@ scatter.smooth(predict(f_1ha, type = "response"), qresid(f_1ha), col = "grey")
 
 # Reproducibility
 
-<details><summary>Reproducibility receipt</summary>
+<details>
+
+<summary>
+
+Reproducibility receipt
+
+</summary>
 
 ```{r}
 ## datetime
