@@ -69,7 +69,6 @@ tar_plan(
   
   # Validate and summarize results
   tar_render(validate_models, "doc/validate_models.Rmd"),
-  tar_render(model_summary, "doc/model_summary.Rmd"),
 
   # Descriptive / Exploratory Data Analysis Figures
   normals = normals_data(),
