@@ -36,19 +36,14 @@ tar_plan(
   embrapa_wide = calc_spei_embrapa(embrapa_mon),
   tar_target(trmm_file, here("data", "supplemental", "trmm.csv"), format = "file"),
   trmm = read_tidy_trmm(trmm_file),
-  tar_render(SPEI_appendix, "doc/SPEI_appendix.Rmd"),
   tar_target(gspei_file, 
              here("data", "supplemental", "global_spei_-59.75_-2.25.csv"),
              format = "file"),
   gspei = read_tidy_gspei(gspei_file),
   trmm_spei  = calc_spei_trmm(trmm, xa_spei),
-  tar_target(bdffp_file,
-             here("data", "supplemental", "daily_precip.csv"),
-             format = "file"),
-  bdffp_daily = read_csv(bdffp_file),
-  bdffp_full = prep_bdffp(bdffp_daily),
-  bdffp_imputations = impute_bdffp(bdffp_full),
-  bdffp_spei = calc_spei_bdffp(bdffp_imputations, embrapa_mon),
+  
+  tar_render(supplemental, "doc/supplemental.Rmd"),
+  
   # Prep demographic data
   tar_target(demog_file, here("data", "Ha_survey_with_Zombies.csv"), format = "file"),
   demog_raw = read_fix_demog(demog_file),
