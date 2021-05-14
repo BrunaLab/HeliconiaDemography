@@ -97,7 +97,7 @@ withr::with_dir(here::here(), {
 
 <!--# Consider co-authorship of Cris Jurinitz, Maria Rosa Darrigo, Paulo Rubim, John Kress. -->
 
-<!--# Insert page break -->
+\pagebreak
 
 # Introduction
 
@@ -112,7 +112,7 @@ Studies in temperate systems have shown that the demography of species can also 
 While the demographic consequences for tropical species are expected to be similarly severe [@brodieClimateChangeTropical2012; @scheffersExtremeThermalHeterogeneity2017], surprisingly little is known about the consequences of changing climates for taxa in tropical biomes, including Amazonia [@paniw2021].
 Climate models for the next 50-100 years predict that some parts of the Amazon basin will experience more frequent and severe droughts as well as more frequent periods of high precipitation [@caiIncreasingFrequencyExtreme2014; @zengCausesImpacts20052008; @moraProjectedTimingClimate2013; @duffy2015].
 Plant populations may be particularly sensitive -- an increase in the frequency and severity of extreme precipitation events can have detrimental consequences for survival and reproduction [@estebanOtherSideDroughts2021; @gaoue2019].
-This, coupled with the evidence that growth and survivorship are already lower in fragments [@lauranceRainForestFragmentation1998; @brunaExperimentalAssessmentHeliconia2002; @zartmanDroughtImpactsSurvivorship2015], has led to speculation that plants in tropical forest fragments are particularly at risk from drought and other climatic extremes [@lauranceEffectsStrongDrought2001; @opdam2004; @selwood2015].
+This, coupled with the evidence that growth and survivorship are already lower in fragments [@lauranceRainForestFragmentation1998; @brunaExperimentalAssessmentHeliconia2002; @zartmanDroughtImpactsSurvivorship2015], has led to speculation that plants in tropical forest fragments are particularly at risk from drought and other climatic extremes [@lauranceEffectsStrongDrought2001; @opdamClimateChangeMeets2004; @selwood2015].
 
 Whether the demography of plant populations in tropical forest fragments is more susceptible to drought and other climatic extremes remains unclear for three primary reasons.
 First, most studies of plants in fragments have focused on a single life-history stage or process [@brunaHabitatFragmentationPlant2009; @ehrlenAdvancingEnvironmentallyExplicit2016], making it challenging to draw broader demographic conclusions.
@@ -229,8 +229,7 @@ We therefore fit separate models for plants in fragments and in continuous fores
 # Results
 
 Meteorological droughts in our focal region, as indicated by SPEI, are generally consistent with those reported in the literature.
-For example, the drought associated with the 1997 El Niño Southern Oscillation (ENSO) event was one of the most severe on record for the Amazon [@williamsonAmazonianTreeMortality2000]; correspondingly, 1997 has the lowest SPEI values in our timeseries (Figure \@ref(fig:eda)d).
-The 2005 dry season (June--October) was also reported as an exceptionally dry year, although this drought mostly affected the south western Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008].
+For example, the drought associated with the 1997 El Niño Southern Oscillation (ENSO) event was one of the most severe on record for the Amazon [@williamsonAmazonianTreeMortality2000]; correspondingly, 1997 has the lowest SPEI values in our timeseries (Figure \@ref(fig:eda)d). The 2005 dry season (June--October) was also reported as an exceptionally dry year, although this drought mostly affected the south western Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008].
 Our SPEI data show the 2005 dry season to be a moderate drought (-1 \> SPEI \> -1.5).
 
 ## Survival, growth, and flowering in continuous forest vs. fragments
@@ -347,7 +346,7 @@ This suggests that....<!--# not surew what to make of this lastsentence. Interpr
 Understanding how landscape structure and abiotic conditions act to influence population dynamics is central to many conceptual frameworks for studying and conserving fragmented landscapes [@didhamRethinkingConceptualFoundations2012; @driscollConceptualDomainMatrix2013].
 Our results support the emerging consensus that the effects of climatic extremes on demographic vital rates can be delayed for months or even years [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
 We also found that the delayed responses of populations in fragments can differ significantly in magnitude, direction, and lag time from those of populations in continuous forest.
-This suggests that the hypothesized synergies between climate and fragmentation on population dynamics [@opdam2004a; @selwood2015a; @laurance2001] are likely to be pervasive, but also far more complex than previously thought.
+This suggests that the hypothesized synergies between climate and fragmentation on population dynamics [@opdamClimateChangeMeets2004; @selwood2015; @laurancePositiveFeedbacksForest2001] are likely to be pervasive, but also far more complex than previously thought.
 
 ## Temporal variation in demographic responses to forest fragmentation
 
