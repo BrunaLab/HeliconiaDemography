@@ -60,8 +60,8 @@ make_size_plot <- function(s, g, f, model_data) {
     theme(legend.position = "none")
   
   top <-
-    s /
     g /
+    s /
     f & 
     theme(axis.title.x = element_blank(),
           axis.text.x = element_blank(),
