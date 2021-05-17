@@ -201,8 +201,8 @@ plot_cb_3panel <-
         binwidth = binwidth,
         response_lab = ""
       ) +
-      scale_fill_distiller(TeX(glue::glue("$\\Delta${response_lab} (CF-1ha)")), palette = "PuOr")
-    
+      scale_fill_gradient2(TeX(glue::glue("$\\Delta${response_lab} (CF-1ha)")),
+                           low = "#5E3C99", high = "#E66101") #from colorbrewer 5-class PuOr
     cf_plot / 
       (frag_plot + theme(legend.position = "none")) /
       diff_plot + plot_layout(guides = "keep") &
