@@ -1,25 +1,4 @@
 
-
-#' Evaluate a smooth with confidence intervals and backtransform
-#'
-#' Evaluates a smooth, adds the model intercept, confidence intervals, and
-#' backtransforms to the response scale. See help file for
-#' gratia::smooth_estimates() for more details.
-#'
-#' @param model a model object produced by gam() or bam()
-#' @param smooth which smooth, in quotes.
-#' @param ... other arguments passed to gratia::smooth_estimates()
-#'
-my_eval_smooth <- function(model, smooth, ...) {
-  
-  linkinv <- model$family$linkinv
-  
-  gratia::smooth_estimates(model, smooth, ...) %>% 
-    gratia::add_confint() %>% 
-    mutate(across(c(est, lower_ci, upper_ci), ~linkinv(.x + coef(model)[1])))
-}
-
-
 #' Plots smooth covariates from two models
 #'
 #' @param cf_model gam model fit to continuous forest data
@@ -165,6 +144,15 @@ plot_spei_heatmap <-
 #'
 plot_cb_3panel <-
   function(cf_model, frag_model, smooth = "spei_history", response_lab, binwidth) {
+    
+    #adds intercept and back-transforms smooth to response scale
+    my_eval_smooth <- function(model, smooth, ...) {
+      linkinv <- model$family$linkinv
+      gratia::smooth_estimates(model, smooth, ...) %>% 
+        gratia::add_confint() %>% 
+        mutate(across(c(est, lower_ci, upper_ci), ~linkinv(.x + coef(model)[1])))
+    }
+    
     df_cf <- my_eval_smooth(cf_model, smooth, dist = 0.1)
     df_frag <- my_eval_smooth(frag_model, smooth, dist = 0.1)
     
