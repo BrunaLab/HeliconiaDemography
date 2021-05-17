@@ -35,7 +35,7 @@ linkcolor: blue
 bibliography: references.bib
 csl: "templates/global-change-biology.csl" # Insert path for the bib-style
 abstract: |
-  Text of abstract. 34,281 year x individual measurments! 
+  Text of abstract. 34,281 year x individual measurements! 
 keywords: |
   Amazon; delayed effects; demography; distributed lag non-linear models; drought; ENSO; habitat fragmentation; *Heliconia acuminata*; Heliconiaceae
 highlights: |
@@ -111,8 +111,8 @@ Despite the fact that this mechanism is thought to be particularly important in 
 Studies in temperate systems have shown that the demography of species can also be altered by climate change [@doak2010; @sletvold2005; @selwood2015; @williams2015], with more pronounced effects for fragmented populations [@oliver2015; @holyoak2016].
 While the demographic consequences for tropical species are expected to be similarly severe [@brodieClimateChangeTropical2012; @scheffersExtremeThermalHeterogeneity2017], surprisingly little is known about the consequences of changing climates for taxa in tropical biomes, including Amazonia [@paniw2021].
 Climate models for the next 50-100 years predict that some parts of the Amazon basin will experience more frequent and severe droughts as well as more frequent periods of high precipitation [@caiIncreasingFrequencyExtreme2014; @zengCausesImpacts20052008; @moraProjectedTimingClimate2013; @duffy2015].
-Plant populations may be particularly sensitive---an increase in the frequency and severity of extreme precipitation events can have detrimental consequences for survival and reproduction [@estebanOtherSideDroughts2021; @gaoue2019].
-This, coupled with the evidence that growth and survivorship are already lower in fragments [@lauranceRainForestFragmentation1998; @brunaExperimentalAssessmentHeliconia2002; @zartmanDroughtImpactsSurvivorship2015], has led to speculation that plants in tropical forest fragments are particularly at risk from drought and other climatic extremes [@lauranceEffectsStrongDrought2001; @opdamClimateChangeMeets2004; @selwood2015].
+Plant populations may be particularly sensitive -- an increase in the frequency and severity of extreme precipitation events can have detrimental consequences for survival and reproduction [@estebanOtherSideDroughts2021; @gaoue2019].
+This, coupled with the evidence that growth and survivorship are already lower in fragments [@lauranceRainForestFragmentation1998; @brunaExperimentalAssessmentHeliconia2002; @zartmanDroughtImpactsSurvivorship2015], has led to speculation that plants in tropical forest fragments are particularly at risk from drought and other climatic extremes [@lauranceEffectsStrongDrought2001; @opdam2004; @selwood2015].
 
 Whether the demography of plant populations in tropical forest fragments is more susceptible to drought and other climatic extremes remains unclear for three primary reasons.
 First, most studies of plants in fragments have focused on a single life-history stage or process [@brunaHabitatFragmentationPlant2009; @ehrlenAdvancingEnvironmentallyExplicit2016], making it challenging to draw broader demographic conclusions.
@@ -144,9 +144,7 @@ There is a pronounced dry season from June to October (Figure S1 <!--# update fi
 
 ## Focal species
 
-*Heliconia acuminata* (LC Rich.) (Heliconiaceae) is a perennial monocot distributed throughout Central Amazonia [@kressDiversityDistributionHeliconia1990] and is the most abundant understory herb at the BDFFP [@ribeiroInfluencePostclearingTreatment2010].
-While many *Heliconia* species grow in large patches in treefall gaps and other disturbed areas, others, such as *H. acuminata,* are found at lower densities in the darker and cooler forest understory [@rundelFunctionalTraitsBroadleaved2020].
-These species produce fewer inflorescences and are pollinated by traplining rather than territorial hummingbirds [@stouffer1996; @brunaHeliconiaAcuminataReproductive2004].
+*Heliconia acuminata* (LC Rich.) (Heliconiaceae) is a perennial monocot distributed throughout Central Amazonia [@kressDiversityDistributionHeliconia1990] and is the most abundant understory herb at the BDFFP [@ribeiroInfluencePostclearingTreatment2010]. While many *Heliconia* species grow in large patches in treefall gaps and other disturbed areas, others, such as *H. acuminata,* are found at lower densities in the darker and cooler forest understory [@rundelFunctionalTraitsBroadleaved2020]. These species produce fewer inflorescences and are pollinated by traplining rather than territorial hummingbirds [@stouffer1996; @brunaHeliconiaAcuminataReproductive2004].
 
 In our sites *H. acuminata* is pollinated by *Phaeothornis superciliosus* and *P. bourcieri* [@brunaHeliconiaAcuminataReproductive2004].
 Plants begin flowering at the start of the rainy season; reproductive plants have $\bar{x}=1.1$ flowering shoots (range = 1--7), each of which has an inflorescence with 20--25 flowers [@brunaHabitatFragmentationDemographic2002].
@@ -162,10 +160,11 @@ This study uses data from 1-ha fragments and continuous forest sites.
 <!--# maria: justify why 10ha plots omitted or don't say they exist -->
 
 Each plot is subdivided into 50 quadrats ($10 \times 10$m) to simplify the annual surveys, during which we recorded the number of vegetative shoots each plant had, the height of each plant to the tallest leaf, and whether each plant was flowering (height and shoot number are correlated with leaf area, the probability of flowering, and rates of survivorship [@brunaHabitatFragmentationDemographic2002; @brunaEffectsForestFragmentation2002]).
+In the current study we used the natural logarithm of the product of shoot number and height as a proxy for plant size.
+Preliminary analysis showed that this was a better predictor of total leaf area than either shoot number or height alone (Table S2 <!--# update crossref manually -->).
 Plants that were not found for three consecutive surveys were considered dead.
 We also surveyed plots regularly during the rainy season to identify any that flowered after the survey.
-For additional details on the plots, survey methods, and H.
-acuminata populations see @brunaHabitatFragmentationDemographic2002.
+For additional details on the plots, survey methods, and *H. acuminata* populations see @brunaHabitatFragmentationDemographic2002.
 
 ## Climate data
 
@@ -176,8 +175,7 @@ Positive SPEI values for a given month indicate conditions wetter than the histo
 SPEI can be calculated to represent different temporal scales of drought; we used 3-month SPEI because---given its shallow roots and rhizome---*H. acuminata* relies primarily on soil moisture rather than deeper water sources that can persist for longer timescales [@vicente-serranoMultiscalarDroughtIndex2010].
 Note that 3-month SPEI is still monthly data---each month's SPEI value simply takes into account precipitation and evapotranspiration of the previous three months.
 SPEI calculations were made using the `SPEI` package in `r version$version.string` [@rcoreteamLanguageEnvironmentStatistical2020; @begueriaSPEICalculationStandardised2017].
-The timing of drought events based on these SPEI calculations is consistent with that resulting from SPEI calculated with other data sources, though the magnitude of drought can sometimes differ (**Supplemental \_\_**).
-<!--# add this as a "child document" or whatever -->
+The timing of drought events based on these SPEI calculations is consistent with that resulting from SPEI calculated with other data sources, though the magnitude of drought can sometimes differ (Figure S2; Table S1 <!--# update crossrefs manually -->).
 
 ## Statistical Modeling of Vital Rates
 
@@ -213,8 +211,7 @@ Estimated degrees of freedom (edf) represent the 'true' complexity of the smooth
 
 To determine if plot characteristics influenced average vital rates we included a random effect of plot ID on the intercept; this was represented by $a_j$ in @eq:eqn1.
 We determined the effects of SPEI on plant growth using plant size in year t+1 as a response variable.
-This was modeled with a scaled t family error distribution and the natural log of height $\times$ shoot number as our proxy for plant size <!--# reference supplemental about plant size? -->.
-A scaled t family was chosen because residuals were leptokurtic with a Gaussian error structure.
+This was modeled with a scaled t family error distribution because residuals were leptokurtic with a Gaussian error structure.
 Because number of inflorescences was highly zero-inflated, we converted this to a binary response to model reproduction (i.e., 1 for ≥1 inflorescence, 0 for no inflorescences).
 We modeled both reproduction and survival (i.e., from year t to year t+1) using a binomial family error distribution with a logit link function.
 We modeled a potential cost of reproduction by including flowering in the previous year as covariate, $x_i$, in @eq:eqn1.
@@ -228,7 +225,7 @@ We therefore fit separate models for plants in fragments and in continuous fores
 
 # Results
 
-Meteorological droughts in our focal region, as indicated by SPEI, are generally consistent with those reported in the literature.
+Meteorological droughts in our focal region, as indicated by SPEI, are generally consistent with those reported in the literature (Table S1).
 For example, the drought associated with the 1997 El Niño Southern Oscillation (ENSO) event was one of the most severe on record for the Amazon [@williamsonAmazonianTreeMortality2000]; correspondingly, 1997 has the lowest SPEI values in our timeseries (Figure \@ref(fig:eda)d). The 2005 dry season (June--October) was also reported as an exceptionally dry year, although this drought mostly affected the south western Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008].
 Our SPEI data show the 2005 dry season to be a moderate drought (-1 \> SPEI \> -1.5).
 
@@ -297,7 +294,7 @@ model_data %>%
 ```
 
 While the overall proportion of all plants flowering was very low, it was nevertheless almost 40% higher in continuous forest than 1-ha fragments (`r summary_stats$flwr_mean[2]` ± `r summary_stats$flwr_sd[2]` vs. `r summary_stats$flwr_mean[1]` ± `r summary_stats$flwr_sd[1]`, respectively).
-This disparity was largely due to the fact that flowering is size-dependent ($p < 0.001$ in both habitats), with the probability of flowering increasing dramatically once plants reached the threshold size of about 148 (log(size) \> 5 in Figure \@ref(fig:size-plot)c) <!--# , which corresponds roughly to ____ shoots --This requires a supplemental figure, probably.  A plot of shoots vs. log(size) -->.
+This disparity was largely due to the fact that flowering is size-dependent ($p < 0.001$ in both habitats), with the probability of flowering increasing dramatically once plants reached the threshold size of about 148 (log(size) \> 5 in Figure \@ref(fig:size-plot)c).
 Even though flowering probability of large plants (log(size) \> 5) was greater in 1-ha fragments compared to continuous forest, there were proportionally far fewer plants above the reproductive threshold size in forest fragments (Figure \@ref(fig:size-plot)d).
 Indeed, the most striking difference between habitat types coincided with a severe drought in 2003, when the percentage of flowering reproductive-sized plants was 28% in continuous forest vs. only 13.6% in 1-ha fragments (Figure \@ref(fig:eda)c).
 
@@ -337,7 +334,7 @@ However, drought at lags 7--13 <!--# this corresponds to what - the dry and rain
 The greatest similarity between forest and fragments occurs when there is strong drought 8--12 months prior, or precipitation 15--20 months prior is extremely high.
 
 FInally, with the exception of survival in 1-ha fragments ($p = 0.252$), the delayed effects of SPEI on all three vital rates varied significantly among plots ($p < 0.001$ for the random effect of plot).
-There was no evidence for a cost of reproduction---in both forest and fragments, flowering in the previous year was a significant predictor of growth (CF: $p = 0.048$, 1-ha: $p = 0.031$) and flowering ($p < 0.001$ for both CF and 1-ha).
+There was no evidence for a cost of reproduction --- in both forest and fragments, flowering in the previous year was a significant predictor of growth (CF: $p = 0.048$, 1-ha: $p = 0.031$) and flowering ($p < 0.001$ for both CF and 1-ha).
 However, the coefficients were always positive, indicating that flowering in the previous year was positively related to both size and flowering probability in the current year.
 This suggests that....<!--# not surew what to make of this lastsentence. Interpret for reader?   -->
 
@@ -346,7 +343,7 @@ This suggests that....<!--# not surew what to make of this lastsentence. Interpr
 Understanding how landscape structure and abiotic conditions act to influence population dynamics is central to many conceptual frameworks for studying and conserving fragmented landscapes [@didhamRethinkingConceptualFoundations2012; @driscollConceptualDomainMatrix2013].
 Our results support the emerging consensus that the effects of climatic extremes on demographic vital rates can be delayed for months or even years [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
 We also found that the delayed responses of populations in fragments can differ significantly in magnitude, direction, and lag time from those of populations in continuous forest.
-This suggests that the hypothesized synergies between climate and fragmentation on population dynamics [@opdamClimateChangeMeets2004; @selwood2015; @laurancePositiveFeedbacksForest2001] are likely to be pervasive, but also far more complex than previously thought.
+This suggests that the hypothesized synergies between climate and fragmentation on population dynamics [@opdam2004a; @selwood2015a; @laurance2001] are likely to be pervasive, but also far more complex than previously thought.
 
 ## Temporal variation in demographic responses to forest fragmentation
 
@@ -458,7 +455,7 @@ This is publication No. ------ in the BDFFP Technical Series.
 # Figures
 
 ```{r}
-eda_cap <- "Timeseries of demographic parameters and drought ocurrence. Mean plant size ± standard deviation (a) shows that plants were smaller in fragments (orange, solid) than continuous forest (blue, dashed). The proportion of plants surviving each transition year (b) shows that average survival is high and was lowest in the 2004 census. The proportion of reproductive sized plants (c) is on average low and fluctuates substantially year to year. The cutoff for reproductive size plants in panel (c) is defined as the upper 90th percentile size of flowering plants in all years. Monthly 3-month SPEI is shown (d) with grey lines representing values from different grid cells encompassing BDFFP and the dark line representing the site mean. Yellow, orange, dark orange, and red stripes show mild, moderate, severe, and extreme drought, respectively."
+eda_cap <- "Timeseries of demographic parameters and drought occurrence. Mean plant size ± standard deviation (a) shows that plants were smaller in fragments (orange, solid) than continuous forest (blue, dashed). The proportion of plants surviving each transition year (b) shows that average survival is high and was lowest in the 2004 census. The proportion of reproductive sized plants (c) is on average low and fluctuates substantially year to year. The cutoff for reproductive size plants in panel (c) is defined as the upper 90th percentile size of flowering plants in all years. Monthly 3-month SPEI is shown (d) with gray lines representing values from different grid cells encompassing BDFFP and the dark line representing the site mean. Yellow, orange, dark orange, and red stripes show mild, moderate, severe, and extreme drought, respectively."
 ```
 
 ```{r eda, fig.cap=eda_cap, fig.width=7, fig.height=7}
@@ -474,7 +471,7 @@ surv_curve + theme(text = element_text(size = 10))
 ```
 
 ```{r}
-size_cap <- "Smooth effect of plant size in the previous census on a) survival, b) log(size), and c) flowering probabiility, modeled by cubic regression splines. Panel d) shows the smoothed density of different plant sizes in the two habitat types. 95% confidence intervals are shown and include uncertainty in the model intercept and uncertainty due to smoothness selection. The smooths for 1-ha fragments and continuous forest are fit in separate models. The model intercepts were added to the fitted values of the smooth and values are back-transformed to the response scale.  In b), a 1:1 line is shown in dashed red to indicate the line of no growth."
+size_cap <- "Smooth effect of plant size in the previous census on a) survival, b) log(size), and c) flowering probability, modeled by cubic regression splines. Panel d) shows the smoothed density of different plant sizes in the two habitat types. 95% confidence intervals are shown and include uncertainty in the model intercept and uncertainty due to smoothness selection. The smooths for 1-ha fragments and continuous forest are fit in separate models. The model intercepts were added to the fitted values of the smooth and values are back-transformed to the response scale.  In b), a 1:1 line is shown in dashed red to indicate the line of no growth."
 
 ```
 
