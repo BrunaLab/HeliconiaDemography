@@ -13,7 +13,6 @@ author:
       email: embruna@ufl.edu
       institute: [UF_WEC, UF_LAS, BDFFP]
       correspondence: false
-  
 institute:
   - UF_WEC: Department of Wildlife Ecology and Conservation, University of Florida, Gainesville, Florida 32611-0430
   - Columbia: Department of Ecology, Evolution and Environmental Biology, Columbia University 1200 Amsterdam Avenue, New York, New York 10027 USA
@@ -458,7 +457,7 @@ This is publication No. ------ in the BDFFP Technical Series.
 # Figures
 
 ```{r}
-eda_cap <- "Timeseries of demographic parameters and drought occurrence. Mean plant size ± standard deviation (a) shows that plants were smaller in fragments (orange, solid) than continuous forest (blue, dashed). The proportion of plants surviving each transition year (b) shows that average survival is high and was lowest in the 2004 census. The proportion of reproductive sized plants (c) is on average low and fluctuates substantially year to year. The cutoff for reproductive size plants in panel (c) is defined as the upper 90th percentile size of flowering plants in all years. Monthly 3-month SPEI is shown (d) with gray lines representing values from different grid cells encompassing BDFFP and the dark line representing the site mean. Yellow, orange, dark orange, and red stripes show mild, moderate, severe, and extreme drought, respectively."
+eda_cap <- "Timeseries of demographic parameters and drought occurrence. Mean fold-change in plant plant size (log2(size_t+1_ / size_t)) (a) shows that plant growth varied by year and habitat (1 ha fragments in orange, solid; continuous forest in blue, dashed). In most years plants grew on average with a notable exception in 2003 where plants regressed in size on average in both habitats (fold-change < 0). Error bars in a) represent standard deviation. The proportion of plants surviving each transition year (b) shows that average survival is high and was lowest in the 2004 census. The proportion of reproductive sized plants (c) is on average low and fluctuates substantially year to year. The cutoff for reproductive size plants in panel (c) is defined as the upper 90th percentile size of flowering plants in all years. Monthly 3-month SPEI is shown (d) with gray lines representing values from different grid cells encompassing BDFFP and the dark line representing the site mean. Yellow, orange, dark orange, and red stripes show mild, moderate, severe, and extreme drought, respectively."
 ```
 
 ```{r eda, fig.cap=eda_cap, fig.width=7, fig.height=7}

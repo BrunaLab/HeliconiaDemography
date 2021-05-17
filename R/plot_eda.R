@@ -147,6 +147,7 @@ plot_eda_size_foldchange <- function(demog_post, date_lims) {
   size <-
     demog_plotdf %>% 
     ggplot(aes(x = yearmonth, y = log2_growth, color = habitat, linetype = habitat)) +
+    geom_hline(yintercept = 0, color = "grey50") +
     stat_summary(
       geom = "line",
       fun = "mean",
