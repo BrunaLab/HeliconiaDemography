@@ -32,7 +32,6 @@ tar_plan(
   tar_render(validate_data, "doc/validate_data.Rmd"),
   
   # Fit demographic models
-  
   s_cf = fit_surv(model_data_cf, flwr_prev = TRUE),
   s_1ha = fit_surv(model_data_1ha, flwr_prev = TRUE),
   g_cf  = fit_growth(model_data_cf, flwr_prev = TRUE),
@@ -60,18 +59,17 @@ tar_plan(
 
   ## Survival
   s_covar_plot = plot_covar_smooth(frag_model = s_1ha, cf_model = s_cf, covar = "log_size_prev") + 
-                  labs(x = TeX("$log(size_t)$"), y = "P(survival)"),
+                  labs(x = TeX("$log(size_t)$"), y = "Effect [survival]"),
   s_spei_plot = plot_cb_3panel(s_cf, s_1ha, binwidth = 0.002, response_lab = "P(survival)"),
 
   ## Growth
   g_covar_plot = plot_covar_smooth(frag_model = g_1ha, cf_model = g_cf, covar = "log_size_prev") +
-                  geom_abline(slope = 1, color = "grey50") +
-                  labs(x = TeX("$log(size_t)$"), y = TeX("$log(size_{t+1})")),
+                  labs(x = TeX("$log(size_t)$"), y = TeX("Effect \\[$log(size_{t+1})\\]")),
   g_spei_plot = plot_cb_3panel(g_cf, g_1ha, binwidth = 0.05, response_lab = "$log(size_{t+1})$"),
 
   ## Flowering
   f_covar_plot = plot_covar_smooth(frag_model = f_1ha, cf_model = f_cf, covar = "log_size_prev") +
-                  labs(x = TeX("$log(size_t)$"), y = "P(flowering)"),
+                  labs(x = TeX("$log(size_t)$"), y = "Effect [flowering]"),
   f_spei_plot = plot_cb_3panel(f_cf, f_1ha, binwidth = 0.001, response_lab = "P(flowering)"),
 
   ## Size covariate

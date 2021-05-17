@@ -28,9 +28,9 @@ my_eval_smooth <- function(model, smooth, ...) {
 #' @param ... other arguments passed to gratia::smooth_estimates()
 #'
 plot_covar_smooth <- function(cf_model, frag_model, covar) {
-  cf   <- my_eval_smooth(cf_model, covar, unconditional = TRUE)
-  frag <- my_eval_smooth(frag_model, covar, unconditional = TRUE)
-  
+
+  cf <- gratia::smooth_estimates(cf_model, covar, unconditional = TRUE) %>% add_confint()
+  frag <- gratia::smooth_estimates(frag_model, covar, unconditional = TRUE) %>% add_confint()
   data <- bind_rows("1-ha" = frag, "CF" = cf, .id = "habitat")
   
   p <- 
@@ -73,11 +73,9 @@ make_size_plot <- function(s, g, f, model_data) {
     plot_annotation(tag_levels = "a", tag_suffix = ")") &
     theme(plot.margin = margin()) &
     # set color for all panels
-    scale_color_manual(values = c("#E66101", "#5E3C99"),
+    scale_color_manual("Habitat", values = c("#E66101", "#5E3C99"),
                        aesthetics = c("color", "fill")) &
-    guides(col = guide_legend(title = "Habitat"),
-           linetype = guide_legend(title = "Habitat"),
-           fill = guide_legend(title = "Habitat"))
+    guides(linetype = guide_legend(title = "Habitat"))
     
 }
 
