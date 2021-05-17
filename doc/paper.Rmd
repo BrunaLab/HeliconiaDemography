@@ -111,7 +111,7 @@ Despite the fact that this mechanism is thought to be particularly important in 
 Studies in temperate systems have shown that the demography of species can also be altered by climate change [@doak2010; @sletvold2005; @selwood2015; @williams2015], with more pronounced effects for fragmented populations [@oliver2015; @holyoak2016].
 While the demographic consequences for tropical species are expected to be similarly severe [@brodieClimateChangeTropical2012; @scheffersExtremeThermalHeterogeneity2017], surprisingly little is known about the consequences of changing climates for taxa in tropical biomes, including Amazonia [@paniw2021].
 Climate models for the next 50-100 years predict that some parts of the Amazon basin will experience more frequent and severe droughts as well as more frequent periods of high precipitation [@caiIncreasingFrequencyExtreme2014; @zengCausesImpacts20052008; @moraProjectedTimingClimate2013; @duffy2015].
-Plant populations may be particularly sensitive -- an increase in the frequency and severity of extreme precipitation events can have detrimental consequences for survival and reproduction [@estebanOtherSideDroughts2021; @gaoue2019].
+Plant populations may be particularly sensitive---an increase in the frequency and severity of extreme precipitation events can have detrimental consequences for survival and reproduction [@estebanOtherSideDroughts2021; @gaoue2019].
 This, coupled with the evidence that growth and survivorship are already lower in fragments [@lauranceRainForestFragmentation1998; @brunaExperimentalAssessmentHeliconia2002; @zartmanDroughtImpactsSurvivorship2015], has led to speculation that plants in tropical forest fragments are particularly at risk from drought and other climatic extremes [@lauranceEffectsStrongDrought2001; @opdamClimateChangeMeets2004; @selwood2015].
 
 Whether the demography of plant populations in tropical forest fragments is more susceptible to drought and other climatic extremes remains unclear for three primary reasons.
@@ -337,7 +337,7 @@ However, drought at lags 7--13 <!--# this corresponds to what - the dry and rain
 The greatest similarity between forest and fragments occurs when there is strong drought 8--12 months prior, or precipitation 15--20 months prior is extremely high.
 
 FInally, with the exception of survival in 1-ha fragments ($p = 0.252$), the delayed effects of SPEI on all three vital rates varied significantly among plots ($p < 0.001$ for the random effect of plot).
-There was no evidence for a cost of reproduction --- in both forest and fragments, flowering in the previous year was a significant predictor of growth (CF: $p = 0.048$, 1-ha: $p = 0.031$) and flowering ($p < 0.001$ for both CF and 1-ha).
+There was no evidence for a cost of reproduction---in both forest and fragments, flowering in the previous year was a significant predictor of growth (CF: $p = 0.048$, 1-ha: $p = 0.031$) and flowering ($p < 0.001$ for both CF and 1-ha).
 However, the coefficients were always positive, indicating that flowering in the previous year was positively related to both size and flowering probability in the current year.
 This suggests that....<!--# not surew what to make of this lastsentence. Interpret for reader?   -->
 
