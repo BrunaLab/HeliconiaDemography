@@ -53,7 +53,6 @@ eda_plot_df <- function(demog_post) {
   demog_plotdf <-  
     demog_post %>% 
     filter(habitat !="10-ha") %>% 
-    select(ranch, bdffp_reserve_no, plot, habitat, year, ht, shts, shts_prev, size, surv, flwr) %>% 
     mutate(date = paste(year, "-02-01") %>% ymd(),
            yearmonth = yearmonth(date))
   demog_plotdf
@@ -141,7 +140,44 @@ plot_eda_surv_cohort <- function(demog) {
   surv_curve
 }
 
-
+plot_eda_size_foldchange <- function(demog_post, date_lims) {
+  date_breaks <- seq(date_lims[1], date_lims[2], by = "year")
+  demog_plotdf <- eda_plot_df(demog_post) %>% mutate(log2_growth = log(size / size_prev, 2))
+  
+  size <-
+    demog_plotdf %>% 
+    ggplot(aes(x = yearmonth, y = log2_growth, color = habitat, linetype = habitat)) +
+    geom_hline(yintercept = 0, color = "grey50") +
+    stat_summary(
+      geom = "line",
+      fun = "mean",
+      fun.args = list(na.rm = TRUE),
+      position = position_dodge(width = 100),
+      aes(group = habitat)
+    ) +
+    stat_summary(
+      geom = "pointrange",
+      fatten = 1,
+      fun.data = "mean_sdl",
+      fun.args = list(mult = 1),
+      position = position_dodge(width = 100)
+    ) +
+    scale_x_yearmonth(
+      breaks = date_breaks,
+      date_minor_breaks = "1 month",
+      expand = expansion(mult = 0.04)
+    ) +
+    scale_y_continuous("fold-change in size") +
+    coord_cartesian(xlim = date_lims) + #limits here so points don't get removed
+    theme_classic() +
+    theme(
+      axis.text.x = element_blank(),
+      axis.title.x = element_blank(),
+      axis.ticks.x = element_blank(),
+      legend.position = "none"
+    )
+  size
+}
 
 #' Mean size timeseries plot
 #'
@@ -183,6 +219,7 @@ plot_eda_size <- function(demog_post, date_lims) {
       axis.ticks.x = element_blank(),
       legend.position = "none"
     )
+  size
 }
 
 #' Flowering rate plot

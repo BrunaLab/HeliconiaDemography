@@ -1,25 +1,4 @@
 
-
-#' Evaluate a smooth with confidence intervals and backtransform
-#'
-#' Evaluates a smooth, adds the model intercept, confidence intervals, and
-#' backtransforms to the response scale. See help file for
-#' gratia::smooth_estimates() for more details.
-#'
-#' @param model a model object produced by gam() or bam()
-#' @param smooth which smooth, in quotes.
-#' @param ... other arguments passed to gratia::smooth_estimates()
-#'
-my_eval_smooth <- function(model, smooth, ...) {
-  
-  linkinv <- model$family$linkinv
-  
-  gratia::smooth_estimates(model, smooth, ...) %>% 
-    gratia::add_confint() %>% 
-    mutate(across(c(est, lower_ci, upper_ci), ~linkinv(.x + coef(model)[1])))
-}
-
-
 #' Plots smooth covariates from two models
 #'
 #' @param cf_model gam model fit to continuous forest data
@@ -28,9 +7,9 @@ my_eval_smooth <- function(model, smooth, ...) {
 #' @param ... other arguments passed to gratia::smooth_estimates()
 #'
 plot_covar_smooth <- function(cf_model, frag_model, covar) {
-  cf   <- my_eval_smooth(cf_model, covar, unconditional = TRUE)
-  frag <- my_eval_smooth(frag_model, covar, unconditional = TRUE)
-  
+
+  cf <- gratia::smooth_estimates(cf_model, covar, unconditional = TRUE) %>% add_confint()
+  frag <- gratia::smooth_estimates(frag_model, covar, unconditional = TRUE) %>% add_confint()
   data <- bind_rows("1-ha" = frag, "CF" = cf, .id = "habitat")
   
   p <- 
@@ -60,8 +39,8 @@ make_size_plot <- function(s, g, f, model_data) {
     theme(legend.position = "none")
   
   top <-
-    s /
     g /
+    s /
     f & 
     theme(axis.title.x = element_blank(),
           axis.text.x = element_blank(),
@@ -73,11 +52,9 @@ make_size_plot <- function(s, g, f, model_data) {
     plot_annotation(tag_levels = "a", tag_suffix = ")") &
     theme(plot.margin = margin()) &
     # set color for all panels
-    scale_color_manual(values = c("#E66101", "#5E3C99"),
+    scale_color_manual("Habitat", values = c("#E66101", "#5E3C99"),
                        aesthetics = c("color", "fill")) &
-    guides(col = guide_legend(title = "Habitat"),
-           linetype = guide_legend(title = "Habitat"),
-           fill = guide_legend(title = "Habitat"))
+    guides(linetype = guide_legend(title = "Habitat"))
     
 }
 
@@ -167,6 +144,15 @@ plot_spei_heatmap <-
 #'
 plot_cb_3panel <-
   function(cf_model, frag_model, smooth = "spei_history", response_lab, binwidth) {
+    
+    #adds intercept and back-transforms smooth to response scale
+    my_eval_smooth <- function(model, smooth, ...) {
+      linkinv <- model$family$linkinv
+      gratia::smooth_estimates(model, smooth, ...) %>% 
+        gratia::add_confint() %>% 
+        mutate(across(c(est, lower_ci, upper_ci), ~linkinv(.x + coef(model)[1])))
+    }
+    
     df_cf <- my_eval_smooth(cf_model, smooth, dist = 0.1)
     df_frag <- my_eval_smooth(frag_model, smooth, dist = 0.1)
     
@@ -203,8 +189,8 @@ plot_cb_3panel <-
         binwidth = binwidth,
         response_lab = ""
       ) +
-      scale_fill_distiller(TeX(glue::glue("$\\Delta${response_lab} (CF-1ha)")), palette = "PuOr")
-    
+      scale_fill_gradient2(TeX(glue::glue("$\\Delta${response_lab} (CF-1ha)")),
+                           low = "#5E3C99", high = "#E66101") #from colorbrewer 5-class PuOr
     cf_plot / 
       (frag_plot + theme(legend.position = "none")) /
       diff_plot + plot_layout(guides = "keep") &
