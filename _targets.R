@@ -27,6 +27,7 @@ tar_plan(
   model_data = filter_data(demog_spei),
   model_data_cf = filter(model_data, habitat == "CF"),
   model_data_1ha = filter(model_data, habitat == "1-ha"),
+  model_data_cf_sub = subset_cf(model_data),
   
   # Data validation
   tar_render(validate_data, "doc/validate_data.Rmd"),
@@ -40,6 +41,10 @@ tar_plan(
   f_1ha = fit_flwr(model_data_1ha, flwr_prev = TRUE),
   
   # Validate and summarize results
+  ### Check for edf differences due to sample size
+  g_cf_sub = fit_growth(model_data_cf_sub, flwr_prev = TRUE),
+  f_cf_sub = fit_flwr(model_data_cf_sub, flwr_prev = TRUE),
+  s_cf_sub = fit_surv(model_data_cf_sub, flwr_prev = TRUE),
   tar_render(validate_models, "doc/validate_models.Rmd"),
 
   # Descriptive / Exploratory Data Analysis Figures

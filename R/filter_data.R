@@ -21,3 +21,10 @@ filter_data <- function(data) {
     #only use post-seedlings for this
     filter(code_notes != "sdlg (1)" | is.na(code_notes))
 }
+
+subset_cf <- function(model_data_cf, n_plants = 1010) {
+  set.seed(123)
+  plant_ids <- unique(model_data_cf$ha_id_number)
+  plant_sample <- sample(plant_ids, n_plants)
+  model_data_cf %>% filter(ha_id_number %in% plant_sample)
+}

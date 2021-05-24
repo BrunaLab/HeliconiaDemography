@@ -16,7 +16,17 @@ library(gratia)
 
 ```{r load-targets}
 withr::with_dir(here::here(),{
-  tar_load(c(s_cf, s_1ha, g_cf, g_1ha, f_cf, f_1ha))
+  tar_load(c(
+    s_cf,
+    s_1ha,
+    g_cf,
+    g_1ha,
+    f_cf,
+    f_1ha,
+    s_cf_sub,
+    g_cf_sub,
+    f_cf_sub
+    ))
   })
 ```
 
@@ -25,6 +35,25 @@ withr::with_dir(here::here(),{
 ## Survival
 
 Quantile residuals are more appropriate for binomial models.
+### Fragments
+
+```{r}
+summary(s_1ha)
+```
+
+```{r}
+draw(s_1ha)
+```
+
+```{r echo=TRUE}
+par(mfrow = c(2,2))
+#histogram
+plot(density(qresid(s_1ha)))
+#QQ plot
+qqnorm(qresid(s_1ha)); qqline(qresid(s_1ha))
+#Fitted vs. residuals
+scatter.smooth(predict(s_1ha, type = "response"), qresid(s_1ha), col = "grey")
+```
 
 ### Continuous Forest
 
@@ -46,41 +75,23 @@ qqnorm(qresid(s_cf)); qqline(qresid(s_cf))
 scatter.smooth(predict(s_cf, type = "response"), qresid(s_cf), col = "grey")
 ```
 
-### Fragments
+### Continuous forest subsample
+
+To check that differences are not purely due to sample size differences, particularly that lower edf in continuous forests is due to higher sample size.  For survival, edf is actually higher in CF with a larger sample size.  With subsample, edf are more similar.
 
 ```{r}
-summary(s_1ha)
+summary(s_1ha)$edf[3]
+summary(s_cf)$edf[3]
+summary(s_cf_sub)$edf[3]
 ```
+
 
 ```{r}
-draw(s_1ha)
+draw(s_cf_sub)
 ```
-
-```{r echo=TRUE}
-par(mfrow = c(2,2))
-#histogram
-plot(density(qresid(s_1ha)))
-#QQ plot
-qqnorm(qresid(s_1ha)); qqline(qresid(s_1ha))
-#Fitted vs. residuals
-scatter.smooth(predict(s_1ha, type = "response"), qresid(s_1ha), col = "grey")
-```
+Surface still looks different in a similar way though.
 
 ## Growth
-
-### Continuous Forest
-
-```{r}
-summary(g_cf)
-```
-
-```{r}
-draw(g_cf)
-```
-
-```{r}
-gratia::appraise(g_cf)
-```
 
 ### Fragments
 
@@ -96,29 +107,39 @@ draw(g_1ha)
 appraise(g_1ha)
 ```
 
+### Continuous Forest
+
+```{r}
+summary(g_cf)
+```
+
+```{r}
+draw(g_cf)
+```
+
+```{r}
+gratia::appraise(g_cf)
+```
+### Continuous Forest subsample
+
+To check that differences are not purely due to sample size differences, particularly that lower edf in continuous forests is due to higher sample size.
+
+```{r}
+summary(g_1ha)$edf[3]
+summary(g_cf)$edf[3]
+summary(g_cf_sub)$edf[3]
+```
+edf of subsample is similar to full dataset, despite differences in sample size.
+
+```{r}
+draw(g_cf_sub)
+```
+Crossbasis surface looks nearly identical.
+
 ## Flowering
 
 Quantile residuals are more appropriate for binomial models.
 
-### Continuous Forest
-
-```{r}
-summary(f_cf)
-```
-
-```{r}
-draw(f_cf)
-```
-
-```{r}
-par(mfrow = c(2,2))
-#histogram
-plot(density(qresid(f_cf)))
-#QQ plot
-qqnorm(qresid(f_cf)); qqline(qresid(f_cf))
-#Fitted vs. residuals
-scatter.smooth(predict(f_cf, type = "response"), qresid(f_cf), col = "grey")
-```
 
 ### Fragments
 
@@ -139,6 +160,39 @@ qqnorm(qresid(f_1ha)); qqline(qresid(f_1ha))
 #Fitted vs. residuals
 scatter.smooth(predict(f_1ha, type = "response"), qresid(f_1ha), col = "grey")
 ```
+### Continuous Forest
+
+```{r}
+summary(f_cf)
+```
+
+```{r}
+draw(f_cf)
+```
+
+```{r}
+par(mfrow = c(2,2))
+#histogram
+plot(density(qresid(f_cf)))
+#QQ plot
+qqnorm(qresid(f_cf)); qqline(qresid(f_cf))
+#Fitted vs. residuals
+scatter.smooth(predict(f_cf, type = "response"), qresid(f_cf), col = "grey")
+```
+
+### Continuous Forest subsample
+To check that differences are not purely due to sample size differences, particularly that lower edf in continuous forests is due to higher sample size.  For flowering, edf is actually slightly higher in CF with a larger sample size.  With subsample, edf are more similar.
+
+```{r}
+summary(f_1ha)$edf[3]
+summary(f_cf)$edf[3]
+summary(f_cf_sub)$edf[3]
+```
+
+```{r}
+draw(f_cf_sub)
+```
+Crossbasis surface looks extremely similar.
 
 # Reproducibility
 
