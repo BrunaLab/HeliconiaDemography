@@ -95,8 +95,6 @@ withr::with_dir(here::here(), {
 
 <!-- The actual document text starts here: -->
 
-<!--# Consider co-authorship of Cris Jurinitz, Maria Rosa Darrigo, Paulo Rubim, John Kress. -->
-
 \pagebreak
 
 # Introduction
@@ -157,7 +155,7 @@ Dispersed seeds germinate \~6 months after dispersal at the onset of the subsequ
 
 In 1997--1998 we established a series of 5000 m^2^ plots ($50 \times 100$m) in the BDFFP reserves in which we marked and measured all *Heliconia acuminata*.
 The plots are located in continuous forest ($n=6$), 10 ha fragments ($n=3$), and 1-ha fragments ($n=4$), with distance between plots ranging from 500 m--41 km.
-Plots in 1-ha fragments were on one randomly selected half of the fragment, plots in 10 ha fragments were in the fragment center, and plots in continuous forest were placed in locations 500--4000 m from the borders of secondary and mature forest (**Supplemental\_\_** <!--# insert fig ref -->).
+Plots in 1-ha fragments were on one randomly selected half of the fragment, plots in 10 ha fragments were in the fragment center, and plots in continuous forest were placed in locations 500--4000 m from the borders of secondary and mature forest.
 This study uses data from 1-ha fragments and continuous forest sites.
 <!--# maria: justify why 10ha plots omitted or don't say they exist -->
 
@@ -280,8 +278,9 @@ However, the 95% confidence intervals for 1-ha fragments and continuous forest o
 
 Plants in continuous forest had an average of 2.9 shoots (± 1.8 SD) and were on average 40.6 cm tall (± 26.5 SD).
 Plants in 1-ha fragments had on average \~`r format((1 - (2.5/2.9))*100, digits = 3)`% fewer shoots (2.5 ± 1.5 SD) and were \~`r format((1 - (36.2/40.6))*100, digits = 3)`% shorter (36.3 cm ± 24.1 SD).
-Because the proxy for plant size used in our models was the product of these two metrics, plants in continuous forest were consequently substantially larger than those in forest fragments (150 ± 175 SD vs. 112 ± 141 SD, respectively).
-<!--# Perhaps worth mentioning here that their distribution in different size classes is also different (skewed smaller) and likely why they are smaller on average). -->This disparity in plant size was most pronounced in the initial years of our surveys and then diminished over time (Figure \@ref(fig:eda)a).
+Because the proxy for plant size used in our models was the product of these two metrics, plants in continuous forest were on average substantially larger than those in forest fragments (150 ± 175 SD vs. 112 ± 141 SD, respectively).
+The distribution of sizes of individuals was somewhat bimodal in both habitats and the major difference in plant size was in the larger of the two modes being smaller in fragments (Figure \@ref(fig:size-plot)d).
+This disparity in plant size was most pronounced in the initial years of our surveys and then diminished over time (Figure \@ref(fig:eda)a).
 Mean plant size dropped dramatically in 2003 in both habitat types, corresponding with a severe drought during the February census (SPEI = -1.39) (Figure \@ref(fig:eda)d).
 As with survival, size in year t was a significant predictor of size in year t+1 ($p < 0.001$ in both habitats).
 While the effect was generally similar across size classes and habitat types, the impact of plant size on growth was greatest for mid-sized plants in continuous forest (Figure \@ref(fig:size-plot)a).
@@ -388,10 +387,7 @@ Adverse conditions during the 6 months following initiation, rather than the mon
 Interestingly, we observed the opposite effect---drought conditions increased the probability of flowering two years later.
 While this could reflect bet-hedging in response to stress [@nihadRelationshipStressFlowering2018], this does not appear to be the case, as growth or survival do not appear to decrease following reproduction (see also [@horvitzDemographicCostReproduction1988]. In fact, flowering in one year is associated with increased reproduction and growth in the next.
 
-Demographic responses will also be delayed if abiotic stress causes plants to invest in below-ground rhizomes [*sensu* @pumisutapon2012].
-The carbohydrates stored in rhizomes allow *Heliconia* to regenerate above-ground biomass following damage [@rundelStructuralPhysiologicalAdaptation1998] and protect the buds that give rise to new shoots from stressful conditions [@klimesovaBelowgroundPlantFunctional2018].
-This may be why drought led to delayed increases in growth---by shedding shoots and leaves [@brunaExperimentalAssessmentHeliconia2002] and investing in rhizomes, plants are generating proportionately more buds with which to regenerate when conditions improve.
-This would also be consistent with the results of prior experiments, in which the growth rates of *H. acuminata* 8 months after they were mechanically damaged far exceeded those of control plants [@brunaCompensatoryResponsesUnderstory2005].
+Demographic responses will also be delayed if abiotic stress causes plants to invest in below-ground rhizomes [*sensu* @pumisutapon2012]. The carbohydrates stored in rhizomes allow *Heliconia* to regenerate above-ground biomass following damage [@rundelStructuralPhysiologicalAdaptation1998] and protect the buds that give rise to new shoots from stressful conditions [@klimesovaBelowgroundPlantFunctional2018]. This may be why drought led to delayed increases in growth---by shedding shoots and leaves [@brunaExperimentalAssessmentHeliconia2002] and investing in rhizomes, plants are generating proportionately more buds with which to regenerate when conditions improve. This would also be consistent with the results of prior experiments, in which the growth rates of *H. acuminata* 8 months after they were mechanically damaged far exceeded those of control plants [@brunaCompensatoryResponsesUnderstory2005].
 
 Third, it may be that the delayed demographic effects we observed are indirectly mediated by the effect of SPEI on other species rather than the direct effects on individual physiology [@eversLaggedDormantSeason2021].
 For example, topical trees may not die until three or more years after a drought [@crileyYearProductionHigh1994].
