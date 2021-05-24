@@ -222,6 +222,7 @@ We applied an additional penalty to shrink linear portions toward zero with the 
 The `dlnm` package does not currently allow modeling of factor by smooth interactions.
 This means we could not include habitat as an interaction term.
 We therefore fit separate models for plants in fragments and in continuous forest to allow the shape of the crossbasis function to differ between habitats.
+<!--# I'd like to cite nothdurft et al.  Possibly as an example of a three-way interaction.  Theirs is temperature x precip x lag, but could be used for SPEI x size x lag *if* we had plant size on the same time scale as SPEI.  Maybe a discussion sentence. -->
 
 # Results
 
@@ -340,16 +341,13 @@ This suggests that the hypothesized synergies between climate and fragmentation 
 
 Many studies investigating the biological consequences of habitat fragmentation on plant growth, survival, and reproduction comprise short-term ([\<]{.ul}3 year) experiments and observations.
 Our results underscore the difficulty in extrapolating long-term trends from such short-term studies, particularly when studying long-lived organisms or when the responses of interest can vary with size or age.
-For instance, one would have reached a very different conclusion regarding the effect of fragmentation on annual survival if the study windows were 1997-2002 (i.e., higher survival in continuous forest), 2002-2005 (i.e., higher survival in fragments), or 2004-2007 (i.e, no clear effect of fragmentation; \@ref(fig:eda)**X**). It is only when evaluating over longer time windows that it becomes apparent mortality is elevated in fragments relative fo continuous forest (**Fig 2**), and that the observed interannual variation is largely driven by dynamic patterns of recruitment [@brunaEffectsForestFragmentation2002] coupled with low mortality for plants beyond the smallest size classes [@brunaArePlantPopulations2003].
+For instance, one would have reached a very different conclusion regarding the effect of fragmentation on annual survival if the study windows were 1999--2002 (i.e., higher survival in continuous forest), 2002--2005 (i.e., higher survival in fragments), or 2004--2007 (i.e, no clear effect of fragmentation; Figure \@ref(fig:eda)b). It is only when evaluating over longer time windows that it becomes apparent mortality is elevated in fragments relative to continuous forest (Figure \@ref(fig:surv-curve)), and that the observed interannual variation is largely driven by dynamic patterns of recruitment [@brunaEffectsForestFragmentation2002] coupled with low mortality for plants beyond the smallest size classes [@brunaArePlantPopulations2003].
 
 Similarly, conclusions regarding the effects of fragmentation on flowering---which is also both rare and size-dependent [@brooksStatisticalModelingPatterns2019]---would also differ based on the year in which they were investigated.
-This could lead to erroneous extrapolations regarding the effects of fragmentation on reproductive mutualists or how population genetic structure [@uriarteEffectsForestFragmentation2010; @uriarteDisentanglingDriversReduced2011; @cortesLowPlantDensity2013].
+This could lead to erroneous extrapolations regarding the effects of fragmentation on reproductive mutualists or population genetic structure [@uriarteEffectsForestFragmentation2010; @uriarteDisentanglingDriversReduced2011; @cortesLowPlantDensity2013].
 Conclusions based on short-term observations of temporally variable vital rates could lead to conservation and management practices that are ineffective or even counterproductive, especially when when failing to consider how the consequences of this variation might be modulated by organismal life history [@morrisLongevityCanBuffer2008].
 
-It is important to emphasize, however, that the overall effects of SPEI on survival and growth are more severe in fragments than continuous forest (**Fig X**).
-Furthermore, the magnitude of plant responses to climatic extremes is also greater in habitat fragments ---extreme drought in dry seasons and extreme precipitation in during rainy seasons are most detrimental to growth and survival in fragments.
-While intact forest and its canopy buffer populations from climatic extremes, populations in fragments - especially near edges with high contrast matrix - likely lack this protection [@didhamEdgeStructureDetermines1999; @ewersFragmentationImpairsMicroclimate2013].
-We suggest it is these climate extremes, rather than trends in average temperature, precipitation, or SPEI [@lauranceApparentEnvironmentalSynergism2014], that that are the causal mechanism underlying reduced plant growth and survival in forest fragments.
+It is important to emphasize, however, that the overall effects of SPEI on survival and growth are more severe in fragments than continuous forest (Figures \@ref(fig:surv-spei), \@ref(fig:growth-spei)). Furthermore, the magnitude of plant responses to climatic extremes is also greater in habitat fragments---extreme drought in dry seasons and extreme precipitation in during rainy seasons are most detrimental to growth and survival in fragments. While intact forest and its canopy buffer populations from climatic extremes, populations in fragments---especially near edges with high contrast matrix---likely lack this protection [@didhamEdgeStructureDetermines1999; @ewersFragmentationImpairsMicroclimate2013]. We suggest it is these climate extremes, rather than trends in average temperature, precipitation, or SPEI [@lauranceApparentEnvironmentalSynergism2014], that that are the causal mechanism underlying reduced plant growth and survival in forest fragments.
 
 ## Delayed effects of climate on demographic vital rates
 
@@ -372,23 +370,26 @@ These results should be interpreted with some caution, however, as the relativel
 
 There are several, non-mutually-exclusive explanations for delayed effects of SPEI on demography.
 The first is that the physiological processes underlying vital rates might be initiated long before they are demographically apparent [@eversLaggedDormantSeason2021], and hence be shaped by climatic events at any point in that physiological window.
-For example, the flowering shoots of *Heliconia chartacea* begin to develop 6-10 months prior to the appearance of inflorescences.
+For example, the flowering shoots of *Heliconia chartacea* begin to develop 6--10 months prior to the appearance of inflorescences.
 Adverse conditions during the 6 months following initiation, rather than the months when inflorescences are starting expand, leads to the aborted production of flowering shoots [@crileyYearProductionHigh1994].
 Interestingly, we observed the opposite effect---drought conditions increased the probability of flowering two years later.
-While this could reflect bet-hedging in response to stress [@nihadRelationshipStressFlowering2018], this does not appear to be the case, as growth or survival do not appear to decrease following reproduction (see also [@horvitzDemographicCostReproduction1988]. In fact, flowering in one year is associated with increased reproduction and growth in the next.
+While this could reflect bet-hedging in response to stress [@nihadRelationshipStressFlowering2018], this does not appear to be the case, as growth or survival do not appear to decrease following reproduction (see also [@horvitzDemographicCostReproduction1988]. In fact, flowering in one year is associated with increased reproduction and growth in the next <!--# this may change once individual-level random effects are incorporated -->.
 
-Demographic responses will also be delayed if abiotic stress causes plants to invest in below-ground rhizomes [*sensu* @pumisutapon2012]. The carbohydrates stored in rhizomes allow *Heliconia* to regenerate above-ground biomass following damage [@rundelStructuralPhysiologicalAdaptation1998] and protect the buds that give rise to new shoots from stressful conditions [@klimesovaBelowgroundPlantFunctional2018]. This may be why drought led to delayed increases in growth---by shedding shoots and leaves [@brunaExperimentalAssessmentHeliconia2002] and investing in rhizomes, plants are generating proportionately more buds with which to regenerate when conditions improve. This would also be consistent with the results of prior experiments, in which the growth rates of *H. acuminata* 8 months after they were mechanically damaged far exceeded those of control plants [@brunaCompensatoryResponsesUnderstory2005].
+Demographic responses will also be delayed if abiotic stress causes plants to invest in belowground rhizomes [*sensu* @pumisutapon2012].
+The carbohydrates stored in rhizomes allow *Heliconia* to regenerate aboveground biomass following damage [@rundelStructuralPhysiologicalAdaptation1998] and protect the buds that give rise to new shoots from stressful conditions [@klimesovaBelowgroundPlantFunctional2018].
+This may be why drought led to delayed increases in growth---by shedding shoots and leaves [@brunaExperimentalAssessmentHeliconia2002] and investing in rhizomes, plants are generating proportionately more buds with which to regenerate when conditions improve.
+This would also be consistent with the results of prior experiments, in which the growth rates of *H. acuminata* 8 months after they were mechanically damaged far exceeded those of control plants [@brunaCompensatoryResponsesUnderstory2005].
 
 Third, it may be that the delayed demographic effects we observed are indirectly mediated by the effect of SPEI on other species rather than the direct effects on individual physiology [@eversLaggedDormantSeason2021].
 For example, topical trees may not die until three or more years after a drought [@crileyYearProductionHigh1994].
 When they finally do, the resulting leaf drop [@janssenDroughtEffectsLeaf2021] and treefalls allow for light penetration to the forest understory [@canham1990; @leitoldNinoDroughtIncreased2018], triggering a boom in the growth and flowering of understory plants [@brunaDemographicEffectsHabitat2005].
 Similar delayed changes in the local environment could also influence the foraging behavior of a plant's pollinators [@brunaHeliconiaAcuminataReproductive2004; @stouffer1996], seed dispersers [@uriarteDisentanglingDriversReduced2011], or herbivores [@scottDifferingNonlinearLagged2021].
-While more work is needed to explain why the (delayed) effects of SPEI on *H. acuminata* survival and growth are greater in fragments than forest interiors, one hypothesis motivated by recent intriguing results from other systems **(CITATIONS)** is that the greater litterfall on edges [@vasconcelos2004] may be altering the abundance of pathogens or mycorrhizae.
+While more work is needed to explain why the (delayed) effects of SPEI on *H. acuminata* survival and growth are greater in fragments than forest interiors, one hypothesis motivated by recent intriguing results from other systems **(CITATIONS)** <!--#  --> is that the greater litterfall on edges [@vasconcelos2004] may be altering the abundance of pathogens or mycorrhizae.
 
 Finally, demographic delays could be an artifact of the timing of responses in relation to the census date.
 If extreme drought in the dry season before the census increased plant mortality during that season, for example, this would nevertheless appear in models as a delayed effect (e.g. in Figure \@ref(fig:surv-spei)b).
 In our case, this potential explanation for delayed effects applies only to plant size and survival, as plots were surveyed regularly throughout the reproductive season to identify flowering plants.
-This is possibility is not unique to our study, rather it is a consequence of conducting demographic censuses on an annual scale while the climate is quantified monthly or seasonally.
+This possibility is not unique to our study, rather it is a consequence of conducting demographic censuses on an annual scale while the climate is quantified monthly or seasonally.
 While the very slow growth and extremely low mortality rates of *H. acuminata* mean this effect is unlikely to be acting in our system, it may be that for some species it will be important to conduct demographic surveys at the same temporal scale at which climate is aggregated.
 
 ```{r flwr-prob-quartile, include=FALSE}
@@ -427,11 +428,11 @@ More generally, however, researchers need to consider how delayed responses to c
 
 # Acknowledgments
 
-We thank Collin Edwards, ----, ----, and --- anonymous reviewers for helpful discussions and comments on the manuscript.
+We thank Collin Edwards, \_\_\_, \_\_\_, and \_\_\_ anonymous reviewers for helpful discussions and comments on the manuscript.
 We also thank the technicians and students who helped conduct the *Heliconia* censuses and the BDFFP and INPA for logistical support.
 Financial support was provided by the U.S.
 National Science Foundation (awards DEB-0614339, DEB-0614149, INT 98-06351, and DEB-1948607).
-This is publication No. ------ in the BDFFP Technical Series.
+This is publication No. \_\_\_ in the BDFFP Technical Series.
 
 # Figures
 
