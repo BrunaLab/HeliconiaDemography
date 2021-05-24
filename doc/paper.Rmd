@@ -304,16 +304,15 @@ Indeed, the most striking difference between habitat types coincided with a seve
 Drought history had a significant effect on the survival ($p < 0.001$), growth ($p < 0.001$), and flowering ($p < 0.001$) of plants in both habitats.
 Comparing the respective crossbasis surfaces, however, reveals that the specific climatic drivers, their timing, and their impact on individual vital rates all differed among habitats.
 
-<!--# what do you think of this wording? Trying to walk people through the big result by breaking into two sentences telling them what they are about to see -->
-
-For 1-ha fragments, recent SPEI values (i.e. within the past 0--12 months) had the strongest effect on survival <!--# Is another way to say this "For 1-ha fragments, SPEI in the preceding 12 months had the strongest effect on survival, with..."  -->., with the highest survival near SPEI of 0 and mortality increasing as conditions became either drier or wetter (i.e., as SPEI values became increasingly negative or positive, respectively; Figure \@ref(fig:surv-spei)a).
-<!--# what do you think? trying to put the results in more ecological terms) -->In contrast, the effect of recent SPEI in continuous forest was both weaker and unidirectional -- survival probability was reduced only when SPEI was \< -1 (i.e., mild-severe drought), and even then only slightly (Figure \@ref(fig:surv-spei)b).
-Instead the most pronounced effects on the survival of plants in continuous forest were of SPEI at a lag time of 15--20 months (i.e. two dry seasons prior to a census).
-Drought 15--20 months prior to a census (i.e., SPEI \< -1) was associated with reduced survival, while high precipitation (i.e., SPEI \> 1) was associated with higher survival (put another way, was a nearly linear relationship between SPEI and survival probability).
+For 1-ha fragments, SPEI in the preceding 12 months had the strongest effect on survival, with the highest survival near SPEI of 0 and mortality increasing as conditions became either drier or wetter (i.e., as SPEI values became increasingly negative or positive, respectively; Figure \@ref(fig:surv-spei)a).
+In contrast, the effect of recent SPEI in continuous forest was both weaker and unidirectional---survival probability was reduced only when SPEI was \< -1 (i.e., mild-severe drought), and even then only slightly (Figure \@ref(fig:surv-spei)b).
+Instead the most pronounced effects on the survival of plants in continuous forest were of SPEI at a lag time of 15--20 months (i.e. two dry seasons prior to a census) and 32--36 months.
+Drought (i.e., SPEI \< -1) 15--20 months prior to a census was associated with reduced survival, while high precipitation (i.e., SPEI \> 1) was associated with higher survival (put another way, there was a nearly linear relationship between SPEI and survival probability).
 Finally, plants in both habitat types showed an increase in survival probability with very high SPEI values (i.e., extremely high precipitation) at a lag time of 36 months.
 It should be noted, however, that only the first year of census data (1999) met these conditions.
-<!--# can you walk me through these next two sentences? I'm not sure if this applies to the 36 mop lag or the whole time-series -->Subtracting the estimated contribution of SPEI history to survival in fragments from that in continuous forest shows that in average conditions (SPEI = 0), there is little difference in survival probability between continuous forest and fragments (Figure \@ref(fig:surv-spei)c).
-However, under extreme conditions, survival probability is higher in continuous forest by up to 0.02.
+We compared the effects of SPEI history in continuous forest and fragments by subtracting the fitted values in Figure \@ref(fig:surv-spei)b from Figure \@ref(fig:surv-spei)a to produce Figure \@ref(fig:surv-spei)c.
+This shows that in average conditions (SPEI = 0), there is little difference in survival probability between continuous forest and forest fragments (Figure \@ref(fig:surv-spei)c).
+However, under extreme conditions, survival probability is higher in continuous forest by up to 0.025.
 
 While the fitted crossbasis functions for fragments and continuous forest showed generally similar patterns of drought effects on growth (i.e, trends in plant size), the surface for 1-ha fragments indicated more complex responses in some situations (edf = 17.9 for 1-ha fragments; edf = 12.9 for continuous forest; see also Figure \@ref(fig:growth-spei)).
 For example, when SPEI = 0 (i.e., average conditions), growth is similar or slightly higher in continuous forest over all lag periods (Figure \@ref(fig:growth-spei)c).
@@ -321,23 +320,14 @@ However, when the current wet season is unusually wet (SPEI\>2), plants in conti
 In contrast, drought at lags of 8--11 months (i.e., the end of the preceding year's wet season) led to increased growth in both habitats, but the magnitude of the response was greater in 1-ha fragments.
 
 Overall, the the probability of flowering was higher in continuous forest than in 1-ha fragments for all values of SPEI (Figure \@ref(fig:flwr-spei)).
-The effects of SPEI on flowering probability in continuous forest were also more complex (1-ha edf = 8.1, continuous forest edf = 10.3); recent drought (i.e., at lag = 0 with SPEI \< -1) increased the probability of flowering in continuous forest, as did drought at lags 15--20 (i.e., two dry seasons prior).
-However, drought at lags 7--13 <!--# this corresponds to what - the dry and rainy 1 year ago?  --> reduced flowering probability.
-The responses in 1-ha fragments were substantially more muted, as indicated by the shape of the crossbasis function (Figure \@ref(fig:flwr-spei)a).
-In other words, the variation in fitted values along the SPEI dimension was much lower at all values of the lag dimension in fragments.
-Plotting the difference between the crossbasis smooths for continuous forest and 1-ha fragments revealed that flowering probability is higher in continuous forest compared to 1-ha fragments and is increased by recent drought and drought during the dry season 15--20 months prior to the census (Figure \@ref(fig:flwr-spei)c).
-The least difference between habitat types occurs when there is strong drought at about 8--12 months lag or very wet conditions at 15--20 months lag.
-
-***ALTERNATIVE SUMMARY OF THE FLOWERING RESULTS?*** Overall, the the probability of flowering was higher in continuous forest than in 1-ha fragments for all values of SPEI (Figure \@ref(fig:flwr-spei)).
 The responses in 1-ha fragments were also more muted (1-ha edf = 8.1, continuous forest edf = 10.3), as indicated by the shape of the crossbasis function (Figure \@ref(fig:flwr-spei)a).
-This led to some important inter-habitat differences in plant responses to prior droughts: recent drought (i.e., at lag = 0 with SPEI \< -1) increased the probability of flowering in continuous forest, as did drought at lags 15--20 (i.e., two dry seasons prior).
-However, drought at lags 7--13 <!--# this corresponds to what - the dry and rainy 1 year ago?  --> reduced flowering probability in continuous forest far more than it did in fragments (Figure \@ref(fig:flwr-spei)c).
-The greatest similarity between forest and fragments occurs when there is strong drought 8--12 months prior, or precipitation 15--20 months prior is extremely high.
+This led to some important inter-habitat differences in plant responses to prior droughts.
+Recent drought (i.e., at lag = 0 with SPEI \< -1) increased the probability of flowering in continuous forest, as did drought at lags 15--20 (i.e., two dry seasons prior).
+However, drought at lags 7--13 (the end of the rainy season one year prior) reduced flowering probability in continuous forest far more than it did in fragments (Figure \@ref(fig:flwr-spei)c).
 
 FInally, with the exception of survival in 1-ha fragments ($p = 0.252$), the delayed effects of SPEI on all three vital rates varied significantly among plots ($p < 0.001$ for the random effect of plot).
-There was no evidence for a cost of reproduction --- in both forest and fragments, flowering in the previous year was a significant predictor of growth (CF: $p = 0.048$, 1-ha: $p = 0.031$) and flowering ($p < 0.001$ for both CF and 1-ha).
+There was no evidence for a cost of reproduction---in both forest and fragments, flowering in the previous year was a significant predictor of growth (CF: $p = 0.048$, 1-ha: $p = 0.031$) and flowering ($p < 0.001$ for both CF and 1-ha).
 However, the coefficients were always positive, indicating that flowering in the previous year was positively related to both size and flowering probability in the current year.
-This suggests that....<!--# not surew what to make of this lastsentence. Interpret for reader?   -->
 
 # Discussion
 
