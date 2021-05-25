@@ -3,7 +3,7 @@
 #' @param demog completed demographic data
 #' @param xa lagged SPEI data calculated using data from Xavier et al.
 #'
-join_demog_spei <- function(demog, xa) {
+join_filter_demog_spei <- function(demog, xa) {
   #manually combine by which plots are in which grid cells.
   demog2 <-
     demog %>% 
@@ -19,6 +19,22 @@ join_demog_spei <- function(demog, xa) {
     mutate(year = year(yearmonth), .after =yearmonth) %>% 
     separate(latlon, into = c("lat", "lon"), sep = "_")
   
-  left_join(demog2, xa2, by = c("lon", "year")) %>% 
+  data_joined <- 
+    left_join(demog2, xa2, by = c("lon", "year")) %>% 
     select(-lon, -lat, -yearmonth)
+  
+  data_joined %>% 
+    filter(ht < 200 | is.na(ht), ht_prev < 200 | is.na(ht_prev)) %>%
+    filter(
+      # having no aboveground biomass is possible, but categorically different
+      # than just being small. Exclude plants with 0 shoots or 0 height
+      shts_prev > 0,
+      ht_prev > 0,
+      # for survival data, must include plants with NA for shts and height (i.e.
+      # dead plants)
+      shts > 0 | is.na(shts), 
+      ht > 0 | is.na(ht)
+    ) %>% 
+    # only use post-seedlings for this analysis
+    filter(code_notes != "sdlg (1)" | is.na(code_notes))
 }

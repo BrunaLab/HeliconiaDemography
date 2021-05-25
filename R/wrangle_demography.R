@@ -33,54 +33,42 @@ read_fix_demog <- function(path) {
 }
 
 
-#' Calculate a binary survival column
-#' The `surv` column should be 1 if a plant is currently alive in `year` and 0
-#' if it's dead in `year`.
+#' Wrangle demography data
+#' 
+#' Adds a binary columns for flowering and survival, calculates plant size, adds
+#' columns for values in previous year, and sets appropriate columns to factors.
 #'
-#' @param data the heliconia demography data
-#' @param n_years number of years missing before assumed dead (at last year recorded)
+#' @param data Heliconia demography dataset
+#' @param n_years number of years missing before assumed dead (at last year
+#'   recorded)
 #'
-add_surv <- function(data, n_years = 3) {
-  data %>% 
+wrangle_demog <- function(data, n_years = 3) {
+  #Calculate binary survival column
+  data_surv <-
+    data %>% 
     group_by(ha_id_number) %>% 
     arrange(ha_id_number, year) %>% 
     mutate(surv = as_living(ht, n = n_years)) %>%  #1 if alive, 0 if dead (assumed dead after 2 trailing NAs)
     mutate(surv = if_else(!is.na(code_notes) & code_notes == "dead (2)", 0L, surv)) %>% 
     filter(surv == 1 | lag(surv) == 1) %>%  #remove entries after last year alive.
     ungroup()
-}
-
-#' Add a size column
-#' 
-#' Size is calculated as number of shoots x height.  Also adds lagged height and
-#' size variables.
-#'
-#' @param data 
-#'
-add_size <- function(data) {
-  data %>%
-    # add height and number shoots in the next year for each observation
+  
+  # add height and number shoots in the next year for each observation.
+  # calculate size as shts * ht
+  data_surv_size <-
+    data_surv %>%
     group_by(ha_id_number) %>% 
     mutate(ht_prev = lag(ht),
            shts_prev = lag(shts)) %>% 
     ungroup() %>% 
-    #add size
     mutate(
       size = shts * ht,
       size_prev = shts_prev * ht_prev,
       log_size = log(size),
       log_size_prev = log(size_prev)
     )
-}
-
-#' Tidy demography data
-#' 
-#' Adds a binary column for flowering and sets appropriate columns to factors.
-#'
-#' @param data 
-#'
-tidy_demog <- function(data) {
-  data %>% 
+  
+  data_surv_size %>% 
     #only use 1ha fragments and continuous forest
     filter(habitat %in% c("CF", "1-ha")) %>% 
     #add binary column for flowering
