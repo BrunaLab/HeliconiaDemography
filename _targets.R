@@ -20,13 +20,11 @@ tar_plan(
   # Prep demographic data
   tar_target(demog_file, here("data", "Ha_survey_with_Zombies.csv"), format = "file"),
   demog_raw = read_fix_demog(demog_file),
-  demog_surv = add_surv(demog_raw),
-  demog_surv_size = add_size(demog_surv),
-  demog_done = tidy_demog(demog_surv_size),
-  demog_spei = join_demog_spei(demog_done, xa_lag),
-  model_data = filter_data(demog_spei),
+  demog_done = wrangle_demog(demog_raw),
+  model_data = join_filter_demog_spei(demog_done, xa_lag),
   model_data_cf = filter(model_data, habitat == "CF"),
   model_data_1ha = filter(model_data, habitat == "1-ha"),
+  model_data_cf_sub = subset_cf(model_data),
   
   # Data validation
   tar_render(validate_data, "doc/validate_data.Rmd"),
@@ -40,6 +38,10 @@ tar_plan(
   f_1ha = fit_flwr(model_data_1ha, flwr_prev = TRUE),
   
   # Validate and summarize results
+  ### Check for edf differences due to sample size
+  g_cf_sub = fit_growth(model_data_cf_sub, flwr_prev = TRUE),
+  f_cf_sub = fit_flwr(model_data_cf_sub, flwr_prev = TRUE),
+  s_cf_sub = fit_surv(model_data_cf_sub, flwr_prev = TRUE),
   tar_render(validate_models, "doc/validate_models.Rmd"),
 
   # Descriptive / Exploratory Data Analysis Figures

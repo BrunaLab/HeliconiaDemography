@@ -50,14 +50,6 @@ library(performance)
 source(here::here("R", "utils.R"))
 ```
 
-# BDFFP plot map
-
-Map here
-
-Figure S1.
-Map caption here
-
-\pagebreak
 
 # Climate Normals for BDFFP
 
@@ -65,7 +57,7 @@ Map caption here
 normals_plot & theme(text = element_text(size = 10))
 ```
 
-Figure S2.
+Figure S1.
 Weather normals for Manaus, Brazil (3º6'S, 60º1'W) for 1981--2010.
 Precipitation (a) shows a marked dry seasons from June through October.
 Temperature (b) varies less throughout the year.
@@ -134,7 +126,7 @@ p <-
 annotate_spei(p)
 ```
 
-Figure S3.
+Figure S2.
 Three-month SPEI at BDFFP calculated using 4 datasets.
 "EMBRAPA" (red) is the average of SPEI calculated using precipitation and evapotranspiration from two weather stations near BDFFP---Estacao Rio Preto da Eva ( -2.65º, -59.65º) and Estacao Manaus (-2.65º, -60.35º).
 The data was accessed from the EMBRAPA Infoclima data portal (<https://www.cnpaf.embrapa.br/infoclima/>).
