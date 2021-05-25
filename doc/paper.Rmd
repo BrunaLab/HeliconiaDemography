@@ -155,8 +155,7 @@ Dispersed seeds germinate approximately 6 months after dispersal at the onset of
 In 1997--1998 we established a series of 5000 m^2^ plots ($50 \times 100$m) in the BDFFP reserves in which we marked and measured all *Heliconia acuminata*.
 The plots are located in continuous forest ($n=6$), 10 ha fragments ($n=3$), and 1-ha fragments ($n=4$), with distance between plots ranging from 500 m--41 km.
 Plots in 1-ha fragments were on one randomly selected half of the fragment, plots in 10 ha fragments were in the fragment center, and plots in continuous forest were placed in locations 500--4000 m from the borders of secondary and mature forest.
-This study uses data from 1-ha fragments and continuous forest sites.
-<!--# maria: justify why 10ha plots omitted or don't say they exist -->
+This study uses data only from 1-ha fragments and continuous forest sites because these represent extremes and because there are only three 10 ha fragment plots.
 
 Each plot is subdivided into 50 quadrats ($10 \times 10$m) to simplify the annual surveys, during which we recorded the number of vegetative shoots each plant had, the height of each plant to the tallest leaf, and whether each plant was flowering (height and shoot number are correlated with leaf area, the probability of flowering, and rates of survivorship [@brunaHabitatFragmentationDemographic2002; @brunaEffectsForestFragmentation2002]).
 In this study, we used the product of shoot number and plant height as our measure of plant size.
