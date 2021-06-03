@@ -26,7 +26,7 @@ fit_surv <- function(data, flwr_prev = FALSE) {
   bam(f,
       family = binomial,
       data = data,
-      method = "REML",
+      method = "fREML",
       select = TRUE,
       cluster = cl)
 }
@@ -63,7 +63,7 @@ fit_growth <- function(data, flwr_prev = FALSE){
       # family = gaussian(link = "identity"),
       family = scat(link = "identity"), #like leptokurtic gaussian.
       data = data2,
-      method = "REML",
+      method = "fREML",
       select = TRUE,
       cluster = cl)
 }
@@ -99,7 +99,7 @@ fit_flwr <- function(data, flwr_prev = FALSE) {
   bam(f,
       family = binomial,
       data = data2,
-      method = "REML",
+      method = "fREML",
       select = TRUE,
       cluster = cl)
 }
