@@ -466,7 +466,8 @@ size_cap <- "Smooth effect of plant size in the previous census from models for 
 ```
 
 ```{r size-plot, fig.cap=size_cap, fig.width=7, fig.height=7}
-size_plot & theme(text = element_text(size = 10))
+# size_plot & theme(text = element_text(size = 10))
+include_graphics(here("doc", "figures", "size_plot_ufhpc.png"))
 ```
 
 ```{r}
@@ -491,7 +492,8 @@ f_spei_cap <- "Smooth effect of lagged SPEI on flowering probability for a) cont
 ```
 
 ```{r flwr-spei, fig.cap=f_spei_cap, fig.height=7.5, fig.width=7}
-f_spei_plot & theme(text = element_text(size = 10))
+# f_spei_plot & theme(text = element_text(size = 10))
+include_graphics(here("doc", "figures", "f_spei_plot_ufhpc.png"))
 ```
 
 # References
