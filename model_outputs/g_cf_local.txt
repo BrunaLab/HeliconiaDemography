@@ -1,0 +1,29 @@
+Running on: local
+
+Size, continuous forest
+
+Family: Scaled t(3.796,0.409) 
+Link function: identity 
+
+Formula:
+log_size ~ s(log_size_prev, bs = "cr") + s(plot, bs = "re") + 
+    s(spei_history, L, bs = "cb", k = c(3, 35), xt = list(bs = "cr")) + 
+    flwr_prev
+
+Parametric coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  4.41272    0.02148 205.411   <2e-16 ***
+flwr_prev1   0.03022    0.01529   1.977    0.048 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Approximate significance of smooth terms:
+                     edf Ref.df         F  p-value    
+s(log_size_prev)   5.836      9 16223.634  < 2e-16 ***
+s(plot)            3.862      5     4.777 1.69e-05 ***
+s(spei_history,L) 12.969     19    91.078  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+R-sq.(adj) =  0.792   Deviance explained = 73.5%
+fREML =  35370  Scale est. = 1         n = 24866

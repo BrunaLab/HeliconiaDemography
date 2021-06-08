@@ -1,0 +1,30 @@
+Running on: ufhpc
+
+Flowering, 1-ha fragments
+
+Family: binomial 
+Link function: logit 
+
+Formula:
+flwr ~ s(log_size_prev, bs = "cr") + s(plot, bs = "re") + s(spei_history, 
+    L, bs = "cb", k = c(3, 35), xt = list(bs = "cr")) + flwr_prev + 
+    s(ha_id_number, bs = "re")
+
+Parametric coefficients:
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept)  -5.7041     0.5364 -10.634  < 2e-16 ***
+flwr_prev1    0.5714     0.1985   2.879  0.00399 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Approximate significance of smooth terms:
+                     edf Ref.df Chi.sq p-value    
+s(log_size_prev)   3.076      9 323.70 < 2e-16 ***
+s(plot)            2.509      3  18.48 0.00225 ** 
+s(spei_history,L)  8.252     23  72.73 < 2e-16 ***
+s(ha_id_number)   49.157    920  63.05 0.00348 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+R-sq.(adj) =  0.282   Deviance explained = 43.6%
+fREML = 7897.8  Scale est. = 1         n = 6412
