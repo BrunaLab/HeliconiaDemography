@@ -213,6 +213,9 @@ This was modeled with a scaled t family error distribution because residuals wer
 Because number of inflorescences was highly zero-inflated, we converted this to a binary response to model reproduction (i.e., 1 for ≥1 inflorescence, 0 for no inflorescences).
 We modeled both reproduction and survival (i.e., from year t to year t+1) using a binomial family error distribution with a logit link function.
 We modeled a potential cost of reproduction by including flowering in the previous year as covariate, $x_i$, in @eq:eqn1.
+Additionally, in models for flowering probability and size, we included plant ID as a random effect to account for variation among individuals.
+Preliminary analyses showed that this random effect was not significant in the growth models (edf \~ 0, p \> 0.2) and as such it was dropped to improve computational efficiency.
+1 A random effect of plant ID was not included in survival models since each plant only dies once.
 
 In the process of fitting the models, the penalty on the crossbasis smooth (and other smoothed terms) is optimized such that more linear shapes are favored unless the data supports non-linearity [@woodGeneralizedAdditiveModels2017].
 We applied an additional penalty to shrink linear portions toward zero with the `select=TRUE` option to the `gam()` function, and inferred statistical significance of model terms with p-values from the `summary.gam()` function as recommended in @marraPracticalVariableSelection2011.
@@ -320,20 +323,21 @@ We compared the effects of SPEI history in continuous forest and fragments by su
 This shows that in average conditions (SPEI = 0), there is little difference in survival probability between continuous forest and forest fragments (Figure \@ref(fig:surv-spei)c).
 However, under extreme conditions, survival probability is higher in continuous forest by up to 0.025.
 
-While the fitted crossbasis functions for fragments and continuous forest showed generally similar patterns of drought effects on growth (i.e, trends in plant size), the crossbasis function for 1-ha fragments indicated more complex responses in some situations (edf = 17.9 for 1-ha fragments; edf = 12.9 for continuous forest; see also Figure \@ref(fig:growth-spei)).
+While the fitted crossbasis functions for fragments and continuous forest showed generally similar patterns of drought effects on growth (i.e, trends in plant size), the crossbasis function for 1-ha fragments indicated more complex responses in some situations (edf = 17.8 for 1-ha fragments; edf = 13.0 for continuous forest; see also Figure \@ref(fig:growth-spei)).
 For example, when SPEI = 0 (i.e., average conditions), growth is similar or slightly higher in continuous forest over all lag periods (Figure \@ref(fig:growth-spei)c).
 However, when the current wet season is unusually wet (SPEI\>2), plants in continuous forests were larger by up to log(size) = 0.57 due to reduced growth in fragments.
 In contrast, drought at lags of 8--11 months (i.e., the end of the preceding year's wet season) led to increased growth in both habitats, but the magnitude of the response was greater in 1-ha fragments.
 
 Overall, the the probability of flowering was higher in continuous forest than in 1-ha fragments for all values of SPEI (Figure \@ref(fig:flwr-spei)).
-The responses in 1-ha fragments were also more muted (1-ha edf = 8.1, continuous forest edf = 10.3), as indicated by the shape of the crossbasis function (Figure \@ref(fig:flwr-spei)a).
+The responses in 1-ha fragments were also more muted (1-ha edf = 8.3, continuous forest edf = 10.6), as indicated by the shape of the crossbasis function (Figure \@ref(fig:flwr-spei)a).
 This led to some important inter-habitat differences in plant responses to prior droughts.
 Recent drought (i.e., at lag = 0 with SPEI \< -1) increased the probability of flowering in continuous forest, as did drought at lags 15--20 (i.e., two dry seasons prior).
 However, drought at lags 7--13 (the end of the rainy season one year prior) reduced flowering probability in continuous forest far more than it did in fragments (Figure \@ref(fig:flwr-spei)c).
 
-Finally, with the exception of survival in 1-ha fragments ($p = 0.252$), the delayed effects of SPEI on all three vital rates varied significantly among plots ($p < 0.001$ for the random effect of plot).
+Finally, with the exception of survival in 1-ha fragments ($p = 0.253$), the delayed effects of SPEI on all three vital rates varied significantly among plots ($p < 0.01$ for the random effect of plot).
 We found no evidence for a cost of reproduction.
-In both forest and fragments, flowering in the previous year was significantly positively related to growth (CF: $p = 0.048$, 1-ha: $p = 0.031$) and flowering ($p < 0.001$ for both CF and 1-ha) meaning that plants which had flowered in the previous year were more likely to be larger and flower again, on average.
+In both forest and fragments, flowering in the previous year was significantly positively related to growth (CF: $p = 0.048$; 1-ha: $p = 0.030$) and flowering (CF: $p < 0.001$; 1-ha: $p = 0.004$) meaning that plants which had flowered in the previous year were more likely to be larger and flower again, on average.
+The random effect of plant ID was also significant for flowering probability (CF: $p < 0.001$; 1-ha: $p=0.003$) indicating significant individual-level variation in flowering probability.
 
 # Discussion
 
