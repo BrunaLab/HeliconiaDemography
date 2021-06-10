@@ -1,3 +1,10 @@
+## Set options for using tar_make_clustermq()
+options(
+  clustermq.scheduler = "ssh",
+  clustermq.ssh.host = "ericscott@hpg.rc.ufl.edu", # use your user and host
+  clustermq.ssh.log = "~/cmq_ssh.log" # log for easier debugging
+)
+
 ## Load your packages, e.g. library(targets).
 source("./packages.R")
 
@@ -6,7 +13,7 @@ lapply(list.files("./R", full.names = TRUE), source)
 
 ## Set options
 options(tidyverse.quiet = TRUE)
-tar_option_set()
+tar_option_set(deployment = "main") #run targets locally by default
 
 ## tar_plan supports drake-style targets and also tar_target()
 tar_plan(
@@ -30,7 +37,8 @@ tar_plan(
   tar_render(validate_data, "doc/validate_data.Rmd"),
   
   # Fit demographic models
-  s_cf = fit_surv(model_data_cf, flwr_prev = TRUE),
+  tar_target(s_cf, fit_surv(model_data_cf, flwr_prev = TRUE), deployment = "worker"),
+  # s_cf = fit_surv(model_data_cf, flwr_prev = TRUE),
   s_1ha = fit_surv(model_data_1ha, flwr_prev = TRUE),
   g_cf  = fit_growth(model_data_cf, flwr_prev = TRUE),
   g_1ha = fit_growth(model_data_1ha, flwr_prev = TRUE),
