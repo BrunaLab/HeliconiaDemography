@@ -42,7 +42,7 @@ tar_plan(
   g_cf_sub = fit_growth(model_data_cf_sub, flwr_prev = TRUE),
   f_cf_sub = fit_flwr(model_data_cf_sub, flwr_prev = TRUE),
   s_cf_sub = fit_surv(model_data_cf_sub, flwr_prev = TRUE),
-  tar_render(validate_models, "doc/validate_models.Rmd"),
+  tar_render(validate_models, "doc/validate_models.Rmd"), # rm() model objects after used or use tar_read()
 
   # Descriptive / Exploratory Data Analysis Figures
   normals = normals_data(),
@@ -60,27 +60,32 @@ tar_plan(
   # Model output figures
 
   ## Survival
-  s_covar_plot = plot_covar_smooth(frag_model = s_1ha, cf_model = s_cf, covar = "log_size_prev") + 
-                  labs(x = TeX("$log(size_t)$"), y = "Effect [survival]"),
-  s_spei_plot = plot_cb_3panel(s_cf, s_1ha, binwidth = 0.002, response_lab = "P(survival)"),
+  s_cf_eval = my_eval_smooth(s_cf, "spei_history"),
+  s_1ha_eval = my_eval_smooth(s_1ha, "spei_history"),
+  s_spei_plot = plot_cb_3panel(s_cf_eval, s_1ha_eval, response_lab = "P(survival)"),
 
   ## Growth
-  g_covar_plot = plot_covar_smooth(frag_model = g_1ha, cf_model = g_cf, covar = "log_size_prev") +
-                  labs(x = TeX("$log(size_t)$"), y = TeX("Effect \\[$log(size_{t+1})\\]")),
-  g_spei_plot = plot_cb_3panel(g_cf, g_1ha, binwidth = 0.05, response_lab = "$log(size_{t+1})$"),
+  g_cf_eval  = my_eval_smooth(g_cf, "spei_history"),
+  g_1ha_eval = my_eval_smooth(g_1ha, "spei_history"),
+  g_spei_plot = plot_cb_3panel(g_cf_eval, g_1ha_eval, response_lab = "$log(size_{t+1})$"),
 
   ## Flowering
-  f_covar_plot = plot_covar_smooth(frag_model = f_1ha, cf_model = f_cf, covar = "log_size_prev") +
-                  labs(x = TeX("$log(size_t)$"), y = "Effect [flowering]"),
-  f_spei_plot = plot_cb_3panel(f_cf, f_1ha, binwidth = 0.001, response_lab = "P(flowering)"),
+  f_cf_eval  = my_eval_smooth(f_cf, "spei_history"),
+  f_1ha_eval = my_eval_smooth(f_1ha, "spei_history"),
+  f_spei_plot = plot_cb_3panel(f_cf_eval, f_1ha_eval, response_lab = "P(flowering)"),
 
   ## Size covariate
-  
+  s_covar_plot = plot_covar_smooth(frag_model = s_1ha, cf_model = s_cf, covar = "log_size_prev") + 
+    labs(x = TeX("$log(size_t)$"), y = "Effect [survival]"),
+  g_covar_plot = plot_covar_smooth(frag_model = g_1ha, cf_model = g_cf, covar = "log_size_prev") +
+    labs(x = TeX("$log(size_t)$"), y = TeX("Effect \\[$log(size_{t+1})\\]")),
+  f_covar_plot = plot_covar_smooth(frag_model = f_1ha, cf_model = f_cf, covar = "log_size_prev") +
+    labs(x = TeX("$log(size_t)$"), y = "Effect [flowering]"),
   size_plot = make_size_plot(s = s_covar_plot, g = g_covar_plot, f = f_covar_plot, model_data = model_data),
-  
+
   # Main text
   tar_render(paper, "doc/paper.Rmd"),
-  
+
   # Supplemental
   tar_target(rpde_file,
              here("data", "supplemental", "Estacao_Rio Preto da Eva_1980-01-01_2016-12-31.csv"),
@@ -94,14 +99,14 @@ tar_plan(
   embrapa_wide = calc_spei_embrapa(embrapa_mon),
   tar_target(trmm_file, here("data", "supplemental", "trmm.csv"), format = "file"),
   trmm = read_tidy_trmm(trmm_file),
-  tar_target(gspei_file, 
+  tar_target(gspei_file,
              here("data", "supplemental", "global_spei_-59.75_-2.25.csv"),
              format = "file"),
   gspei = read_tidy_gspei(gspei_file),
   trmm_spei  = calc_spei_trmm(trmm, xa_spei),
   tar_target(la_file, here("data", "HA-la-stems-ht.xlsx"), format = "file"),
   la_data = read_tidy_la(la_file),
-  
+
   tar_render(supplemental, "doc/supplemental.Rmd")
-  
+
 )

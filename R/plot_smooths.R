@@ -93,6 +93,17 @@ make_season_bar <- function(wet_color = "black", dry_color = "white") {
     theme_void()
 }
 
+#adds intercept and back-transforms smooth to response scale
+my_eval_smooth <- function(model, smooth, ...) {
+  linkinv <- model$family$linkinv
+  gratia::smooth_estimates(model, smooth, dist = 0.1, ...) %>% 
+    gratia::add_confint() %>% 
+    add_column(intercept = coef(model)[1]) %>% 
+    mutate(across(c(est, lower_ci, upper_ci), ~linkinv(.x + intercept)),
+           intercept = linkinv(intercept))
+}
+
+
 
 #' Plot heatmap of SPEI crossbasis function
 #' 
@@ -106,6 +117,128 @@ make_season_bar <- function(wet_color = "black", dry_color = "white") {
 #' @param breaks breaks for x-axis
 #'
 plot_spei_heatmap <-
+  function(eval_df,
+           fill_lims,
+           response_lab,
+           breaks = seq(0, 36, by = 2),
+           ci = TRUE) {
+    
+    season_bar <- make_season_bar()
+    
+    p <- 
+      ggplot(eval_df, aes_string(y = "spei_history", x = "L", fill = "est")) +
+      geom_raster() +
+      geom_hline(aes(yintercept = 0), color = "grey", linetype = 2) +
+      scale_fill_viridis_c(response_lab, option = "viridis", limits = fill_lims) +
+      scale_x_continuous("lag (months before census)",
+                         breaks = breaks,
+                         expand = c(0, 0)) +
+      scale_y_continuous(TeX("SPEI_3_"), expand = expansion(mult = c(0.025, 0))) + #leave room for season bar at bottom
+      theme_classic() +
+      annotation_custom(
+        grob = ggplotGrob(season_bar),
+        ymin = -Inf,
+        ymax = min(eval_df$spei_history),
+        xmin = -Inf,
+        xmax = Inf
+      )
+    
+    if (ci == TRUE) {
+      #kludge to outline areas where 95%CI doesn't overlap intercept
+      
+      mask <- 
+        eval_df %>% 
+        rowwise() %>%
+        dplyr::filter(!between(intercept, lower_ci, upper_ci)) %>% 
+        ungroup()
+      
+      p <-
+        p + 
+        geom_tile(data = mask, color = "black", size = 0.75, linejoin = "round") +
+        geom_raster(data = mask)
+    }
+    
+    return(p)
+  }
+
+
+
+
+#' Create 2-panel plots comparing evaluated crossbasis smooths for fragmented
+#' and continuous forest habitat
+#'
+#' @param cf_model model object for continuous forest
+#' @param frag_model model object for 1-ha fragment
+#' @param response_lab response label (for color bar)
+#'
+plot_cb_3panel <-
+  function(cf_eval, frag_eval, response_lab) {
+    
+    fill_lims <- c(min(frag_eval$est, cf_eval$est, na.rm = TRUE),
+                   max(frag_eval$est, cf_eval$est, na.rm = TRUE))
+    
+    frag_plot <-
+      plot_spei_heatmap(
+        frag_eval,
+        fill_lims = fill_lims,
+        response_lab = TeX(response_lab)
+      )
+    cf_plot <-
+      plot_spei_heatmap(
+        cf_eval,
+        fill_lims = fill_lims,
+        response_lab = TeX(response_lab)
+      )
+    
+    diff_df <-
+      bind_cols(
+        cf_eval %>% rename_with(.fn = ~glue("cf_{.}")),
+        frag_eval %>% rename_with(.fn = ~glue("frag_{.}"))
+      ) %>%
+      mutate(est = cf_est - frag_est) %>%
+      select(est, L = cf_L, spei_history = cf_spei_history)
+    
+    diff_plot <-
+      plot_spei_heatmap(
+        diff_df,
+        fill_lims = NULL,
+        response_lab = "",
+        ci = FALSE
+      ) +
+      scale_fill_gradient2(TeX(glue::glue("$\\Delta${response_lab} (CF-1ha)")),
+                           low = "#5E3C99", high = "#E66101") #from colorbrewer 5-class PuOr
+    cf_plot / 
+      (frag_plot + theme(legend.position = "none")) /
+      diff_plot + plot_layout(guides = "keep") &
+      theme(legend.justification = "left") &
+      plot_annotation(tag_levels = "a", tag_suffix = ")") &
+      theme(legend.justification = "left")
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+#old
+#' Plot heatmap of SPEI crossbasis function
+#' 
+#' Creates figures from evaluated tensor product smooths
+#' 
+#'
+#' @param eval_df Evaluated smooth data
+#' @param fill_lims Shared limits for the color bar
+#' @param binwidth binwidth for contour lines
+#' @param response_lab label for response (color bar)
+#' @param breaks breaks for x-axis
+#'
+plot_spei_heatmap_contour <-
   function(eval_df,
            fill_lims,
            binwidth,
@@ -131,70 +264,4 @@ plot_spei_heatmap <-
         xmin = -Inf,
         xmax = Inf
       )
-  }
-
-#' Create 2-panel plots comparing evaluated crossbasis smooths for fragmented
-#' and continuous forest habitat
-#'
-#' @param cf_model model object for continuous forest
-#' @param frag_model model object for 1-ha fragment
-#' @param smooth name of smooth to evaluate
-#' @param response_lab response label (for color bar)
-#' @param binwidth binwidth for contour lines
-#'
-plot_cb_3panel <-
-  function(cf_model, frag_model, smooth = "spei_history", response_lab, binwidth) {
-    
-    #adds intercept and back-transforms smooth to response scale
-    my_eval_smooth <- function(model, smooth, ...) {
-      linkinv <- model$family$linkinv
-      gratia::smooth_estimates(model, smooth, ...) %>% 
-        gratia::add_confint() %>% 
-        mutate(across(c(est, lower_ci, upper_ci), ~linkinv(.x + coef(model)[1])))
-    }
-    
-    df_cf <- my_eval_smooth(cf_model, smooth, dist = 0.1)
-    df_frag <- my_eval_smooth(frag_model, smooth, dist = 0.1)
-    
-    fill_lims <- c(min(df_frag$est, df_cf$est, na.rm = TRUE),
-                   max(df_frag$est, df_cf$est, na.rm = TRUE))
-    
-    frag_plot <-
-      plot_spei_heatmap(
-        df_frag,
-        binwidth = binwidth,
-        fill_lims = fill_lims,
-        response_lab = TeX(response_lab)
-      )
-    cf_plot <-
-      plot_spei_heatmap(
-        df_cf,
-        binwidth = binwidth,
-        fill_lims = fill_lims,
-        response_lab = TeX(response_lab)
-      )
-    
-    diff_df <-
-      bind_cols(
-        df_cf %>% rename_with(.fn = ~glue("cf_{.}")),
-        df_frag %>% rename_with(.fn = ~glue("frag_{.}"))
-      ) %>%
-      mutate(est = cf_est - frag_est) %>%
-      select(est, L = cf_L, spei_history = cf_spei_history)
-    
-    diff_plot <-
-      plot_spei_heatmap(
-        diff_df,
-        fill_lims = NULL,
-        binwidth = binwidth,
-        response_lab = ""
-      ) +
-      scale_fill_gradient2(TeX(glue::glue("$\\Delta${response_lab} (CF-1ha)")),
-                           low = "#5E3C99", high = "#E66101") #from colorbrewer 5-class PuOr
-    cf_plot / 
-      (frag_plot + theme(legend.position = "none")) /
-      diff_plot + plot_layout(guides = "keep") &
-      theme(legend.justification = "left") &
-      plot_annotation(tag_levels = "a", tag_suffix = ")") &
-      theme(legend.justification = "left")
   }
