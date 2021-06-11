@@ -65,24 +65,23 @@ tar_plan(
   s_cf_eval = my_eval_smooth(s_cf, "spei_history"),
   s_1ha_eval = my_eval_smooth(s_1ha, "spei_history"),
   
-  s_spei_plot = plot_cb_3panel(s_cf_eval, s_1ha_eval, response_lab = "P(survival)")
+  s_spei_plot = plot_cb_3panel(s_cf_eval, s_1ha_eval, response_lab = "P(survival)"),
 
-  
-  
-  
-  # 
-  # 
-  # 
-  # ## Growth
-  # g_covar_plot = plot_covar_smooth(frag_model = g_1ha, cf_model = g_cf, covar = "log_size_prev") +
-  #                 labs(x = TeX("$log(size_t)$"), y = TeX("Effect \\[$log(size_{t+1})\\]")),
-  # g_spei_plot = plot_cb_3panel(g_cf, g_1ha, binwidth = 0.05, response_lab = "$log(size_{t+1})$"),
-  # 
-  # ## Flowering
-  # f_covar_plot = plot_covar_smooth(frag_model = f_1ha, cf_model = f_cf, covar = "log_size_prev") +
-  #                 labs(x = TeX("$log(size_t)$"), y = "Effect [flowering]"),
-  # f_spei_plot = plot_cb_3panel(f_cf, f_1ha, binwidth = 0.001, response_lab = "P(flowering)"),
-  # 
+
+  ## Growth
+  g_covar_plot = plot_covar_smooth(frag_model = g_1ha, cf_model = g_cf, covar = "log_size_prev") +
+                  labs(x = TeX("$log(size_t)$"), y = TeX("Effect \\[$log(size_{t+1})\\]")),
+  g_cf_eval  = my_eval_smooth(g_cf, "spei_history"),
+  g_1ha_eval = my_eval_smooth(g_1ha, "spei_history"),
+  g_spei_plot = plot_cb_3panel(g_cf_eval, g_1ha_eval, response_lab = "$log(size_{t+1})$"),
+
+  ## Flowering
+  f_covar_plot = plot_covar_smooth(frag_model = f_1ha, cf_model = f_cf, covar = "log_size_prev") +
+                  labs(x = TeX("$log(size_t)$"), y = "Effect [flowering]"),
+  f_cf_eval  = my_eval_smooth(f_cf, "spei_history"),
+  f_1ha_eval = my_eval_smooth(f_1ha, "spei_history"),
+  f_spei_plot = plot_cb_3panel(f_cf_eval, f_1ha_eval, response_lab = "P(flowering)")
+
   # ## Size covariate
   # 
   # size_plot = make_size_plot(s = s_covar_plot, g = g_covar_plot, f = f_covar_plot, model_data = model_data),
