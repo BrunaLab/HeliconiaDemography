@@ -82,31 +82,31 @@ tar_plan(
   f_covar_plot = plot_covar_smooth(frag_model = f_1ha, cf_model = f_cf, covar = "log_size_prev") +
     labs(x = TeX("$log(size_t)$"), y = "Effect [flowering]"),
   size_plot = make_size_plot(s = s_covar_plot, g = g_covar_plot, f = f_covar_plot, model_data = model_data),
-  # 
-  # # Main text
-  # tar_render(paper, "doc/paper.Rmd"),
-  # 
-  # # Supplemental
-  # tar_target(rpde_file,
-  #            here("data", "supplemental", "Estacao_Rio Preto da Eva_1980-01-01_2016-12-31.csv"),
-  #            format = "file"),
-  # tar_target(manaus_file,
-  #            here("data", "supplemental", "Estacao_Manaus_1980-01-01_2016-12-31.csv"),
-  #            format = "file"),
-  # rpde = read_csv(rpde_file),
-  # manaus = read_csv(manaus_file),
-  # embrapa_mon = tidy_embrapa(rpde,  manaus),
-  # embrapa_wide = calc_spei_embrapa(embrapa_mon),
-  # tar_target(trmm_file, here("data", "supplemental", "trmm.csv"), format = "file"),
-  # trmm = read_tidy_trmm(trmm_file),
-  # tar_target(gspei_file, 
-  #            here("data", "supplemental", "global_spei_-59.75_-2.25.csv"),
-  #            format = "file"),
-  # gspei = read_tidy_gspei(gspei_file),
-  # trmm_spei  = calc_spei_trmm(trmm, xa_spei),
-  # tar_target(la_file, here("data", "HA-la-stems-ht.xlsx"), format = "file"),
-  # la_data = read_tidy_la(la_file),
-  # 
-  # tar_render(supplemental, "doc/supplemental.Rmd")
-  # 
+
+  # Main text
+  tar_render(paper, "doc/paper.Rmd"),
+
+  # Supplemental
+  tar_target(rpde_file,
+             here("data", "supplemental", "Estacao_Rio Preto da Eva_1980-01-01_2016-12-31.csv"),
+             format = "file"),
+  tar_target(manaus_file,
+             here("data", "supplemental", "Estacao_Manaus_1980-01-01_2016-12-31.csv"),
+             format = "file"),
+  rpde = read_csv(rpde_file),
+  manaus = read_csv(manaus_file),
+  embrapa_mon = tidy_embrapa(rpde,  manaus),
+  embrapa_wide = calc_spei_embrapa(embrapa_mon),
+  tar_target(trmm_file, here("data", "supplemental", "trmm.csv"), format = "file"),
+  trmm = read_tidy_trmm(trmm_file),
+  tar_target(gspei_file,
+             here("data", "supplemental", "global_spei_-59.75_-2.25.csv"),
+             format = "file"),
+  gspei = read_tidy_gspei(gspei_file),
+  trmm_spei  = calc_spei_trmm(trmm, xa_spei),
+  tar_target(la_file, here("data", "HA-la-stems-ht.xlsx"), format = "file"),
+  la_data = read_tidy_la(la_file),
+
+  tar_render(supplemental, "doc/supplemental.Rmd")
+
 )
