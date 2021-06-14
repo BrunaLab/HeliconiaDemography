@@ -40,7 +40,7 @@ fit_surv <- function(data, flwr_prev = FALSE) {
 fit_growth <- function(data, flwr_prev = FALSE){
 
   # use only living plants
-  data2 <- data %>% filter(surv == 1, !is.na(log_size))
+  data2 <- data %>% dplyr::filter(surv == 1, !is.na(log_size))
   
   f <- log_size ~ 
     # flwr_prev +
@@ -74,7 +74,7 @@ fit_growth <- function(data, flwr_prev = FALSE){
 #' 
 fit_flwr <- function(data, flwr_prev = FALSE) {
   # use only living plants
-  data2 <- data %>% filter(surv == 1, !is.na(log_size))
+  data2 <- data %>% dplyr::filter(surv == 1, !is.na(log_size))
   
   f <- flwr ~ 
     # flwr_prev +
