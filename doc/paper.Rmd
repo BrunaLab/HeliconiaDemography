@@ -79,14 +79,12 @@ library(patchwork)
 ```{r load-targets}
 withr::with_dir(here::here(), {
   tar_load(c(
-    eda_plot,
-    surv_curve,
-    s_spei_plot,
-    g_spei_plot,
-    f_spei_plot,
-    size_plot,
-    f_cf,
-    f_1ha,
+    # eda_plot,
+    # surv_curve,
+    # s_spei_plot,
+    # g_spei_plot,
+    # f_spei_plot,
+    # size_plot,
     model_data,
     xa_spei
   ))
@@ -401,25 +399,6 @@ In our case, this potential explanation for delayed effects applies only to plan
 This possibility is not unique to our study, rather it is a consequence of conducting demographic censuses on an annual scale while the climate is quantified monthly or seasonally.
 While the very slow growth and extremely low mortality rates of *H. acuminata* mean this effect is unlikely to be acting in our system, it may be that for some species it will be important to conduct demographic surveys at the same temporal scale at which climate is aggregated.
 
-```{r flwr-prob-quartile, include=FALSE}
-
-#figure out flowering probability of largest quartile of plants in each habitat
-library(tidyverse)
-newdf_cf <-
-  f_cf$model %>% #use model data frame
-  mutate(quartiles = ntile(log_size_prev, 4)) %>% 
-  filter(quartiles == 4)
-
-newdf_1ha <-
-  f_1ha$model %>% 
-  mutate(quartiles = ntile(log_size_prev, 4)) %>% 
-  filter(quartiles == 4)
-
-#equivalent to flowering once every __ years
-1/predict(f_cf, newdata = newdf_cf) %>% mean() %>% plogis()
-1/predict(f_1ha, newdata = newdf_1ha) %>% mean() %>% plogis()
-```
-
 ## Conclusions & Future Directions
 
 Climate models for the Amazon predict a future of extremes---increases in the frequency and geographic extent of droughts, but also increases in the frequency and area affected by periods of unusual wetness [@duffy2015].
@@ -450,7 +429,7 @@ eda_cap <- "Timeseries of demographic parameters and drought occurrence. Mean fo
 ```
 
 ```{r eda, fig.cap=eda_cap, fig.width=7, fig.height=7}
-eda_plot & theme(text = element_text(size = 10))
+tar_read(eda_plot) & theme(text = element_text(size = 10))
 ```
 
 ```{r}
@@ -458,7 +437,7 @@ surv_curve_cap <- "Survivorship of plants labeled in the first survey year, 1998
 ```
 
 ```{r surv-curve, fig.cap=surv_curve_cap, fig.width=7, fig.height=3.5}
-surv_curve + theme(text = element_text(size = 10))
+tar_read(surv_curve) + theme(text = element_text(size = 10))
 ```
 
 ```{r}
@@ -466,8 +445,7 @@ size_cap <- "Smooth effect of plant size in the previous census from models for 
 ```
 
 ```{r size-plot, fig.cap=size_cap, fig.width=7, fig.height=7}
-# size_plot & theme(text = element_text(size = 10))
-include_graphics(here("doc", "figures", "size_plot_ufhpc.png"))
+tar_read(size_plot) & theme(text = element_text(size = 10))
 ```
 
 ```{r}
@@ -476,7 +454,7 @@ s_spei_cap <- "Smooth effect of lagged SPEI on survival in a) continuous forest 
 ```
 
 ```{r surv-spei, fig.cap=s_spei_cap, fig.height=7.5, fig.width=7}
-s_spei_plot & theme(text = element_text(size = 10))
+tar_read(s_spei_plot) & theme(text = element_text(size = 10))
 ```
 
 ```{r}
@@ -484,7 +462,7 @@ g_spei_cap <- "Smooth effect of lagged SPEI on plant growth for a) continuous fo
 ```
 
 ```{r growth-spei, fig.cap=g_spei_cap, fig.height=7.5, fig.width=7}
-g_spei_plot & theme(text = element_text(size = 10))
+tar_read(g_spei_plot) & theme(text = element_text(size = 10))
 ```
 
 ```{r}
@@ -492,8 +470,7 @@ f_spei_cap <- "Smooth effect of lagged SPEI on flowering probability for a) cont
 ```
 
 ```{r flwr-spei, fig.cap=f_spei_cap, fig.height=7.5, fig.width=7}
-# f_spei_plot & theme(text = element_text(size = 10))
-include_graphics(here("doc", "figures", "f_spei_plot_ufhpc.png"))
+tar_read(f_spei_plot) & theme(text = element_text(size = 10))
 ```
 
 # References

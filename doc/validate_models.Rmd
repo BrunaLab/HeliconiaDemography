@@ -14,30 +14,20 @@ library(tidyverse)
 library(gratia)
 ```
 
-```{r load-targets}
-withr::with_dir(here::here(),{
-  tar_load(c(
-    s_cf,
-    s_1ha,
-    g_cf,
-    g_1ha,
-    f_cf,
-    f_1ha,
-    s_cf_sub,
-    g_cf_sub,
-    f_cf_sub
-    ))
-  })
-```
-
 # Analysis
 
 ## Survival
 
 Quantile residuals are more appropriate for binomial models.
 ### Fragments
+```{r}
+withr::with_dir(here::here(),{
+  tar_load(c(s_1ha, s_cf, s_cf_sub))
+})
+```
 
 ```{r}
+
 summary(s_1ha)
 ```
 
@@ -90,8 +80,17 @@ summary(s_cf_sub)$edf[3]
 draw(s_cf_sub)
 ```
 Surface still looks different in a similar way though.
+```{r}
+rm(s_1ha, s_cf, s_cf_sub)
+```
 
 ## Growth
+
+```{r}
+withr::with_dir(here::here(),{
+  tar_load(c(g_1ha, g_cf, g_cf_sub))
+})
+```
 
 ### Fragments
 
@@ -136,10 +135,19 @@ draw(g_cf_sub)
 ```
 Crossbasis surface looks nearly identical.
 
+```{r}
+rm(g_1ha, g_cf, g_cf_sub)
+```
+
 ## Flowering
 
 Quantile residuals are more appropriate for binomial models.
 
+```{r}
+withr::with_dir(here::here(),{
+  tar_load(c(f_1ha, f_cf, f_cf_sub))
+})
+```
 
 ### Fragments
 
@@ -193,6 +201,34 @@ summary(f_cf_sub)$edf[3]
 draw(f_cf_sub)
 ```
 Crossbasis surface looks extremely similar.
+
+### Flowering prob of largest plants
+
+Figure out flowering probability of largest quartile of plants in each habitat
+
+```{r}
+newdf_cf <-
+  f_cf$model %>% #use model data frame
+  mutate(quartiles = ntile(log_size_prev, 4)) %>% 
+  filter(quartiles == 4)
+
+newdf_1ha <-
+  f_1ha$model %>% 
+  mutate(quartiles = ntile(log_size_prev, 4)) %>% 
+  filter(quartiles == 4)
+```
+
+
+```{r}
+#equivalent to flowering once every __ years
+1/predict(f_cf, newdata = newdf_cf) %>% mean() %>% plogis()
+1/predict(f_1ha, newdata = newdf_1ha) %>% mean() %>% plogis()
+```
+
+
+```{r}
+rm(f_1ha, f_cf, f_cf_sub)
+```
 
 # Reproducibility
 
