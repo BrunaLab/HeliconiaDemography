@@ -5,21 +5,17 @@
 #' plant size in previous year and SPEI history.  Makes use of parallel
 #' computing with `mgcv::bam()`
 #' @param data prepped model data
-#' @param flwr_prev logical; include flowering in previous year as covariate?
 #'
-fit_surv <- function(data, flwr_prev = FALSE) {
+fit_surv <- function(data) {
 
   f <- surv ~ 
+    flwr_prev +
     s(log_size_prev, bs = "cr") +
     s(plot, bs = "re") + #random intercept
     s(spei_history, L,
       bs = "cb",
       k = c(3, 35),  #bimodal response (at most) to drought, one knot per month lag.
       xt = list(bs = "cr"))
-  
-  if (flwr_prev == TRUE) {
-    f <- update(f, .~. + flwr_prev)
-  }
   
   bam(f,
       family = binomial,
@@ -35,25 +31,20 @@ fit_surv <- function(data, flwr_prev = FALSE) {
 #' computing with `mgcv::bam()`
 #' 
 #' @param data prepared model data
-#' @param flwr_prev logical; include flowering in previous year as covariate?
 #'
-fit_growth <- function(data, flwr_prev = FALSE){
+fit_growth <- function(data){
 
   # use only living plants
   data2 <- data %>% dplyr::filter(surv == 1, !is.na(log_size))
   
   f <- log_size ~ 
-    # flwr_prev +
+    flwr_prev +
     s(log_size_prev, bs = "cr") + 
     s(plot, bs = "re") + #random effect of plot on intercept
     s(spei_history, L,
       bs = "cb",
       k = c(3, 35),  #unimodal-ish response to drought, but one knot per month lag.
       xt = list(bs = "cr"))
-  
-  if (flwr_prev == TRUE) {
-    f <- update(f, .~. + flwr_prev)
-  }
   
   bam(f,
       # family = gaussian(link = "identity"),
@@ -70,24 +61,19 @@ fit_growth <- function(data, flwr_prev = FALSE){
 #' parallel computing with `mgcv::bam()`
 #' 
 #' @param data prepared model data
-#' @param flwr_prev logical; include flowering in previous year as covariate?
 #' 
-fit_flwr <- function(data, flwr_prev = FALSE) {
+fit_flwr <- function(data) {
   # use only living plants
   data2 <- data %>% dplyr::filter(surv == 1, !is.na(log_size))
   
   f <- flwr ~ 
-    # flwr_prev +
+    flwr_prev +
     s(log_size_prev, bs = "cr") +
     s(plot, bs = "re") +
     s(spei_history, L,
       bs = "cb",
       k = c(3, 35), 
       xt = list(bs = "cr"))
-  
-  if (flwr_prev == TRUE) {
-    f <- update(f, .~. + flwr_prev)
-  }
   
   bam(f,
       family = binomial,

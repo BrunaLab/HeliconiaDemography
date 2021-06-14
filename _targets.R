@@ -37,18 +37,18 @@ tar_plan(
   tar_render(validate_data, "doc/validate_data.Rmd"),
   
   # Fit demographic models
-  tar_target(s_cf, fit_surv(model_data_cf, flwr_prev = TRUE), deployment = "worker"),
-  tar_target(s_1ha, fit_surv(model_data_1ha, flwr_prev = TRUE), deployment = "worker"),
-  tar_target(g_cf, fit_growth(model_data_cf, flwr_prev = TRUE), deployment = "worker"),
-  tar_target(g_1ha, fit_growth(model_data_1ha, flwr_prev = TRUE), deployment = "worker"),
-  tar_target(f_cf, fit_flwr(model_data_cf, flwr_prev = TRUE), deployment = "worker"),
-  tar_target(f_1ha, fit_flwr(model_data_1ha, flwr_prev = TRUE), deployment = "worker"),
+  tar_target(s_cf,fit_surv(model_data_cf), deployment = "worker"),
+  tar_target(s_1ha, fit_surv(model_data_1ha), deployment = "worker"),
+  tar_target(g_cf, fit_growth(model_data_cf), deployment = "worker"),
+  tar_target(g_1ha, fit_growth(model_data_1ha), deployment = "worker"),
+  tar_target(f_cf, fit_flwr(model_data_cf), deployment = "worker"),
+  tar_target(f_1ha, fit_flwr(model_data_1ha), deployment = "worker"),
   
   # Validate and summarize results
   ### Check for edf differences due to sample size
-  tar_target(g_cf_sub, fit_growth(model_data_cf_sub, flwr_prev = TRUE), deployment = "worker"),
-  tar_target(f_cf_sub, fit_flwr(model_data_cf_sub, flwr_prev = TRUE), deployment = "worker"),
-  tar_target(s_cf_sub, fit_surv(model_data_cf_sub, flwr_prev = TRUE), deployment = "worker"),
+  tar_target(g_cf_sub, fit_growth(model_data_cf_sub), deployment = "worker"),
+  tar_target(f_cf_sub, fit_flwr(model_data_cf_sub), deployment = "worker"),
+  tar_target(s_cf_sub, fit_surv(model_data_cf_sub), deployment = "worker"),
   tar_render(validate_models, "doc/validate_models.Rmd"),
 
   # Descriptive / Exploratory Data Analysis Figures
