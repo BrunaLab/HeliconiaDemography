@@ -29,8 +29,8 @@ tar_plan(
   demog_raw = read_fix_demog(demog_file),
   demog_done = wrangle_demog(demog_raw),
   model_data = join_filter_demog_spei(demog_done, xa_lag),
-  model_data_cf = filter(model_data, habitat == "CF"),
-  model_data_1ha = filter(model_data, habitat == "1-ha"),
+  model_data_cf = dplyr::filter(model_data, habitat == "CF"),
+  model_data_1ha = dplyr::filter(model_data, habitat == "1-ha"),
   model_data_cf_sub = subset_cf(model_data),
   
   # Data validation
@@ -38,18 +38,17 @@ tar_plan(
   
   # Fit demographic models
   tar_target(s_cf, fit_surv(model_data_cf, flwr_prev = TRUE), deployment = "worker"),
-  # s_cf = fit_surv(model_data_cf, flwr_prev = TRUE),
-  s_1ha = fit_surv(model_data_1ha, flwr_prev = TRUE),
-  g_cf  = fit_growth(model_data_cf, flwr_prev = TRUE),
-  g_1ha = fit_growth(model_data_1ha, flwr_prev = TRUE),
-  f_cf  = fit_flwr(model_data_cf, flwr_prev = TRUE),
-  f_1ha = fit_flwr(model_data_1ha, flwr_prev = TRUE),
+  tar_target(s_1ha, fit_surv(model_data_1ha, flwr_prev = TRUE), deployment = "worker"),
+  tar_target(g_cf, fit_growth(model_data_cf, flwr_prev = TRUE), deployment = "worker"),
+  tar_target(g_1ha, fit_growth(model_data_1ha, flwr_prev = TRUE), deployment = "worker"),
+  tar_target(f_cf, fit_flwr(model_data_cf, flwr_prev = TRUE), deployment = "worker"),
+  tar_target(f_1ha, fit_flwr(model_data_1ha, flwr_prev = TRUE), deployment = "worker"),
   
   # Validate and summarize results
   ### Check for edf differences due to sample size
-  g_cf_sub = fit_growth(model_data_cf_sub, flwr_prev = TRUE),
-  f_cf_sub = fit_flwr(model_data_cf_sub, flwr_prev = TRUE),
-  s_cf_sub = fit_surv(model_data_cf_sub, flwr_prev = TRUE),
+  tar_target(g_cf_sub, fit_growth(model_data_cf_sub, flwr_prev = TRUE), deployment = "worker"),
+  tar_target(f_cf_sub, fit_flwr(model_data_cf_sub, flwr_prev = TRUE), deployment = "worker"),
+  tar_target(s_cf_sub, fit_surv(model_data_cf_sub, flwr_prev = TRUE), deployment = "worker"),
   tar_render(validate_models, "doc/validate_models.Rmd"),
 
   # Descriptive / Exploratory Data Analysis Figures

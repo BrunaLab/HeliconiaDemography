@@ -1,1 +1,1 @@
-targets::tar_make_clustermq(workers = 1L)
+targets::tar_make_clustermq(workers = 3L)
