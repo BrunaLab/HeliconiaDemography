@@ -536,15 +536,15 @@
     },
     "gratia": {
       "Package": "gratia",
-      "Version": "0.6.0",
+      "Version": "0.6.0.9112",
       "Source": "GitHub",
       "RemoteType": "github",
+      "RemoteHost": "api.github.com",
       "RemoteUsername": "gavinsimpson",
       "RemoteRepo": "gratia",
       "RemoteRef": "master",
-      "RemoteSha": "883196d72d107ab26becb06b530e91a1852a73d1",
-      "RemoteHost": "api.github.com",
-      "Hash": "2d8d60a45350e3c4e6fc215149f291fd"
+      "RemoteSha": "9359c3ddc1bdd5f02f19ad02ed8dc36cfd9396cb",
+      "Hash": "ef9d1b2faf85840afff756be011ae98f"
     },
     "gridExtra": {
       "Package": "gridExtra",
