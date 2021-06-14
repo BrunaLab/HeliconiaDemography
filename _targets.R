@@ -42,7 +42,7 @@ tar_plan(
   tar_target(g_cf, fit_growth(model_data_cf), deployment = "worker"),
   tar_target(g_1ha, fit_growth(model_data_1ha), deployment = "worker"),
   tar_target(f_cf, fit_flwr(model_data_cf), deployment = "worker"),
-  tar_target(f_1ha, fit_flwr(model_data_1ha), deployment = "worker"),
+  tar_target(f_1ha, fit_flwr(model_data_1ha, ind_raneff = TRUE), deployment = "worker"),
   
   # Validate and summarize results
   ### Check for edf differences due to sample size

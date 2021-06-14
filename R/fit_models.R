@@ -61,8 +61,9 @@ fit_growth <- function(data){
 #' parallel computing with `mgcv::bam()`
 #' 
 #' @param data prepared model data
+#' @param ind_raneff logical; include individual-level random effect (i.e. plant ID as a random effect)?
 #' 
-fit_flwr <- function(data) {
+fit_flwr <- function(data, ind_raneff = FALSE) {
   # use only living plants
   data2 <- data %>% dplyr::filter(surv == 1, !is.na(log_size))
   
@@ -74,6 +75,10 @@ fit_flwr <- function(data) {
       bs = "cb",
       k = c(3, 35), 
       xt = list(bs = "cr"))
+  
+  if (ind_raneff == TRUE) {
+    f <- update(f, .~. + s(ha_id_number, bs = "re"))
+  }
   
   bam(f,
       family = binomial,
