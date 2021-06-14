@@ -8,9 +8,7 @@
 #' @param flwr_prev logical; include flowering in previous year as covariate?
 #'
 fit_surv <- function(data, flwr_prev = FALSE) {
-  ncores <- detectCores()
-  cl <- makeForkCluster(ncores - 2)
-  
+
   f <- surv ~ 
     s(log_size_prev, bs = "cr") +
     s(plot, bs = "re") + #random intercept
@@ -27,8 +25,7 @@ fit_surv <- function(data, flwr_prev = FALSE) {
       family = binomial,
       data = data,
       method = "fREML",
-      select = TRUE,
-      cluster = cl)
+      select = TRUE)
 }
 
 #' Fit size GAM
@@ -41,10 +38,9 @@ fit_surv <- function(data, flwr_prev = FALSE) {
 #' @param flwr_prev logical; include flowering in previous year as covariate?
 #'
 fit_growth <- function(data, flwr_prev = FALSE){
-  ncores <- detectCores()
-  cl <- makeForkCluster(ncores - 2)
+
   # use only living plants
-  data2 <- data %>% filter(surv == 1, !is.na(log_size))
+  data2 <- data %>% dplyr::filter(surv == 1, !is.na(log_size))
   
   f <- log_size ~ 
     # flwr_prev +
@@ -64,8 +60,7 @@ fit_growth <- function(data, flwr_prev = FALSE){
       family = scat(link = "identity"), #like leptokurtic gaussian.
       data = data2,
       method = "fREML",
-      select = TRUE,
-      cluster = cl)
+      select = TRUE)
 }
 
 #' Fit size GAM
@@ -78,10 +73,8 @@ fit_growth <- function(data, flwr_prev = FALSE){
 #' @param flwr_prev logical; include flowering in previous year as covariate?
 #' 
 fit_flwr <- function(data, flwr_prev = FALSE) {
-  ncores <- detectCores()
-  cl <- makeForkCluster(ncores - 2)
   # use only living plants
-  data2 <- data %>% filter(surv == 1, !is.na(log_size))
+  data2 <- data %>% dplyr::filter(surv == 1, !is.na(log_size))
   
   f <- flwr ~ 
     # flwr_prev +
@@ -100,6 +93,5 @@ fit_flwr <- function(data, flwr_prev = FALSE) {
       family = binomial,
       data = data2,
       method = "fREML",
-      select = TRUE,
-      cluster = cl)
+      select = TRUE)
 }
