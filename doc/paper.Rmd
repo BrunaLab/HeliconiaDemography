@@ -360,7 +360,7 @@ It is important to emphasize, however, that the overall effects of SPEI on survi
 
 ## Delayed effects of climate on demographic vital rates
 
-Climate anomalies are known to have immediate effects on the growth, survival, or reproduction of plants [@wrightSeasonalNinoLonger2006; @estebanOtherSideDroughts2021], including *Heliconia* [@stiles1975; @westerbandEarlyLifeConditions2017] and other tropical herbs [@wrightSeasonalDroughtSoil1992].
+Climate anomalies are known to have immediate effects on the growth, survival, or reproduction of plants [@wrightSeasonalNinoLonger2006; @estebanOtherSideDroughts2021], including *Heliconia* [@stilesEcologyFloweringPhenology1975; @westerbandEarlyLifeConditions2017] and other tropical herbs [@wrightSeasonalDroughtSoil1992].
 These effects can be complex or even contradictory---mild droughts can increase the growth rates of tropical trees and seedling survival, perhaps due to reductions in cloud cover and concomitant increases in solar radiation [@conditTropicalForestDynamics2004; @uriarteEnvironmentalHeterogeneityBiotic2018; @hueteAmazonRainforestsGreenup2006; @alfaro-sanchezGrowthReproductionRespond2017; @jonesAsynchronousAmazonForest2014], but in severe drought years growth can be extremely low and mortality can be sharply elevated [@connell2000; @engelbrecht2002; @edwards2006].
 There is also evidence that the effects can persist for multiple years [@phillipsDroughtMortalityRelationships2010], such as a boom in drought-year fruit production followed by severe post-drought "famine" [@wright1999; @pau2013].
 
