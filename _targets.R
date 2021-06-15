@@ -1,9 +1,15 @@
 ## Set options for using tar_make_clustermq()
+## Uncomment and edit these lines to run model targets on a cluster computer via SSH
 options(
   clustermq.scheduler = "ssh",
   clustermq.ssh.host = "ericscott@hpg.rc.ufl.edu", # use your user and host
   clustermq.ssh.log = "~/cmq_ssh.log" # log for easier debugging
 )
+
+## Uncomment these lines to run locally on multiple cores
+# options(
+#   clustermq.schedule = "multicore"
+# )
 
 ## Load your packages, e.g. library(targets).
 source("./packages.R")
@@ -41,7 +47,10 @@ tar_plan(
   tar_target(s_1ha, fit_surv(model_data_1ha), deployment = "worker"),
   tar_target(g_cf, fit_growth(model_data_cf), deployment = "worker"),
   tar_target(g_1ha, fit_growth(model_data_1ha), deployment = "worker"),
-  tar_target(f_cf, fit_flwr(model_data_cf), deployment = "worker"),
+  
+  #### NOTE: The f_cf target takes ~2 hrs to run on a single core on the cluster
+  #### with ind_raneff = TRUE.
+  tar_target(f_cf, fit_flwr(model_data_cf, ind_raneff = TRUE), deployment = "worker"),
   tar_target(f_1ha, fit_flwr(model_data_1ha, ind_raneff = TRUE), deployment = "worker"),
   
   # Validate and summarize results
