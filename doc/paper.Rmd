@@ -281,9 +281,9 @@ xa_spei %>% ungroup() %>%
 Our dataset comprised `r format(summary_stats$n_plants[2], big.mark = ",")` plants in continuous forest and `r format(summary_stats$n_plants[1], big.mark = ",")` plants in forest fragments.
 Plots in CF had on average 2.7-fold more plants than plots in 1-ha fragments (CF = 681 ± 493 SD; 1-ha = 253 ± 30 SD).
 
-When summarizing across years and plots, the proportion of *Heliconia acuminata* that survived in CF and 1-ha was similarly high ($P_{surv} = 0.95$; Figure \@ref(fig:eda)b).
 The proportion of surviving plants was lowest in the 2003--2004 transition year ($P_{surv} = 0.92$), which coincided with droughts in both the 2003 and 2004 rainy seasons (Figure \@ref(fig:eda)b,d) and was preceded by a drop in average plant size in the 2002--2003 transition year (Figure \@ref(fig:eda)a).
 The lowest survival for 1-ha fragment plots ($P_{surv} = 0.93$) was for the 2005--2006 transition year, which encompassed a moderate drought in October 2005 and and wetter than average conditions (SPEI \> 0.5) in December 2005 and January 2006 (Figure \@ref(fig:eda)b,d).
+Survival probability did not differ significantly between continuous forest and 1 ha fragments (estimate and 84% CI were `r pull_ci(tar_read(s_cf))` , and `r pull_ci(tar_read(s_1ha))` for continuous forest and 1 ha fragments, respectively).
 Survival was size dependent in both continuous forest and 1-ha fragments ($p < 0.001$ for the effect of log-transformed plant size in year t on survival in year t+1 in both habitats).
 While the survival probability of large plants approached 1 in both habitat types (Figure \@ref(fig:size-plot)b), the survival of the smallest plants was higher in 1-ha fragments.
 However, the 95% confidence intervals for 1-ha fragments and continuous forest overlapped for all sizes.
