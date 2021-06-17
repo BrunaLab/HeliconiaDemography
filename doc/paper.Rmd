@@ -280,7 +280,7 @@ xa_spei %>% ungroup() %>%
 Our dataset comprised `r format(summary_stats$n_plants[2], big.mark = ",")` plants in continuous forest and `r format(summary_stats$n_plants[1], big.mark = ",")` plants in forest fragments.
 Plots in CF had on average 2.7-fold more plants than plots in 1-ha fragments (CF = 681 ± 493 SD; 1-ha = 253 ± 30 SD).
 
-```{r}
+```{r include=FALSE}
 #get 84% CI around intercepts
 withr::with_dir(here::here(), {
   tar_load(c(s_cf, s_1ha))
@@ -298,7 +298,7 @@ Survival was size dependent in both continuous forest and 1-ha fragments ($p < 0
 While the survival probability of large plants approached 1 in both habitat types (Figure \@ref(fig:size-plot)b), the survival of the smallest plants was higher in 1-ha fragments.
 However, the 95% confidence intervals for 1-ha fragments and continuous forest overlapped for all sizes.
 
-```{r}
+```{r include=FALSE}
 #get 84% CI around intercepts
 withr::with_dir(here::here(), {
   tar_load(c(g_cf, g_1ha))
@@ -327,7 +327,7 @@ model_data %>%
     mutate(prop_flwr = flwr/n)
 ```
 
-```{r}
+```{r include=FALSE}
 #get 84% CI around intercepts
 withr::with_dir(here::here(), {
   tar_load(c(f_cf, f_1ha))
