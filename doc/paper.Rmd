@@ -258,7 +258,6 @@ summary_stats <-
     mutate(across(where(is.numeric), round))
 )
 summary_stats
-
 model_data %>% 
   group_by(habitat, plot) %>% 
   summarize(n_plants = length(unique(ha_id_number))) %>% 
@@ -281,12 +280,33 @@ xa_spei %>% ungroup() %>%
 Our dataset comprised `r format(summary_stats$n_plants[2], big.mark = ",")` plants in continuous forest and `r format(summary_stats$n_plants[1], big.mark = ",")` plants in forest fragments.
 Plots in CF had on average 2.7-fold more plants than plots in 1-ha fragments (CF = 681 ± 493 SD; 1-ha = 253 ± 30 SD).
 
+```{r}
+#get 84% CI around intercepts
+withr::with_dir(here::here(), {
+  tar_load(c(s_cf, s_1ha))
+})
+source(here::here("R", "pull_ci.R"))
+pull_ci(s_cf)
+pull_ci(s_1ha)
+rm(s_cf, s_1ha)
+```
+
 The proportion of surviving plants was lowest in the 2003--2004 transition year ($P_{surv} = 0.92$), which coincided with droughts in both the 2003 and 2004 rainy seasons (Figure \@ref(fig:eda)b,d) and was preceded by a drop in average plant size in the 2002--2003 transition year (Figure \@ref(fig:eda)a).
 The lowest survival for 1-ha fragment plots ($P_{surv} = 0.93$) was for the 2005--2006 transition year, which encompassed a moderate drought in October 2005 and and wetter than average conditions (SPEI \> 0.5) in December 2005 and January 2006 (Figure \@ref(fig:eda)b,d).
-Survival probability did not differ significantly between continuous forest and 1 ha fragments (estimate and 84% CI were `r pull_ci(tar_read(s_cf))` , and `r pull_ci(tar_read(s_1ha))` for continuous forest and 1 ha fragments, respectively).
+Survival probability did not differ significantly between continuous forest and 1 ha fragments (intercept estimate and 84% CI were 0.972 [0.967, 0.976] and 0.966 [0.961, 0.971] for continuous forest and 1 ha fragments, respectively) <!--# not sure if this is where this goes -->.
 Survival was size dependent in both continuous forest and 1-ha fragments ($p < 0.001$ for the effect of log-transformed plant size in year t on survival in year t+1 in both habitats).
 While the survival probability of large plants approached 1 in both habitat types (Figure \@ref(fig:size-plot)b), the survival of the smallest plants was higher in 1-ha fragments.
 However, the 95% confidence intervals for 1-ha fragments and continuous forest overlapped for all sizes.
+
+```{r}
+#get 84% CI around intercepts
+withr::with_dir(here::here(), {
+  tar_load(c(g_cf, g_1ha))
+})
+pull_ci(g_cf, digits = 2)
+pull_ci(g_1ha, digits = 2)
+rm(g_cf, g_1ha)
+```
 
 Plants in continuous forest had an average of 2.9 shoots (± 1.8 SD) and were on average 40.6 cm tall (± 26.5 SD).
 Plants in 1-ha fragments had on average \~`r format((1 - (2.5/2.9))*100, digits = 3)`% fewer shoots (2.5 ± 1.5 SD) and were \~`r format((1 - (36.2/40.6))*100, digits = 3)`% shorter (36.3 cm ± 24.1 SD).
@@ -294,6 +314,7 @@ Because the proxy for plant size used in our models was the product of these two
 The distribution of sizes of individuals was somewhat bimodal in both habitats and the major difference in plant size was in the larger of the two modes being smaller in fragments (Figure \@ref(fig:size-plot)d).
 This disparity in plant size was most pronounced in the initial years of our surveys and then diminished over time (Figure \@ref(fig:eda)a).
 Mean plant size dropped dramatically in 2003 in both habitat types, corresponding with a severe drought during the February census (SPEI = -1.39) (Figure \@ref(fig:eda)d).
+However, the main effect of habitat on log(size) was not significant (intercept and 84% CIs were 4.41 [4.38, 4.44] and 4.36 [4.22, 4.5] for continuous forest and 1 ha fragments, respectively) <!--# not sure if this is where this goes -->.
 As with survival, size in year t was a significant predictor of size in year t+1 ($p < 0.001$ in both habitats).
 While the effect was generally similar across size classes and habitat types, the impact of plant size on growth was greatest for mid-sized plants in continuous forest (Figure \@ref(fig:size-plot)a).
 
@@ -306,10 +327,21 @@ model_data %>%
     mutate(prop_flwr = flwr/n)
 ```
 
+```{r}
+#get 84% CI around intercepts
+withr::with_dir(here::here(), {
+  tar_load(c(f_cf, f_1ha))
+})
+pull_ci(f_cf, digits = 4)
+pull_ci(f_1ha, digits = 4)
+rm(f_cf, f_1ha)
+```
+
 While the overall proportion of all plants flowering was very low, it was nevertheless almost 40% higher in continuous forest than 1-ha fragments (`r summary_stats$flwr_mean[2]` ± `r summary_stats$flwr_sd[2]` vs. `r summary_stats$flwr_mean[1]` ± `r summary_stats$flwr_sd[1]`, respectively).
 This disparity was largely due to the fact that flowering is size-dependent ($p < 0.001$ in both habitats), with the probability of flowering increasing dramatically once plants reached the threshold size of about 148 (log(size) \> 5 in Figure \@ref(fig:size-plot)c).
 Even though flowering probability of large plants was greater in 1-ha fragments compared to continuous forest, there were proportionally far fewer plants above the reproductive size threshold in forest fragments (Figure \@ref(fig:size-plot)d).
 Indeed, the most striking difference between habitat types coincided with a severe drought in 2003, when the percentage of flowering reproductive-sized plants was 28% in continuous forest vs. only 13.6% in 1-ha fragments (Figure \@ref(fig:eda)c).
+However, the main effect of habitat on flowering probability was not significant (intercept and 84% CIs were 0.0059 [0.0042, 0.0082] and 0.0033 [0.0016, 0.007] for continuous forest and 1 ha fragments, respectively) <!--# not sure if this is where this goes -->.
 
 ## Delayed effects of drought on demographic vital rates
 
