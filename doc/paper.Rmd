@@ -348,14 +348,16 @@ However, the main effect of habitat on flowering probability was not significant
 Drought history had a significant ($p < 0.001$) effect on the survival, growth, and flowering of plants in both habitats.
 Comparing the respective crossbasis surfaces, however, reveals that the specific climatic drivers, their timing, and their impact on individual vital rates all differed among habitats.
 
-For 1-ha fragments, SPEI in the preceding 12 months had the strongest effect on survival, with the highest survival near SPEI of 0 and mortality increasing as conditions became either drier or wetter (i.e., as SPEI values became increasingly negative or positive, respectively; Figure \@ref(fig:surv-spei)a).
-In contrast, the effect of recent SPEI in continuous forest was both weaker and unidirectional---survival probability was reduced only when SPEI was \< -1 (i.e., mild-severe drought), and even then only slightly (Figure \@ref(fig:surv-spei)b).
+For 1-ha fragments, SPEI in the preceding 13 months had a significant effect on survival, with the highest survival near SPEI of 0 and mortality increasing as conditions became either drier or wetter (i.e., as SPEI values became increasingly negative or positive, respectively; Figure \@ref(fig:surv-spei)b).
+Wet conditions (SPEI \> 1) in the preceeding 23 months had a significant negative effect on survival in 1 ha fragments (Figure \@ref(fig:surv-spei)b).
+In contrast, the effect of recent SPEI in continuous forest was weaker and significant for a shorter window of only the preceding 6 months (Figure \@ref(fig:surv-spei)a).
+The effect of SPEI in continuous forest also differed in that it was unidirectional---survival probability was reduced only when SPEI was \< -1 (i.e., mild-severe drought), and even then only slightly (Figure \@ref(fig:surv-spei)a).
 Instead the most pronounced effects on the survival of plants in continuous forest were of SPEI at a lag time of 15--20 months (i.e. two dry seasons prior to a census) and 32--36 months.
-Drought (i.e., SPEI \< -1) 15--20 months prior to a census was associated with reduced survival, while high precipitation (i.e., SPEI \> 1) was associated with higher survival (put another way, there was a nearly linear relationship between SPEI and survival probability).
-Finally, plants in both habitat types showed an increase in survival probability with very high SPEI values (i.e., extremely high precipitation) at a lag time of 36 months.
+Drought (i.e., SPEI \< -1) 15--20 months prior to a census was significantly associated with reduced survival, while high precipitation (i.e., SPEI \> 1) was significantly associated with higher survival (put another way, there was a nearly linear relationship between SPEI and survival probability).
+Finally, plants in both habitat types showed an increase in survival probability with very high SPEI values (i.e., extremely high precipitation) at a lag time of 32--36 months.
 It should be noted, however, that only the first year of census data (1999) met these conditions.
 We compared the effects of SPEI history in continuous forest and fragments by subtracting the fitted values in Figure \@ref(fig:surv-spei)b from Figure \@ref(fig:surv-spei)a to produce Figure \@ref(fig:surv-spei)c.
-This shows that in average conditions (SPEI = 0), there is little difference in survival probability between continuous forest and forest fragments (Figure \@ref(fig:surv-spei)c).
+This shows that in average conditions (SPEI = 0), there is little difference in survival probability between continuous forest and forest fragments (Figure \@ref(fig:surv-spei)c) <!--# is this where I should mention the overlap in 84%CI around the intercepts? -->.
 However, under extreme conditions, survival probability is higher in continuous forest by up to 0.025.
 
 While the fitted crossbasis functions for fragments and continuous forest showed generally similar patterns of drought effects on growth (i.e, trends in plant size), the crossbasis function for 1-ha fragments indicated more complex responses in some situations (edf = 17.8 for 1-ha fragments; edf = 13.0 for continuous forest; see also Figure \@ref(fig:growth-spei)).
