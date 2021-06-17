@@ -225,6 +225,7 @@ We applied an additional penalty to shrink linear portions toward zero with the 
 The `dlnm` package does not currently allow modeling of factor by smooth interactions.
 This means we could not include habitat as an interaction term.
 We therefore fit separate models for plants in fragments and in continuous forest to allow the shape of the crossbasis function to differ between habitats.
+Significant main effects of habitat type were assessed by looking for overlap in the 84% confidence intervals of model intercepts (84% CIs of two samples drawn from the same population overlap about 95% of the time [@paytonOverlappingConfidenceIntervals2003]).
 
 All analyses were conducted in `r version$version.string` [@rcoreteamLanguageEnvironmentStatistical2020].
 
