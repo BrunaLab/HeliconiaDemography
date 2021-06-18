@@ -35,10 +35,16 @@ To run the compendium and reproduce all outputs:
     not already installed and run `renv::restore()` to install all
     package dependencies.
 -   Install the [`targets` package](https://docs.ropensci.org/targets/).
--   Run `targets::tar_make()` from the R console to run all code and
-    produce all outputs.
+-   Run `targets::tar_make()` or `targets::tar_make_clustermq()` from
+    the R console to run all code and produce all outputs.
 
-## Notes
+**NOTE**: The full pipeline will take a *very long* time to run. I
+suggest switching off individual-level random effects (more details in
+comments in `_targets.R`) if you want to run the project on your own
+computer. Without individual-level random effects the pipeline should
+run relatively quickly (&lt; 1hr, I think).
+
+## Additional Dependencies
 
 -   Numbering of and in-text references to equations in `paper.Rmd` is
     handled by
