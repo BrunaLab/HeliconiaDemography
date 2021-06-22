@@ -231,7 +231,7 @@ The timing of drought events based on these SPEI calculations is consistent with
 
 ## Statistical Modeling of Vital Rates
 
-To assess the effects of drought history on plant vital rates we used Distributed Lag Non-linear Models [DLNMs; @gasparriniPenalizedFrameworkDistributed2017].
+To assess the effects of drought history on plant vital rates we used Distributed Lag Non-linear Models [DLNMs, @gasparriniPenalizedFrameworkDistributed2017].
 DLNMs capture how potentially delayed effects of predictor variables (e.g. SPEI) affect an outcome (e.g. growth) well beyond the event period.
 They do so by fitting a bi-dimensional predictor-lag-response association spline, referred to as a crossbasis function.
 This models a non-linear relationship between predictor and response (e.g. between SPEI and vital rates) and allows the shape of that relationship to vary smoothly over lag time.
