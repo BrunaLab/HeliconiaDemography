@@ -448,7 +448,7 @@ This is publication No. \_\_\_ in the BDFFP Technical Series.
 
 # Data Availability Statement
 
-All data and code used in this study are available at [insert zenodo link].
+Data used in this study are available at the Dryad Digital Repository; R code for analyses and visualizations are archived at Zenodo [links included upon acceptance].
 
 # Figures
 
