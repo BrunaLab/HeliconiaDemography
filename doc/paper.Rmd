@@ -325,7 +325,7 @@ rm(s_cf, s_1ha)
 ```
 
 *Survival:* Across all plots, the proportion of plants surviving was lowest in the 2003--2004 transition year ($P_{surv} = 0.92$).
-This coincided with droughts in both the 2003 and 2004 rainy seasons (Figure \@ref(fig:eda)b,d) and was apreceded by a drop in average plant size in the 2002--2003 transition year (Figure \@ref(fig:eda)a).
+This coincided with droughts in both the 2003 and 2004 rainy seasons (Figure \@ref(fig:eda)b,d) and was preceded by a drop in average plant size in the 2002--2003 transition year (Figure \@ref(fig:eda)a).
 The lowest survival for 1-ha fragment plots ($P_{surv} = 0.93$) was for the 2005--2006 transition year, which encompassed a moderate drought in October 2005 and and wetter than average conditions (SPEI \> 0.5) in December 2005 and January 2006 (Figure \@ref(fig:eda)b,d).
 The lowest survival for continuous forest was in 2004 ($P_{surv}=0.91$).
 When summarizing across years, plots, and plant sizes, the survival probability of *Heliconia acuminata* was similarly high in both continuous forest and fragments ($P_{surv}=0.95$; Figure \@ref(fig:eda)b; the overlapping 85% CI of model intercepts indicate no significant difference).
@@ -384,7 +384,7 @@ Comparing the respective crossbasis surfaces, however, reveals that the specific
 
 *Survival:* For 1-ha fragments, there was a significant effect on survival of SPEI in the preceding 13 months.
 The highest survival was near SPEI of 0, with mortality increasing as conditions became either drier or wetter (i.e., as SPEI values became increasingly negative or positive, respectively; Figure \@ref(fig:surv-spei)b).
-Wet conditions in the preceding 23 months (i.e., SPEI \> 1) also a significant negative effect on survival in fragments (Figure \@ref(fig:surv-spei)b).
+Wet conditions in the preceding 23 months (i.e., SPEI \> 1) also had a significant negative effect on survival in fragments (Figure \@ref(fig:surv-spei)b).
 In contrast, the effect of recent SPEI in continuous forest was weaker, with only the 6 months preceding a census having a significant effect on survival (Figure \@ref(fig:surv-spei)a).
 These short-term effects of SPEI on survival were also unidirectional---the probability of survival declined, albeit only slightly, with increasingly negative values of SPEI (i.e., as droughts became more severe; Figure \@ref(fig:surv-spei)a).
 In contrast, the most pronounced negative effects of SPEI on the survival of plants in continuous forest were at lag times of 15--20 months and 32--36 months.
@@ -399,7 +399,7 @@ However, under extreme conditions, survival probability is higher in continuous 
 However, the crossbasis function for 1-ha fragments indicated more complex responses in some situations (edf = 17.8 for 1-ha fragments; edf = 13.0 for continuous forest; see also Figure \@ref(fig:growth-spei)).
 For example, under average conditions (i.e., SPEI = 0), growth is similar or slightly higher in continuous forest over all lag periods (Figure \@ref(fig:growth-spei)c).
 However, the growth of plants in fragments is reduced when the current wet season is unusually wet (i.e., SPEI\>2), and as a result the plants in continuous forests will be larger by up to log(size) = 0.57.
-In contrast, drought at lags of 8--11 months (i.e., the end of the preceding year's wet season) led to increased growth in both habitats, with a m,ore pronounced response in 1-ha fragments.
+In contrast, drought at lags of 8--11 months (i.e., the end of the preceding year's wet season) led to increased growth in both habitats, with a more pronounced response in 1-ha fragments.
 
 *Flowering:* Overall, the the probability of flowering was higher in continuous forest than in 1-ha fragments for all values of SPEI (Figure \@ref(fig:flwr-spei)), although this difference was not significant (84% CIs of intercepts overlap).
 The responses in 1-ha fragments were also more muted as indicated by the shape of the crossbasis function (1-ha edf = 8.3, continuous forest edf = 10.6) (Figure \@ref(fig:flwr-spei)).
