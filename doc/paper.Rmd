@@ -453,7 +453,7 @@ Data used in this study are available at the Dryad Digital Repository; R code fo
 # Figures
 
 ```{r}
-eda_cap <- "Timeseries of demographic parameters and drought occurrence. Mean fold-change in plant plant size (log2(size~t+1~ / size~t~)) (a) shows that plant growth varied by year and habitat (1 ha fragments in orange, solid; continuous forest in blue, dashed). In most years plants grew on average with a notable exception in 2003 where plants regressed in size on average in both habitats (fold-change < 0). Error bars in a) represent standard deviation. The proportion of plants surviving each transition year (b) shows that average survival is high and was lowest in the 2004 census. The proportion of reproductive sized plants (c) is on average low and fluctuates substantially year to year. The cutoff for reproductive size plants in panel (c) is defined as the upper 90th percentile size of flowering plants in all years. Monthly 3-month SPEI is shown (d) with gray lines representing values from different grid cells encompassing BDFFP and the dark line representing the site mean. Yellow, orange, dark orange, and red stripes show mild, moderate, severe, and extreme drought, respectively."
+eda_cap <- "(a-c) Time series of H. acuminata vital rates in 1-ha fragments (solid orange lines) and continuous forest (dashed blue lines) and (d) drought occurrence in the study region. (a) mean fold-change in plant plant size (log2(size~t+1~ / size~t~)) varies by year and habitat. On average, plants grew in most years with the notable exception in 2003, in which on average plants regressed in size in both habitats (i.e., fold-change < 0). Error bars represent the standard deviation. (b) The proportion of plants surviving from one transition year to the next varied from 0.98 (CF in 1998-1999) to 0.91 (CF in 2003-2004). (c) The proportion of H. acuminata above the size threshold for reproduction that flowered each year is on average low but variable. The size threshold is determined by the upper 90th percentile size of flowering plants across all years. (d) Monthly 3-month SPEI for our study region. Gray lines represent values from different grid cells encompassing BDFFP; the dark line represents the site mean. Colored stripes represent drought intensity: yellow = mild, orange = moderate, dark orange = severe, red = extreme."
 ```
 
 ```{r eda, fig.cap=eda_cap, fig.width=7, fig.height=7}
@@ -461,7 +461,7 @@ tar_read(eda_plot) & theme(text = element_text(size = 10))
 ```
 
 ```{r}
-surv_curve_cap <- "Survivorship of plants labeled in the first survey year, 1998, which comprise 49% of the plants in the full dataset. After 10 years, 79.7% (1629/2055) of plants in continuous forest survived and 72.4% (393/543) of plants in fragments survived."
+surv_curve_cap <- "Survivorship curve for plants marked in the 1998 survey year; these plants comprise 49% of those in the complete demographic dataset. The percentage of these plants that were still alive ten years later was 79.7% (1629/2055) in continuous forest vs. 72.4% (393/543) in 1-ha fragments."
 ```
 
 ```{r surv-curve, fig.cap=surv_curve_cap, fig.width=7, fig.height=3.5}
