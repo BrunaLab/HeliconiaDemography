@@ -469,7 +469,7 @@ tar_read(surv_curve) + theme(text = element_text(size = 10))
 ```
 
 ```{r}
-size_cap <- "Smooth effect of plant size in the previous census from models for a) survival, b) log(size), and c) flowering probability, corresponding to the additive term s~1~(z~i~) in eq. 1.  95% confidence intervals are shown and include uncertainty in the intercept and uncertainty due to smoothness selection. The smooths for 1-ha fragments and continuous forest are fit in separate models. Panel d) shows the distribution of plant sizes in the two habitat types."
+size_cap <- "Smooth effect from models of plant size in the previous census on (a) survival, (b) log(size), and (c) flowering probability; these values correspond to the additive term s~1~(z~i~) in eq. 1. The bands depicting the 95% confidence interval include uncertainty in the intercept and uncertainty due to smoothness selection; the smooths for 1-ha fragments and continuous forest are fit in separate models. (d) Plant size distribution by habitat type (solid line = 1-ha fragments, dashed line = Continuous Forest)."
 ```
 
 ```{r size-plot, fig.cap=size_cap, fig.width=7, fig.height=7}
@@ -477,7 +477,7 @@ tar_read(size_plot) & theme(text = element_text(size = 10))
 ```
 
 ```{r}
-s_spei_cap <- "Smooth effect of lagged SPEI on survival in a) continuous forest and b) 1-ha fragments. Panel c) shows the difference between panels a) and b). Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale. Outlines show regions where the 95% confidence interval around the response does not overlap the intercept. The bar on the bottom of each panel indicates wet seasons (black, November–May) and dry seasons (white, June–October)."
+s_spei_cap <- "Smooth effect of lagged SPEI on H. acuminata survival in (a) continuous forest, (b) 1-ha fragments, (c) and the difference between the two. Outlines show regions where the effect of SPEI is significant, defined as those where the 95% confidence interval around the response does not overlap the intercept. The bar on the bottom of each panel indicates the wet seasons (black, November–May) and dry seasons (white, June–October). Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale."
 
 ```
 
@@ -486,7 +486,7 @@ tar_read(s_spei_plot) & theme(text = element_text(size = 10))
 ```
 
 ```{r}
-g_spei_cap <- "Smooth effect of lagged SPEI on plant growth for a) continuous forest and b) 1-ha fragments. Panel c) shows the difference between panels a) and b). Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function. Outlines show regions where the 95% confidence interval around the response does not overlap the intercept. The bar on the bottom of each panel indicates wet seasons (black, November–May) and dry seasons (white, June–October)."
+g_spei_cap <- "Smooth effect of lagged SPEI on H. acuminata growth in (a) continuous forest, (b) 1-ha fragments, (c) and the difference between the two. Outlines show regions where the effect of SPEI is significant, defined as those where the 95% confidence interval around the response does not overlap the intercept. The bar on the bottom of each panel indicates the wet seasons (black, November–May) and dry seasons (white, June–October)."
 ```
 
 ```{r growth-spei, fig.cap=g_spei_cap, fig.height=7.5, fig.width=7}
@@ -494,7 +494,7 @@ tar_read(g_spei_plot) & theme(text = element_text(size = 10))
 ```
 
 ```{r}
-f_spei_cap <- "Smooth effect of lagged SPEI on flowering probability for a) continuous forest and b) 1-ha fragments. Panel c) shows the difference between panels a) and b).Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale. Outlines show regions where the 95% confidence interval around the response does not overlap the intercept. The bar on the bottom of each panel indicates wet seasons (black, November–May) and dry seasons (white, June–October)."
+f_spei_cap <- "Smooth effect of lagged SPEI on H. acuminata flowering probability in (a) continuous forest, (b) 1-ha fragments, (c) and the difference between the two. Outlines show regions where the effect of SPEI is significant, defined as those where the 95% confidence interval around the response does not overlap the intercept. The bar on the bottom of each panel indicates the wet seasons (black, November–May) and dry seasons (white, June–October). Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale."
 ```
 
 ```{r flwr-spei, fig.cap=f_spei_cap, fig.height=7.5, fig.width=7}
