@@ -506,7 +506,7 @@ Data used in this study are available at the Dryad Digital Repository; R code fo
 # Figures
 
 ```{r}
-eda_cap <- "(a-c) Time series of H. acuminata vital rates in 1-ha fragments (solid orange lines) and continuous forest (dashed blue lines) and (d) drought occurrence in the study region. (a) mean fold-change in plant plant size (log2(size~t+1~ / size~t~)) varies by year and habitat. On average, plants grew in most years with the notable exception in 2003, in which on average plants regressed in size in both habitats (i.e., fold-change < 0). Error bars represent the standard deviation. (b) The proportion of plants surviving from one transition year to the next varied from 0.98 (CF in 1998-1999) to 0.91 (CF in 2003-2004). (c) The proportion of H. acuminata above the size threshold for reproduction that flowered each year is on average low but variable. The size threshold is determined by the upper 90th percentile size of flowering plants across all years. (d) Monthly 3-month SPEI for our study region. Gray lines represent values from different grid cells encompassing BDFFP; the dark line represents the site mean. Colored stripes represent drought intensity: yellow = mild, orange = moderate, dark orange = severe, red = extreme."
+eda_cap <- "(a-c) Time series of *H. acuminata* vital rates in 1-ha fragments (solid orange lines) and continuous forest (dashed blue lines) and (d) drought occurrence in the study region. (a) Mean fold-change in plant plant size (log2(size~t+1~ / size~t~)) varies by year and habitat. On average, plants grew in most years with the notable exception in 2003, in which on average plants regressed in size in both habitats (i.e., fold-change < 0). Error bars represent the standard deviation. (b) The proportion of plants surviving from one transition year to the next varied from 0.98 (CF in 1998-1999) to 0.91 (CF in 2003-2004). (c) The proportion of *H. acuminata* above the size threshold for reproduction that flowered each year is on average low but variable. The size threshold is determined by the upper 90th percentile size of flowering plants across all years. (d) Monthly 3-month SPEI for our study region. Gray lines represent values from different grid cells encompassing BDFFP; the dark line represents the site mean. Colored stripes represent drought intensity: yellow = mild, orange = moderate, dark orange = severe, red = extreme."
 ```
 
 ```{r eda, fig.cap=eda_cap, fig.width=7, fig.height=7}
@@ -530,7 +530,7 @@ tar_read(size_plot) & theme(text = element_text(size = 10))
 ```
 
 ```{r}
-s_spei_cap <- "Smooth effect of lagged SPEI on H. acuminata survival in (a) continuous forest, (b) 1-ha fragments, (c) and the difference between the two. Outlines show regions where the effect of SPEI is significant, defined as those where the 95% confidence interval around the response does not overlap the intercept. The bar on the bottom of each panel indicates the wet seasons (black, November–May) and dry seasons (white, June–October). Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale."
+s_spei_cap <- "Smooth effect of lagged SPEI on *H. acuminata* survival in (a) continuous forest, (b) 1-ha fragments, (c) and the difference between the two. Outlines show regions where the effect of SPEI is significant, defined as those where the 95% confidence interval around the response does not overlap the intercept. The bar on the bottom of each panel indicates the wet seasons (black, November–May) and dry seasons (white, June–October). Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale."
 
 ```
 
@@ -539,7 +539,7 @@ tar_read(s_spei_plot) & theme(text = element_text(size = 10))
 ```
 
 ```{r}
-g_spei_cap <- "Smooth effect of lagged SPEI on H. acuminata growth in (a) continuous forest, (b) 1-ha fragments, (c) and the difference between the two. Outlines show regions where the effect of SPEI is significant, defined as those where the 95% confidence interval around the response does not overlap the intercept. The bar on the bottom of each panel indicates the wet seasons (black, November–May) and dry seasons (white, June–October)."
+g_spei_cap <- "Smooth effect of lagged SPEI on *H. acuminata* growth in (a) continuous forest, (b) 1-ha fragments, (c) and the difference between the two. Outlines show regions where the effect of SPEI is significant, defined as those where the 95% confidence interval around the response does not overlap the intercept. The bar on the bottom of each panel indicates the wet seasons (black, November–May) and dry seasons (white, June–October)."
 ```
 
 ```{r growth-spei, fig.cap=g_spei_cap, fig.height=7.5, fig.width=7}
@@ -547,7 +547,7 @@ tar_read(g_spei_plot) & theme(text = element_text(size = 10))
 ```
 
 ```{r}
-f_spei_cap <- "Smooth effect of lagged SPEI on H. acuminata flowering probability in (a) continuous forest, (b) 1-ha fragments, (c) and the difference between the two. Outlines show regions where the effect of SPEI is significant, defined as those where the 95% confidence interval around the response does not overlap the intercept. The bar on the bottom of each panel indicates the wet seasons (black, November–May) and dry seasons (white, June–October). Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale."
+f_spei_cap <- "Smooth effect of lagged SPEI on *H. acuminata* flowering probability in (a) continuous forest, (b) 1-ha fragments, (c) and the difference between the two. Outlines show regions where the effect of SPEI is significant, defined as those where the 95% confidence interval around the response does not overlap the intercept. The bar on the bottom of each panel indicates the wet seasons (black, November–May) and dry seasons (white, June–October). Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale."
 ```
 
 ```{r flwr-spei, fig.cap=f_spei_cap, fig.height=7.5, fig.width=7}
