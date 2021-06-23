@@ -179,7 +179,7 @@ means_sds <-
     n_plants = length(unique(ha_id_number))
   ) %>%
   mutate(across(ends_with("_mean") | ends_with("_sd"),
-                ~round(.x, 2)))
+                ~round(.x, 3)))
 
 counts <- model_data %>%
   count(habitat, plot) %>%
@@ -373,7 +373,7 @@ rm(f_cf, f_1ha)
 ```
 
 *Flowering:* The overall proportion of plants that flowered was very low.
-While it was almost 40% higher in continuous forest than 1-ha fragments (`r summary_stats$flwr_mean[2]` ± `r summary_stats$flwr_sd[2]` vs. `r summary_stats$flwr_mean[1]` ± `r summary_stats$flwr_sd[1]`, respectively), this difference was not statistically significant (84% CIs of model intercepts overlapped).
+While it was 27% higher in continuous forest than 1-ha fragments (`r summary_stats$flwr_mean[2]` ± `r summary_stats$flwr_sd[2]` vs. `r summary_stats$flwr_mean[1]` ± `r summary_stats$flwr_sd[1]`, respectively), this difference was not statistically significant (84% CIs of model intercepts overlapped).
 The observed disparity was largely due to the fact that flowering is also size-dependent ($p < 0.001$ in both habitats), with the probability of flowering increasing dramatically once plants reached the threshold size of about 148 (i.e., log(size) \> 5 in Figure \@ref(fig:size-plot)c).
 Despite the flowering probability of large plants being greater in fragments than continuous forest, populations in fragments had proportionately fewer plants above the reproductive size threshold (Figure \@ref(fig:size-plot)d).
 The most striking difference between habitat types coincided with a severe drought in 2003, when the percentage of flowering reproductive-sized plants was 28% in continuous forest vs. only 13.6% in 1-ha fragments (Figure \@ref(fig:eda)c).
@@ -391,7 +391,7 @@ These short-term effects of SPEI on survival were also unidirectional---the prob
 In contrast, the most pronounced negative effects of SPEI on the survival of plants in continuous forest were at lag times of 15--20 months and 32--36 months.
 Drought 15--20 months prior to a census (i.e. two dry seasons prior to a census) was significantly associated with reduced survival, while high precipitation (i.e., SPEI \> 1) was significantly associated with higher survival.
 Finally, plants in both habitat types showed an increase in survival probability with very high SPEI values (i.e., extremely high precipitation) at a lag time of 32--36 months.
-It should be noted, however, that only the first year of census data (1999) met these conditions.
+It should be noted, however, that only the first transition year of census data (1998--1999) met these conditions.
 We compared the effects of SPEI history in continuous forest and fragments by subtracting the fitted values in Figure \@ref(fig:surv-spei)b from Figure \@ref(fig:surv-spei)a to produce Figure \@ref(fig:surv-spei)c.
 This shows that in average conditions (SPEI = 0), there is little difference in survival probability between continuous forest and forest fragments (Figure \@ref(fig:surv-spei)c).
 However, under extreme conditions, survival probability is higher in continuous forest by up to 0.025.
