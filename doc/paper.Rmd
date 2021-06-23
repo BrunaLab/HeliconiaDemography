@@ -99,19 +99,19 @@ withr::with_dir(here::here(), {
 
 # Abstract
 
-Deforestation is a major threat to biodiversity in the Amazon, partly because it leaves remaining forest habitat highly fragmented, with remnants of different sizes embedded in an often highly contrasting matrix.
+Deforestation often results in landscapes where remaining forest habitat is highly fragmented, with remnants of different sizes embedded in an often highly contrasting matrix.
 Local extinction of species from individual fragments is common, but the demographic mechanisms underlying these extinctions are poorly understood.
-It is often hypothesized that the altered environmental conditions in fragments drive declines in reproduction, recruitment, or survivorship.
+It is often hypothesized that altered environmental conditions in fragments drive declines in reproduction, recruitment, or survivorship.
 The Amazon basin, in addition to experiencing continuing fragmentation, is warming and experiencing changes in precipitation leading to altered frequency and intensity of droughts and unusually wet periods.
 Whether plant populations in tropical forest fragments are particularly susceptible to extremes in precipitation remains unclear.
 Most studies of plants in fragments are relatively short (1--6 years), focus on a single life-history stage, and often do not compare to populations in continuous forest.
-Even fewer studies consider delayed effects of climate despite the importance of such delayed effects for plant demographic vital rates in studies that look for them.
+Even fewer studies consider delayed effects of climate on demographic vital rates despite the importance of delayed effects in studies that consider them.
 Using a decade of demographic and climate data from an experimentally fragmented landscape in the Central Amazon, we assess the effects of climate on populations of an understory herb (*Heliconia acuminata*, Heliconiaceae).
 We used distributed lag non-linear models to understand the delayed effects of temperature and precipitation on survival, growth, and flowering.
 We detected delayed effects of climate up to 36 months.
 Drought two dry seasons prior to the February census decreased survival and increased flowering probability while drought in the wet season a year prior to the census decreased flowering probability and increased growth.
-The effects of extremes in precipitation on survival and growth were more intense in forest fragments compared to continuous forest.
-The complex delayed effects of climate and habitat fragmentation on *H. acuminata* vital rates points to the importance of long-term demography experiments in understanding the effects of anthropogenic change on plant populations.
+The effects of extremes in precipitation on survival and growth were more pronounced in forest fragments compared to continuous forest.
+The complex delayed effects of climate and habitat fragmentation in our study point to the importance of long-term demography experiments in understanding the effects of anthropogenic change on plant populations.
 
 \pagebreak
 
