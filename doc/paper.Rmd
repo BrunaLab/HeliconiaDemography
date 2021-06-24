@@ -63,12 +63,12 @@ Running title: `r rmarkdown::metadata$shorttitle`
 knitr::opts_chunk$set(
 	echo = FALSE,
 	fig.path = "figures/",
-	dev = "tiff",
+	dev = "png",
+	dpi = 300,
 	message = FALSE,
 	warning = FALSE,
 	collapse = TRUE,
-	comment = "#>",
-	dpi = 300
+	comment = "#>"
 )
 library(targets)
 library(tidyverse)
@@ -82,12 +82,6 @@ library(patchwork)
 ```{r load-targets}
 withr::with_dir(here::here(), {
   tar_load(c(
-    # eda_plot,
-    # surv_curve,
-    # s_spei_plot,
-    # g_spei_plot,
-    # f_spei_plot,
-    # size_plot,
     model_data,
     xa_spei
   ))
@@ -516,7 +510,13 @@ Data used in this study are available at the Dryad Digital Repository; R code fo
 eda_cap <- "(a-c) Time series of *H. acuminata* vital rates in 1-ha fragments (solid orange lines) and continuous forest (dashed blue lines) and (d) drought occurrence in the study region. (a) Mean fold-change in plant plant size (log2(size~t+1~ / size~t~)) varies by year and habitat. On average, plants grew in most years with the notable exception in 2003, in which on average plants regressed in size in both habitats (i.e., fold-change < 0). Error bars represent the standard deviation. (b) The proportion of plants surviving from one transition year to the next varied from 0.98 (CF in 1998-1999) to 0.91 (CF in 2003-2004). (c) The proportion of *H. acuminata* above the size threshold for reproduction that flowered each year is on average low but variable. The size threshold is determined by the upper 90th percentile size of flowering plants across all years. (d) Monthly 3-month SPEI for our study region. Gray lines represent values from different grid cells encompassing BDFFP; the dark line represents the site mean. Colored stripes represent drought intensity: yellow = mild, orange = moderate, dark orange = severe, red = extreme."
 ```
 
-```{r eda, fig.cap=eda_cap, fig.width=7, fig.height=7}
+```{r eda, fig.cap=eda_cap, fig.height=7, fig.width=7}
+tar_read(eda_plot) & theme(text = element_text(size = 10))
+```
+
+<!-- high res version -->
+
+```{r eda_hires, fig.height=7, fig.width=7, dev='tiff', include=FALSE}
 tar_read(eda_plot) & theme(text = element_text(size = 10))
 ```
 
@@ -524,7 +524,13 @@ tar_read(eda_plot) & theme(text = element_text(size = 10))
 surv_curve_cap <- "Survivorship curve for plants marked in the 1998 survey year; these plants comprise 49% of those in the complete demographic dataset. The percentage of these plants that were still alive ten years later was 79.7% (1629/2055) in continuous forest vs. 72.4% (393/543) in 1-ha fragments."
 ```
 
-```{r surv-curve, fig.cap=surv_curve_cap, fig.width=7, fig.height=3.5}
+```{r surv-curve, fig.cap=surv_curve_cap, fig.height=3.5, fig.width=7}
+tar_read(surv_curve) + theme(text = element_text(size = 10))
+```
+
+<!-- high res version -->
+
+```{r surv-curve_hires, fig.height=3.5, fig.width=7, dev="tiff", include=FALSE}
 tar_read(surv_curve) + theme(text = element_text(size = 10))
 ```
 
@@ -533,6 +539,12 @@ size_cap <- "Smooth effect from models of plant size in the previous census on (
 ```
 
 ```{r size-plot, fig.cap=size_cap, fig.width=7, fig.height=7}
+tar_read(size_plot) & theme(text = element_text(size = 10))
+```
+
+<!-- high res version -->
+
+```{r size-plot_hires, fig.width=7, fig.height=7, dev='tiff', include=FALSE}
 tar_read(size_plot) & theme(text = element_text(size = 10))
 ```
 
@@ -545,11 +557,23 @@ s_spei_cap <- "Smooth effect of lagged SPEI on *H. acuminata* survival in (a) co
 tar_read(s_spei_plot) & theme(text = element_text(size = 10))
 ```
 
+<!-- high res version-->
+
+```{r surv-spei_hires, fig.height=7.5, fig.width=7, dev='tiff', include=FALSE}
+tar_read(s_spei_plot) & theme(text = element_text(size = 10))
+```
+
 ```{r}
 g_spei_cap <- "Smooth effect of lagged SPEI on *H. acuminata* growth in (a) continuous forest, (b) 1-ha fragments, (c) and the difference between the two. Outlines show regions where the effect of SPEI is significant, defined as those where the 95% confidence interval around the response does not overlap the intercept. The bar on the bottom of each panel indicates the wet seasons (black, November–May) and dry seasons (white, June–October)."
 ```
 
 ```{r growth-spei, fig.cap=g_spei_cap, fig.height=7.5, fig.width=7}
+tar_read(g_spei_plot) & theme(text = element_text(size = 10))
+```
+
+<!-- high res version -->
+
+```{r growth-spei_hires, fig.height=7.5, fig.width=7, dev='tiff', include=FALSE}
 tar_read(g_spei_plot) & theme(text = element_text(size = 10))
 ```
 
@@ -561,6 +585,12 @@ f_spei_cap <- "Smooth effect of lagged SPEI on *H. acuminata* flowering probabil
 tar_read(f_spei_plot) & theme(text = element_text(size = 10))
 ```
 
+<!-- high res version-->
+
+```{r flwr-spei_hires, fig.height=7.5, fig.width=7, dev='tiff', include=FALSE}
+tar_read(f_spei_plot) & theme(text = element_text(size = 10))
+```
+
 # References
 
 <!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
@@ -568,7 +598,7 @@ tar_read(f_spei_plot) & theme(text = element_text(size = 10))
 ::: {#refs}
 :::
 
-\newpage
+<!-- \newpage -->
 
 <!-- # Left-over text -->
 
