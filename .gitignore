@@ -24,6 +24,8 @@
 /notes
 # Figures and documents
 *.png
+*.tiff
+*.eps
 *.docx
 !doc/templates/template.docx
 !doc/paper.docx

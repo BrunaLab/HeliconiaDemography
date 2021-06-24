@@ -63,6 +63,7 @@ Running title: `r rmarkdown::metadata$shorttitle`
 knitr::opts_chunk$set(
 	echo = FALSE,
 	fig.path = "figures/",
+	dev = "tiff",
 	message = FALSE,
 	warning = FALSE,
 	collapse = TRUE,
@@ -284,7 +285,8 @@ Figures were created with the aid of the `gratia`, `ggplot2`, and `patchwork` pa
 # Results
 
 The meteorological droughts in our focal region indicated by SPEI are generally consistent with those reported in the literature (Table S1).
-For example, the drought associated with the 1997 El Niño Southern Oscillation (ENSO) event was one of the most severe on record for the Amazon [@williamsonAmazonianTreeMortality2000]; correspondingly, 1997 has the lowest SPEI values in our timeseries (Figure \@ref(fig:eda)d). The 2005 dry season (June--October) was also reported as an exceptionally dry year, although this drought mostly affected the southwestern Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008].
+For example, the drought associated with the 1997 El Niño Southern Oscillation (ENSO) event was one of the most severe on record for the Amazon [@williamsonAmazonianTreeMortality2000]; correspondingly, 1997 has the lowest SPEI values in our timeseries (Figure \@ref(fig:eda)d).
+The 2005 dry season (June--October) was also reported as an exceptionally dry year, although this drought mostly affected the southwestern Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008].
 Our SPEI data show the 2005 dry season to be a moderate drought (-1 \> SPEI \> -1.5).
 
 ## Survival, growth, and flowering in continuous forest vs. fragments
@@ -425,13 +427,17 @@ This suggests that the hypothesized synergies between climate and fragmentation 
 
 Many studies investigating the biological consequences of habitat fragmentation on plant growth, survival, and reproduction comprise short-term ([\<]{.ul}3 year) experiments and observations.
 Our results underscore the difficulty in extrapolating long-term trends from such short-term studies, particularly when studying long-lived organisms or when the responses of interest can vary with size or age.
-For instance, one would have reached a very different conclusion regarding the effect of fragmentation on annual survival if the study windows were 1999--2002 (i.e., higher survival in continuous forest), 2002--2005 (i.e., higher survival in fragments), or 2004--2007 (i.e, no clear effect of fragmentation) (Figure \@ref(fig:eda)b). It is only when evaluating over longer time windows that it becomes apparent mortality is elevated in fragments relative to continuous forest (Figure \@ref(fig:surv-curve)), and that the observed interannual variation is largely driven by dynamic patterns of recruitment [@brunaEffectsForestFragmentation2002] coupled with low mortality for plants beyond the smallest size classes [@brunaArePlantPopulations2003].
+For instance, one would have reached a very different conclusion regarding the effect of fragmentation on annual survival if the study windows were 1999--2002 (i.e., higher survival in continuous forest), 2002--2005 (i.e., higher survival in fragments), or 2004--2007 (i.e, no clear effect of fragmentation) (Figure \@ref(fig:eda)b).
+It is only when evaluating over longer time windows that it becomes apparent mortality is elevated in fragments relative to continuous forest (Figure \@ref(fig:surv-curve)), and that the observed interannual variation is largely driven by dynamic patterns of recruitment [@brunaEffectsForestFragmentation2002] coupled with low mortality for plants beyond the smallest size classes [@brunaArePlantPopulations2003].
 
 Similarly, conclusions regarding the effects of fragmentation on flowering---which is also both rare and size-dependent [@brooksStatisticalModelingPatterns2019]---would also differ based on the year in which they were investigated.
 This could lead to erroneous extrapolations regarding the effects of fragmentation on reproductive mutualists or population genetic structure [@uriarteEffectsForestFragmentation2010; @uriarteDisentanglingDriversReduced2011; @cortesLowPlantDensity2013].
 Conclusions based on short-term observations of temporally variable vital rates could lead to conservation and management practices that are ineffective or even counterproductive, especially when when failing to consider how the consequences of this variation might be modulated by organismal life history [@morrisLongevityCanBuffer2008].
 
-It is important to emphasize, however, that the overall effects of SPEI on survival and growth are more severe in fragments than continuous forest (Figures \@ref(fig:surv-spei), \@ref(fig:growth-spei)). Furthermore, the magnitude of plant responses to climatic extremes is also greater in habitat fragments---extreme drought in dry seasons and extreme precipitation in during rainy seasons are most detrimental to growth and survival in fragments. While intact forest and its canopy buffer populations from climatic extremes, populations in fragments---especially near edges with high contrast matrix---likely lack this protection [@didhamEdgeStructureDetermines1999; @ewersFragmentationImpairsMicroclimate2013]. We suggest it is these climate extremes, rather than trends in average temperature, precipitation, or SPEI [@lauranceApparentEnvironmentalSynergism2014], that that are the causal mechanism underlying reduced plant growth and survival in forest fragments.
+It is important to emphasize, however, that the overall effects of SPEI on survival and growth are more severe in fragments than continuous forest (Figures \@ref(fig:surv-spei), \@ref(fig:growth-spei)).
+Furthermore, the magnitude of plant responses to climatic extremes is also greater in habitat fragments---extreme drought in dry seasons and extreme precipitation in during rainy seasons are most detrimental to growth and survival in fragments.
+While intact forest and its canopy buffer populations from climatic extremes, populations in fragments---especially near edges with high contrast matrix---likely lack this protection [@didhamEdgeStructureDetermines1999; @ewersFragmentationImpairsMicroclimate2013].
+We suggest it is these climate extremes, rather than trends in average temperature, precipitation, or SPEI [@lauranceApparentEnvironmentalSynergism2014], that that are the causal mechanism underlying reduced plant growth and survival in forest fragments.
 
 ## Delayed effects of climate on demographic vital rates
 
@@ -614,18 +620,24 @@ tar_read(f_spei_plot) & theme(text = element_text(size = 10))
 
 <!-- \newpage -->
 
-### Colophon
+<!-- ### Colophon -->
 
-This report was generated on `r Sys.time()` using the following computational environment and dependencies:
+<!-- This report was generated on `r Sys.time()` using the following computational environment and dependencies: -->
 
-```{r colophon, cache = FALSE}
-# which R packages and versions?
-if ("devtools" %in% installed.packages()) devtools::session_info()
-```
+<!-- ```{r colophon, cache = FALSE} -->
 
-The current Git commit details are:
+<!-- # which R packages and versions? -->
 
-```{r}
-# what commit is this file at? 
-if ("git2r" %in% installed.packages() & git2r::in_repository(path = ".")) git2r::repository(here::here())  
-```
+<!-- if ("devtools" %in% installed.packages()) devtools::session_info() -->
+
+<!-- ``` -->
+
+<!-- The current Git commit details are: -->
+
+<!-- ```{r} -->
+
+<!-- # what commit is this file at?  -->
+
+<!-- if ("git2r" %in% installed.packages() & git2r::in_repository(path = ".")) git2r::repository(here::here())   -->
+
+<!-- ``` -->
