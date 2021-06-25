@@ -499,6 +499,7 @@ We also thank the technicians and students who helped conduct the *Heliconia* ce
 Financial support was provided by the U.S.
 National Science Foundation (awards DEB-0614339, DEB-0614149, INT 98-06351, and DEB-1948607).
 This is publication No. \_\_\_ in the BDFFP Technical Series.
+The authors delcare no conflicts of interest.
 
 # Data Availability Statement
 
