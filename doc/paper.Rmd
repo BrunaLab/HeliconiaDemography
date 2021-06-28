@@ -517,7 +517,7 @@ tar_read(eda_plot) & theme(text = element_text(size = 10))
 
 <!-- high res version -->
 
-```{r eda_hires, fig.height=7, fig.width=7, dev='tiff', include=FALSE}
+```{r eda_hires, fig.height=7, fig.width=7, dev='tiff', include=FALSE, dpi=600}
 tar_read(eda_plot) & theme(text = element_text(size = 10))
 ```
 
@@ -531,7 +531,7 @@ tar_read(surv_curve) + theme(text = element_text(size = 10))
 
 <!-- high res version -->
 
-```{r surv-curve_hires, fig.height=3.5, fig.width=7, dev="tiff", include=FALSE}
+```{r surv-curve_hires, fig.height=3.5, fig.width=7, dev="tiff", dpi=600, include=FALSE}
 tar_read(surv_curve) + theme(text = element_text(size = 10))
 ```
 
@@ -545,7 +545,7 @@ tar_read(size_plot) & theme(text = element_text(size = 10))
 
 <!-- high res version -->
 
-```{r size-plot_hires, fig.width=7, fig.height=7, dev='tiff', include=FALSE}
+```{r size-plot_hires, fig.width=7, fig.height=7, dev='tiff', dpi=600, include=FALSE}
 tar_read(size_plot) & theme(text = element_text(size = 10))
 ```
 
@@ -560,7 +560,7 @@ tar_read(s_spei_plot) & theme(text = element_text(size = 10))
 
 <!-- high res version-->
 
-```{r surv-spei_hires, fig.height=7.5, fig.width=7, dev='tiff', include=FALSE}
+```{r surv-spei_hires, fig.height=7.5, fig.width=7, dev='tiff', dpi=600, include=FALSE}
 tar_read(s_spei_plot) & theme(text = element_text(size = 10))
 ```
 
@@ -574,7 +574,7 @@ tar_read(g_spei_plot) & theme(text = element_text(size = 10))
 
 <!-- high res version -->
 
-```{r growth-spei_hires, fig.height=7.5, fig.width=7, dev='tiff', include=FALSE}
+```{r growth-spei_hires, fig.height=7.5, fig.width=7, dev='tiff', dpi=600, include=FALSE}
 tar_read(g_spei_plot) & theme(text = element_text(size = 10))
 ```
 
@@ -588,7 +588,7 @@ tar_read(f_spei_plot) & theme(text = element_text(size = 10))
 
 <!-- high res version-->
 
-```{r flwr-spei_hires, fig.height=7.5, fig.width=7, dev='tiff', include=FALSE}
+```{r flwr-spei_hires, fig.height=7.5, fig.width=7, dev='tiff', dpi=600, include=FALSE}
 tar_read(f_spei_plot) & theme(text = element_text(size = 10))
 ```
 
