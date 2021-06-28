@@ -521,6 +521,10 @@ tar_read(eda_plot) & theme(text = element_text(size = 10))
 tar_read(eda_plot) & theme(text = element_text(size = 10))
 ```
 
+```{r eda_vect, fig.height=7, fig.width=7, dev='pdf', include=FALSE}
+tar_read(eda_plot) & theme(text = element_text(size = 10))
+```
+
 ```{r}
 surv_curve_cap <- "Survivorship curve for plants marked in the 1998 survey year; these plants comprise 49% of those in the complete demographic dataset. The percentage of these plants that were still alive ten years later was 79.7% (1629/2055) in continuous forest vs. 72.4% (393/543) in 1-ha fragments."
 ```
@@ -535,6 +539,10 @@ tar_read(surv_curve) + theme(text = element_text(size = 10))
 tar_read(surv_curve) + theme(text = element_text(size = 10))
 ```
 
+```{r surv-curve_vect, fig.height=3.5, fig.width=7, dev="pdf", include=FALSE}
+tar_read(surv_curve) + theme(text = element_text(size = 10))
+```
+
 ```{r}
 size_cap <- "Smooth effect from models of plant size in the previous census on (a) survival, (b) log(size), and (c) flowering probability; these values correspond to the additive term s~1~(z~i~) in eq. 1. The bands depicting the 95% confidence interval include uncertainty in the intercept and uncertainty due to smoothness selection; the smooths for 1-ha fragments and continuous forest are fit in separate models. (d) Plant size distribution by habitat type (solid line = 1-ha fragments, dashed line = Continuous Forest)."
 ```
@@ -546,6 +554,10 @@ tar_read(size_plot) & theme(text = element_text(size = 10))
 <!-- high res version -->
 
 ```{r size-plot_hires, fig.width=7, fig.height=7, dev='tiff', dpi=600, include=FALSE}
+tar_read(size_plot) & theme(text = element_text(size = 10))
+```
+
+```{r size-plot_vect, fig.width=7, fig.height=7, dev='pdf', include=FALSE}
 tar_read(size_plot) & theme(text = element_text(size = 10))
 ```
 
@@ -564,6 +576,10 @@ tar_read(s_spei_plot) & theme(text = element_text(size = 10))
 tar_read(s_spei_plot) & theme(text = element_text(size = 10))
 ```
 
+```{r surv-spei_vect, fig.height=7.5, fig.width=7, dev='pdf', include=FALSE}
+tar_read(s_spei_plot) & theme(text = element_text(size = 10))
+```
+
 ```{r}
 g_spei_cap <- "Smooth effect of lagged SPEI on *H. acuminata* growth in (a) continuous forest, (b) 1-ha fragments, (c) and the difference between the two. Outlines show regions where the effect of SPEI is significant, defined as those where the 95% confidence interval around the response does not overlap the intercept. The bar on the bottom of each panel indicates the wet seasons (black, November–May) and dry seasons (white, June–October)."
 ```
@@ -578,6 +594,10 @@ tar_read(g_spei_plot) & theme(text = element_text(size = 10))
 tar_read(g_spei_plot) & theme(text = element_text(size = 10))
 ```
 
+```{r growth-spei_vect, fig.height=7.5, fig.width=7, dev='pdf', include=FALSE}
+tar_read(g_spei_plot) & theme(text = element_text(size = 10))
+```
+
 ```{r}
 f_spei_cap <- "Smooth effect of lagged SPEI on *H. acuminata* flowering probability in (a) continuous forest, (b) 1-ha fragments, (c) and the difference between the two. Outlines show regions where the effect of SPEI is significant, defined as those where the 95% confidence interval around the response does not overlap the intercept. The bar on the bottom of each panel indicates the wet seasons (black, November–May) and dry seasons (white, June–October). Surface is modeled as a crossbasis function with cubic regression splines for each marginal basis. Model intercepts were added to fitted values of the crossbasis function and back-transformed to the response scale."
 ```
@@ -589,6 +609,10 @@ tar_read(f_spei_plot) & theme(text = element_text(size = 10))
 <!-- high res version-->
 
 ```{r flwr-spei_hires, fig.height=7.5, fig.width=7, dev='tiff', dpi=600, include=FALSE}
+tar_read(f_spei_plot) & theme(text = element_text(size = 10))
+```
+
+```{r flwr-spei_vect, fig.height=7.5, fig.width=7, dev='pdf', include=FALSE}
 tar_read(f_spei_plot) & theme(text = element_text(size = 10))
 ```
 

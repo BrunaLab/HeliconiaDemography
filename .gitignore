@@ -27,6 +27,7 @@
 *.tiff
 *.eps
 *.docx
+*.pdf
 !doc/templates/template.docx
 !doc/paper.docx
 *.nb.html
