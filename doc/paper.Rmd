@@ -206,9 +206,7 @@ The distance between plots ranged from 500 m--41 km.
 Our dataset comprised `r format(summary_stats$n_plants[2], big.mark = ",")` plants in continuous forest and `r format(summary_stats$n_plants[1], big.mark = ",")` plants in forest fragments.
 Plots in CF had on average 2.7-fold more plants than plots in 1-ha fragments (CF = 681 ± 493 SD; 1-ha = 253 ± 30 SD).
 
-Each plot was subdivided into 50 quadrats ($10 \times 10$m) to simplify annual surveys, during which we recorded the number of vegetative shoots each plant had, the height of each plant to the tallest leaf, and whether each plant was flowering (height and shoot number are correlated with leaf area, the probability of flowering, and rates of survivorship [@brunaHabitatFragmentationDemographic2002; @brunaEffectsForestFragmentation2002]).
-In this study, we used the product of shoot number and plant height as our measure of plant size.
-Preliminary analysis showed that the product of shoot number and height was a better predictor of total leaf area (which in turn is assumed to be a strong predictor of aboveground biomass) than either shoot number or height alone (Table S2 <!--# update crossref manually -->).
+Each plot was subdivided into 50 quadrats ($10 \times 10$m) to simplify annual surveys, during which we recorded the number of vegetative shoots each plant had, the height of each plant to the tallest leaf, and whether each plant was flowering (height and shoot number are correlated with leaf area, the probability of flowering, and rates of survivorship [@brunaHabitatFragmentationDemographic2002; @brunaEffectsForestFragmentation2002]. In this study, we used the product of shoot number and plant height as our measure of plant size. Preliminary analysis showed that the product of shoot number and height was a better predictor of total leaf area (which in turn is assumed to be a strong predictor of aboveground biomass) than either shoot number or height alone (Table S2 <!--# update crossref manually -->).
 Plants that were not found for three consecutive surveys were considered dead.
 We also surveyed plots regularly during the rainy season to identify any that flowered after the survey.
 For additional details on the location of plots, survey methods, and *H. acuminata* population structure see @brunaHabitatFragmentationDemographic2002.
@@ -239,7 +237,7 @@ The general form of the vital rate ($y$) models was as follows:
 $$
   \begin{split}
   & g[ \textrm{E}(y_{i})] = \alpha_j + s_1(z_i) + s_2(d_{i,t}, ..., d_{i,t-36}) + \beta x_i \\
-  & \alpha_j \sim N(\mu_{\alpha_j}, \sigma^2_{\alpha_j}), \;\textrm{for plot }j 
+  & \alpha_j \sim N(\mu_{\alpha_j}, \sigma^2_{\alpha_j}), \;\textrm{for plot j} 
   \end{split}
 $${\#eq:eqn1}
 
@@ -264,7 +262,7 @@ We modeled both reproduction and survival (i.e., from year t to year t+1) using 
 We modeled a potential cost of reproduction by including flowering in the previous year as covariate, $x_i$, in @eq:eqn1.
 Additionally, in models for flowering probability and size, we included plant ID as a random effect to account for variation among individuals.
 Preliminary analyses showed that this random effect was not significant in the growth models (edf \~ 0, p \> 0.2) and as such it was dropped to improve computational efficiency.
-1 A random effect of plant ID was not included in survival models since each plant only dies once.
+A random effect of plant ID was not included in survival models since each plant only dies once.
 
 In the process of fitting the models, the penalty on the crossbasis smooth (and other smoothed terms) is optimized such that more linear shapes are favored unless the data supports non-linearity [@woodGeneralizedAdditiveModels2017].
 We applied an additional penalty to shrink linear portions toward zero with the `select=TRUE` option to the `gam()` function, and inferred statistical significance of model terms with p-values from the `summary.gam()` function as recommended in @marraPracticalVariableSelection2011.
@@ -401,7 +399,7 @@ In contrast, drought at lags of 8--11 months (i.e., the end of the preceding yea
 *Flowering:* Overall, the the probability of flowering was higher in continuous forest than in 1-ha fragments for all values of SPEI (Figure \@ref(fig:flwr-spei)), although this difference was not significant (84% CIs of intercepts overlap).
 The responses in 1-ha fragments were also more muted as indicated by the shape of the crossbasis function (1-ha edf = 8.3, continuous forest edf = 10.6) (Figure \@ref(fig:flwr-spei)).
 This led to some important inter-habitat differences in plant responses to prior droughts.
-In continuous forests, recent drought (i.e., at lag = 0--2 with SPEI \< -1), drought two dry seasons prior (lags 15--20 ) and in the wet season 34--36 months prior all increased the probability of flowering.
+In continuous forests, recent drought (i.e., at lag = 0--2 with SPEI \< -1), drought two dry seasons prior (lags 15--20) and in the wet season 34--36 months prior all increased the probability of flowering.
 However, drought at the end of the rainy season one year prior (lags 7--13) significantly reduced flowering probability (Figure \@ref(fig:flwr-spei)a).
 In fragments, recent drought had no significant effect on flowering probability and only drought at two dry seasons prior (lags 16--20) and in the wet season 33--36 months prior increased flowering probability (Figure \@ref(fig:flwr-spei)b).
 The effects of drought on flowering probability were strong in continuous forest compared to 1 ha fragments (Figure \@ref(fig:flwr-spei)c).
@@ -482,7 +480,7 @@ Over 24 million ha of the Brazilian Amazon have been cleared in the last two dec
 Climate models predict a future of extremes for these forests---increases in the frequency and geographic extent of droughts, but also increases in the frequency and area affected by periods of unusual wetness [@duffy2015].
 Our results support the hypothesis that populations in Amazonian forest fragments could be more susceptible to the effects of changing climate than those in continuous forest [@lauranceApparentEnvironmentalSynergism2014].
 However, they also indicate that the demographic responses to climate change of populations in fragmented landscapes may be far more complex than previously appreciated.
-Multi-factorial, multi-season experiments [*sensu* @brunaCompensatoryResponsesUnderstory2005; @markewitz2010; @westerbandEarlyLifeConditions2017; @aguirre2021], ideally manipulating multiple combinations of climatic variables [@mundim2016], are needed to determine how and why habitat-specific differences in environmental conditions interact to delay the demographic responses of plants to climatic variability.
+Multi-factorial, multi-season experiments [*sensu* @aguirre2021; @brunaCompensatoryResponsesUnderstory2005; @markewitz2010; @westerbandEarlyLifeConditions2017], ideally manipulating multiple combinations of climatic variables [@mundim2016], are needed to determine how and why habitat-specific differences in environmental conditions interact to delay the demographic responses of plants to climatic variability.
 Also needed are statistical tools that can test for synergistic effects of fragmentation and climate in vital rates, as those currently available do not allow for including interaction terms.
 This also limits the ability to include size by climate interactions in a DLNM; although plant responses to both fragmentation and climatic extremes can be size-specific [@brunaDemographicEffectsHabitat2005; @schwartzFragmentationForestStructure2019].
 The ability to identify size-specific lagged responses may be especially complicated given size and growth are rarely measured at the same time scale as SPEI and other putative climatic drivers.
