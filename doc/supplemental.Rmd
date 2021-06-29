@@ -21,7 +21,8 @@ nocite: |
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
                       message = FALSE,
-                      warning = FALSE)
+                      warning = FALSE,
+                      dpi = 300)
 ```
 
 
@@ -55,7 +56,7 @@ withr::with_dir(here::here(), {
 
 # Climate Normals for BDFFP
 
-```{r normals}
+```{r normals, fig.height=4, fig.width=5.5}
 normals_plot & theme(text = element_text(size = 10))
 ```
 
@@ -239,10 +240,6 @@ table %>%
 
 # Choice of variable for plant size
 
-<!-- include contents of `choose_size_var.Rmd` here. -->
-
-<!-- Ask Emilio about citaiton for dataset. -->
-
 ```{r}
 m_ht <-   lm(log_leaf_area ~ log_ht,   data = la_data)
 m_shts <- lm(log_leaf_area ~ log_shts, data = la_data)
@@ -256,7 +253,7 @@ check_model(m_size)
 ```
 
 Table S2.
-Using data from transplant experiments of *Heliconia acuminata* [@brunaExperimentalAssessmentHeliconia2002 <!--# and doi for unpublished data -->] we fit linear regressions with log(leaf area) as the response variable and either log(height), log(shoot number) or log(shoot number x height) as the predictor.
+Using data from transplant experiments of *Heliconia acuminata* [@brunaExperimentalAssessmentHeliconia2002; @brunaLeafNumberLeaf2021] we fit linear regressions with log(leaf area) as the response variable and either log(height), log(shoot number) or log(shoot number x height) as the predictor.
 Using the log of size (shoot number $\times$ height) as a predictor gives the lowest AIC, BIC, root mean squared error (RMSE) and highest $R^2$ indicating that it is the best proxy for predicting log(leaf area) as a response.
 
 ```{r size-table}
