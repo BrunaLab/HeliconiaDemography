@@ -80,5 +80,5 @@ wrangle_demog <- function(data, n_years = 3) {
            ht, ht_prev, shts, shts_prev,
            size, size_prev, log_size, log_size_prev,
            infl_num = infl, flwr, flwr_prev, surv,
-           code_notes, code2)
+           code_notes)
 }
