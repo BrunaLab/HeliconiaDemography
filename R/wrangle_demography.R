@@ -14,15 +14,6 @@ read_fix_demog <- function(path) {
                   HA_ID_Number = col_character())) %>% 
     clean_names() 
   
-  # A few entries don't read in because x_09 was entered with a comma or
-  # semicolon instead of a decimal.
-  fails <- problems(demog)
-  fails <-
-    fails %>% 
-    mutate(corrected = str_replace(actual, "[\\,;]", "\\."))
-  
-  demog$x_09[fails$row] <- fails$corrected
-  
   #If ht is between 0 and 1, round up to 1 cm. All other data is recorded to the
   #nearest cm, so these values should be as well.
   demog <-
