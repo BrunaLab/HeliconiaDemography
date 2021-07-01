@@ -11,7 +11,8 @@ join_filter_demog_spei <- function(demog, xa) {
       plot %in% c("Florestal-CF", "5752", "5751", "5750", "5756", "CaboFrio-CF") ~ "-59.875",
       plot %in% c("2206", "2108", "2107", "Dimona-CF", "5753", "PortoAlegre-CF") ~ "-60.125",
       TRUE ~ NA_character_
-    ), .before = plot)
+    ), .before = plot) %>% 
+    select(-row, -column)
   
   xa2 <- 
     xa %>%

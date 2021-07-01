@@ -74,7 +74,8 @@ wrangle_demog <- function(data, n_years = 3) {
     mutate(year_fac = as.factor(year)) %>% 
     # arrange columns
     select(ranch, bdffp_reserve_no, plot, habitat, #site level
-           # row, column, x_09, y_09, 
+           row, column,
+           # x_09, y_09, 
            ha_id_number, #plot level
            year,
            ht, ht_prev, shts, shts_prev,
