@@ -34,3 +34,5 @@
 *.html
 _targets/
 .DS_Store
+*.key
+
