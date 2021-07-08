@@ -4,7 +4,7 @@ options(
   clustermq.scheduler = "ssh",
   clustermq.ssh.host = "ericscott@hpg.rc.ufl.edu", # use your user and host
   clustermq.ssh.log = "~/cmq_ssh.log", # log for easier debugging
-  clustermq.worker.timeout = 1200
+  clustermq.worker.timeout = 2400
 )
 
 ## Uncomment these lines to run locally on multiple cores
@@ -51,8 +51,8 @@ tar_plan(
   
   #### NOTE: The f_cf target takes ~2 hrs to run on a single core on the cluster
   #### with ind_raneff = TRUE.
-  tar_target(f_cf, fit_flwr(model_data_cf, ind_raneff = TRUE), deployment = "worker"),
-  tar_target(f_1ha, fit_flwr(model_data_1ha, ind_raneff = TRUE), deployment = "worker"),
+  tar_target(f_cf, fit_flwr(model_data_cf,   ind_raneff = FALSE), deployment = "worker"),
+  tar_target(f_1ha, fit_flwr(model_data_1ha, ind_raneff = FALSE), deployment = "worker"),
   
   # Validate and summarize results
   ### Check for edf differences due to sample size
