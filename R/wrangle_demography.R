@@ -49,14 +49,14 @@ wrangle_demog <- function(data, n_years = 3) {
   data_surv_size <-
     data_surv %>%
     group_by(ha_id_number) %>% 
-    mutate(ht_prev = lag(ht),
-           shts_prev = lag(shts)) %>% 
+    # mutate(ht_prev = lag(ht),
+    #        shts_prev = lag(shts)) %>% 
     ungroup() %>% 
     mutate(
       size = shts * ht,
-      size_prev = shts_prev * ht_prev,
+      # size_prev = shts_prev * ht_prev,
       log_size = log(size),
-      log_size_prev = log(size_prev)
+      # log_size_prev = log(size_prev)
     )
   
   data_surv_size %>% 
@@ -65,10 +65,9 @@ wrangle_demog <- function(data, n_years = 3) {
     #add binary column for flowering
     mutate(infl = if_else(is.na(infl) & (!is.na(shts) | !is.na(ht)), 0L, infl)) %>% 
     mutate(flwr = if_else(infl > 0, 1L, 0L), .after = infl) %>% 
-    mutate(flwr_prev = lag(flwr)) %>% 
     #create factors
     mutate(across(
-      c(ranch, bdffp_reserve_no, plot, habitat, ha_id_number, flwr_prev),
+      c(ranch, bdffp_reserve_no, plot, habitat, ha_id_number),
       as.factor
     )) %>%
     mutate(year_fac = as.factor(year)) %>% 
@@ -78,8 +77,15 @@ wrangle_demog <- function(data, n_years = 3) {
            # x_09, y_09, 
            ha_id_number, #plot level
            year,
-           ht, ht_prev, shts, shts_prev,
-           size, size_prev, log_size, log_size_prev,
-           infl_num = infl, flwr, flwr_prev, surv,
-           code_notes)
+           ht, shts, 
+           size, log_size, 
+           infl, flwr, surv,
+           code_notes) %>% 
+    
+    # add lags
+    group_by(ha_id_number) %>% 
+    arrange(year) %>% 
+    mutate(across(c(flwr, infl, ht, shts, size, log_size), lag,
+                  .names = "{.col}_prev")) %>% 
+    ungroup()
 }
