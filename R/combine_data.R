@@ -29,9 +29,8 @@ join_filter_demog_spei <- function(demog, xa) {
     filter(
       # having no aboveground biomass is possible, but categorically different
       # than just being small. Exclude plants with 0 shoots or 0 height
-      # NOTE: this also removes NAs, due to NA > 0 returning NA, not TRUE.
-      shts_prev > 0,
-      ht_prev > 0,
+      shts_prev > 0 | is.na(shts_prev),
+      ht_prev > 0 | is.na(ht_prev),
       # for survival data, must include plants with NA for shts and height (i.e.
       # dead plants)
       shts > 0 | is.na(shts), 
