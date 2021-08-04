@@ -52,14 +52,10 @@ wrangle_demog <- function(data, n_years = 3) {
   data_surv_size <-
     data_surv %>%
     group_by(ha_id_number) %>% 
-    # mutate(ht_prev = lag(ht),
-    #        shts_prev = lag(shts)) %>% 
     ungroup() %>% 
     mutate(
       size = shts * ht,
-      # size_prev = shts_prev * ht_prev,
-      log_size = log(size),
-      # log_size_prev = log(size_prev)
+      log_size = log(size)
     )
   
   data_surv_size %>% 
@@ -77,7 +73,6 @@ wrangle_demog <- function(data, n_years = 3) {
     # arrange columns
     select(ranch, bdffp_reserve_no, plot, habitat, #site level
            row, column,
-           # x_09, y_09, 
            ha_id_number, #plot level
            year,
            ht, shts, 
