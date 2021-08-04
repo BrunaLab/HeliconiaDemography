@@ -34,7 +34,7 @@ tar_plan(
   # Prep demographic data
   tar_target(demog_file, here("data", "Ha_survey_with_Zombies.csv"), format = "file"),
   demog_raw = read_fix_demog(demog_file),
-  demog_done = wrangle_demog(demog_raw),
+  demog_done = demog_raw %>% filter_dupes() %>% wrangle_demog(), #filter_dupes() removes some duplicate HA id numbers.  Will eventually be fixed in raw data
   model_data = join_filter_demog_spei(demog_done, xa_lag),
   model_data_cf = dplyr::filter(model_data, habitat == "CF"),
   model_data_1ha = dplyr::filter(model_data, habitat == "1-ha"),

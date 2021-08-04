@@ -87,3 +87,22 @@ wrangle_demog <- function(data, n_years = 3) {
                   .names = "{.col}_prev")) %>% 
     ungroup()
 }
+
+#' Remove duplicated HA ID numbers
+#' 
+#' removes all HA ID numbers with more than one observation per year in any year.
+#'
+#' @param data demographic data
+#' 
+filter_dupes <- function(data) {
+  
+  dupes <- 
+    data %>%
+    group_by(year, ha_id_number) %>% 
+    count() %>%
+    filter(n>1) %>% 
+    pull(ha_id_number) %>% 
+    unique()
+  
+  data %>% filter(!ha_id_number %in% dupes)
+}
