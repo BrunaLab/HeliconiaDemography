@@ -61,7 +61,7 @@ tar_plan(
   tar_target(g_cf_sub, fit_growth(model_data_cf_sub), deployment = "worker"),
   tar_target(f_cf_sub, fit_flwr(model_data_cf_sub), deployment = "worker"),
   tar_target(s_cf_sub, fit_surv(model_data_cf_sub), deployment = "worker"),
-  tar_render(validate_models, "doc/validate_models.Rmd"),
+  tar_render(validate_models, "doc/validate_models.Rmd", deployment = "main"),
 
   # Descriptive / Exploratory Data Analysis Figures
   normals = normals_data(),
@@ -114,7 +114,7 @@ tar_plan(
   ), 
 
   # Main text
-  tar_render(paper, "doc/paper.Rmd"),
+  tar_render(paper, "doc/paper.Rmd", deployment = "main"),
 
   # Supplemental
   tar_target(rpde_file,
@@ -137,6 +137,6 @@ tar_plan(
   tar_target(la_file, here("data", "HA-la-stems-ht.xlsx"), format = "file"),
   la_data = read_tidy_la(la_file),
 
-  tar_render(supplemental, "doc/supplemental.Rmd")
+  tar_render(supplemental, "doc/supplemental.Rmd", deployment = "main")
 
 )
