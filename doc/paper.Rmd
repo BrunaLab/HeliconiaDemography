@@ -207,7 +207,9 @@ Our dataset comprised `r format(summary_stats$n_plants[2], big.mark = ",")` plan
 Plots in CF had on average 2.7-fold more plants than plots in 1-ha fragments (CF = 681 ± 493 SD; 1-ha = 253 ± 30 SD).
 
 Each plot was subdivided into 50 quadrats ($10 \times 10$m) to simplify annual surveys, during which we recorded the number of vegetative shoots each plant had, the height of each plant to the tallest leaf, and whether each plant was flowering (height and shoot number are correlated with leaf area, the probability of flowering, and rates of survivorship [@brunaHabitatFragmentationDemographic2002; @brunaEffectsForestFragmentation2002]. In this study, we used the product of shoot number and plant height as our measure of plant size. Preliminary analysis showed that the product of shoot number and height was a better predictor of total leaf area (which in turn is assumed to be a strong predictor of aboveground biomass) than either shoot number or height alone (Table S2 <!--# update crossref manually -->).
-Plants that were not found for three consecutive surveys were considered dead.
+After the initial census year, between 80% and 97% of marked plants were found.
+Of plants that had missing values for some years, but were found again in a subsequent year, 95% had 2 or fewer years of missing values.
+Therefore, plants that were not found for three consecutive surveys, and no subsequent survey, were considered to have died in the transition year after their last observation.
 We also surveyed plots regularly during the rainy season to identify any that flowered after the survey.
 For additional details on the location of plots, survey methods, and *H. acuminata* population structure see @brunaHabitatFragmentationDemographic2002.
 
@@ -453,7 +455,7 @@ These results should be interpreted with some caution, however, as the relativel
 There are several, non-mutually-exclusive explanations for delayed effects of SPEI on demography.
 The first is that the physiological processes underlying vital rates might be initiated long before they are demographically apparent [@eversLaggedDormantSeason2021], and hence be shaped by climatic events at any point in that physiological window.
 For example, the flowering shoots of *Heliconia chartacea* begin to develop 6--10 months prior to the appearance of inflorescences [@crileyYearProductionHigh1994].
-Adverse conditions during the 6 months following initiation, rather than the months when inflorescences are starting expand, leads to the aborted production of flowering shoots.
+Adverse conditions during the 6 months following initiation, rather than the months when inflorescences are starting to expand, leads to the aborted production of flowering shoots.
 Interestingly, we observed the opposite effect---drought conditions increased the probability of flowering two years later.
 While this could reflect bet-hedging in response to stress [@nihadRelationshipStressFlowering2018], this does not appear to be the case, as growth or survival do not appear to decrease following reproduction (see also [@horvitzDemographicCostReproduction1988]. In fact, flowering in one year is associated with increased reproduction and growth in the next <!--# this may change once individual-level random effects are incorporated -->.
 
