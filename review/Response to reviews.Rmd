@@ -52,6 +52,8 @@ output:
 
 >1) The results are all about the effect of SPEI on plant vital rates, but the abstract implies that the manuscript presents the effect of temperature and precipitation on vital rates separately.
 
+We have edited the abstract.  Now the sentence to which the reviewer refers reads: *"We used distributed lag non-linear models to understand the delayed effects of standardized precipitation evapotranspiration index (SPEI) on survival, growth, and flowering."*
+
 >2) Line 51-52. I find this sentence confusing. What specific demographic mechanisms are you referring to? Do you mean that high mortality rate lead to extinction and we don’t know what causes high mortality rates?
 
 >3) Line 146. Can you explain what you mean with “the height of each plant to the tallest leaf”? If the tallest leaf is growing more horizontally the height of the plant would be shorter than the length of the largest leaf?
