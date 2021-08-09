@@ -7,7 +7,7 @@
 #' @param data prepped model data
 #'
 fit_surv <- function(data) {
-
+data2 <- data %>% mutate(flwr_prev = factor(flwr_prev))
   f <- surv ~ 
     flwr_prev +
     s(log_size_prev, bs = "cr") +
@@ -19,7 +19,7 @@ fit_surv <- function(data) {
   
   bam(f,
       family = binomial,
-      data = data,
+      data = data2,
       method = "fREML",
       select = TRUE)
 }
@@ -35,7 +35,8 @@ fit_surv <- function(data) {
 fit_growth <- function(data){
 
   # use only living plants
-  data2 <- data %>% dplyr::filter(surv == 1, !is.na(log_size))
+  data2 <- data %>% dplyr::filter(surv == 1, !is.na(log_size)) %>% 
+    mutate(flwr_prev = factor(flwr_prev))
   
   f <- log_size ~ 
     flwr_prev +
@@ -65,7 +66,8 @@ fit_growth <- function(data){
 #' 
 fit_flwr <- function(data, ind_raneff = FALSE) {
   # use only living plants
-  data2 <- data %>% dplyr::filter(surv == 1, !is.na(log_size))
+  data2 <- data %>% dplyr::filter(surv == 1, !is.na(log_size)) %>%
+    mutate(flwr_prev = factor(flwr_prev))
   
   f <- flwr ~ 
     flwr_prev +

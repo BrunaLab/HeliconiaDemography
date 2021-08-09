@@ -8,7 +8,8 @@
 #'
 plot_covar_smooth <- function(cf_model, frag_model, covar) {
 
-  cf <- gratia::smooth_estimates(cf_model, covar, unconditional = TRUE) %>% add_confint()
+  cf <- gratia::smooth_estimates(cf_model, covar, unconditional = TRUE) %>%
+    add_confint()
   frag <- gratia::smooth_estimates(frag_model, covar, unconditional = TRUE) %>% add_confint()
   data <- bind_rows("1-ha" = frag, "CF" = cf, .id = "habitat")
   

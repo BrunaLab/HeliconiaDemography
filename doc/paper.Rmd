@@ -492,7 +492,7 @@ More generally, however, researchers need to consider how delayed responses to c
 
 # Acknowledgments
 
-We thank Collin Edwards, \_\_\_, \_\_\_, and \_\_\_ anonymous reviewers for helpful discussions and comments on the manuscript.
+We thank Collin Edwards, Andrew Mercadante, Ellie McDaniel, \_\_\_, \_\_\_, and \_\_\_ anonymous reviewers for helpful discussions and comments on the manuscript.
 We also thank the technicians and students who helped conduct the *Heliconia* censuses and the BDFFP and INPA for logistical support.
 Financial support was provided by the U.S.
 National Science Foundation (awards DEB-0614339, DEB-0614149, INT 98-06351, and DEB-1948607).

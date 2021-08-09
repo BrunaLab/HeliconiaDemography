@@ -1,1 +1,2 @@
-targets::tar_make_clustermq(workers = 3L)
+library(targets)
+targets::tar_make_clustermq(workers = 3L, reporter = "timestamp")

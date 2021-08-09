@@ -47,7 +47,7 @@ More details [here](https://github.com/embruna/HeliconiaDataPaper).
 -   `flwr` (integer): binary. Did plant flower in survey year?
 -   `surv` (integer): binary. Did plant survive?
 -   `code_notes` (character): possible values include: "plant missing" meaning the plant could not be found in this survey; "dead" meaning the plant is confirmed dead in this survey; "ULY" meaning\_\_\_\_\_\_\_\_; and "tag missing" meaning the plant was missing a tag and given a new one (this does not affect the `ha_id_number` as these take into account plants given new tags)
--   `code2` (character): possible value is "initial.tag.yr" indicating the beginning of data for that `ha_id_number`. Could be the first year of the survey, or could represent recruitment into the plot.
+
 
 ```{r}
 model_data
@@ -58,10 +58,10 @@ create_agent(
   model_data,
   actions = action_levels(warn_at = 1, stop_at = 0.2)
 ) %>% 
-  col_is_character(vars(code_notes, code2)) %>% 
+  col_is_character(vars(code_notes)) %>% 
   col_is_factor(vars(ranch, bdffp_reserve_no, plot, habitat, ha_id_number)) %>% 
   col_is_numeric(vars(ht, ht_prev, size, size_prev, log_size, log_size_prev)) %>%
-  col_is_integer(vars(year, shts, shts_prev, infl_num, surv, flwr)) %>% 
+  col_is_integer(vars(year, shts, shts_prev, infl, infl_prev, surv, flwr, flwr_prev)) %>% 
   col_vals_in_set(vars(surv, flwr), c(0,1, NA)) %>% 
   col_vals_in_set(vars(habitat), c("1-ha", "CF", "10-ha")) %>% 
   col_vals_between(vars(shts, shts_prev), 1, 20, na_pass = TRUE) %>% 
