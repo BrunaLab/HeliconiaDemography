@@ -9,13 +9,6 @@
     ]
   },
   "Packages": {
-    "Amelia": {
-      "Package": "Amelia",
-      "Version": "1.7.6",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "1cec9a62cc32fdeb8c98254ed1482b29"
-    },
     "BH": {
       "Package": "BH",
       "Version": "1.75.0-0",
