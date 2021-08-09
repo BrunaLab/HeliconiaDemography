@@ -102,7 +102,7 @@ Whether plant populations in tropical forest fragments are particularly suscepti
 Most studies of plants in fragments are relatively short (1--6 years), focus on a single life-history stage, and often do not compare to populations in continuous forest.
 Even fewer studies consider delayed effects of climate on demographic vital rates despite the importance of delayed effects in studies that consider them.
 Using a decade of demographic and climate data from an experimentally fragmented landscape in the Central Amazon, we assess the effects of climate on populations of an understory herb (*Heliconia acuminata*, Heliconiaceae).
-We used distributed lag non-linear models to understand the delayed effects of temperature and precipitation on survival, growth, and flowering.
+We used distributed lag non-linear models to understand the delayed effects of standardized precipitation evapotranspiration index (SPEI) on survival, growth, and flowering.
 We detected delayed effects of climate up to 36 months.
 Drought two dry seasons prior to the February census decreased survival and increased flowering probability while drought in the wet season a year prior to the census decreased flowering probability and increased growth.
 The effects of extremes in precipitation on survival and growth were more pronounced in forest fragments compared to continuous forest.
