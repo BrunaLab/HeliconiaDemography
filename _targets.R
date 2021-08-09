@@ -1,16 +1,16 @@
 ## Set options for using tar_make_clustermq()
 ## Uncomment and edit these lines to run model targets on a cluster computer via SSH
-options(
-  clustermq.scheduler = "ssh",
-  clustermq.ssh.host = "ericscott@hpg.rc.ufl.edu", # use your user and host
-  clustermq.ssh.log = "~/cmq_ssh.log", # log for easier debugging
-  clustermq.worker.timeout = 2400
-)
+# options(
+#   clustermq.scheduler = "ssh",
+#   clustermq.ssh.host = "ericscott@hpg.rc.ufl.edu", # use your user and host
+#   clustermq.ssh.log = "~/cmq_ssh.log", # log for easier debugging
+#   clustermq.worker.timeout = 2400
+# )
 
 ## Uncomment these lines to run locally on multiple cores
-# options(
-#   clustermq.schedule = "multicore"
-# )
+options(
+  clustermq.schedule = "multicore"
+)
 
 ## Load your packages, e.g. library(targets).
 source("./packages.R")
