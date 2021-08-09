@@ -5,106 +5,136 @@ date: "8/9/2021"
 output: 
   bookdown::word_document2:
     reference_docx: template.docx
+bibliography: references.bib
 ---
 
 # Reviewer 1
 
 ## General comments
 
->Scott and colleagues present the results of an interesting series of analyses designed to disentangle the lagged effects of climate and forest fragmentation on the demographic performance of a tropical understory plant. As ecologists seek to understand not just how changes in mean climate, but also changes in extremes, will influence population persistence, studies such as this that capitalize on long time series are critical to making progress. The authors find that the effects of swings in precipitation (both drought and particularly wet years) affect survival, growth and flowering, but that these effects are both lagged and differ by whether plants were in continuous forest or the smallest fragment size (1 ha). Overall, it’s a well written paper, and an application of a relatively new modeling approach to address the questions. The results highlight both the challenges with understanding the complex factors driving population persistence and also how critical it will be to grapple with them. Below I provide suggestions for improvement, particularly aimed to make the new modeling approach more accessible.
+> Scott and colleagues present the results of an interesting series of analyses designed to disentangle the lagged effects of climate and forest fragmentation on the demographic performance of a tropical understory plant.
+> As ecologists seek to understand not just how changes in mean climate, but also changes in extremes, will influence population persistence, studies such as this that capitalize on long time series are critical to making progress.
+> The authors find that the effects of swings in precipitation (both drought and particularly wet years) affect survival, growth and flowering, but that these effects are both lagged and differ by whether plants were in continuous forest or the smallest fragment size (1 ha).
+> Overall, it's a well written paper, and an application of a relatively new modeling approach to address the questions.
+> The results highlight both the challenges with understanding the complex factors driving population persistence and also how critical it will be to grapple with them.
+> Below I provide suggestions for improvement, particularly aimed to make the new modeling approach more accessible.
 
 ## Specific comments
 
->1. By the end of the introduction, I expected that the paper would focus on drought, and was then puzzled by the choice of the words ‘extreme precipitation’ – this of course makes sense later that the results are focused both on the effects of drought and extreme wet. The introduction could set up the reader better to understand both. Since drought is well covered, adding background and hypotheses for why extreme wet would have a negative effect on vital rates would help.
+> 1.  By the end of the introduction, I expected that the paper would focus on drought, and was then puzzled by the choice of the words 'extreme precipitation' -- this of course makes sense later that the results are focused both on the effects of drought and extreme wet. The introduction could set up the reader better to understand both. Since drought is well covered, adding background and hypotheses for why extreme wet would have a negative effect on vital rates would help.
 
->2. In the intro and discussion, I think it would also be helpful to describe a little bit more about mechanisms for why extreme precipitation matters more in fragments compared to continuous forest. I wondered if the authors thought this was too obvious (edge effects, etc), but I think it’d be helpful to spell this out more clearly. L466 – 467 offer a new hypothesis, but briefly revisiting the ‘old’ evidence/hypotheses also seems important.
+> 2.  In the intro and discussion, I think it would also be helpful to describe a little bit more about mechanisms for why extreme precipitation matters more in fragments compared to continuous forest. I wondered if the authors thought this was too obvious (edge effects, etc), but I think it'd be helpful to spell this out more clearly. L466 -- 467 offer a new hypothesis, but briefly revisiting the 'old' evidence/hypotheses also seems important.
 
->3. One challenge of using a new modeling approach is making the methods of the paper understandable and to stand alone. As written in the methods and results, I found the implementation very difficult to follow. A slightly longer summary of the methods would help. In the results, I was surprised to see only a few p-values and not much else about the models in terms of how they were assessed for goodness of fit. While I am not at all suggesting that p-values are the solution, I would have liked a little more sense of how well the models fit. One way to do that might be to show the raw data plotted with the model fits so the reader can see, for example, what kind of functions were drawn. Another might be to present something in table format (the comparable version of a table of AICs or of the results of frequentist tests). 
+> 3.  One challenge of using a new modeling approach is making the methods of the paper understandable and to stand alone. As written in the methods and results, I found the implementation very difficult to follow. A slightly longer summary of the methods would help. In the results, I was surprised to see only a few p-values and not much else about the models in terms of how they were assessed for goodness of fit. While I am not at all suggesting that p-values are the solution, I would have liked a little more sense of how well the models fit. One way to do that might be to show the raw data plotted with the model fits so the reader can see, for example, what kind of functions were drawn. Another might be to present something in table format (the comparable version of a table of AICs or of the results of frequentist tests).
 
->4. Related to above, I think it’s important to see more of the raw data than are presented in Fig. 1. (I’m thinking of a version of Fig 3 that shows size in t+1, survival, and flowering rather than effect size on the y-axis, with the data and lines showing the shape of the GAMs). This could be an appendix, but it would help with interpreting Figures 3 – 6. 
+> 4.  Related to above, I think it's important to see more of the raw data than are presented in Fig. 1. (I'm thinking of a version of Fig 3 that shows size in t+1, survival, and flowering rather than effect size on the y-axis, with the data and lines showing the shape of the GAMs). This could be an appendix, but it would help with interpreting Figures 3 -- 6.
 
->5.  I suggest that a little more about the limitations of this modeling approach in the discussion would help set the context for interpreting the results and make the paper more robust. In some ways it seems like the analysis is adding more precision (by using monthly climate data) than the plants perceive and that would be measured in a yearly census. While the authors mention this, what about adding something short about when using this type of analysis is critical and when it might not be (should all demographers adopt this approach? Why or why not?)
+> 5.  I suggest that a little more about the limitations of this modeling approach in the discussion would help set the context for interpreting the results and make the paper more robust. In some ways it seems like the analysis is adding more precision (by using monthly climate data) than the plants perceive and that would be measured in a yearly census. While the authors mention this, what about adding something short about when using this type of analysis is critical and when it might not be (should all demographers adopt this approach? Why or why not?)
 
->6. I was curious about why the paper did not include analyses of recruitment. Perhaps it is beyond the scope of this paper, but I wondered how new recruits responded to drought and wet also, both in number, as well as how big they were in the first year.
+> 6.  I was curious about why the paper did not include analyses of recruitment. Perhaps it is beyond the scope of this paper, but I wondered how new recruits responded to drought and wet also, both in number, as well as how big they were in the first year.
 
->7. I had a hard time linking these statements in the results to the figures.
-- L272-273 – How do you see disparities in plant size here? I thought this was about growth?
-- L277-278 - How does this show the effect of size on growth is greatest for mid-size plants? More generally, I got a little confused with the flipping back and forth between growth & plant size in the results and discussion. More precise language would help.
-- L331 – 332 – How can you see in this figure that the response is ‘more muted as indicated by the shape of the crossbasis function’?
+> 7.  I had a hard time linking these statements in the results to the figures.
+>
+> -   L272-273 -- How do you see disparities in plant size here? I thought this was about growth?
+> -   L277-278 - How does this show the effect of size on growth is greatest for mid-size plants? More generally, I got a little confused with the flipping back and forth between growth & plant size in the results and discussion. More precise language would help.
+> -   L331 -- 332 -- How can you see in this figure that the response is 'more muted as indicated by the shape of the crossbasis function'?
 
->8. L442-443 – What is a mechanism for why plants might flower more after drought? (the discussion talks about the opposite) The next paragraph kind of goes there, but the link could be tighter.
+> 8.  L442-443 -- What is a mechanism for why plants might flower more after drought? (the discussion talks about the opposite) The next paragraph kind of goes there, but the link could be tighter.
 
 ## Figures:
 
->Fig 2 – This was only cited in the discussion as far as I can tell. Bring it back into the results?
+> Fig 2 -- This was only cited in the discussion as far as I can tell.
+> Bring it back into the results?
 
->Fig 3A – The results mention something about survival approaching 1 – I wasn’t sure if that was supposed to be visible here.
+> Fig 3A -- The results mention something about survival approaching 1 -- I wasn't sure if that was supposed to be visible here.
 
->Fig 3 – I mentioned this earlier, but I wasn’t really clear on how to interpret effect size. I see the explanation in L 539 in the legend, but I don’t really know what that means. Since this is such an important result of the paper, it would help the reader if they were walked through this idea. What is a negative vs. positive effect size in relation to plant size (does this compare to the median size)? I am likely missing something here. (I think the challenge for me is that I kept wanting the figures to fit into a more standard demographic paper – like the probability of survival based on size, but then I realized something different was being shown here.)
+> Fig 3 -- I mentioned this earlier, but I wasn't really clear on how to interpret effect size.
+> I see the explanation in L 539 in the legend, but I don't really know what that means.
+> Since this is such an important result of the paper, it would help the reader if they were walked through this idea.
+> What is a negative vs. positive effect size in relation to plant size (does this compare to the median size)?
+> I am likely missing something here.
+> (I think the challenge for me is that I kept wanting the figures to fit into a more standard demographic paper -- like the probability of survival based on size, but then I realized something different was being shown here.)
 
->Figs 4 – 6 – Where the isocline circles are large, does that mean it’s a very large time span? I was a bit confused when describing the results of Fig 4b (L296-297), for example, the lag is described as the preceding 13 months in the 1 ha fragment, rather than 0 – 13 months (although now I see maybe the word preceding was meant to indicate this whole range). A little bit more explanation in the legends would help these figures be more intuitive.
+> Figs 4 -- 6 -- Where the isocline circles are large, does that mean it's a very large time span?
+> I was a bit confused when describing the results of Fig 4b (L296-297), for example, the lag is described as the preceding 13 months in the 1 ha fragment, rather than 0 -- 13 months (although now I see maybe the word preceding was meant to indicate this whole range).
+> A little bit more explanation in the legends would help these figures be more intuitive.
 
 # Reviewer 2
+
 ## General comments
->The manuscript by Scott et al analyzed an eleven year long demographic data set on the herb, Heliconia acuminata in the Central Amazon to evaluate the effect of drought and fragmentation on survival growth and fecundity. The authors also employ distributed lag non-linear models to explore delayed effects of drought. This work is an important contribution adding to the sparce literature documenting the role of weather variables on plant vital rates. The manuscript is generally well written. I hope the authors will find my comments helpful in improving this already very good manuscript.
+
+> The manuscript by Scott et al analyzed an eleven year long demographic data set on the herb, Heliconia acuminata in the Central Amazon to evaluate the effect of drought and fragmentation on survival growth and fecundity.
+> The authors also employ distributed lag non-linear models to explore delayed effects of drought.
+> This work is an important contribution adding to the sparce literature documenting the role of weather variables on plant vital rates.
+> The manuscript is generally well written.
+> I hope the authors will find my comments helpful in improving this already very good manuscript.
 
 ## Specific Comments:
 
->1) The results are all about the effect of SPEI on plant vital rates, but the abstract implies that the manuscript presents the effect of temperature and precipitation on vital rates separately.
+> 1)  The results are all about the effect of SPEI on plant vital rates, but the abstract implies that the manuscript presents the effect of temperature and precipitation on vital rates separately.
 
-We have edited the abstract.  Now the sentence to which the reviewer refers reads: *"We used distributed lag non-linear models to understand the delayed effects of standardized precipitation evapotranspiration index (SPEI) on survival, growth, and flowering."*
+We have edited the abstract.
+Now the sentence to which the reviewer refers reads: *"We used distributed lag non-linear models to understand the delayed effects of standardized precipitation evapotranspiration index (SPEI) on survival, growth, and flowering."*
 
->2) Line 51-52. I find this sentence confusing. What specific demographic mechanisms are you referring to? Do you mean that high mortality rate lead to extinction and we don’t know what causes high mortality rates?
+> 2)  Line 51-52. I find this sentence confusing. What specific demographic mechanisms are you referring to? Do you mean that high mortality rate lead to extinction and we don't know what causes high mortality rates?
 
->3) Line 146. Can you explain what you mean with “the height of each plant to the tallest leaf”? If the tallest leaf is growing more horizontally the height of the plant would be shorter than the length of the largest leaf?
+@brunaHabitatFragmentationPlant2009 discusses the lack of knowledge of what demographic vital rates (e.g. survival, reproduction, recruitment) contribute most to population declines in fragments.
+We have edited this line to clarify: " <!--# edit abstract? -->
 
->4) Lines 251ff: I don’t see a reference of Fig 2 in the result section.
+> 3)  Line 146. Can you explain what you mean with "the height of each plant to the tallest leaf"? If the tallest leaf is growing more horizontally the height of the plant would be shorter than the length of the largest leaf?
 
->5) Line 277-278: I don’t see in Figure 3a that the impact of size on growth was greatest for mid-sized
-plants in continuous forest. It looks to me that the 1-ha and CF lines are extremely close together and not statistically different. Perhaps you can say that there is a tendency of small plants having a larger growth in fragments while large plants grow slightly more in CF.
+> 4)  Lines 251ff: I don't see a reference of Fig 2 in the result section.
 
->6) Lines 287-289. While this statement is true, there are also years where flowering is lower in CF (e.g., 2002 similar values as following the drought in 2003 in fragments). I feel that the reporting of the results is a bit biased towards concluding that plants do worse in fragments compared to CF, especially since none of the result reported so far are significant.
+> 5)  Line 277-278: I don't see in Figure 3a that the impact of size on growth was greatest for mid-sized plants in continuous forest. It looks to me that the 1-ha and CF lines are extremely close together and not statistically different. Perhaps you can say that there is a tendency of small plants having a larger growth in fragments while large plants grow slightly more in CF.
 
->7) Delayed effects: Since the authors fit separate models for plants in fragments and in continuous forest to allow for the crossbasis function to differ between habitats we don’t know if any of the small differences reported in Fig 4c, 5c and 6c are statistically significant. Hence, I would recommend interpreting the results concerning the difference between fragments and CF with caution. I would like to see at least a justification for why representing the difference figures are meaningful.
+> 6)  Lines 287-289. While this statement is true, there are also years where flowering is lower in CF (e.g., 2002 similar values as following the drought in 2003 in fragments). I feel that the reporting of the results is a bit biased towards concluding that plants do worse in fragments compared to CF, especially since none of the result reported so far are significant.
 
->8) Line 301-301: This is somewhat misleading because as you describe later SPEI at time lags 15-20 and 32-36 are significant also. I wonder if it might be better to describe the entire Fig 4b and then the entire Fig 4a. What springs to my mind is that the area that is significant is much larger in in fragments compared to CF. It seems that in CF only a few months are significant. Surprisingly they fall not consistently in the dry or wet season.
+> 7)  Delayed effects: Since the authors fit separate models for plants in fragments and in continuous forest to allow for the crossbasis function to differ between habitats we don't know if any of the small differences reported in Fig 4c, 5c and 6c are statistically significant. Hence, I would recommend interpreting the results concerning the difference between fragments and CF with caution. I would like to see at least a justification for why representing the difference figures are meaningful.
 
->9) Line 323-325: I don’t know why the growth of plants in fragments would affect the size of plant in CF.
+> 8)  Line 301-301: This is somewhat misleading because as you describe later SPEI at time lags 15-20 and 32-36 are significant also. I wonder if it might be better to describe the entire Fig 4b and then the entire Fig 4a. What springs to my mind is that the area that is significant is much larger in in fragments compared to CF. It seems that in CF only a few months are significant. Surprisingly they fall not consistently in the dry or wet season.
 
->10) Lines 355-359: The analysis did not consider testing a statistical difference between habitat type (see comment 7), so I think this sentence is misleading (overinterpreting the results).
+> 9)  Line 323-325: I don't know why the growth of plants in fragments would affect the size of plant in CF.
 
->11) Line 370: There are no confidence intervals in Fig 2, so we don’t know if the difference is significant.
+> 10) Lines 355-359: The analysis did not consider testing a statistical difference between habitat type (see comment 7), so I think this sentence is misleading (overinterpreting the results).
 
->12) Lines 383 ff: see comment 7
+> 11) Line 370: There are no confidence intervals in Fig 2, so we don't know if the difference is significant.
 
->13) Line 412: I think it would be very informative if you were to expand on this and explain how exactly your method differs from what others have used to detect delayed effects.
+> 12) Lines 383 ff: see comment 7
 
->14) 424-427: I think this is exaggerating since the differences between habitat types is not significant. 15) You may also consider arguing that an 11-year long time series is not sufficient to detect delayed effects (see Tenhumberg et al. 2018)
+> 13) Line 412: I think it would be very informative if you were to expand on this and explain how exactly your method differs from what others have used to detect delayed effects.
 
->16) Lines 437-438 change “starting expand” with “starting to expand”
+> 14) 424-427: I think this is exaggerating since the differences between habitat types is not significant. 15) You may also consider arguing that an 11-year long time series is not sufficient to detect delayed effects (see Tenhumberg et al. 2018)
 
->17) Line 440: Can you explain a bit more in detail why drought increasing flowering probability two years in the future would be a bet hedging response?
+> 16) Lines 437-438 change "starting expand" with "starting to expand"
 
->18) Line 448: Alternatively, drought may reduce nutrient availability such that after covering maintenance costs there is nothing left to allocate.
+> 17) Line 440: Can you explain a bit more in detail why drought increasing flowering probability two years in the future would be a bet hedging response?
 
->19) Lines 451-453: I think herbivory is this is very different from drought. Drought reduced nutrient availability while herbivory removes some plant biomass triggering compensatory growth.
+> 18) Line 448: Alternatively, drought may reduce nutrient availability such that after covering maintenance costs there is nothing left to allocate.
 
->20) Lines 468 ff: I suggest deleting this paragraph. It doesn’t really matter when exactly a plant dies during a growing season, all that matters for population dynamics is how many plants die from one growing season to the next. Distributed Lag Non-Linear Models account for the exact timing of the weather events.
+> 19) Lines 451-453: I think herbivory is this is very different from drought. Drought reduced nutrient availability while herbivory removes some plant biomass triggering compensatory growth.
 
->21) The discussion includes reasons for why we expect delayed effect in plants in general, but it does not relate the specifics of the significant delays to the life history of H. acuminata. For instance, why does too much rain reduce survival? Why is there an effect of SPEI during the dry season (18-20 months in the past but during the wet season 32-36 months in the past? Why do plants in fragments have a decrease survival when precipitation is high during dry and wet periods (1-18 months time lag)? Etc.
+> 20) Lines 468 ff: I suggest deleting this paragraph. It doesn't really matter when exactly a plant dies during a growing season, all that matters for population dynamics is how many plants die from one growing season to the next. Distributed Lag Non-Linear Models account for the exact timing of the weather events.
 
->22) Lines 484-486: I don’t think this study strongly support that plants do worse in fragments than CF. 23) Line 499: This is confusing. If you measure size every year than you calculate growth as the change in size from one year to the next, don’t you?
+> 21) The discussion includes reasons for why we expect delayed effect in plants in general, but it does not relate the specifics of the significant delays to the life history of H. acuminata. For instance, why does too much rain reduce survival? Why is there an effect of SPEI during the dry season (18-20 months in the past but during the wet season 32-36 months in the past? Why do plants in fragments have a decrease survival when precipitation is high during dry and wet periods (1-18 months time lag)? Etc.
 
+> 22) Lines 484-486: I don't think this study strongly support that plants do worse in fragments than CF. 23) Line 499: This is confusing. If you measure size every year than you calculate growth as the change in size from one year to the next, don't you?
 
 # Reviewer 3
 
 ## General comments
 
->This is a really nice addition to the growing literature on lagged climate effects on plant demography, and also expands the tool kit for these studies. The combination of experimentally generated fragmentation with long term demographic data is also unique and very valuable. The paper is very clear and concise, with a few minor exceptions discussed in detail below. The one surprising omission was that the authors didn't use an Integral Projection Model to put the vital rates together into a metric of population growth potential. I enjoyed reading this. 
+> This is a really nice addition to the growing literature on lagged climate effects on plant demography, and also expands the tool kit for these studies.
+> The combination of experimentally generated fragmentation with long term demographic data is also unique and very valuable.
+> The paper is very clear and concise, with a few minor exceptions discussed in detail below.
+> The one surprising omission was that the authors didn't use an Integral Projection Model to put the vital rates together into a metric of population growth potential.
+> I enjoyed reading this.
 
 ## Specific comments
 
->Line 152 -- "Plants not found for 3 consecutive seasons ..." when were they considered to have died? first year they were missed or last? How many plants were not found in an average survey, and why? Does Heliconia show whole plant dormancy?
+> Line 152 -- "Plants not found for 3 consecutive seasons ..." when were they considered to have died?
+> first year they were missed or last?
+> How many plants were not found in an average survey, and why?
+> Does Heliconia show whole plant dormancy?
 
 ```{r eval=FALSE, include=FALSE}
 n_miss <- 
@@ -130,25 +160,41 @@ We have edited to clarify: *"After the initial census year, between 80% and 97% 
 
 Some of the missing values in the data do represent *Heliconia* plants that lost all above-ground tissue but re-sprouted in successive years, but other missing values may simply be imperfect "recapture".
 
+> Line 166 - given the shallow roots, why not use 1 month SPEI and let the model do the smoothing over longer time frames?
+> You describe why not using longer smooths, but not shorter.
 
->Line 166 - given the shallow roots, why not use 1 month SPEI and let the model do the smoothing over longer time frames? You describe why not using longer smooths, but not shorter. 
+> Line 191 - 194 (equation and description) for clarity you should describe what the index variables i and j are indexing, and I think clearer to have y_ij for ith plant in jth plot.
+> Indexes on the random effect description suggest there is a separate variance estimated for each plot?
+> d_it suggests that each plant has a separate SPEI estimate?
+> I think it is probably aggregated at a higher level than individual?
+> I would reorganize the following paragraph so that all the descriptive text for the components of (1) occurs before the digression on the details of the crossbasis function.
 
->Line 191 - 194 (equation and description) for clarity you should describe what the index variables i and j are indexing, and I think clearer to have y_ij for ith plant in jth plot. Indexes on the random effect description suggest there is a separate variance estimated for each plot? d_it suggests that each plant has a separate SPEI estimate? I think it is probably aggregated at a higher level than individual? I would reorganize the following paragraph so that all the descriptive text for the components of (1) occurs before the digression on the details of the crossbasis function.
+> Line 205 - I'm not sure "bimodal" is correct here -- a cubic function can have 2 local extrema, is that what you mean?
 
->Line 205 - I'm not sure "bimodal" is correct here -- a cubic function can have 2 local extrema, is that what you mean? 
+> Line 205-207 -- "number of knots not important ..." yes, but package mgcv includes tools for checking those assumptions, would be helpful to include residual analysis and the results of gam.check() in an appendix.
 
->Line 205-207 -- "number of knots not important ..." yes, but package mgcv includes tools for checking those assumptions, would be helpful to include residual analysis and the results of gam.check() in an appendix. 
+> Line 211 - random effect -- how did you deal with this in the predictions?
+> set to zero in design matrix, Choose a particular value, sample from the posterior?
+> The code would tell me but not available.
 
->Line 211 - random effect -- how did you deal with this in the predictions? set to zero in design matrix, Choose a particular value, sample from the posterior? The code would tell me but not available. 
+> Line 253 - fig 1a shows mean change in size, not mean size?
 
->Line 253 - fig 1a shows mean change in size, not mean size?  
+> Figure 2 isn't referenced in this section, not used until discussion.
+> Maybe move to supplement or add a sentence in results?
 
->Figure 2 isn't referenced in this section, not used until discussion. Maybe move to supplement or add a sentence in results?
+> Line 260 -- you mention the CI of the model estimated coefficients, but these aren't provided anywhere that I could find.
+> I think a table based on the summary of the two fitted models discussed here (and elsewhere too) should be added.
+> And report the variance of the random effect.
 
->Line 260 -- you mention the CI of the model estimated coefficients, but these aren't provided anywhere that I could find. I think a table based on the summary of the two fitted models discussed here (and elsewhere too) should be added. And report the variance of the random effect. 
+> Figure 4 and 5 -- very nice way to display the confidence limit.
+> I did have to spend a while looking at them and doing a bit of head scratching to figure out which side the significant values were on, especially for the ones that are along the middle where the difference in color is not large.
+> I wonder if a diverging color scheme with values close to the mean set to white would make this easier to see?
+> Or if you could add some hatching or change the alpha transparency on one side to highlight those regions more clearly.
 
->Figure 4 and 5 -- very nice way to display the confidence limit. I did have to spend a while looking at them and doing a bit of head scratching to figure out which side the significant values were on, especially for the ones that are along the middle where the difference in color is not large. I wonder if a diverging color scheme with values close to the mean set to white would make this easier to see? Or if you could add some hatching or change the alpha transparency on one side to highlight those regions more clearly. 
+> Line 413 -- "our expansion of this approach ..." I'm not sure that the expansion is the penalty that prevents over fitting -- both Teller et al and Tenhumberg et al used the penalized spline function in mgcv.
+> What IS an expansion is the non-linear cross basis function.
+> Both Teller et al and Tenhumberg et al used (essentially) linear cross basis functions, so using dlnm is super-cool and interesting.
 
->Line 413 -- "our expansion of this approach ..." I'm not sure that the expansion is the penalty that prevents over fitting -- both Teller et al and Tenhumberg et al used the penalized spline function in mgcv. What IS an expansion is the non-linear cross basis function. Both Teller et al and Tenhumberg et al used (essentially) linear cross basis functions, so using dlnm is super-cool and interesting. 
-
->Line 471 -- this demographic delay left me a bit confused for a while until I stopped looking at figure 4b and started looking at 4a. Then it made a lot of sense. However, wouldn't it be that the demographic effect takes place AFTER the census for an echo to appear at previous lags?
+> Line 471 -- this demographic delay left me a bit confused for a while until I stopped looking at figure 4b and started looking at 4a.
+> Then it made a lot of sense.
+> However, wouldn't it be that the demographic effect takes place AFTER the census for an echo to appear at previous lags?
