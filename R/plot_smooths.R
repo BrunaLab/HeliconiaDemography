@@ -97,7 +97,7 @@ make_season_bar <- function(wet_color = "black", dry_color = "white") {
 #adds intercept and back-transforms smooth to response scale
 my_eval_smooth <- function(model, smooth, ...) {
   linkinv <- model$family$linkinv
-  gratia::smooth_estimates(model, smooth, dist = 0.1, ...) %>% 
+  gratia::smooth_estimates(model, smooth, unconditional = TRUE, dist = 0.1, ...) %>% 
     gratia::add_confint() %>% 
     add_column(intercept = coef(model)[1]) %>% 
     mutate(across(c(est, lower_ci, upper_ci), ~linkinv(.x + intercept)),
