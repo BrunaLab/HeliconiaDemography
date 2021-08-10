@@ -12,14 +12,24 @@ library(targets)
 library(statmod)
 library(tidyverse)
 library(gratia)
+library(mgcv)
+library(dlnm)
 ```
+
+# TODO
+
+- increase knots for some models (https://github.com/BrunaLab/HeliconiaDemography/issues/92)
+- check diagnostics for individual-level random effects.  Doesn't look good, but not sure how to interpret or what to do. 
+
 
 # Analysis
 
 ## Survival
 
 Quantile residuals are more appropriate for binomial models.
+
 ### Fragments
+
 ```{r}
 withr::with_dir(here::here(),{
   tar_load(c(s_1ha, s_cf, s_cf_sub))
@@ -27,7 +37,6 @@ withr::with_dir(here::here(),{
 ```
 
 ```{r}
-
 summary(s_1ha)
 ```
 
@@ -36,14 +45,35 @@ draw(s_1ha)
 ```
 
 ```{r echo=TRUE}
+s_1ha_res <- qresid(s_1ha)
 par(mfrow = c(2,2))
 #histogram
-plot(density(qresid(s_1ha)))
+plot(density(s_1ha_res))
 #QQ plot
-qqnorm(qresid(s_1ha)); qqline(qresid(s_1ha))
+qqnorm(s_1ha_res); qqline(s_1ha_res)
 #Fitted vs. residuals
-scatter.smooth(predict(s_1ha, type = "response"), qresid(s_1ha), col = "grey")
+scatter.smooth(predict(s_1ha, type = "response"), s_1ha_res, col = "grey")
 ```
+```{r}
+# gam.check(s_1ha)
+```
+
+Basis dimension checking with `gam.check()` doesn't appear to work for `dlnm` crossbasis smooths. Instead I'll use a method from `?choose.k` to check for adequate knots.  Unfortunately, `bs = "cs"` doesn't work with `dlnm`, so I'll use `select = TRUE` instead to reduce chance of overfitting.
+
+```{r}
+# looking for near zero edf
+gam(s_1ha_res ~ s(log_size_prev, k = 10, bs = "cs"), gamma = 1.4,
+    data = model.frame(s_1ha)) #fine
+
+gam(s_1ha_res ~ s(spei_history, L,
+      bs = "cb",
+      k = c(3, 35),
+      xt = list(bs = "cr")),
+    gamma = 1.4,
+    select = TRUE,
+    data = model.frame(s_1ha)) #fine
+```
+
 
 ### Continuous Forest
 
@@ -56,14 +86,31 @@ draw(s_cf)
 ```
 
 ```{r echo=TRUE}
+s_cf_res <- qresid(s_cf)
 par(mfrow = c(2,2))
 #histogram
-plot(density(qresid(s_cf)))
+plot(density(s_cf_res))
 #QQ plot
-qqnorm(qresid(s_cf)); qqline(qresid(s_cf))
+qqnorm(s_cf_res); qqline(s_cf_res)
 #Fitted vs. residuals
-scatter.smooth(predict(s_cf, type = "response"), qresid(s_cf), col = "grey")
+scatter.smooth(predict(s_cf, type = "response"), s_cf_res, col = "grey")
 ```
+
+```{r}
+# looking for near zero edf
+gam(s_cf_res ~ s(log_size_prev, k = 10, bs = "cs"), gamma = 1.4,
+    data = model.frame(s_cf)) #fine
+
+gam(s_cf_res ~ s(spei_history, L,
+      bs = "cb",
+      k = c(3, 35),
+      xt = list(bs = "cr")),
+    gamma = 1.4,
+    select = TRUE,
+    data = model.frame(s_cf)) 
+```
+
+
 
 ### Continuous forest subsample
 
@@ -80,6 +127,7 @@ summary(s_cf_sub)$edf[3]
 draw(s_cf_sub)
 ```
 Surface still looks different in a similar way though.
+
 ```{r}
 rm(s_1ha, s_cf, s_cf_sub)
 ```
@@ -105,6 +153,20 @@ draw(g_1ha)
 ```{r}
 appraise(g_1ha)
 ```
+```{r}
+g_1ha_res <- residuals(g_1ha)
+# looking for near zero edf
+gam(g_1ha_res ~ s(log_size_prev, k = 10, bs = "cs"), gamma = 1.4,
+    data = model.frame(g_1ha)) #fine
+
+gam(g_1ha_res ~ s(spei_history, L,
+      bs = "cb",
+      k = c(3, 35),
+      xt = list(bs = "cr")),
+    gamma = 1.4,
+    select = TRUE,
+    data = model.frame(g_1ha)) #fine
+```
 
 ### Continuous Forest
 
@@ -119,6 +181,22 @@ draw(g_cf)
 ```{r}
 gratia::appraise(g_cf)
 ```
+
+```{r}
+g_cf_res <- residuals(g_cf)
+# looking for near zero edf
+gam(g_cf_res ~ s(log_size_prev, k = 10, bs = "cs"), gamma = 1.4,
+    data = model.frame(g_cf)) #fine
+
+gam(g_cf_res ~ s(spei_history, L,
+      bs = "cb",
+      k = c(3, 35),
+      xt = list(bs = "cr")),
+    gamma = 1.4,
+    select = TRUE,
+    data = model.frame(g_cf)) #fine
+```
+
 ### Continuous Forest subsample
 
 To check that differences are not purely due to sample size differences, particularly that lower edf in continuous forests is due to higher sample size.
@@ -160,14 +238,30 @@ draw(f_1ha)
 ```
 
 ```{r}
+f_1ha_res <- qresid(f_1ha)
 par(mfrow = c(2,2))
 #histogram
-plot(density(qresid(f_1ha)))
+plot(density(f_1ha_res))
 #QQ plot
-qqnorm(qresid(f_1ha)); qqline(qresid(f_1ha))
+qqnorm(f_1ha_res); qqline(f_1ha_res)
 #Fitted vs. residuals
-scatter.smooth(predict(f_1ha, type = "response"), qresid(f_1ha), col = "grey")
+scatter.smooth(predict(f_1ha, type = "response"), f_1ha_res, col = "grey")
 ```
+
+```{r}
+# looking for near zero edf
+gam(f_1ha_res ~ s(log_size_prev, k = 10, bs = "cs"), gamma = 1.4,
+    data = model.frame(f_1ha)) #fine
+
+gam(f_1ha_res ~ s(spei_history, L,
+      bs = "cb",
+      k = c(3, 35),
+      xt = list(bs = "cr")),
+    gamma = 1.4,
+    select = TRUE,
+    data = model.frame(f_1ha)) #fine
+```
+
 ### Continuous Forest
 
 ```{r}
@@ -179,16 +273,32 @@ draw(f_cf)
 ```
 
 ```{r}
+f_cf_res <- qresid(f_cf)
 par(mfrow = c(2,2))
 #histogram
-plot(density(qresid(f_cf)))
+plot(density(f_cf_res))
 #QQ plot
-qqnorm(qresid(f_cf)); qqline(qresid(f_cf))
+qqnorm(f_cf_res); qqline(f_cf_res)
 #Fitted vs. residuals
-scatter.smooth(predict(f_cf, type = "response"), qresid(f_cf), col = "grey")
+scatter.smooth(predict(f_cf, type = "response"), f_cf_res, col = "grey")
+```
+
+```{r}
+# looking for near zero edf
+gam(f_cf_res ~ s(log_size_prev, k = 10, bs = "cs"), gamma = 1.4,
+    data = model.frame(f_cf)) #fine
+
+gam(f_cf_res ~ s(spei_history, L,
+      bs = "cb",
+      k = c(3, 35),
+      xt = list(bs = "cr")),
+    gamma = 1.4,
+    select = TRUE,
+    data = model.frame(f_cf)) #fine
 ```
 
 ### Continuous Forest subsample
+
 To check that differences are not purely due to sample size differences, particularly that lower edf in continuous forests is due to higher sample size.  For flowering, edf is actually slightly higher in CF with a larger sample size.  With subsample, edf are more similar.
 
 ```{r}
