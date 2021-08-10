@@ -129,7 +129,6 @@ plot_spei_heatmap <-
     p <- 
       ggplot(eval_df, aes_string(y = "spei_history", x = "L", fill = "est")) +
       geom_raster() +
-      geom_hline(aes(yintercept = 0), color = "grey", linetype = 2) +
       scale_fill_viridis_c(response_lab, option = "viridis", limits = fill_lims) +
       scale_x_continuous("lag (months before census)",
                          breaks = breaks,
@@ -159,7 +158,7 @@ plot_spei_heatmap <-
         geom_raster(data = mask)
     }
     
-    return(p)
+    return(p + geom_hline(aes(yintercept = 0), color = "grey", linetype = 2))
   }
 
 
