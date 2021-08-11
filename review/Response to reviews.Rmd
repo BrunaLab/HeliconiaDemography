@@ -164,7 +164,7 @@ We have edited this line to clarify: " <!--# edit abstract? -->
 > It seems that in CF only a few months are significant.
 > Surprisingly they fall not consistently in the dry or wet season.
 
-## {R2-9}
+##  {#R2-9}
 
 > Line 323-325: I don't know why the growth of plants in fragments would affect the size of plant in CF.
 
@@ -299,6 +299,16 @@ Some of the missing values in the data do represent *Heliconia* plants that lost
 > Line 211 - random effect -- how did you deal with this in the predictions?
 > set to zero in design matrix, Choose a particular value, sample from the posterior?
 > The code would tell me but not available.
+
+What we show in the figures are not predictions (i.e. results of `predict()` in R), but evaluated smooths generated with the `gratia` package (equivalent to `mgcv::plot.gam()`).
+For figures 4, 5, and 6 we have added the model intercepts to those evaluated smooths and back-transformed (when applicable) the estimates.
+These plots, therefore, do not include the additive effects of covariates or random effects.
+We think that this is an intuitive way to display the partial effects of SPEI.
+<!--# Edit methods or figure captions to clarify? -->
+
+We apologize for not including a link to the code for the project.
+All analysis code can be found here: [<https://github.com/BrunaLab/HeliconiaDemography>](https://github.com/BrunaLab/HeliconiaDemography){.uri}.
+It is so rare for a reviewer to make suggestions based on analysis code, and we are very grateful for these comments!
 
 ##  {#R3-7}
 
