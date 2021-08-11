@@ -237,6 +237,10 @@ We have edited this line to clarify: " <!--# edit abstract? -->
 > Line 499: This is confusing.
 > If you measure size every year than you calculate growth as the change in size from one year to the next, don't you?
 
+That's correct.
+This line meant to point out that size is usually measured in yearly censuses while weather data can be more easily collected at monthly or daily timescales.
+We've edited this sentence to read: "The ability to identify size-specific lagged responses may be especially complicated given size is rarely measured at the same time scale (e.g. monthly) as climate drivers."
+
 # Reviewer 3
 
 **General comments**

@@ -486,7 +486,7 @@ However, they also indicate that the demographic responses to climate change of 
 Multi-factorial, multi-season experiments [*sensu* @aguirre2021; @brunaCompensatoryResponsesUnderstory2005; @markewitz2010; @westerbandEarlyLifeConditions2017], ideally manipulating multiple combinations of climatic variables [@mundim2016], are needed to determine how and why habitat-specific differences in environmental conditions interact to delay the demographic responses of plants to climatic variability.
 Also needed are statistical tools that can test for synergistic effects of fragmentation and climate in vital rates, as those currently available do not allow for including interaction terms.
 This also limits the ability to include size by climate interactions in a DLNM; although plant responses to both fragmentation and climatic extremes can be size-specific [@brunaDemographicEffectsHabitat2005; @schwartzFragmentationForestStructure2019].
-The ability to identify size-specific lagged responses may be especially complicated given size and growth are rarely measured at the same time scale as SPEI and other putative climatic drivers.
+The ability to identify size-specific lagged responses may be especially complicated given size is rarely measured at the same time scale (e.g. monthly) as climate drivers.
 
 Finally, no analytical approach assessing the potential for demographic lags can compensate for a lack of long-term data [@tenhumbergTimelaggedEffectsWeather2018; @eversLaggedDormantSeason2021].
 Unfortunately, long-term data monitoring the entire life-cycle of tropical taxa are rare, and those doing so in fragmented landscapes are virtually nonexistent [@brunaCompensatoryResponsesUnderstory2005].
