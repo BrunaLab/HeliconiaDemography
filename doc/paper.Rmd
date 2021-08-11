@@ -323,7 +323,7 @@ rm(s_cf, s_1ha)
 ```
 
 *Survival:* Across all plots, the proportion of plants surviving was lowest in the 2003--2004 transition year ($P_{surv} = 0.92$).
-This coincided with droughts in both the 2003 and 2004 rainy seasons (Figure \@ref(fig:eda)b,d) and was preceded by a drop in average plant size in the 2002--2003 transition year (Figure \@ref(fig:eda)a).
+This coincided with droughts in both the 2003 and 2004 rainy seasons (Figure \@ref(fig:eda)b,d) and was preceded by a drop in average plant size in the 2002--2003 transition year (i.e. negative growth in Figure \@ref(fig:eda)a).
 The lowest survival for 1-ha fragment plots ($P_{surv} = 0.93$) was for the 2005--2006 transition year, which encompassed a moderate drought in October 2005 and and wetter than average conditions (SPEI \> 0.5) in December 2005 and January 2006 (Figure \@ref(fig:eda)b,d).
 The lowest survival for continuous forest was in 2004 ($P_{surv}=0.91$).
 When summarizing across years, plots, and plant sizes, the survival probability of *Heliconia acuminata* was similarly high in both continuous forest and fragments ($P_{surv}=0.95$; Figure \@ref(fig:eda)b; the overlapping 85% CI of model intercepts indicate no significant difference).
@@ -340,14 +340,14 @@ pull_ci(g_1ha, digits = 2)
 rm(g_cf, g_1ha)
 ```
 
-*Growth:* Plants in continuous forest had an average of 2.9 shoots (± 1.8 SD) and were on average 40.6 cm tall (± 26.5 SD).
+*Size:* Plants in continuous forest had an average of 2.9 shoots (± 1.8 SD) and were on average 40.6 cm tall (± 26.5 SD).
 Plants in 1-ha fragments had on average `r format((1 - (2.5/2.9))*100, digits = 3)`% fewer shoots (2.5 ± 1.5 SD) and were `r format((1 - (36.2/40.6))*100, digits = 3)`% shorter (36.3 cm ± 24.1 SD).
 Because our proxy for plant size was the product of these two metrics, plants in continuous forest were on average 34% larger than those in forest fragments (150 ± 175 SD vs. 112 ± 141 SD, respectively), with fragments having proportionately fewer large plants (Figure \@ref(fig:size-plot)d).
 This difference was not significant, however (overlap in 84% CI of model intercepts), and the disparity in plant size---which was most pronounced in the initial years of our surveys---diminished over time (Figure \@ref(fig:eda)a).
 
 Mean plant size dropped dramatically in 2003 in both habitat types, corresponding with a severe drought during the February census (SPEI = -1.39) (Figure \@ref(fig:eda)d).
 As with survival, size in year t was a significant predictor of size in year t+1 ($p < 0.001$ in both habitats).
-While the effect was generally similar across size classes and habitat types, the impact of plant size on growth was greatest for mid-sized plants in continuous forest (Figure \@ref(fig:size-plot)a).
+While the effect was generally similar across size classes and habitat types, the impact of plant size on size in the following year was greatest for mid-sized plants in continuous forest (Figure \@ref(fig:size-plot)a).
 
 ```{r include=FALSE}
 #data for eda plot panel c

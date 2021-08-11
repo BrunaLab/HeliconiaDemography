@@ -71,11 +71,16 @@ Testing testing (see also our response to \@ref(R1-2)).
 >
 > L272--273---How do you see disparities in plant size here?
 > I thought this was about growth?
->
+
+Models which predict size in year t+1 as a function of size in year t, such as ours, are often described as growth functions because they can be used to project change in size (i.e. growth).
+However, we agree that it would be more clear for this section heading to be "size" rather than "growth"
+
 > L277--278---How does this show the effect of size on growth is greatest for mid-size plants?
 > More generally, I got a little confused with the flipping back and forth between growth & plant size in the results and discussion.
 > More precise language would help.
->
+
+We have edited the text to omit "growth", and hopefully clarify: "...the impact of plant size on size in the following year was greatest for mid-sized plants in continuous forest." <!--# are there other edits we can make to clarify?  A sentence introducing the concept that size t+1 ~ size t *is* growth? -->
+
 > L331--332---How can you see in this figure that the response is 'more muted as indicated by the shape of the crossbasis function'?
 
 ##  {#R1-8}
@@ -313,6 +318,8 @@ It is so rare for a reviewer to make suggestions based on analysis code, and we 
 ##  {#R3-7}
 
 > Line 253 - fig 1a shows mean change in size, not mean size?
+
+We clarified the reference to the figure: "...was preceded by a drop in average plant size in the 2002-2003 transition year (i.e. negative growth in Figure 1a)." Also see our response to \@ref(R1-7).
 
 ##  {#R3-8}
 
