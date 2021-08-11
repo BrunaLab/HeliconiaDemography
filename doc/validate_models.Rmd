@@ -14,6 +14,7 @@ library(tidyverse)
 library(gratia)
 library(mgcv)
 library(dlnm)
+library(arm)
 ```
 
 # TODO
@@ -51,8 +52,8 @@ par(mfrow = c(2,2))
 plot(density(s_1ha_res))
 #QQ plot
 qqnorm(s_1ha_res); qqline(s_1ha_res)
-#Fitted vs. residuals
-scatter.smooth(predict(s_1ha, type = "response"), s_1ha_res, col = "grey")
+#Fitted vs. residuals--binned residuals plot
+binnedplot(fitted(s_1ha), residuals(s_1ha, type = "response"))
 ```
 ```{r}
 # gam.check(s_1ha)
@@ -92,8 +93,8 @@ par(mfrow = c(2,2))
 plot(density(s_cf_res))
 #QQ plot
 qqnorm(s_cf_res); qqline(s_cf_res)
-#Fitted vs. residuals
-scatter.smooth(predict(s_cf, type = "response"), s_cf_res, col = "grey")
+#Fitted vs. residuals--binned residuals plot
+binnedplot(fitted(s_cf), residuals(s_cf, type = "response"))
 ```
 
 ```{r}
@@ -244,8 +245,8 @@ par(mfrow = c(2,2))
 plot(density(f_1ha_res))
 #QQ plot
 qqnorm(f_1ha_res); qqline(f_1ha_res)
-#Fitted vs. residuals
-scatter.smooth(predict(f_1ha, type = "response"), f_1ha_res, col = "grey")
+#Fitted vs. residuals--binned residuals plot
+binnedplot(fitted(f_1ha), residuals(f_1ha, type = "response"))
 ```
 
 ```{r}
@@ -279,8 +280,8 @@ par(mfrow = c(2,2))
 plot(density(f_cf_res))
 #QQ plot
 qqnorm(f_cf_res); qqline(f_cf_res)
-#Fitted vs. residuals
-scatter.smooth(predict(f_cf, type = "response"), f_cf_res, col = "grey")
+#Fitted vs. residuals--binned residuals plot
+binnedplot(fitted(f_cf), residuals(f_cf, type = "response"))
 ```
 
 ```{r}
