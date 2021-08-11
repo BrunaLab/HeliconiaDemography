@@ -53,7 +53,9 @@ binnedplot(fitted(s_1ha), residuals(s_1ha, type = "response"))
 ### Basis dimensions
 
 ```{r}
-# gam.check(s_1ha)
+pdf(NULL)
+gam.check(s_1ha)
+dev.off()
 ```
 
 Basis dimension checking with `gam.check()` doesn't appear to work for `dlnm` crossbasis smooths. Instead I'll use a method described in the help file `?choose.k` to check for adequate knots.  Unfortunately, `bs = "cs"` doesn't work with `dlnm`, so I'll use `select = TRUE` instead to reduce chance of overfitting.
@@ -98,6 +100,12 @@ qqnorm(s_cf_res); qqline(s_cf_res)
 binnedplot(fitted(s_cf), residuals(s_cf, type = "response"))
 ```
 ### Basis dimensions
+
+```{r}
+pdf(NULL)
+gam.check(s_cf)
+dev.off()
+```
 
 ```{r}
 # looking for near zero edf
@@ -162,6 +170,12 @@ appraise(g_1ha)
 ### Basis dimensions
 
 ```{r}
+pdf(NULL)
+gam.check(g_1ha)
+dev.off()
+```
+
+```{r}
 g_1ha_res <- residuals(g_1ha)
 # looking for near zero edf
 gam(g_1ha_res ~ s(log_size_prev, k = 10, bs = "cs"), gamma = 1.4,
@@ -195,6 +209,12 @@ gratia::appraise(g_cf)
 ```
 
 ### Basis dimensions
+
+```{r}
+pdf(NULL)
+gam.check(g_cf)
+dev.off()
+```
 
 ```{r}
 g_cf_res <- residuals(g_cf)
@@ -267,6 +287,12 @@ binnedplot(fitted(f_1ha), residuals(f_1ha, type = "response"))
 ### Basis dimensions
 
 ```{r}
+pdf(NULL)
+gam.check(f_1ha)
+dev.off()
+```
+
+```{r}
 # looking for near zero edf
 gam(f_1ha_res ~ s(log_size_prev, k = 10, bs = "cs"), gamma = 1.4,
     data = model.frame(f_1ha)) #fine
@@ -307,6 +333,12 @@ binnedplot(fitted(f_cf), residuals(f_cf, type = "response"))
 ```
 
 ### Basis dimensions
+
+```{r}
+pdf(NULL)
+gam.check(f_cf)
+dev.off()
+```
 
 ```{r}
 # looking for near zero edf
