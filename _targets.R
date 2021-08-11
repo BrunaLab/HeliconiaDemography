@@ -49,11 +49,12 @@ tar_plan(
   tar_target(g_cf, fit_growth(model_data_cf), deployment = "worker"),
   tar_target(g_1ha, fit_growth(model_data_1ha), deployment = "worker"),
   
-  #### NOTE: The f_cf target takes ~2 hrs to run on a single core on the cluster
-  #### with ind_raneff = TRUE.
-  tar_target(f_cf, fit_flwr(model_data_cf,   ind_raneff = FALSE),
+  #### NOTE: The f_cf target takes ~20 hrs to run on a single core on a MacBook
+  #### pro and results in a 816MB object when ind_raneff = TRUE.  Set to FALSE
+  #### for testing
+  tar_target(f_cf, fit_flwr(model_data_cf,   ind_raneff = TRUE),
              deployment = "worker"),
-  tar_target(f_1ha, fit_flwr(model_data_1ha, ind_raneff = FALSE),
+  tar_target(f_1ha, fit_flwr(model_data_1ha, ind_raneff = TRUE),
              deployment = "worker"),
   
   # Validate and summarize results
