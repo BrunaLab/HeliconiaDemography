@@ -229,10 +229,10 @@ plot_eda_size <- function(demog_post, date_lims) {
 #' @param data demography data
 #' @param date_lims x-axis limits
 #' @param repro_size a size cutoff for plants that are considered reproductive.
-#'  The default, 168, corresponds to the upper 90th percentile of the size of
+#'  The default, 165, corresponds to the upper 90th percentile of the size of
 #'  all flowering plants in the dataset.
 #'  
-plot_eda_flwr <- function(data, date_lims, repro_size = 168) {
+plot_eda_flwr <- function(data, date_lims, repro_size = 165) {
   demog_plotdf <- eda_plot_df(data)
   date_breaks <- seq(date_lims[1], date_lims[2], by = "year")
   
