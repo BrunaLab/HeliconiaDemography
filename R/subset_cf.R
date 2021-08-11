@@ -1,5 +1,5 @@
 
-subset_cf <- function(model_data_cf, n_plants = 1010) {
+subset_cf <- function(model_data_cf, n_plants = 1375) {
   set.seed(123)
   plant_ids <- unique(model_data_cf$ha_id_number)
   plant_sample <- sample(plant_ids, n_plants)
