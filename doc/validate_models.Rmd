@@ -2,7 +2,10 @@
 title: "Model validation plots"
 author: "Eric R. Scott"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: html_document
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -17,33 +20,24 @@ library(dlnm)
 library(arm)
 ```
 
-# TODO
+**TODO**
 
 - increase knots for some models (https://github.com/BrunaLab/HeliconiaDemography/issues/92)
 - check diagnostics for individual-level random effects.  Doesn't look good, but not sure how to interpret or what to do. 
 
 
-# Analysis
+# Survival
 
-## Survival
-
-Quantile residuals are more appropriate for binomial models.
-
-### Fragments
-
-```{r}
+```{r, echo=FALSE}
 withr::with_dir(here::here(),{
   tar_load(c(s_1ha, s_cf, s_cf_sub))
 })
 ```
 
-```{r}
-summary(s_1ha)
-```
 
-```{r}
-draw(s_1ha)
-```
+## Forest Fragments
+
+### Diagnostics
 
 ```{r echo=TRUE}
 s_1ha_res <- qresid(s_1ha)
@@ -55,11 +49,14 @@ qqnorm(s_1ha_res); qqline(s_1ha_res)
 #Fitted vs. residuals--binned residuals plot
 binnedplot(fitted(s_1ha), residuals(s_1ha, type = "response"))
 ```
+
+### Basis dimensions
+
 ```{r}
 # gam.check(s_1ha)
 ```
 
-Basis dimension checking with `gam.check()` doesn't appear to work for `dlnm` crossbasis smooths. Instead I'll use a method from `?choose.k` to check for adequate knots.  Unfortunately, `bs = "cs"` doesn't work with `dlnm`, so I'll use `select = TRUE` instead to reduce chance of overfitting.
+Basis dimension checking with `gam.check()` doesn't appear to work for `dlnm` crossbasis smooths. Instead I'll use a method described in the help file `?choose.k` to check for adequate knots.  Unfortunately, `bs = "cs"` doesn't work with `dlnm`, so I'll use `select = TRUE` instead to reduce chance of overfitting.
 
 ```{r}
 # looking for near zero edf
@@ -75,16 +72,20 @@ gam(s_1ha_res ~ s(spei_history, L,
     data = model.frame(s_1ha)) #fine
 ```
 
-
-### Continuous Forest
-
-```{r}
-summary(s_cf)
-```
+### Summary
 
 ```{r}
-draw(s_cf)
+summary(s_1ha)
 ```
+
+
+```{r}
+draw(s_1ha)
+```
+
+## Continuous Forest
+
+### Diagnostics
 
 ```{r echo=TRUE}
 s_cf_res <- qresid(s_cf)
@@ -96,6 +97,7 @@ qqnorm(s_cf_res); qqline(s_cf_res)
 #Fitted vs. residuals--binned residuals plot
 binnedplot(fitted(s_cf), residuals(s_cf, type = "response"))
 ```
+### Basis dimensions
 
 ```{r}
 # looking for near zero edf
@@ -111,11 +113,19 @@ gam(s_cf_res ~ s(spei_history, L,
     data = model.frame(s_cf)) 
 ```
 
+### Summary 
 
+```{r}
+summary(s_cf)
+```
 
-### Continuous forest subsample
+```{r}
+draw(s_cf)
+```
 
-To check that differences are not purely due to sample size differences, particularly that lower edf in continuous forests is due to higher sample size.  For survival, edf is actually higher in CF with a larger sample size.  With subsample, edf are more similar.
+## Effect of sample size
+
+Here I use a random sub-sample to check that differences between continuous forest and fragments are not purely due to sample size differences, particularly differences in the complexity of the crossbasis smooth.
 
 ```{r}
 summary(s_1ha)$edf[3]
@@ -129,31 +139,28 @@ draw(s_cf_sub)
 ```
 Surface still looks different in a similar way though.
 
-```{r}
+```{r echo=FALSE}
 rm(s_1ha, s_cf, s_cf_sub)
 ```
 
-## Growth
+# Growth
 
-```{r}
+```{r echo=FALSE}
 withr::with_dir(here::here(),{
   tar_load(c(g_1ha, g_cf, g_cf_sub))
 })
 ```
 
-### Fragments
+## Fragments
 
-```{r}
-summary(g_1ha)
-```
-
-```{r}
-draw(g_1ha)
-```
+### Diagnostics
 
 ```{r}
 appraise(g_1ha)
 ```
+
+### Basis dimensions
+
 ```{r}
 g_1ha_res <- residuals(g_1ha)
 # looking for near zero edf
@@ -169,19 +176,25 @@ gam(g_1ha_res ~ s(spei_history, L,
     data = model.frame(g_1ha)) #fine
 ```
 
-### Continuous Forest
+### Summary
 
 ```{r}
-summary(g_cf)
+summary(g_1ha)
 ```
 
 ```{r}
-draw(g_cf)
+draw(g_1ha)
 ```
+
+## Continuous Forest
+
+### Diagnostics
 
 ```{r}
 gratia::appraise(g_cf)
 ```
+
+### Basis dimensions
 
 ```{r}
 g_cf_res <- residuals(g_cf)
@@ -198,7 +211,17 @@ gam(g_cf_res ~ s(spei_history, L,
     data = model.frame(g_cf)) #fine
 ```
 
-### Continuous Forest subsample
+### Summary
+
+```{r}
+summary(g_cf)
+```
+
+```{r}
+draw(g_cf)
+```
+
+## Continuous Forest subsample
 
 To check that differences are not purely due to sample size differences, particularly that lower edf in continuous forests is due to higher sample size.
 
@@ -214,29 +237,21 @@ draw(g_cf_sub)
 ```
 Crossbasis surface looks nearly identical.
 
-```{r}
+```{r echo=FALSE}
 rm(g_1ha, g_cf, g_cf_sub)
 ```
 
-## Flowering
+# Flowering
 
-Quantile residuals are more appropriate for binomial models.
-
-```{r}
+```{r echo=FALSE}
 withr::with_dir(here::here(),{
   tar_load(c(f_1ha, f_cf, f_cf_sub))
 })
 ```
 
-### Fragments
+## Fragments
 
-```{r}
-summary(f_1ha)
-```
-
-```{r}
-draw(f_1ha)
-```
+### Diagnostics
 
 ```{r}
 f_1ha_res <- qresid(f_1ha)
@@ -248,6 +263,8 @@ qqnorm(f_1ha_res); qqline(f_1ha_res)
 #Fitted vs. residuals--binned residuals plot
 binnedplot(fitted(f_1ha), residuals(f_1ha, type = "response"))
 ```
+
+### Basis dimensions
 
 ```{r}
 # looking for near zero edf
@@ -263,15 +280,20 @@ gam(f_1ha_res ~ s(spei_history, L,
     data = model.frame(f_1ha)) #fine
 ```
 
-### Continuous Forest
+### Summary
 
 ```{r}
-summary(f_cf)
+summary(f_1ha)
 ```
 
 ```{r}
-draw(f_cf)
+draw(f_1ha)
 ```
+
+
+## Continuous Forest
+
+### Diagnostics
 
 ```{r}
 f_cf_res <- qresid(f_cf)
@@ -283,6 +305,8 @@ qqnorm(f_cf_res); qqline(f_cf_res)
 #Fitted vs. residuals--binned residuals plot
 binnedplot(fitted(f_cf), residuals(f_cf, type = "response"))
 ```
+
+### Basis dimensions
 
 ```{r}
 # looking for near zero edf
@@ -298,7 +322,17 @@ gam(f_cf_res ~ s(spei_history, L,
     data = model.frame(f_cf)) #fine
 ```
 
-### Continuous Forest subsample
+### Summary
+
+```{r}
+summary(f_cf)
+```
+
+```{r}
+draw(f_cf)
+```
+
+## Continuous Forest subsample
 
 To check that differences are not purely due to sample size differences, particularly that lower edf in continuous forests is due to higher sample size.  For flowering, edf is actually slightly higher in CF with a larger sample size.  With subsample, edf are more similar.
 
@@ -313,33 +347,6 @@ draw(f_cf_sub)
 ```
 Crossbasis surface looks extremely similar.
 
-### Flowering prob of largest plants
-
-Figure out flowering probability of largest quartile of plants in each habitat
-
-```{r}
-newdf_cf <-
-  f_cf$model %>% #use model data frame
-  mutate(quartiles = ntile(log_size_prev, 4)) %>% 
-  filter(quartiles == 4)
-
-newdf_1ha <-
-  f_1ha$model %>% 
-  mutate(quartiles = ntile(log_size_prev, 4)) %>% 
-  filter(quartiles == 4)
-```
-
-
-```{r}
-#equivalent to flowering once every __ years
-1/predict(f_cf, newdata = newdf_cf) %>% mean() %>% plogis()
-1/predict(f_1ha, newdata = newdf_1ha) %>% mean() %>% plogis()
-```
-
-
-```{r}
-rm(f_1ha, f_cf, f_cf_sub)
-```
 
 # Reproducibility
 
