@@ -298,7 +298,16 @@ Some of the missing values in the data do represent *Heliconia* plants that lost
 > Indexes on the random effect description suggest there is a separate variance estimated for each plot?
 > d_it suggests that each plant has a separate SPEI estimate?
 > I think it is probably aggregated at a higher level than individual?
+
+We thank the reviewer for the very helpful comments on our model equation.
+We have changed $y_i$ to $y_{ij}$ and added an explanation of the indexing as suggested.
+We have also corrected the error in the random effect equation so that only one variance is estimated.
+$d_{it}$ is intended to indicate that each plant observation is associated with a measure of SPEI for the past 36 months.
+The SPEI history varies among plants spatially (there are three grid cells in the weather data within BDFFP, so different plots experience different climate) and temporally (observations from all years are pooled).
+
 > I would reorganize the following paragraph so that all the descriptive text for the components of (1) occurs before the digression on the details of the crossbasis function.
+
+We moved the explanation of covariates and random effects earlier as suggested.
 
 ##  {#R3-4}
 
