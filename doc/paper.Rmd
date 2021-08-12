@@ -274,6 +274,9 @@ The `dlnm` package does not currently allow the modeling of interaction terms, w
 We therefore fit separate models for plants in fragments and in continuous forest to allow the shape of the crossbasis function to differ between habitats.
 Significant main effects of habitat type were assessed by looking for overlap in the 84% confidence intervals of model intercepts; the 84% CIs of two samples drawn from the same population overlap about 95% of the time [@paytonOverlappingConfidenceIntervals2003].
 
+To visualize results, we plotted partial effects plots for the one-dimensional smooth function of log size in the previous year and the two-dimensional smooth function of lagged SPEI (the crossbasis function) for each model.
+To make these plots more interpretable, we added the model intercept and (when applicable) back-transformed the y-axis to be on the scale of the response (e.g. a probability for survival and flowering).
+
 All analyses were conducted in `r version$version.string` [@rcoreteamLanguageEnvironmentStatistical2020] using the `targets` package for workflow management [@landauTargetsPackageDynamic2021].
 Figures were created with the aid of the `gratia`, `ggplot2`, and `patchwork` packages [@wickhamGgplot2ElegantGraphics2016; @simpsonGratiaGracefulGgplot2021; @pedersenPatchworkComposerPlots2020].
 
@@ -421,7 +424,7 @@ However, the growth of plants in fragments is reduced when the current wet seaso
 In contrast, drought at lags of 8--11 months (i.e., the end of the preceding year's wet season) led to increased growth in both habitats, with a more pronounced response in 1-ha fragments.
 
 *Flowering:* Overall, the the probability of flowering was higher in continuous forest than in 1-ha fragments for all values of SPEI (Figure \@ref(fig:flwr-spei)), although this difference was not significant (84% CIs of intercepts overlap).
-The responses in 1-ha fragments were also more muted as indicated by the shape of the crossbasis function (1-ha edf = 8.3, continuous forest edf = 10.6) (Figure \@ref(fig:flwr-spei)).
+SPEI had less of an effect on flowering probability in 1-ha fragments as indicated by the narrower range of the evaluated smooth (Figure \@ref(fig:flwr-spei)b).
 This led to some important inter-habitat differences in plant responses to prior droughts.
 In continuous forests, recent drought (i.e., at lag = 0--2 with SPEI \< -1), drought two dry seasons prior (lags 15--20) and in the wet season 34--36 months prior all increased the probability of flowering.
 However, drought at the end of the rainy season one year prior (lags 7--13) significantly reduced flowering probability (Figure \@ref(fig:flwr-spei)a).
