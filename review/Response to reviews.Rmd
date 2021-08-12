@@ -83,6 +83,9 @@ We have edited the text to omit "growth", and hopefully clarify: "...the impact 
 
 > L331--332---How can you see in this figure that the response is 'more muted as indicated by the shape of the crossbasis function'?
 
+Our point was actually that SPEI had less of an impact on flowering probability in fragments.
+We edited this sentence to read: "SPEI had less of an effect on flowering probability in 1-ha fragments as indicated by the narrower range of the evaluated smooth (Figure 6b)."
+
 ##  {#R1-8}
 
 > L442-443 -- What is a mechanism for why plants might flower more after drought?
@@ -148,6 +151,8 @@ We have edited this line to clarify: " <!--# edit abstract? -->
 > Line 277-278: I don't see in Figure 3a that the impact of size on growth was greatest for mid-sized plants in continuous forest.
 > It looks to me that the 1-ha and CF lines are extremely close together and not statistically different.
 > Perhaps you can say that there is a tendency of small plants having a larger growth in fragments while large plants grow slightly more in CF.
+
+<!--# I think this will become more clear if I switch to plotting these as back-transformed. See comments in R1-figs -->
 
 ##  {#R2-6}
 
@@ -311,12 +316,12 @@ Some of the missing values in the data do represent *Heliconia* plants that lost
 
 What we show in the figures are not predictions (i.e. results of `predict()` in R), but evaluated smooths generated with the `gratia` package (equivalent to `mgcv::plot.gam()`).
 For figures 4, 5, and 6 we have added the model intercepts to those evaluated smooths and back-transformed (when applicable) the estimates.
-These plots, therefore, do not include the additive effects of covariates or random effects.
-We think that this is an intuitive way to display the partial effects of SPEI.
-<!--# Edit methods or figure captions to clarify? -->
+These plots, therefore, do not include the additive effects of other smooths, parametric covariates, or random effects.
+We think that this is an intuitive way to display the results.
+We added a paragraph to the methods explaining our strategy for visualizing the GAM results.
 
 We apologize for not including a link to the code for the project.
-All analysis code can be found here: [<https://github.com/BrunaLab/HeliconiaDemography>](https://github.com/BrunaLab/HeliconiaDemography){.uri}.
+All analysis code can be found here: [\<https://github.com/BrunaLab/HeliconiaDemography\>](https://github.com/BrunaLab/HeliconiaDemography){.uri}.
 It is so rare for a reviewer to make suggestions based on analysis code, and we are very grateful for these comments!
 
 ##  {#R3-7}
