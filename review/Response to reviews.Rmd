@@ -40,12 +40,15 @@ We edited a sentence in the introduction that cites @estebanOtherSideDroughts202
 > One challenge of using a new modeling approach is making the methods of the paper understandable and to stand alone.
 > As written in the methods and results, I found the implementation very difficult to follow.
 > A slightly longer summary of the methods would help.
+
+...see also our response to \@ref(R3-3)
+
 > In the results, I was surprised to see only a few p-values and not much else about the models in terms of how they were assessed for goodness of fit.
 > While I am not at all suggesting that p-values are the solution, I would have liked a little more sense of how well the models fit.
 > One way to do that might be to show the raw data plotted with the model fits so the reader can see, for example, what kind of functions were drawn.
 > Another might be to present something in table format (the comparable version of a table of AICs or of the results of frequentist tests).
 
-Testing testing (see also our response to \@ref(R1-2)).
+<!--# make a table I guess? -->
 
 ##  {#R1-4}
 
