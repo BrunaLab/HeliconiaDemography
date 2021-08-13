@@ -9,7 +9,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 ## target knits Rmds in their own session, so load libraries here.
 library(targets)
 library(statmod)
@@ -28,7 +28,7 @@ library(arm)
 
 # Survival
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval=TRUE}
 withr::with_dir(here::here(),{
   tar_load(c(s_1ha, s_cf, s_cf_sub))
 })
@@ -39,7 +39,7 @@ withr::with_dir(here::here(),{
 
 ### Diagnostics
 
-```{r echo=TRUE}
+```{r echo=TRUE, eval=TRUE}
 s_1ha_res <- qresid(s_1ha)
 par(mfrow = c(2,2))
 #histogram
@@ -52,7 +52,7 @@ binnedplot(fitted(s_1ha), residuals(s_1ha, type = "response"))
 
 ### Basis dimensions
 
-```{r}
+```{r eval=TRUE}
 pdf(NULL)
 gam.check(s_1ha)
 dev.off()
@@ -60,7 +60,7 @@ dev.off()
 
 Basis dimension checking with `gam.check()` doesn't appear to work for `dlnm` crossbasis smooths. Instead I'll use a method described in the help file `?choose.k` to check for adequate knots.  Unfortunately, `bs = "cs"` doesn't work with `dlnm`, so I'll use `select = TRUE` instead to reduce chance of overfitting.
 
-```{r}
+```{r eval=TRUE}
 # looking for near zero edf
 gam(s_1ha_res ~ s(log_size_prev, k = 10, bs = "cs"), gamma = 1.4,
     data = model.frame(s_1ha)) #fine
@@ -76,12 +76,12 @@ gam(s_1ha_res ~ s(spei_history, L,
 
 ### Summary
 
-```{r}
+```{r eval=TRUE}
 summary(s_1ha)
 ```
 
 
-```{r}
+```{r eval=TRUE}
 draw(s_1ha)
 ```
 
