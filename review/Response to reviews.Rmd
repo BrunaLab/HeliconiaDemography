@@ -101,12 +101,16 @@ We edited this sentence to read: "SPEI had less of an effect on flowering probab
 
 > Fig 3A -- The results mention something about survival approaching 1 -- I wasn't sure if that was supposed to be visible here.
 
+<!--# figure should be back-transformed -->
+
 > Fig 3 -- I mentioned this earlier, but I wasn't really clear on how to interpret effect size.
 > I see the explanation in L 539 in the legend, but I don't really know what that means.
 > Since this is such an important result of the paper, it would help the reader if they were walked through this idea.
 > What is a negative vs. positive effect size in relation to plant size (does this compare to the median size)?
 > I am likely missing something here.
 > (I think the challenge for me is that I kept wanting the figures to fit into a more standard demographic paper -- like the probability of survival based on size, but then I realized something different was being shown here.)
+
+<!--# figure should be back-transformed -->
 
 > Figs 4 -- 6 -- Where the isocline circles are large, does that mean it's a very large time span?
 > I was a bit confused when describing the results of Fig 4b (L296-297), for example, the lag is described as the preceding 13 months in the 1 ha fragment, rather than 0 -- 13 months (although now I see maybe the word preceding was meant to indicate this whole range).
@@ -155,7 +159,7 @@ We have edited this line to clarify: " <!--# edit abstract? -->
 > It looks to me that the 1-ha and CF lines are extremely close together and not statistically different.
 > Perhaps you can say that there is a tendency of small plants having a larger growth in fragments while large plants grow slightly more in CF.
 
-<!--# I think this will become more clear if I switch to plotting these as back-transformed. See comments in R1-figs -->
+<!--# I think this will become more clear if I switch to plotting these as back-transformed. --> ... see also our response to \@ref(R1-figs).
 
 ##  {#R2-6}
 
@@ -185,9 +189,13 @@ We have edited this line to clarify: " <!--# edit abstract? -->
 
 > Lines 355-359: The analysis did not consider testing a statistical difference between habitat type (see comment 7), so I think this sentence is misleading (overinterpreting the results).
 
+<!--# need to check the line to figure out the source of confusion, but we did test this with 84%CI overlap -->
+
 ##  {#R2-11}
 
 > Line 370: There are no confidence intervals in Fig 2, so we don't know if the difference is significant.
+
+<!--# this is not a plot that can have CIs.  The line doesn't imply statistical significance either.  Not sure how to respond -->
 
 ##  {#R2-12}
 
@@ -197,21 +205,32 @@ We have edited this line to clarify: " <!--# edit abstract? -->
 
 > Line 412: I think it would be very informative if you were to expand on this and explain how exactly your method differs from what others have used to detect delayed effects.
 
+...see also our response to \@ref(R1-5).
+<!--# R1-5 is asking for more discussion on limitations of DLNMs -->
+
 ##  {#R2-14}
 
 > 424-427: I think this is exaggerating since the differences between habitat types is not significant.
+
+...see also our response to \@ref(R2-10)
 
 ##  {#R2-15}
 
 > You may also consider arguing that an 11-year long time series is not sufficient to detect delayed effects (see Tenhumberg et al. 2018)
 
+...see also our response to \@ref(R1-5) and \@ref(R2-13).
+
 ##  {#R2-16}
 
 > Lines 437-438 change "starting expand" with "starting to expand"
 
+We have made this correction.
+
 ##  {#R2-17}
 
 > Line 440: Can you explain a bit more in detail why drought increasing flowering probability two years in the future would be a bet hedging response?
+
+see our response to \@ref(R1-8).
 
 ##  {#R2-18}
 
@@ -227,6 +246,8 @@ We have edited this line to clarify: " <!--# edit abstract? -->
 > Lines 468 ff: I suggest deleting this paragraph.
 > It doesn't really matter when exactly a plant dies during a growing season, all that matters for population dynamics is how many plants die from one growing season to the next.
 > Distributed Lag Non-Linear Models account for the exact timing of the weather events.
+
+<!--# not sure how to respond.  I think there must be some underlying confusion.  Other reviewers like this explanation -->
 
 ##  {#R2-21}
 
@@ -316,6 +337,8 @@ We moved the explanation of covariates and random effects earlier as suggested.
 
 > Line 205 - I'm not sure "bimodal" is correct here -- a cubic function can have 2 local extrema, is that what you mean?
 
+<!--# yes, but might change number of knots, so might require more work revising this -->
+
 ##  {#R3-5}
 
 > Line 205-207 -- "number of knots not important ..." yes, but package mgcv includes tools for checking those assumptions, would be helpful to include residual analysis and the results of gam.check() in an appendix.
@@ -326,11 +349,13 @@ We moved the explanation of covariates and random effects earlier as suggested.
 > set to zero in design matrix, Choose a particular value, sample from the posterior?
 > The code would tell me but not available.
 
-What we show in the figures are not predictions (i.e. results of `predict()` in R), but evaluated smooths generated with the `gratia` package (equivalent to `mgcv::plot.gam()`).
-For figures 4, 5, and 6 we have added the model intercepts to those evaluated smooths and back-transformed (when applicable) the estimates.
+What we show in the figures are not predictions (i.e. results of `predict()` in R), but partial effects plots generated with the `gratia` package (equivalent to `mgcv::plot.gam()`).
+For figures 4, 5, and 6 we have added the model intercepts to evaluated smooths and back-transformed (when applicable) the estimates.
 These plots, therefore, do not include the additive effects of other smooths, parametric covariates, or random effects.
 We think that this is an intuitive way to display the results.
 We added a paragraph to the methods explaining our strategy for visualizing the GAM results.
+
+<!--# see also response to comments where we decide to backtransform univariate smooths -->
 
 We apologize for not including a link to the code for the project.
 All analysis code can be found here: [\<https://github.com/BrunaLab/HeliconiaDemography\>](https://github.com/BrunaLab/HeliconiaDemography){.uri}.
@@ -347,11 +372,15 @@ We clarified the reference to the figure: "...was preceded by a drop in average 
 > Figure 2 isn't referenced in this section, not used until discussion.
 > Maybe move to supplement or add a sentence in results?
 
+...see also our response to \@ref(R1-figs)
+
 ##  {#R3-9}
 
 > Line 260 -- you mention the CI of the model estimated coefficients, but these aren't provided anywhere that I could find.
 > I think a table based on the summary of the two fitted models discussed here (and elsewhere too) should be added.
 > And report the variance of the random effect.
+
+...see also our response to \@ref(R1-3)
 
 ##  {#R3-10}
 
