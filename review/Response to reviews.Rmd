@@ -57,6 +57,11 @@ We edited a sentence in the introduction that cites @estebanOtherSideDroughts202
 > (I'm thinking of a version of Fig 3 that shows size in t+1, survival, and flowering rather than effect size on the y-axis, with the data and lines showing the shape of the GAMs).
 > This could be an appendix, but it would help with interpreting Figures 3 -- 6.
 
+One way we approached this is by excluding areas of the heatmap that are far from data, equivalent to not drawing regression lines beyond the range of data.
+We implemented this with the `exclude.too.far()` function in the `mgcv` package.
+Displaying raw data or residuals on the heatmaps was too messy and not informative in a 2d plot.
+Instead, we have explored "slices" of these heatmaps in a supplement <!--# TODO, make that supplement! -->.
+
 ##  {#R1-5}
 
 > I suggest that a little more about the limitations of this modeling approach in the discussion would help set the context for interpreting the results and make the paper more robust.
@@ -149,6 +154,8 @@ We have edited this line to clarify: " <!--# edit abstract? -->
 > Can you explain what you mean with "the height of each plant to the tallest leaf"?
 > If the tallest leaf is growing more horizontally the height of the plant would be shorter than the length of the largest leaf?
 
+<!--# just the height of the plant -->
+
 ##  {#R2-4}
 
 > Lines 251ff: I don't see a reference of Fig 2 in the result section.
@@ -159,7 +166,9 @@ We have edited this line to clarify: " <!--# edit abstract? -->
 > It looks to me that the 1-ha and CF lines are extremely close together and not statistically different.
 > Perhaps you can say that there is a tendency of small plants having a larger growth in fragments while large plants grow slightly more in CF.
 
-<!--# I think this will become more clear if I switch to plotting these as back-transformed. --> ... see also our response to \@ref(R1-figs).
+<!--# I think this will become more clear if I switch to plotting these as back-transformed. -->
+
+... see also our response to \@ref(R1-figs).
 
 ##  {#R2-6}
 
