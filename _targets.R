@@ -20,33 +20,34 @@ lapply(list.files("./R", full.names = TRUE), source)
 
 ## Set options
 options(tidyverse.quiet = TRUE)
-tar_option_set(deployment = "main") #run targets locally by default
+# tar_option_set(deployment = "main") #run targets locally by default
 
 ## tar_plan supports drake-style targets and also tar_target()
 tar_plan(
   # Prep SPEI data
   maxlag = 36,
   tar_target(xa_file, here("data", "xavier_daily_0.25x0.25.csv"), format = "file"),
-  xa_raw = read_csv(xa_file),
+  xa_raw  = read_csv(xa_file),
   xa_spei = calc_spei_xa(xa_raw),
-  xa_lag = lag_spei(xa_spei, maxlag),
+  xa_lag  = lag_spei(xa_spei, maxlag),
   
   # Prep demographic data
   tar_target(demog_file, here("data", "Ha_survey_with_Zombies.csv"), format = "file"),
-  demog_raw = read_fix_demog(demog_file),
-  demog_done = demog_raw %>% filter_dupes() %>% wrangle_demog(), #filter_dupes() removes some duplicate HA id numbers.  Will eventually be fixed in raw data
-  model_data = join_filter_demog_spei(demog_done, xa_lag),
-  model_data_cf = dplyr::filter(model_data, habitat == "CF"),
-  model_data_1ha = dplyr::filter(model_data, habitat == "1-ha"),
+  demog_raw  = read_fix_demog(demog_file),
+  ## filter_dupes() removes some duplicate HA id numbers.  Will eventually be fixed in raw data
+  demog_done = demog_raw %>% filter_dupes() %>% wrangle_demog(), 
+  model_data        = join_filter_demog_spei(demog_done, xa_lag),
+  model_data_cf     = dplyr::filter(model_data, habitat == "CF"),
+  model_data_1ha    = dplyr::filter(model_data, habitat == "1-ha"),
   model_data_cf_sub = subset_cf(model_data),
   
   # Data validation
-  tar_render(validate_data, "doc/validate_data.Rmd"),
+  tar_render(validate_data, "doc/validate_data.Rmd", deployment = "main"),
   
   # Fit demographic models
-  tar_target(s_cf,fit_surv(model_data_cf), deployment = "worker"),
-  tar_target(s_1ha, fit_surv(model_data_1ha), deployment = "worker"),
-  tar_target(g_cf, fit_growth(model_data_cf), deployment = "worker"),
+  tar_target(s_cf,  fit_surv(model_data_cf),    deployment = "worker"),
+  tar_target(s_1ha, fit_surv(model_data_1ha),   deployment = "worker"),
+  tar_target(g_cf,  fit_growth(model_data_cf),  deployment = "worker"),
   tar_target(g_1ha, fit_growth(model_data_1ha), deployment = "worker"),
   
   #### NOTE: The f_cf target takes ~20 hrs to run on a single core on a MacBook
@@ -80,20 +81,20 @@ tar_plan(
   # Model output figures
 
   ## Survival
-  s_cf_eval = my_eval_smooth(s_cf, "spei_history"),
-  s_1ha_eval = my_eval_smooth(s_1ha, "spei_history"),
+  s_cf_eval = my_eval_smooth(s_cf),
+  s_1ha_eval = my_eval_smooth(s_1ha),
   s_spei_plot = plot_cb_3panel(s_cf_eval, s_1ha_eval,
                                response_lab = "P(survival)"),
 
   ## Growth
-  g_cf_eval  = my_eval_smooth(g_cf, "spei_history"),
-  g_1ha_eval = my_eval_smooth(g_1ha, "spei_history"),
+  g_cf_eval  = my_eval_smooth(g_cf),
+  g_1ha_eval = my_eval_smooth(g_1ha),
   g_spei_plot = plot_cb_3panel(g_cf_eval, g_1ha_eval,
                                response_lab = "$log(size_{t+1})$"),
 
   ## Flowering
-  f_cf_eval  = my_eval_smooth(f_cf, "spei_history"),
-  f_1ha_eval = my_eval_smooth(f_1ha, "spei_history"),
+  f_cf_eval  = my_eval_smooth(f_cf),
+  f_1ha_eval = my_eval_smooth(f_1ha),
   f_spei_plot = plot_cb_3panel(f_cf_eval, f_1ha_eval,
                                response_lab = "P(flowering)"),
 

@@ -94,12 +94,51 @@ make_season_bar <- function(wet_color = "black", dry_color = "white") {
     theme_void()
 }
 
+#' Create masking array for predicted values too far from data
+#' 
+#' Inspired by the `too.far` argument of `mgcv::plot.gam()`.  See example in `?exclude.too.far`
+#'
+#' @param model a gam model object
+#' @param x the quoted name of the x variable (on the plot)
+#' @param y the quoted name of the y variable (on the plot)
+#' @param n number of pixels for each dimension
+#' @param dist distance threshold
+mask_too_far <- function(model, x, y, n = 100, dist = 0.1) {
+  m <- model.frame(model)
+  # n <- 100
+  #generate a grid....
+  mx <- seq(min(m[[x]]), max(m[[x]]), length = n)
+  my <- seq(min(m[[y]]), max(m[[y]]), length = n)
+  gx <- rep(mx, n)
+  gy <- rep(my, rep(n,n))
+  tf <- exclude.too.far(gx, gy, m[[x]], m[[y]], dist)
+  return(tf)
+}
+
 #adds intercept and back-transforms smooth to response scale
-my_eval_smooth <- function(model, smooth, ...) {
+my_eval_smooth <- function(model, n = 100, dist = 0.1, ...) {
   linkinv <- model$family$linkinv
-  gratia::smooth_estimates(model, smooth, unconditional = TRUE, dist = 0.1, ...) %>% 
+  
+  #TODO: could make this more reusable by parsing x and y below from the first column of est_df
+  tf <- mask_too_far(model = model, x = "L", y = "spei_history", n = n, dist = dist)
+  
+  est_df <- gratia::smooth_estimates(
+    model,
+    smooth = "spei_history",
+    partial_match = TRUE,
+    unconditional = TRUE,
+    # dist = dist, #broken in this version of gratia
+    n = n,
+    ...
+  ) 
+  est_df %>% 
     gratia::add_confint() %>% 
     add_column(intercept = coef(model)[1]) %>% 
+    # mask predictions too far from data
+    arrange(spei_history, L) %>%
+    add_column(tf) %>% 
+    mutate(across(c(est, lower_ci, upper_ci), ~ if_else(tf, NA_real_, .x))) %>% 
+    # back-transform to response scale
     mutate(across(c(est, lower_ci, upper_ci), ~linkinv(.x + intercept)),
            intercept = linkinv(intercept))
 }
@@ -122,6 +161,7 @@ plot_spei_heatmap <-
            fill_lims,
            response_lab,
            breaks = seq(0, 36, by = 2),
+           dist = 0.1,
            ci = TRUE) {
     
     season_bar <- make_season_bar()
