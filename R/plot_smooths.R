@@ -258,7 +258,44 @@ plot_cb_3panel <-
 
 
 
-
+#' Plot a slice in lag time through a DLNM crossbasiss smooth
+#' 
+#' Plots a fitted line slice and partial residuals.
+#'
+#' @param model model object
+#' @param smooth name of smooth, quoted (passed to `gratia::get_smooth()`)
+#' @param lag numeric, number of months lag to slice through.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot_lag_slice <- function(model, smooth, lag) {
+  smooth_obj <- gratia::get_smooth(model, smooth)
+  s_label <- smooth_obj$label
+  terms <- smooth_obj$term
+  i <- lag + 1
+  
+  #not 100% sure these partial residuals make sense for a model with matrix covariates
+  res <-
+    add_partial_residuals(model.frame(model),
+                          model,
+                          select = s_label) %>% 
+    mutate(x = .data[[terms[1]]][,i]) %>% 
+    rename(y = {{s_label}})
+  
+  est <- 
+    smooth_estimates(model, smooth = s_label) %>% 
+    add_confint() %>% 
+    #take a slice
+    filter(nearest(.data[[terms[2]]], lag))
+  
+  ggplot(est, aes(x = .data[[terms[1]]], y = est)) +
+    geom_line() +
+    geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.4) +
+    geom_point(data = res, aes(x = x, y = y), alpha = 0.25, inherit.aes = FALSE) +
+    labs(subtitle = paste("lag:", lag), y = "Effect")
+}
 
 
 
