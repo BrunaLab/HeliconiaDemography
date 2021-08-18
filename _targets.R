@@ -48,17 +48,17 @@ tar_plan(
   tar_render(knot_choice, "doc/knot_choice.Rmd", deployment = "main"),
   
   # Fit demographic models
-  tar_target(s_cf,  fit_surv(model_data_cf),    deployment = "worker"),
-  tar_target(s_1ha, fit_surv(model_data_1ha),   deployment = "worker"),
-  tar_target(g_cf,  fit_growth(model_data_cf),  deployment = "worker"),
-  tar_target(g_1ha, fit_growth(model_data_1ha), deployment = "worker"),
+  tar_target(s_cf,  fit_surv(model_data_cf, k = c(10,15,15)),    deployment = "worker"),
+  tar_target(s_1ha, fit_surv(model_data_1ha, k = c(10,10,10)),   deployment = "worker"),
+  tar_target(g_cf,  fit_growth(model_data_cf, k = c(25,5,15)),  deployment = "worker"),
+  tar_target(g_1ha, fit_growth(model_data_1ha, k = c(10,5,15)), deployment = "worker"),
   
   #### NOTE: The f_cf target takes ~20 hrs to run on a single core on a MacBook
   #### pro and results in a 816MB object when ind_raneff = TRUE.  Set to FALSE
   #### for testing
-  tar_target(f_cf, fit_flwr(model_data_cf,   ind_raneff = TRUE),
+  tar_target(f_cf, fit_flwr(model_data_cf, k = c(10,15,15), ind_raneff = TRUE),
              deployment = "worker"),
-  tar_target(f_1ha, fit_flwr(model_data_1ha, ind_raneff = TRUE),
+  tar_target(f_1ha, fit_flwr(model_data_1ha, k = c(10,10,18), ind_raneff = TRUE),
              deployment = "worker"),
   
   # Validate and summarize results
