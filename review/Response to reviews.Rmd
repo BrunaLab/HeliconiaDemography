@@ -154,7 +154,9 @@ We have edited this line to clarify: " <!--# edit abstract? -->
 > Can you explain what you mean with "the height of each plant to the tallest leaf"?
 > If the tallest leaf is growing more horizontally the height of the plant would be shorter than the length of the largest leaf?
 
-<!--# just the height of the plant -->
+This is just the height of the plant from the ground to the tallest leaf leaf tip, not the tip of the youngest leaf.
+The reviewer is correct that the height of a plant growing more horizontally (for example if it was knocked over by a branchfall) could be shorter than the length from the base to the end of the tallest leaf.
+We edited the description to read: "...the height of each plant (i.e. distance from the ground to the tallest leaf tip)"
 
 ##  {#R2-4}
 
