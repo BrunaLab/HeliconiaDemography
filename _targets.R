@@ -1,16 +1,16 @@
 ## Set options for using tar_make_clustermq()
 ## Uncomment and edit these lines to run model targets on a cluster computer via SSH
-# options(
-#   clustermq.scheduler = "ssh",
-#   clustermq.ssh.host = "ericscott@hpg.rc.ufl.edu", # use your user and host
-#   clustermq.ssh.log = "~/cmq_ssh.log", # log for easier debugging
-#   clustermq.worker.timeout = 2400
-# )
-
-## Uncomment these lines to run locally on multiple cores
 options(
-  clustermq.schedule = "multicore"
+  clustermq.scheduler = "ssh",
+  clustermq.ssh.host = "ericscott@hpg.rc.ufl.edu", # use your user and host
+  clustermq.ssh.log = "~/cmq_ssh.log", # log for easier debugging
+  clustermq.worker.timeout = 2400
 )
+
+# ## Uncomment these lines to run locally on multiple cores
+# options(
+#   clustermq.schedule = "multicore"
+# )
 
 ## Load your packages, e.g. library(targets).
 source("./packages.R")
@@ -43,6 +43,9 @@ tar_plan(
   
   # Data validation
   tar_render(validate_data, "doc/validate_data.Rmd", deployment = "main"),
+  
+  # Select number of knots for GAMs
+  tar_render(knot_choice, "doc/knot_choice.Rmd", deployment = "main"),
   
   # Fit demographic models
   tar_target(s_cf,  fit_surv(model_data_cf),    deployment = "worker"),

@@ -18,11 +18,12 @@ library(gratia)
 library(mgcv)
 library(dlnm)
 library(arm)
+source(here::here("R", "utils.R"))
 ```
 
 **TODO**
 
-- increase knots for some models (https://github.com/BrunaLab/HeliconiaDemography/issues/92)
+- check that # of knots are adequate
 - check diagnostics for individual-level random effects.  Doesn't look good, but not sure how to interpret or what to do. 
 
 
@@ -40,12 +41,12 @@ withr::with_dir(here::here(),{
 ### Diagnostics
 
 ```{r echo=TRUE, eval=TRUE}
-s_1ha_res <- qresid(s_1ha)
+s_1ha_qres <- qresid(s_1ha)
 par(mfrow = c(2,2))
 #histogram
-plot(density(s_1ha_res))
+plot(density(s_1ha_qres))
 #QQ plot
-qqnorm(s_1ha_res); qqline(s_1ha_res)
+qqnorm(s_1ha_qres); qqline(s_1ha_qres)
 #Fitted vs. residuals--binned residuals plot
 binnedplot(fitted(s_1ha), residuals(s_1ha, type = "response"))
 ```
@@ -59,20 +60,16 @@ k.check(s_1ha)
 Basis dimension checking with `gam.check()` doesn't appear to work for `dlnm` crossbasis smooths. Instead I'll use a method described in the help file `?choose.k` to check for adequate knots.  Unfortunately, `bs = "cs"` doesn't work with `dlnm`, so I'll use `select = TRUE` instead to reduce chance of overfitting.
 
 ```{r eval=TRUE}
-# looking for near zero edf
-gam(s_1ha_res ~ s(log_size_prev, k = 10, bs = "cs"), gamma = 1.4,
-    data = model.frame(s_1ha)) %>%
-  edf() #fine 
-
-gam(s_1ha_res ~ s(spei_history, L,
-      bs = "cb",
-      k = c(3, 35),
-      xt = list(bs = "cr")),
-    gamma = 1.4,
-    select = TRUE,
-    data = model.frame(s_1ha)) %>%
-  edf()#fine
+check_res_edf(s_1ha)
 ```
+
+The crossbasis smooth possibly needs more knots.
+
+```{r}
+# plot_lag_slice(s_1ha, "spei_history", lag =  0) + labs(title = "surv, 1ha")
+```
+
+Here you can see how the CIs hardly overlap 0, but it could be an artifact of the line not being allowed to be wiggly enough.
 
 ### Summary
 
@@ -85,21 +82,27 @@ summary(s_1ha)
 draw(s_1ha)
 ```
 
+
+
+
 ## Continuous Forest
 
 ### Diagnostics
 
 ```{r echo=TRUE}
-s_cf_res <- qresid(s_cf)
+s_cf_qres <- qresid(s_cf)
 par(mfrow = c(2,2))
 #histogram
-plot(density(s_cf_res))
+plot(density(s_cf_qres))
 #QQ plot
-qqnorm(s_cf_res); qqline(s_cf_res)
+qqnorm(s_cf_qres); qqline(s_cf_qres)
 #Fitted vs. residuals--binned residuals plot
 binnedplot(fitted(s_cf), residuals(s_cf, type = "response"))
 ```
+
+
 ### Basis dimensions
+
 
 ```{r}
 k.check(s_cf)
@@ -107,16 +110,7 @@ k.check(s_cf)
 
 ```{r}
 # looking for near zero edf
-gam(s_cf_res ~ s(log_size_prev, k = 10, bs = "cs"), gamma = 1.4,
-    data = model.frame(s_cf)) #fine
-
-gam(s_cf_res ~ s(spei_history, L,
-      bs = "cb",
-      k = c(3, 35),
-      xt = list(bs = "cr")),
-    gamma = 1.4,
-    select = TRUE,
-    data = model.frame(s_cf)) 
+check_res_edf(s_cf)
 ```
 
 ### Summary 
@@ -172,18 +166,7 @@ k.check(g_1ha)
 ```
 
 ```{r}
-g_1ha_res <- residuals(g_1ha)
-# looking for near zero edf
-gam(g_1ha_res ~ s(log_size_prev, k = 10, bs = "cs"), gamma = 1.4,
-    data = model.frame(g_1ha)) #fine
-
-gam(g_1ha_res ~ s(spei_history, L,
-      bs = "cb",
-      k = c(3, 35),
-      xt = list(bs = "cr")),
-    gamma = 1.4,
-    select = TRUE,
-    data = model.frame(g_1ha)) #fine
+check_res_edf(g_1ha)
 ```
 
 ### Summary
@@ -211,19 +194,14 @@ k.check(g_cf)
 ```
 
 ```{r}
-g_cf_res <- residuals(g_cf)
-# looking for near zero edf
-gam(g_cf_res ~ s(log_size_prev, k = 10, bs = "cs"), gamma = 1.4,
-    data = model.frame(g_cf)) #fine
-
-gam(g_cf_res ~ s(spei_history, L,
-      bs = "cb",
-      k = c(3, 35),
-      xt = list(bs = "cr")),
-    gamma = 1.4,
-    select = TRUE,
-    data = model.frame(g_cf)) #fine
+check_res_edf(g_cf)
 ```
+
+```{r}
+# plot_lag_slice(g_1ha, "spei_history", lag = 33)
+```
+
+hmm... CIs are **super** narrow here, but effect size is **tiny**
 
 ### Summary
 
@@ -268,12 +246,12 @@ withr::with_dir(here::here(),{
 ### Diagnostics
 
 ```{r}
-f_1ha_res <- qresid(f_1ha)
+f_1ha_qres <- qresid(f_1ha)
 par(mfrow = c(2,2))
 #histogram
-plot(density(f_1ha_res))
+plot(density(f_1ha_qres))
 #QQ plot
-qqnorm(f_1ha_res); qqline(f_1ha_res)
+qqnorm(f_1ha_qres); qqline(f_1ha_qres)
 #Fitted vs. residuals--binned residuals plot
 binnedplot(fitted(f_1ha), residuals(f_1ha, type = "response"))
 ```
@@ -286,16 +264,7 @@ k.check(f_1ha)
 
 ```{r}
 # looking for near zero edf
-gam(f_1ha_res ~ s(log_size_prev, k = 10, bs = "cs"), gamma = 1.4,
-    data = model.frame(f_1ha)) #fine
-
-gam(f_1ha_res ~ s(spei_history, L,
-      bs = "cb",
-      k = c(3, 35),
-      xt = list(bs = "cr")),
-    gamma = 1.4,
-    select = TRUE,
-    data = model.frame(f_1ha)) #fine
+check_res_edf(f_1ha)
 ```
 
 ### Summary
@@ -314,12 +283,12 @@ draw(f_1ha)
 ### Diagnostics
 
 ```{r}
-f_cf_res <- qresid(f_cf)
+f_cf_qres <- qresid(f_cf)
 par(mfrow = c(2,2))
 #histogram
-plot(density(f_cf_res))
+plot(density(f_cf_qres))
 #QQ plot
-qqnorm(f_cf_res); qqline(f_cf_res)
+qqnorm(f_cf_qres); qqline(f_cf_qres)
 #Fitted vs. residuals--binned residuals plot
 binnedplot(fitted(f_cf), residuals(f_cf, type = "response"))
 ```
@@ -332,16 +301,7 @@ k.check(f_cf)
 
 ```{r}
 # looking for near zero edf
-gam(f_cf_res ~ s(log_size_prev, k = 10, bs = "cs"), gamma = 1.4,
-    data = model.frame(f_cf)) #fine
-
-gam(f_cf_res ~ s(spei_history, L,
-      bs = "cb",
-      k = c(3, 35),
-      xt = list(bs = "cr")),
-    gamma = 1.4,
-    select = TRUE,
-    data = model.frame(f_cf)) #fine
+check_res_edf(f_cf)
 ```
 
 ### Summary

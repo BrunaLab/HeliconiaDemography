@@ -1,0 +1,669 @@
+---
+title: "Knot choice for GAMs"
+author: "Eric R. Scott"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+## target knits Rmds in their own session, so load libraries here.
+library(tidyverse)
+library(mgcv)
+library(dlnm)
+library(gratia)
+```
+
+```{r}
+withr::with_dir(here::here(), {
+  targets::tar_load(c(
+    model_data_1ha, model_data_cf
+    ))
+})
+```
+
+
+# Purpose
+
+In GAMs, the number of knots used for a smooth needs to be great enough to capture the "true" complexity of a relationship.  However, higher number of knots increase computational demand.  Here I'll do some diagnostics and trial-and-error to select an adequate number of knots. I'm going to use models without random effects for computational efficiency.
+
+# Survival
+
+## Continuous forest
+
+```{r}
+s_cf <- bam(
+  surv ~ 
+    flwr_prev +
+    s(log_size_prev, bs = "cr") +
+    s(spei_history, L,
+      bs = "cb",
+      k = c(5, 18),
+      xt = list(bs = "cr")),
+  family = binomial,
+  data = model_data_cf,
+  method = "fREML",
+  select = TRUE
+)
+```
+
+```{r}
+set.seed(888)
+k.check(s_cf)
+```
+
+Looks like the default k is adequate for `s(log_size_prev)`.  Unfortunately `k.check()` doesn't work for data with matrices, so I'll use an alternative approach detailed in `?mgcv::choose.k`.  Briefly, it involves looking for pattern in residuals.
+
+```{r}
+source(here::here("R", "utils.R"))
+```
+
+
+```{r}
+check_res_edf(s_cf)
+```
+
+We want this number to be close to 0.  First let's up the lag dimension number of knots.
+
+```{r}
+s_cf2 <- bam(
+  surv ~ 
+    flwr_prev +
+    s(log_size_prev, bs = "cr") +
+    s(spei_history, L,
+      bs = "cb",
+      k = c(5, 30),
+      xt = list(bs = "cr")),
+  family = binomial,
+  data = model_data_cf,
+  method = "fREML",
+  select = TRUE
+)
+```
+
+```{r}
+edf(s_cf)
+edf(s_cf2)
+```
+
+```{r}
+draw(s_cf, select = "s(spei_history,L)")
+draw(s_cf2, select = "s(spei_history,L)")
+```
+
+Didn't change edf at all really, or shape of smooth, so back to original k for lag and up k for spei
+
+
+```{r}
+s_cf3 <- bam(
+  surv ~ 
+    flwr_prev +
+    s(log_size_prev, bs = "cr") +
+    s(spei_history, L,
+      bs = "cb",
+      k = c(15, 18),
+      xt = list(bs = "cr")),
+  family = binomial,
+  data = model_data_cf,
+  method = "fREML",
+  select = TRUE
+)
+```
+
+```{r}
+edf(s_cf)
+edf(s_cf3)
+```
+
+```{r}
+draw(s_cf, select = "s(spei_history,L)")
+draw(s_cf3, select = "s(spei_history,L)")
+```
+
+EDF went up and shape of smooth changed, so check if its enough.
+
+
+```{r}
+check_res_edf(s_cf3)
+```
+
+Can I reduce number of knots in the lag dimension?
+
+```{r}
+s_cf4 <- bam(
+  surv ~ 
+    flwr_prev +
+    s(log_size_prev, bs = "cr") +
+    s(spei_history, L,
+      bs = "cb",
+      k = c(15, 15),
+      xt = list(bs = "cr")),
+  family = binomial,
+  data = model_data_cf,
+  method = "fREML",
+  select = TRUE
+)
+```
+
+
+```{r}
+edf(s_cf3)
+edf(s_cf4)
+```
+
+```{r}
+draw(s_cf3, select = "s(spei_history,L)")
+draw(s_cf4, select = "s(spei_history,L)")
+```
+
+Shape is unchanged
+
+```{r}
+check_res_edf(s_cf4)
+```
+
+Looks good.  Final knots for `s_cf` are:
+
+`log_size_prev`: 10
+`spei_history, L`: 15,15
+
+```{r}
+rm(s_cf, s_cf2, s_cf3, s_cf4)
+```
+
+## Fragment
+
+```{r}
+s_1ha <- bam(
+  surv ~ 
+    flwr_prev +
+    s(log_size_prev, bs = "cr") +
+    s(spei_history, L,
+      bs = "cb",
+      k = c(5, 18),
+      xt = list(bs = "cr")),
+  family = binomial,
+  data = model_data_1ha,
+  method = "fREML",
+  select = TRUE
+)
+```
+
+```{r}
+set.seed(888)
+k.check(s_1ha)
+```
+
+Indicates default number of knots for `log_spei_prev` is adequate.
+
+```{r}
+check_res_edf(s_1ha)
+```
+Knots are too low.  Try upping knots for lag dimension
+
+```{r}
+s_1ha2 <- bam(
+  surv ~ 
+    flwr_prev +
+    s(log_size_prev, bs = "cr") +
+    s(spei_history, L,
+      bs = "cb",
+      k = c(5, 30),
+      xt = list(bs = "cr")),
+  family = binomial,
+  data = model_data_1ha,
+  method = "fREML",
+  select = TRUE
+)
+```
+
+```{r}
+edf(s_1ha)
+edf(s_1ha2)
+```
+
+```{r}
+draw(s_1ha, select = "s(spei_history,L)")
+draw(s_1ha2, select = "s(spei_history,L)")
+```
+
+No change, back to original k for lag and increase k for SPEI
+
+```{r}
+s_1ha3 <- bam(
+  surv ~ 
+    flwr_prev +
+    s(log_size_prev, bs = "cr") +
+    s(spei_history, L,
+      bs = "cb",
+      k = c(10, 18),
+      xt = list(bs = "cr")),
+  family = binomial,
+  data = model_data_1ha,
+  method = "fREML",
+  select = TRUE
+)
+```
+
+```{r}
+edf(s_1ha)
+edf(s_1ha3)
+```
+
+```{r}
+draw(s_1ha, select = "s(spei_history,L)")
+draw(s_1ha3, select = "s(spei_history,L)")
+```
+
+Slight change, check if adequate
+
+```{r}
+check_res_edf(s_1ha3)
+```
+
+Can I go lower?
+
+```{r}
+s_1ha4 <- bam(
+  surv ~ 
+    flwr_prev +
+    s(log_size_prev, bs = "cr") +
+    s(spei_history, L,
+      bs = "cb",
+      k = c(10, 10),
+      xt = list(bs = "cr")),
+  family = binomial,
+  data = model_data_1ha,
+  method = "fREML",
+  select = TRUE
+)
+```
+
+
+```{r}
+edf(s_1ha3)
+edf(s_1ha4)
+```
+
+```{r}
+draw(s_1ha3, select = "s(spei_history,L)")
+draw(s_1ha4, select = "s(spei_history,L)")
+```
+
+```{r}
+check_res_edf(s_1ha3)
+```
+
+10 knots all around
+
+```{r}
+rm(s_1ha, s_1ha2, s_1ha3, s_1ha4)
+```
+
+
+# Size
+
+
+```{r}
+# use only living plants
+model_data_1ha_2 <- model_data_1ha %>% 
+  dplyr::filter(surv == 1, !is.na(log_size))
+model_data_cf_2 <- model_data_cf %>% 
+  dplyr::filter(surv == 1, !is.na(log_size))
+```
+
+
+## Continuous forest
+
+```{r}
+g_cf <- bam(log_size ~ 
+              flwr_prev +
+              s(log_size_prev, bs = "cr") + 
+              s(spei_history, L,
+                bs = "cb",
+                k = c(5, 18), 
+                xt = list(bs = "cr")),
+            family = scat(link = "identity"), #like leptokurtic gaussian.
+            data = model_data_cf_2,
+            method = "fREML",
+            select = TRUE)
+```
+
+```{r}
+set.seed(888)
+k.check(g_cf)
+```
+
+`log_size_prev` needs more knots.
+
+
+```{r}
+g_cf2 <- bam(log_size ~ 
+              flwr_prev +
+              s(log_size_prev, bs = "cr", k = 25) + 
+              s(spei_history, L,
+                bs = "cb",
+                k = c(5, 18), 
+                xt = list(bs = "cr")),
+            family = scat(link = "identity"), #like leptokurtic gaussian.
+            data = model_data_cf_2,
+            method = "fREML",
+            select = TRUE)
+```
+
+
+```{r}
+set.seed(888)
+k.check(g_cf2)
+```
+
+Kept increasing until edf stabilized and p > 0.05.  25 knots is adequate.
+
+How about the crossbasis?
+
+```{r}
+check_res_edf(g_cf2)
+```
+
+Try reducing lag dimension knots to save on computation.
+
+```{r}
+g_cf3 <- bam(log_size ~ 
+              flwr_prev +
+              s(log_size_prev, bs = "cr", k = 25) + 
+              s(spei_history, L,
+                bs = "cb",
+                k = c(5, 15), 
+                xt = list(bs = "cr")),
+            family = scat(link = "identity"), #like leptokurtic gaussian.
+            data = model_data_cf_2,
+            method = "fREML",
+            select = TRUE)
+```
+
+
+```{r}
+edf(g_cf2)
+edf(g_cf3)
+```
+
+
+```{r}
+draw(g_cf2, select = "s(spei_history,L)")
+draw(g_cf3, select = "s(spei_history,L)")
+```
+
+Not substantially different
+
+Final knots
+
+- `log_size_prev`: 25
+- `spei_history, L`: 5, 15
+
+## Fragments
+
+```{r}
+g_1ha <- bam(log_size ~ 
+              flwr_prev +
+              s(log_size_prev, bs = "cr") + 
+              s(spei_history, L,
+                bs = "cb",
+                k = c(5, 15), 
+                xt = list(bs = "cr")),
+            family = scat(link = "identity"), #like leptokurtic gaussian.
+            data = model_data_1ha_2,
+            method = "fREML",
+            select = TRUE)
+```
+
+```{r}
+set.seed(888)
+k.check(g_1ha)
+```
+
+Default 10 knots for `log_size_prev` is adequate
+
+```{r}
+check_res_edf(g_1ha)
+```
+
+Also adequate
+
+```{r}
+draw(g_1ha,  select = "s(spei_history,L)")
+```
+
+Final knots
+
+- `log_size_prev`: 10
+- `spei_history, L`: 5, 15
+
+```{r}
+rm(g_cf, g_cf2, g_cf3, g_1ha)
+```
+
+# Flowering
+
+## Continuous forest
+
+```{r}
+f_cf <- bam(flwr ~ 
+              flwr_prev +
+              s(log_size_prev, bs = "cr") +
+              s(spei_history, L,
+                bs = "cb",
+                k = c(5, 18), 
+                xt = list(bs = "cr")),
+            family = binomial,
+            data = model_data_cf_2,
+            method = "fREML",
+            select = TRUE)
+```
+
+```{r}
+set.seed(888)
+k.check(f_cf)
+```
+
+Knots for `log_size_prev` are adequate.
+
+```{r}
+check_res_edf(f_cf)
+```
+
+Possibly too low. Try upping number of knots in the lag dimension.
+
+```{r}
+f_cf2 <- bam(flwr ~ 
+              flwr_prev +
+              s(log_size_prev, bs = "cr") +
+              s(spei_history, L,
+                bs = "cb",
+                k = c(5, 30), 
+                xt = list(bs = "cr")),
+            family = binomial,
+            data = model_data_cf_2,
+            method = "fREML",
+            select = TRUE)
+```
+
+```{r}
+edf(f_cf)
+edf(f_cf2)
+```
+
+Not substantially different.  Instead, try increasing knots in SPEI dimension
+
+```{r}
+f_cf3 <- bam(flwr ~ 
+              flwr_prev +
+              s(log_size_prev, bs = "cr") +
+              s(spei_history, L,
+                bs = "cb",
+                k = c(15, 18), 
+                xt = list(bs = "cr")),
+            family = binomial,
+            data = model_data_cf_2,
+            method = "fREML",
+            select = TRUE)
+```
+
+
+```{r}
+edf(f_cf)
+edf(f_cf3)
+```
+
+```{r}
+draw(f_cf, select = "s(spei_history,L)")
+draw(f_cf3, select = "s(spei_history,L)")
+```
+
+Can I decrease knots in lag dimension?
+
+```{r}
+f_cf4 <- bam(flwr ~ 
+              flwr_prev +
+              s(log_size_prev, bs = "cr") +
+              s(spei_history, L,
+                bs = "cb",
+                k = c(15, 15), 
+                xt = list(bs = "cr")),
+            family = binomial,
+            data = model_data_cf_2,
+            method = "fREML",
+            select = TRUE)
+```
+
+```{r}
+edf(f_cf3)
+edf(f_cf4)
+```
+
+About the same
+
+```{r}
+check_res_edf(f_cf4)
+```
+
+Final knots:
+
+- `log_size_prev`: 10
+- `spei_history,L`: 15, 15
+
+## Fragments
+
+```{r}
+f_1ha <- bam(flwr ~ 
+              flwr_prev +
+              s(log_size_prev, bs = "cr") +
+              s(spei_history, L,
+                bs = "cb",
+                k = c(5, 18), 
+                xt = list(bs = "cr")),
+            family = binomial,
+            data = model_data_1ha_2,
+            method = "fREML",
+            select = TRUE)
+```
+
+```{r}
+set.seed(888)
+k.check(f_1ha)
+```
+
+Knots for `log_size_prev` are adequate.
+
+```{r}
+check_res_edf(f_1ha)
+```
+Too few knots for crossbasis.  Try increasing knots in lag dimension.
+
+```{r}
+f_1ha2 <- bam(flwr ~ 
+              flwr_prev +
+              s(log_size_prev, bs = "cr") +
+              s(spei_history, L,
+                bs = "cb",
+                k = c(5, 25), 
+                xt = list(bs = "cr")),
+            family = binomial,
+            data = model_data_1ha_2,
+            method = "fREML",
+            select = TRUE)
+```
+
+```{r}
+edf(f_1ha)
+edf(f_1ha2)
+```
+
+No substantial change.  Set back to 18 and increase knots for SPEI dimension
+
+```{r}
+f_1ha3 <- bam(flwr ~ 
+              flwr_prev +
+              s(log_size_prev, bs = "cr") +
+              s(spei_history, L,
+                bs = "cb",
+                k = c(10, 18), 
+                xt = list(bs = "cr")),
+            family = binomial,
+            data = model_data_1ha_2,
+            method = "fREML",
+            select = TRUE)
+```
+
+```{r}
+edf(f_1ha)
+edf(f_1ha3)
+```
+
+```{r}
+draw(f_1ha, select = "s(spei_history,L)")
+draw(f_1ha3, select = "s(spei_history,L)")
+```
+
+(what I feared)
+
+```{r}
+check_res_edf(f_1ha3)
+```
+adequate knots.
+
+Final knots:
+
+- `log_size_prev`: 10
+- `spei_history,L`: 10,18
+
+```{r}
+rm(f_cf, f_cf2, f_cf3, f_cf4, f_1ha, f_1ha2, f_1ha3)
+```
+
+
+# Reproducibility
+
+<details><summary>Reproducibility receipt</summary>
+
+```{r}
+## datetime
+Sys.time()
+
+## repository
+if(requireNamespace('git2r', quietly = TRUE)) {
+  git2r::repository()
+} else {
+  c(
+    system2("git", args = c("log", "--name-status", "-1"), stdout = TRUE),
+    system2("git", args = c("remote", "-v"), stdout = TRUE)
+  )
+}
+
+## session info
+sessionInfo()
+```
+
+</details>
