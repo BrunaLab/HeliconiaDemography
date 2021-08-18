@@ -73,6 +73,11 @@ Instead, we have explored "slices" of these heatmaps in a supplement <!--# TODO,
 > I was curious about why the paper did not include analyses of recruitment.
 > Perhaps it is beyond the scope of this paper, but I wondered how new recruits responded to drought and wet also, both in number, as well as how big they were in the first year.
 
+The reviewer is correct that recruitment is an important aspect of demography that could be effected by SPEI and fragmentation.
+However, we believed the analyses in this paper were complicated enough to not include additional analyses.
+We intend to follow up this paper with analyses of recruitment and integrating all vital rate models with an integral projection model.
+We simply felt doing all of this (describing and interpreting DLNMs, modeling recruitment, and integrating all into an IPM) would be too much for a single paper.
+
 ##  {#R1-7}
 
 > I had a hard time linking these statements in the results to the figures.
@@ -290,6 +295,11 @@ We've edited this sentence to read: "The ability to identify size-specific lagge
 > The paper is very clear and concise, with a few minor exceptions discussed in detail below.
 > The one surprising omission was that the authors didn't use an Integral Projection Model to put the vital rates together into a metric of population growth potential.
 > I enjoyed reading this.
+
+We thought it would be too much to describe and interpret DLNMs for the vital rates, model recruitment, *and* integrate all those models into an integral projection model.
+We though the description and interpretation of the DLNMs for survival, size, and flowering were complex and interesting enough to stand on their own.
+We do intend to follow up with an IPM in a future publication.
+See also our response to \@ref(R1-6).
 
 ##  {#R3-1}
 
