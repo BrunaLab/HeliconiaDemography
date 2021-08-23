@@ -44,6 +44,14 @@ comments in `_targets.R`) if you want to run the project on your own
 computer. Without individual-level random effects the pipeline should
 run relatively quickly (&lt; 1hr, I think).
 
+**Using HPC**: Also, you may need to install packages on the remote HPC
+if using `tar_make_clustermq()` with the SSH option. Unfortunately, I’m
+not sure if there is an easy way to do this using `renv`. You should,
+however, make sure the same versions of the packages are installed
+locally and on the HPC, especially `gratia` which I’m using a
+development version of that has important bugs fixed, but not new bugs
+introduced.
+
 ## Additional Dependencies
 
 -   Numbering of and in-text references to equations in `paper.Rmd` is

@@ -364,6 +364,18 @@ We moved the explanation of covariates and random effects earlier as suggested.
 
 > Line 205-207 -- "number of knots not important ..." yes, but package mgcv includes tools for checking those assumptions, would be helpful to include residual analysis and the results of gam.check() in an appendix.
 
+This comment was especially helpful and made us re-think limiting the number of "knots" to 3 in the SPEI dimension.
+The term *k* is probably more accurately described as the "maximum basis complexity" or "maximum basis dimension".
+We had thought that by limiting k to 3, we were simply limiting the complexity of the smooth in the SPEI dimension.
+However, after taking the reviewer's suggestions we realized that there were other unexpected consequences.
+We increased *k* for the SPEI dimension for all models and for other smooths for some models.
+This resulted in some changes in the the shape of the crossbasis smooth and which areas of it were statistically significant.
+We have updated the methods and results sections accordingly.
+<!--# TODO: update results section! -->\
+\
+We have also now included a supplemental document with model validation, including checks that *k* is adequately large
+.
+
 ##  {#R3-6}
 
 > Line 211 - random effect -- how did you deal with this in the predictions?

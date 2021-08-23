@@ -8,7 +8,7 @@
 #' @param k vector of knots to pass to `s(log_size_prev)` (default 10), and
 #'   `s(spei_history, L)` (default 3, 35).
 #'   
-fit_surv <- function(data, k = c(10, 3, 35)) {
+fit_surv <- function(data, k = c(10, 10, 15)) {
   stopifnot(length(k) == 3L) #check that 3 values for k are supplied
   data2 <- data %>% mutate(flwr_prev = factor(flwr_prev))
   f <- surv ~ 
@@ -37,7 +37,7 @@ fit_surv <- function(data, k = c(10, 3, 35)) {
 #' @param k vector of knots to pass to `s(log_size_prev)` (default 10), and
 #'   `s(spei_history, L)` (default 3, 35).
 #'
-fit_growth <- function(data, k = c(10, 3, 35)){
+fit_growth <- function(data, k = c(10, 10, 15)){
   stopifnot(length(k) == 3L) #check that 3 values for k are supplied
   # use only living plants
   data2 <- data %>% dplyr::filter(surv == 1, !is.na(log_size)) %>% 
@@ -69,7 +69,7 @@ fit_growth <- function(data, k = c(10, 3, 35)){
 #' @param data prepared model data
 #' @param ind_raneff logical; include individual-level random effect (i.e. plant ID as a random effect)?
 #' 
-fit_flwr <- function(data, k = c(10, 3, 35), ind_raneff = FALSE) {
+fit_flwr <- function(data, k = c(10, 10, 15), ind_raneff = FALSE) {
   stopifnot(length(k) == 3L) #check that 3 values for k are supplied
   # use only living plants
   data2 <- data %>% dplyr::filter(surv == 1, !is.na(log_size)) %>%

@@ -257,9 +257,7 @@ s_2(d_{i,t}, ..., d_{i,t-24}) = \sum_{l = l_0}^L f \cdot w(d_{i,t-l},l)
 $${\#eq:eqn2}
 
 where the crossbasis function, $f \cdot w (d,l)$, is composed of two marginal basis functions: the standard predictor-response function $f(d)$, and the additional lag-response function $w(l)$.
-These marginal functions are combined as a tensor product smooth such that the shape of one marginal function varies smoothly along the other dimension (see chapter 5 of @woodGeneralizedAdditiveModels2017 and @gasparriniPenalizedFrameworkDistributed2017 for more detail).
-Penalized cubic regression splines were used for both marginal bases of the crossbasis function, with 35 knots for the lag dimension (i.e. number of lagged SPEI values for each observation with 36 months as a maximum lag) and 3 knots for the drought response dimension to restrict the shape of the fitted response to drought to bimodal when most complex.
-Because of penalization, the number of knots is generally not important as long it is large enough to allow the smooth to represent the 'true' relationship [@woodGeneralizedAdditiveModels2017].
+These marginal functions are combined as a tensor product smooth such that the shape of one marginal function varies smoothly along the other dimension (see chapter 5 of @woodGeneralizedAdditiveModels2017 and @gasparriniPenalizedFrameworkDistributed2017 for more detail). Penalized cubic regression splines were used for both marginal bases of the crossbasis function. We increased *k*, the maximum basis dimension, as necessary to be sure it was adequate. Because of penalization, the maximum basis dimension is generally not important as long it is large enough to allow the smooth to represent the 'true' relationship [@woodGeneralizedAdditiveModels2017].
 <!--# reference supplemental model diagnostics here --> Estimated degrees of freedom (edf) represent the 'true' complexity of the smooth after penalization with edf = 1 being equivalent to a straight line and larger numbers representing more complex curves.
 
 We determined the effects of SPEI on plant growth using plant size in year t+1 as a response variable.
