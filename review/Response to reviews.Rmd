@@ -64,7 +64,9 @@ If the reviewer(s) or editor see this as too detailed for the main text, we are 
 One way we approached this is by excluding areas of the heatmap that are far from data, equivalent to not drawing regression lines beyond the range of data.
 We implemented this with the `exclude.too.far()` function in the `mgcv` package.
 Displaying raw data or residuals on the heatmaps was too messy and not informative in a 2d plot.
-Instead, we have explored "slices" of these heatmaps in a supplement <!--# TODO, make that supplement! -->.
+\
+\
+... see also our response to \@ref(R1-figs).
 
 ##  {#R1-5}
 
@@ -115,7 +117,8 @@ We edited this sentence to read: "SPEI had less of an effect on flowering probab
 
 > Fig 3A -- The results mention something about survival approaching 1 -- I wasn't sure if that was supposed to be visible here.
 
-<!--# figure should be back-transformed -->
+This was referring to a previous iteration of the figure where the y-axis was on the response scale.
+We have reverted the figure to this version (see response below) and this should be obvious now.
 
 > Fig 3 -- I mentioned this earlier, but I wasn't really clear on how to interpret effect size.
 > I see the explanation in L 539 in the legend, but I don't really know what that means.
@@ -124,7 +127,10 @@ We edited this sentence to read: "SPEI had less of an effect on flowering probab
 > I am likely missing something here.
 > (I think the challenge for me is that I kept wanting the figures to fit into a more standard demographic paper -- like the probability of survival based on size, but then I realized something different was being shown here.)
 
-<!--# figure should be back-transformed -->
+These plots were the evaluated smooths on the link scale.
+We agree that they were difficult to interpret in that form, so we have added the model intercept and back-transformed them to be on their respective response scales (e.g. probability for flowering and survival).
+This is equivalent to the marginal effect of log(size_t)---that is, without considering the additive effect of lagged SPEI or the random intercepts for different plots and for plants that had not flowered in the previous year (the reference level for the `flwr_prev` factor we included as a parametric covariate).
+We have not clarified that in the figure caption.
 
 > Figs 4 -- 6 -- Where the isocline circles are large, does that mean it's a very large time span?
 > I was a bit confused when describing the results of Fig 4b (L296-297), for example, the lag is described as the preceding 13 months in the 1 ha fragment, rather than 0 -- 13 months (although now I see maybe the word preceding was meant to indicate this whole range).

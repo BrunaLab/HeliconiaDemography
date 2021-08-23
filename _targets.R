@@ -102,13 +102,13 @@ tar_plan(
   ## Size covariate
   s_covar_plot = plot_covar_smooth(frag_model = s_1ha, cf_model = s_cf,
                                    covar = "log_size_prev") + 
-    labs(x = TeX("$log(size_t)$"), y = "Effect [survival]"),
+    labs(x = TeX("$log(size_t)$"), y = "P(survival)"),
   g_covar_plot = plot_covar_smooth(frag_model = g_1ha, cf_model = g_cf,
                                    covar = "log_size_prev") +
-    labs(x = TeX("$log(size_t)$"), y = TeX("Effect \\[$log(size_{t+1})\\]")),
+    labs(x = TeX("$log(size_t)$"), y = TeX("log(size_{t+1})")),
   f_covar_plot = plot_covar_smooth(frag_model = f_1ha, cf_model = f_cf,
                                    covar = "log_size_prev") +
-    labs(x = TeX("$log(size_t)$"), y = "Effect [flowering]"),
+    labs(x = TeX("$log(size_t)$"), y = "P(flowering)"),
   size_plot = make_size_plot(
     s = s_covar_plot,
     g = g_covar_plot,

@@ -8,10 +8,23 @@
 #'
 plot_covar_smooth <- function(cf_model, frag_model, covar) {
 
-  cf <- gratia::smooth_estimates(cf_model, covar, unconditional = TRUE) %>%
-    add_confint()
-  frag <- gratia::smooth_estimates(frag_model, covar, unconditional = TRUE) %>% add_confint()
-  data <- bind_rows("1-ha" = frag, "CF" = cf, .id = "habitat")
+  cf <- 
+    gratia::smooth_estimates(cf_model, covar, unconditional = TRUE) %>%
+    add_confint() %>% 
+    add_column(intercept = coef(cf_model)[1])
+  
+  frag <- 
+    gratia::smooth_estimates(frag_model, covar, unconditional = TRUE) %>%
+    add_confint() %>% 
+    add_column(intercept = coef(frag_model)[1])
+  
+  linkinv <- cf_model$family$linkinv
+  
+  data <-
+    bind_rows("1-ha" = frag, "CF" = cf, .id = "habitat") %>% 
+    # add intercept and backtransform to response scale
+    mutate(across(c(est, lower_ci, upper_ci), ~linkinv(.x + intercept)))
+    
   
   p <- 
     ggplot(data, aes_string(x = covar, color = "habitat", linetype = "habitat")) +
