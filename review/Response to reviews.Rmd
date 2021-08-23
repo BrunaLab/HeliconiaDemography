@@ -41,6 +41,10 @@ We edited a sentence in the introduction that cites @estebanOtherSideDroughts202
 > As written in the methods and results, I found the implementation very difficult to follow.
 > A slightly longer summary of the methods would help.
 
+We have added an additional paragraph to the methods describing how the crossbasis smooth was fit using the `mgcv` and `dlnm` packages.
+<!--# add line reference before submiting! --> We are not entirely sure if this is the type of description the reviewer was looking for.
+If the reviewer(s) or editor see this as too detailed for the main text, we are happy to remove it, move it to a supplement, or simply replace it with a reference to the (now available) archived code for the analysis.
+
 ...see also our response to \@ref(R3-3)
 
 > In the results, I was surprised to see only a few p-values and not much else about the models in terms of how they were assessed for goodness of fit.

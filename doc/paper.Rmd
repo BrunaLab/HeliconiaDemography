@@ -233,8 +233,6 @@ DLNMs capture how potentially delayed effects of predictor variables (e.g. SPEI)
 This models a non-linear relationship between predictor and response (e.g. between SPEI and vital rates) and allows the shape of that relationship to vary smoothly over lag time.
 <!--# The shape of the function can be penalized so that it is only as complex as the data supports, thus reducing effective degrees of freedom --> Using the `dlnm` package [@gasparriniDistributedLagLinear2011; @rcoreteamLanguageEnvironmentStatistical2020], we created crossbasis functions with possible lags from 0--36 months.
 We chose 36 months as a maximum lag because prior transplant experiments with *H. acuminata* showed they typically recover from transplant shock in less than 36 months [@brunaExperimentalAssessmentHeliconia2002] so this is a reasonable upper bound for lagged effects of drought.
-
-The crossbasis function was fit to the data in the context of a generalized additive model (GAM) with restricted maximum likelihood using the `mgcv` package [@woodGeneralizedAdditiveModels2017].
 The general form of the vital rate ($y$) models was as follows:
 
 $$
@@ -259,6 +257,16 @@ $${\#eq:eqn2}
 where the crossbasis function, $f \cdot w (d,l)$, is composed of two marginal basis functions: the standard predictor-response function $f(d)$, and the additional lag-response function $w(l)$.
 These marginal functions are combined as a tensor product smooth such that the shape of one marginal function varies smoothly along the other dimension (see chapter 5 of @woodGeneralizedAdditiveModels2017 and @gasparriniPenalizedFrameworkDistributed2017 for more detail). Penalized cubic regression splines were used for both marginal bases of the crossbasis function. We increased *k*, the maximum basis dimension, as necessary to be sure it was adequate. Because of penalization, the maximum basis dimension is generally not important as long it is large enough to allow the smooth to represent the 'true' relationship [@woodGeneralizedAdditiveModels2017].
 <!--# reference supplemental model diagnostics here --> Estimated degrees of freedom (edf) represent the 'true' complexity of the smooth after penalization with edf = 1 being equivalent to a straight line and larger numbers representing more complex curves.
+
+The crossbasis function was fit to the data in the context of a generalized additive model (GAM) with restricted maximum likelihood using the `mgcv` package [@woodGeneralizedAdditiveModels2017].
+The crossbasis smooth was coded as:
+
+    s(spei_history, L, bs = "cb", xt = list(bs = "cr"))
+
+Where `spei_history` is a $n \times m$ matrix with each row ($n$) containing the climate history of a single plant in a year and $m=36$ columns representing the past weather conditions starting at the month of the census and going backwards in time 36 months.
+`L` is an $n \times m$ matrix with columns describing the lag structure, i.e. the integers 0 through 36.
+The spline basis, `"cb"` is provided by the `dlnm` package, and we specified the marginal bases as cubic regression splines with the `xt` argument.
+For the full code used to fit the models, see <!--# insert citation to Zenodo archive -->.
 
 We determined the effects of SPEI on plant growth using plant size in year t+1 as a response variable.
 This was modeled with a scaled t family error distribution because residuals were leptokurtic with a Gaussian error structure.
