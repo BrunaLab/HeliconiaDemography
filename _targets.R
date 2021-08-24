@@ -3,8 +3,8 @@
 options(
   clustermq.scheduler = "ssh",
   clustermq.ssh.host = "ericscott@hpg.rc.ufl.edu", # use your user and host
-  clustermq.ssh.log = "~/cmq_ssh.log", # log for easier debugging
-  clustermq.worker.timeout = 2400
+  clustermq.ssh.log = "~/cmq_ssh.log" # log for easier debugging
+  # clustermq.worker.timeout = 2400
 )
 
 # ## Uncomment these lines to run locally on multiple cores
