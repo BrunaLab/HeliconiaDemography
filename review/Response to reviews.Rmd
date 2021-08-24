@@ -198,7 +198,8 @@ We edited the description to read: "...the height of each plant (i.e. distance f
 > It looks to me that the 1-ha and CF lines are extremely close together and not statistically different.
 > Perhaps you can say that there is a tendency of small plants having a larger growth in fragments while large plants grow slightly more in CF.
 
-... see also our response to \@ref(R1-figs).
+We thank the reviewer for pointing out this mistake.
+We have edited this line to read "Although plants were significantly larger in continuous forest compared to fragments, the effect of size in year t on size in year t+1 is nearly identical in the two habitats." See also our response to \@ref(R1-figs).
 
 ##  {#R2-6}
 
