@@ -52,12 +52,8 @@ tar_plan(
   tar_target(s_1ha, fit_surv(model_data_1ha, k = c(10,10,10))),
   tar_target(g_cf,  fit_growth(model_data_cf, k = c(25,5,15))),
   tar_target(g_1ha, fit_growth(model_data_1ha, k = c(10,5,15))),
-  
-  #### NOTE: The f_cf target takes ~20 hrs to run on a single core on a MacBook
-  #### pro and results in a 816MB object when ind_raneff = TRUE.  Set to FALSE
-  #### for testing
-  tar_target(f_cf, fit_flwr(model_data_cf, k = c(10,15,15), ind_raneff = FALSE)),
-  tar_target(f_1ha, fit_flwr(model_data_1ha, k = c(10,10,18), ind_raneff = TRUE)),
+  tar_target(f_cf, fit_flwr(model_data_cf, k = c(10,15,15))),
+  tar_target(f_1ha, fit_flwr(model_data_1ha, k = c(10,10,18))),
   
   # Validate and summarize results
   ### Check for edf differences due to sample size
