@@ -14,11 +14,11 @@ fit_surv <- function(data, k = c(10, 10, 15)) {
   f <- surv ~ 
     flwr_prev +
     s(log_size_prev, bs = "cr", k = k[1]) +
-    s(plot, bs = "re") + #random intercept
     s(spei_history, L,
       bs = "cb",
       k = k[2:3], 
-      xt = list(bs = "cr"))
+      xt = list(bs = "cr")) +
+    s(plot, bs = "re") #random intercept
   
   bam(f,
       family = binomial,
@@ -46,11 +46,11 @@ fit_growth <- function(data, k = c(10, 10, 15)){
   f <- log_size ~ 
     flwr_prev +
     s(log_size_prev, bs = "cr", k = k[1]) + 
-    s(plot, bs = "re") + #random effect of plot on intercept
     s(spei_history, L,
       bs = "cb",
       k = k[2:3],
-      xt = list(bs = "cr"))
+      xt = list(bs = "cr")) +
+    s(plot, bs = "re") #random effect of plot on intercept
   
   bam(f,
       # family = gaussian(link = "identity"),
@@ -78,11 +78,11 @@ fit_flwr <- function(data, k = c(10, 10, 15), ind_raneff = FALSE) {
   f <- flwr ~ 
     flwr_prev +
     s(log_size_prev, bs = "cr", k = k[1]) +
-    s(plot, bs = "re") +
     s(spei_history, L,
       bs = "cb",
       k = k[2:3], 
-      xt = list(bs = "cr"))
+      xt = list(bs = "cr")) +
+    s(plot, bs = "re")
   
   if (ind_raneff == TRUE) {
     f <- update(f, .~. + s(ha_id_number, bs = "re"))
