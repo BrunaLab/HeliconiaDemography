@@ -136,6 +136,8 @@ We have not clarified that in the figure caption.
 > I was a bit confused when describing the results of Fig 4b (L296-297), for example, the lag is described as the preceding 13 months in the 1 ha fragment, rather than 0 -- 13 months (although now I see maybe the word preceding was meant to indicate this whole range).
 > A little bit more explanation in the legends would help these figures be more intuitive.
 
+We've revised the figure captions to clarify: *"Outlines show combinations of SPEI and lag time that have a significant effect on survival, defined as areas where the 95% confidence interval around the response does not overlap the intercept."*
+
 # Reviewer 2
 
 **General comments**
@@ -431,6 +433,9 @@ We clarified the reference to the figure: "...was preceded by a drop in average 
 > I did have to spend a while looking at them and doing a bit of head scratching to figure out which side the significant values were on, especially for the ones that are along the middle where the difference in color is not large.
 > I wonder if a diverging color scheme with values close to the mean set to white would make this easier to see?
 > Or if you could add some hatching or change the alpha transparency on one side to highlight those regions more clearly.
+
+In the updated version of figure 4 (see response to \@ref(R3-5)), a smaller area of the plot is significantly different from the intercept, and heatmap area far from observed data is grayed out.
+We believe these two things make it easier to see the outlines around significant values, but we are open to trying other modifications of the plot if the reviewers think it is still difficult to interpret in this way.
 
 ##  {#R3-11}
 
