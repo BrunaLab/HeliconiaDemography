@@ -389,13 +389,16 @@ summary_stats
 ```
 
 *Flowering:* The overall proportion of plants that flowered was very low.
-While it was 31% higher in continuous forest than 1-ha fragments (`r summary_stats$flwr_mean[2]` ± `r summary_stats$flwr_sd[2]` vs. `r summary_stats$flwr_mean[1]` ± `r summary_stats$flwr_sd[1]`, respectively), this difference was not statistically significant (84% CIs of model intercepts overlapped).
+Flowering probability was 31% higher in continuous forest than 1-ha fragments (`r summary_stats$flwr_mean[2]` ± `r summary_stats$flwr_sd[2]` vs. `r summary_stats$flwr_mean[1]` ± `r summary_stats$flwr_sd[1]`, respectively); this difference was statistically significant (84% CIs of model intercepts did not overlap).
 The observed disparity was largely due to the fact that flowering is also size-dependent ($p < 0.001$ in both habitats), with the probability of flowering increasing dramatically once plants reached the threshold size of about 148 (i.e., log(size) \> 5 in Figure \@ref(fig:size-plot)c).
-Despite the flowering probability of large plants being greater in fragments than continuous forest, populations in fragments had proportionately fewer plants above the reproductive size threshold (Figure \@ref(fig:size-plot)d).
+Despite the flowering probability of the largest plants being greater in fragments than continuous forest, populations in fragments had proportionately fewer plants above the reproductive size threshold (Figure \@ref(fig:size-plot)d).
 The most striking difference between habitat types coincided with a severe drought in 2003, when the percentage of flowering reproductive-sized plants was 28% in continuous forest vs. 17% in 1-ha fragments (Figure \@ref(fig:eda)c).
 
 ```{r include=FALSE}
-repro_size <- model_data %>% filter(flwr == 1) %>% pull(size) %>% quantile(.1, na.rm = TRUE)
+repro_size <- model_data %>%
+  filter(flwr == 1) %>%
+  pull(size) %>%
+  quantile(.1, na.rm = TRUE)
 
 model_data %>%
   filter(size >= repro_size) %>% 
