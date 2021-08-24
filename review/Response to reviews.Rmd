@@ -44,8 +44,7 @@ We edited a sentence in the introduction that cites @estebanOtherSideDroughts202
 We have added an additional paragraph to the methods describing how the crossbasis smooth was fit using the `mgcv` and `dlnm` packages.
 <!--# add line reference before submiting! --> We are not entirely sure if this is the type of description the reviewer was looking for.
 If the reviewer(s) or editor see this as too detailed for the main text, we are happy to remove it, move it to a supplement, or simply replace it with a reference to the (now available) archived code for the analysis.
-
-...see also our response to \@ref(R3-3)
+See also our response to \@ref(R3-3).
 
 > In the results, I was surprised to see only a few p-values and not much else about the models in terms of how they were assessed for goodness of fit.
 > While I am not at all suggesting that p-values are the solution, I would have liked a little more sense of how well the models fit.
@@ -61,18 +60,32 @@ If the reviewer(s) or editor see this as too detailed for the main text, we are 
 > (I'm thinking of a version of Fig 3 that shows size in t+1, survival, and flowering rather than effect size on the y-axis, with the data and lines showing the shape of the GAMs).
 > This could be an appendix, but it would help with interpreting Figures 3 -- 6.
 
-One way we approached this is by excluding areas of the heatmap that are far from data, equivalent to not drawing regression lines beyond the range of data.
+We changed Fig 3 to be on the response scale as suggested (see our response to \@ref(R1-figs), but showing the raw data made the plots visually cluttered, in our opinion.
+Another way we approached this comment is by excluding areas of the heatmaps in figures 4-6 that are far from observed data, equivalent to not drawing regression lines beyond the range of data.
 We implemented this with the `exclude.too.far()` function in the `mgcv` package.
-Displaying raw data or residuals on the heatmaps was too messy and not informative in a 2d plot.
-\
-\
-... see also our response to \@ref(R1-figs).
+Displaying raw data on the heatmaps was too messy and not informative in a 2d plot.
 
 ##  {#R1-5}
 
 > I suggest that a little more about the limitations of this modeling approach in the discussion would help set the context for interpreting the results and make the paper more robust.
+
+<!--# The following isn't in the main text yet.  Just ideas. -->
+
+The main limitation for detecting lagged effects with any method is data, and the specifics of data limitations have not yet been systematically explored.
+@tellerLinkingDemographyDrivers2016 used simulations to show that 20--25 years of data were required to detect lagged effects using their method, but this cutoff depends on the effect size and the number of climate extremes in the dataset.
+Additionally, there is some evidence that appropriate spatial replication could drastically reduce the number of years of data required, but this is unpublished currently <!--# cite Aldo Compagnoni's ESA talk -->.
+
 > In some ways it seems like the analysis is adding more precision (by using monthly climate data) than the plants perceive and that would be measured in a yearly census.
+
+On the contrary, averaging weather conditions over an entire year likely obscures ways plants perceive environmental variation.
+For example, a drought in the wet season may have a different effect than a drought in the dry season.
+This differential response to season- or month-level climate data is observable in yearly plant census.
+Collapsing finer temporal scale environmental drivers to yearly averages (or a few means of arbitrarily chosen climate windows) is exactly what we avoid with this method.
+
 > While the authors mention this, what about adding something short about when using this type of analysis is critical and when it might not be (should all demographers adopt this approach? Why or why not?)
+
+We have added additional detail to the conclusions recommending that all demographers consider lagged effects when possible in light of recent research (including this study).
+<!--# insert line ref -->
 
 ##  {#R1-6}
 
@@ -184,8 +197,6 @@ We edited the description to read: "...the height of each plant (i.e. distance f
 > Line 277-278: I don't see in Figure 3a that the impact of size on growth was greatest for mid-sized plants in continuous forest.
 > It looks to me that the 1-ha and CF lines are extremely close together and not statistically different.
 > Perhaps you can say that there is a tendency of small plants having a larger growth in fragments while large plants grow slightly more in CF.
-
-<!--# I think this will become more clear if I switch to plotting these as back-transformed. -->
 
 ... see also our response to \@ref(R1-figs).
 

@@ -255,7 +255,10 @@ s_2(d_{i,t}, ..., d_{i,t-24}) = \sum_{l = l_0}^L f \cdot w(d_{i,t-l},l)
 $${\#eq:eqn2}
 
 where the crossbasis function, $f \cdot w (d,l)$, is composed of two marginal basis functions: the standard predictor-response function $f(d)$, and the additional lag-response function $w(l)$.
-These marginal functions are combined as a tensor product smooth such that the shape of one marginal function varies smoothly along the other dimension (see chapter 5 of @woodGeneralizedAdditiveModels2017 and @gasparriniPenalizedFrameworkDistributed2017 for more detail). Penalized cubic regression splines were used for both marginal bases of the crossbasis function. We increased *k*, the maximum basis dimension, as necessary to be sure it was adequate. Because of penalization, the maximum basis dimension is generally not important as long it is large enough to allow the smooth to represent the 'true' relationship [@woodGeneralizedAdditiveModels2017].
+These marginal functions are combined as a tensor product smooth such that the shape of one marginal function varies smoothly along the other dimension (see chapter 5 of @woodGeneralizedAdditiveModels2017 and @gasparriniPenalizedFrameworkDistributed2017 for more detail).
+Penalized cubic regression splines were used for both marginal bases of the crossbasis function.
+We increased *k*, the maximum basis dimension, as necessary to be sure it was adequate.
+Because of penalization, the maximum basis dimension is generally not important as long it is large enough to allow the smooth to represent the 'true' relationship [@woodGeneralizedAdditiveModels2017].
 <!--# reference supplemental model diagnostics here --> Estimated degrees of freedom (edf) represent the 'true' complexity of the smooth after penalization with edf = 1 being equivalent to a straight line and larger numbers representing more complex curves.
 
 The crossbasis function was fit to the data in the context of a generalized additive model (GAM) with restricted maximum likelihood using the `mgcv` package [@woodGeneralizedAdditiveModels2017].
@@ -513,7 +516,10 @@ Also needed are statistical tools that can test for synergistic effects of fragm
 This also limits the ability to include size by climate interactions in a DLNM; although plant responses to both fragmentation and climatic extremes can be size-specific [@brunaDemographicEffectsHabitat2005; @schwartzFragmentationForestStructure2019].
 The ability to identify size-specific lagged responses may be especially complicated given size is rarely measured at the same time scale (e.g. monthly) as climate drivers.
 
-Finally, no analytical approach assessing the potential for demographic lags can compensate for a lack of long-term data [@tenhumbergTimelaggedEffectsWeather2018; @eversLaggedDormantSeason2021].
+Recent research, including our own presented here, shows that lagged effects of climate drivers on demography may be the norm [@eversLaggedDormantSeason2021].
+As such, we suggest that all demographers investigate the possibility of lagged environmental effects, ideally using methods that do not require an *a priori* choice of lag times such as DLNMs, automated algorithms for choosing critical weather windows[@vandepolIdentifyingBestClimatic2016], or Bayesian methods that incorporate "ecological memory" [@ogleQuantifyingEcologicalMemory2015].
+
+Finally, any analytical approach for assessing lagged effects on demography requires long-term data and/or data collected from many sites with independent weather (but similar climate and site conditions) [@tenhumbergTimelaggedEffectsWeather2018; @eversLaggedDormantSeason2021] <!--# add citation to Aldo's ESA talk -->.
 Unfortunately, long-term data monitoring the entire life-cycle of tropical taxa are rare, and those doing so in fragmented landscapes are virtually nonexistent [@brunaCompensatoryResponsesUnderstory2005].
 Without investing in collecting such data, generalizations regarding the demographic consequences of climate change in these species rich and increasingly fragmented habitats will continue to prove elusive.
 More generally, however, researchers need to consider how delayed responses to climate could influence the interpretation of data in studies where the organisms lifespan exceeds the study's duration.
