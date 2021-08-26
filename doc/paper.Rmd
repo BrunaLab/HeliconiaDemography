@@ -513,11 +513,28 @@ Data used in this study are available at the Dryad Digital Repository; R code fo
 # Tables
 
 ```{r}
+withr::with_dir(here::here(), {
+  targets::tar_load(c(
+    intercept_df,
+    results_df
+  ))
+})
+flextable::set_flextable_defaults(font.family = "Cambria", font.size = 10)
+```
+
+```{r}
 ci_cap <- "Model intercepts and their 84% confidence intervals.  Non-overlapping confidence intervals are bolded and can be interpreted as a significant difference in the vital rate between continuous forest and 1 ha fragments."
 ```
 
 ```{r label="intercept-table"}
-tar_read(intercept_table) %>% set_caption(ci_cap, style = "Image Caption")
+flextable(intercept_df) %>% 
+  autofit() %>% 
+  merge_v(j = 1) %>% 
+  valign(j = 1, valign = "top") %>% 
+  align(j = 3, align = "right", part = "all") %>% 
+  bold(j = 3, i = c(3:6)) %>% 
+  fix_border_issues() %>%
+  set_caption(ci_cap, style = "Image Caption")
 ```
 
 <br>
@@ -529,7 +546,20 @@ result_cap <- 'Marginal hypothesis tests for models of survival probability, siz
 <!--# add something about how p-values are appropriate for random effects?  see help files from mgcv for references -->
 
 ```{r label="results-table"}
-tar_read(results_table) %>% set_caption(result_cap, style = "Image Caption")
+flextable(results_df) %>% 
+  merge_v(j = c(2)) %>% 
+  valign(j = c(2), valign = "top") %>% 
+  align(j = c(5, 7), align = "right", part = "all") %>%
+  colformat_double(j = c(3,6), digits = 2) %>% 
+  fix_border_issues() %>% 
+  flextable::compose(j = 3, part = "header",
+                     value = as_paragraph("R", as_sup("2"))) %>% 
+  flextable::compose(j = 4, i = c(4,9,15,20,26,31),
+                     value = as_paragraph("s(log(size", as_sub("t"), "))")) %>%
+  flextable::compose(j = 1, i = 12, 
+                     value = as_paragraph("log(size", as_sub("t+1"), ")")) %>% 
+  autofit() %>% 
+  set_caption(result_cap, style = "Image Caption")
 ```
 
 # Figures

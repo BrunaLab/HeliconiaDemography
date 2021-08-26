@@ -33,18 +33,10 @@ pull_ci <- function(model, conf.level = 0.84, digits = 3, type = c("response", "
 #' @param f_cf flowering in CF model
 #' @param f_1ha flowering in FF model
 #' 
-make_intercept_table <- function(s_cf, s_1ha, g_cf, g_1ha, f_cf, f_1ha) {
-  set_flextable_defaults(font.family = "Cambria", font.size = 10)
+make_intercept_df <- function(s_cf, s_1ha, g_cf, g_1ha, f_cf, f_1ha) {
   expand_grid(`vital rate` = c("survival", "size", "flowering"), 
               habitat = c("CF", "1 ha")) %>% 
-    add_column(intercept = map_chr(list(s_cf, s_1ha, g_cf, g_1ha, f_cf, f_1ha), pull_ci)) %>% 
-    flextable() %>% 
-    autofit() %>% 
-    merge_v(j = 1) %>% 
-    valign(j = 1, valign = "top") %>% 
-    align(j = 3, align = "right", part = "all") %>% 
-    bold(j = 3, i = c(3:6)) %>% 
-    fix_border_issues()
+    add_column(intercept = map_chr(list(s_cf, s_1ha, g_cf, g_1ha, f_cf, f_1ha), pull_ci))
 }
 
 #' Helper function for formatting EDF/DF
@@ -70,7 +62,7 @@ int_or_round <- function(x, digits = 2) {
 }
 
 
-make_results_df <- function(cf_model, ff_model) {
+make_results <- function(cf_model, ff_model) {
   ff <- summary(ff_model)
   ff_param <- ff$pTerms.table
   ff_smooth <- ff$s.table
@@ -108,30 +100,18 @@ make_results_df <- function(cf_model, ff_model) {
   df
 }
 
-make_results_table <- function(s_cf, s_1ha, g_cf, g_1ha, f_cf, f_1ha) {
+make_results_df <- function(s_cf, s_1ha, g_cf, g_1ha, f_cf, f_1ha) {
   cf_list <- list(s_cf, g_cf, f_cf)
   ff_list <- list(s_1ha, g_1ha, f_1ha)
   
   df_list <- 
-    purrr::map2(cf_list, ff_list, ~make_results_df(.x, .y))
+    purrr::map2(cf_list, ff_list, ~make_results(.x, .y))
   
   vrates <- list("survival", "size_next", "flowering")
   
-  df <- map2_df(vrates, df_list, ~bind_rows(tibble(`vital rate` = .x), .y))
-  set_flextable_defaults(font.family = "Cambria", font.size = 10)
-  flextable(df) %>% 
-    merge_v(j = c(2)) %>% 
-    valign(j = c(2), valign = "top") %>% 
-    align(j = c(5, 7), align = "right", part = "all") %>%
-    colformat_double(j = c(3,6), digits = 2) %>% 
-    fix_border_issues() %>% 
-    flextable::compose(j = 3, part = "header", value = as_paragraph("R", as_sup("2"))) %>% 
-    flextable::compose(j = 4, i = c(4,9,15,20,26,31),
-                       value = as_paragraph("s(log(size", as_sub("t"), "))")) %>%
-    flextable::compose(j = 1, i = 12, 
-                       value = as_paragraph("log(size", as_sub("t+1"), ")")) %>% 
-    autofit()
+ map2_df(vrates, df_list, ~bind_rows(tibble(`vital rate` = .x), .y))
 }
+
 
 
 
