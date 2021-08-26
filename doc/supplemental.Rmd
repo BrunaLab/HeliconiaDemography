@@ -10,7 +10,7 @@ output:
       linenumbers: yes
       number_sections: no
       fig_caption: yes
-      # reference_docx: "template.docx" # Insert path for the DOCX file
+      reference_docx: "templates/template.docx" # Insert path for the DOCX file
 linkcolor: blue
 bibliography: references.bib
 csl: "templates/global-change-biology.csl" # Insert path for the bib-style

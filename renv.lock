@@ -424,10 +424,10 @@
     },
     "flextable": {
       "Package": "flextable",
-      "Version": "0.6.5",
+      "Version": "0.6.7",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "789adf172256facbc92cb3ef6ab71ee1"
+      "Hash": "138a70b1f222b7f47f9118eb0c2893f0"
     },
     "forcats": {
       "Package": "forcats",
@@ -821,10 +821,10 @@
     },
     "officer": {
       "Package": "officer",
-      "Version": "0.3.18",
+      "Version": "0.3.19",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "da173b709a249ee1a0d122000c98cf92"
+      "Hash": "7236c48b0c715fb32353295dfdb6dff9"
     },
     "openssl": {
       "Package": "openssl",

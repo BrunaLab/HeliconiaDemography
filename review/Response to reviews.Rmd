@@ -51,7 +51,7 @@ See also our response to \@ref(R3-3).
 > One way to do that might be to show the raw data plotted with the model fits so the reader can see, for example, what kind of functions were drawn.
 > Another might be to present something in table format (the comparable version of a table of AICs or of the results of frequentist tests).
 
-<!--# make a table I guess? -->
+<!--# include plots with raw data?  Would need to be supplemental probably, because messy. -->
 
 ##  {#R1-4}
 
@@ -207,11 +207,16 @@ We have edited this line to read "Although plants were significantly larger in c
 > While this statement is true, there are also years where flowering is lower in CF (e.g., 2002 similar values as following the drought in 2003 in fragments).
 > I feel that the reporting of the results is a bit biased towards concluding that plants do worse in fragments compared to CF, especially since none of the result reported so far are significant.
 
+<!--# need to double-check and revise --> The difference in flowering probability between cointinuous forests and fragments is in fact significant.
+We have added Table 1 that shows the model intercepts ± 84% confidence intervals, which is comparable to testing a main effect of habitat if we were able to include both habitats in the same model.
+
 ##  {#R2-7}
 
 > Delayed effects: Since the authors fit separate models for plants in fragments and in continuous forest to allow for the crossbasis function to differ between habitats we don't know if any of the small differences reported in Fig 4c, 5c and 6c are statistically significant.
 > Hence, I would recommend interpreting the results concerning the difference between fragments and CF with caution.
 > I would like to see at least a justification for why representing the difference figures are meaningful.
+
+<!--# We *could* add outlines to the difference plots indicating areas significantly different from 0, I think?  Gratia has a difference smooth plot--could look into that. -->
 
 ##  {#R2-8}
 
@@ -229,13 +234,12 @@ We have edited this line to read "Although plants were significantly larger in c
 
 > Lines 355-359: The analysis did not consider testing a statistical difference between habitat type (see comment 7), so I think this sentence is misleading (overinterpreting the results).
 
-<!--# need to check the line to figure out the source of confusion, but we did test this with 84%CI overlap -->
+While we could not test for an interaction between habitat and lagged SPEI (i.e. whether the shape of the crossbasis smooth was *significantly* different between habitats), we did test for a main effect of habitat by looking for overlap in 84% confidence intervals of model intercepts (see also response to \@ref(R2-6)).
+However, to reduce confusion here, we have changed "significantly" to "substantially" so as not to imply statistical significance for all of "magnitude, direction and lag time".
 
 ##  {#R2-11}
 
 > Line 370: There are no confidence intervals in Fig 2, so we don't know if the difference is significant.
-
-<!--# this is not a plot that can have CIs.  The line doesn't imply statistical significance either.  Not sure how to respond -->
 
 ##  {#R2-12}
 
