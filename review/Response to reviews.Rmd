@@ -241,6 +241,11 @@ However, to reduce confusion here, we have changed "significantly" to "substanti
 
 > Line 370: There are no confidence intervals in Fig 2, so we don't know if the difference is significant.
 
+Figure 2 shows the survivorship curve of plants tagged in 1998.
+These are exact counts and therefore do not have confidence intervals.
+They do not require statistics to interpret if they are different.
+We think the confusion may have come from the axis scale and label ("P(survived)") which we intended to be interpreted as "proportion of plants surviving" but may have been interpreted as "probability of survival". We have changed the scale to a percentage and the axis label to "% surviving".
+
 ##  {#R2-12}
 
 > Lines 383 ff: see comment 7

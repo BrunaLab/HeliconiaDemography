@@ -116,7 +116,7 @@ plot_eda_surv_cohort <- function(demog) {
     group_by(year, habitat) %>% 
     summarize(n = n()) %>%
     group_by(habitat) %>% 
-    mutate(p_surv = n/first(n),
+    mutate(p_surv = n/first(n)*100,
            date = ymd(paste0(year, "-02-01")),
            yearmonth = yearmonth(date))
   
@@ -130,7 +130,7 @@ plot_eda_surv_cohort <- function(demog) {
       date_minor_breaks = "1 month",
       expand = expansion(mult = 0.04)
     ) +
-    scale_y_continuous("P(survived)") +
+    scale_y_continuous("% surviving") +
     scale_color_manual(values = c("#E66101", "#5E3C99"),
                         aesthetics = c("color", "fill")) +
     guides(col = guide_legend(title = "Habitat"),
