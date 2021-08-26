@@ -114,9 +114,7 @@ tar_plan(
   
   # Tables
   intercept_table = make_intercept_table(s_cf, s_1ha, g_cf, g_1ha, f_cf, f_1ha),
-  s_results = make_results_table(s_cf, s_1ha),
-  g_results = make_results_table(g_cf, g_1ha),
-  f_results = make_results_table(f_cf, f_1ha),
+  results_table = make_results_table(s_cf, s_1ha, g_cf, g_1ha, f_cf, f_1ha),
 
   # Main text
   tar_render(paper, "doc/paper.Rmd", deployment = "main"),

@@ -51,7 +51,9 @@ See also our response to \@ref(R3-3).
 > One way to do that might be to show the raw data plotted with the model fits so the reader can see, for example, what kind of functions were drawn.
 > Another might be to present something in table format (the comparable version of a table of AICs or of the results of frequentist tests).
 
-<!--# include plots with raw data?  Would need to be supplemental probably, because messy. -->
+Because model selection was performed automatically by shrinkage using the `select = TRUE` option in the `gam()` function, we cannot show relative model fits (i.e., we did not perform model selection and can't show dAIC).
+However, we have now included a table with R^2^ values for each model indicating fit as well as estimated degrees of freedom and p-values for each term.
+We have replaced many of the parenthetical p-values reported in the results section with references to this table.
 
 ##  {#R1-4}
 
@@ -236,6 +238,7 @@ We have added Table 1 that shows the model intercepts ± 84% confidence interval
 
 While we could not test for an interaction between habitat and lagged SPEI (i.e. whether the shape of the crossbasis smooth was *significantly* different between habitats), we did test for a main effect of habitat by looking for overlap in 84% confidence intervals of model intercepts (see also response to \@ref(R2-6)).
 However, to reduce confusion here, we have changed "significantly" to "substantially" so as not to imply statistical significance for all of "magnitude, direction and lag time".
+See also our response to \@ref(R2-7).
 
 ##  {#R2-11}
 
@@ -250,6 +253,8 @@ We think the confusion may have come from the axis scale and label ("P(survived)
 
 > Lines 383 ff: see comment 7
 
+<!--# although we didn't test for a significant interaction, they have different areas of significance and different ranges of fitted values. Not sure what else to say about this-->
+
 ##  {#R2-13}
 
 > Line 412: I think it would be very informative if you were to expand on this and explain how exactly your method differs from what others have used to detect delayed effects.
@@ -261,7 +266,7 @@ We think the confusion may have come from the axis scale and label ("P(survived)
 
 > 424-427: I think this is exaggerating since the differences between habitat types is not significant.
 
-...see also our response to \@ref(R2-10)
+<!--# the magnitude *was* greater, interaction not tested -->...see also our response to \@ref(R2-10)
 
 ##  {#R2-15}
 
