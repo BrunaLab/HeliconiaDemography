@@ -245,9 +245,10 @@ $${\#eq:eqn1}
 where $y_{ij}$ is the $i$th plant observation in the $j$th plot $s_1(z_i)$ is a smooth function of plant size (natural log of height $\times$ shoot number), fit using a penalized cubic regression spline, $s_2(\cdot)$ is the crossbasis function in which $d_{i,t}$ is the SPEI value during the census month of an observation (February) and $d_{i,t-l}$ is the SPEI $l$ months prior (see Gasparrini et al. 2017 for details).
 To determine if plot characteristics influenced average vital rates we included a random effect of plot ID on the intercept; this was represented by $a_j$ in @eq:eqn1.
 We modeled a potential cost of reproduction by including flowering in the previous year as covariate, $x_i$, in @eq:eqn1.
-Additionally, in models for flowering probability and size, we included plant ID as a random effect to account for variation among individuals.
-Preliminary analyses showed that this random effect was not significant in the growth models (edf \~ 0, p \> 0.2) and as such it was dropped to improve computational efficiency.
 A random effect of plant ID was not included in survival models since each plant only dies once.
+Individual-level random effects were not included due to computational limitations in fitting random intercepts for all of the nearly 5,000 plants in continuous forest plots.
+Preliminary modeling with data subsets showed that excluding individual-level random effects reduced model R^2^, but did not affect the shape or statistical significance of the smooths.
+
 The crossbasis function, $s_2(\cdot)$ can also be written:
 
 $$
@@ -411,9 +412,6 @@ However, drought at the end of the rainy season one year prior (lags 7--13) sign
 In fragments, recent drought had no significant effect on flowering probability and only drought at two dry seasons prior (lags 16--20) and in the wet season 33--36 months prior increased flowering probability (Figure \@ref(fig:flwr-spei)b).
 The effects of drought on flowering probability were strong in continuous forest compared to 1 ha fragments (Figure \@ref(fig:flwr-spei)c).
 We found no evidence for a cost of reproduction: in both forest and fragments, plants that had flowered in the previous year were on average more likely to be larger and flower again (Table \@ref(tab:results-table)).
-The random effect of plant ID on flowering probability was also significant (Table \@ref(tab:results-table)), indicating significant individual-level variation in flowering probability.
-<!--# individual level random effects need to be removed? -->
-
 Finally, with the exception of the model for survival in 1-ha fragments, the random effect of plot was significant, indicating that vital rates varied among plots (Table \@ref(tab:results-table)).
 
 # Discussion
@@ -455,11 +453,7 @@ In contrast, variation in SPEI had far stronger effects on the probability of fl
 These results should be interpreted with some caution, however, as the relatively low number of plants in fragments that are above the threshold-size for flowering could limit the power to detect delayed effects.
 
 There are several, non-mutually-exclusive explanations for delayed effects of SPEI on demography.
-The first is that the physiological processes underlying vital rates might be initiated long before they are demographically apparent [@eversLaggedDormantSeason2021], and hence be shaped by climatic events at any point in that physiological window.
-For example, the flowering shoots of *Heliconia chartacea* begin to develop 6--10 months prior to the appearance of inflorescences [@crileyYearProductionHigh1994].
-Adverse conditions during the 6 months following initiation, rather than the months when inflorescences are starting to expand, leads to the aborted production of flowering shoots.
-Interestingly, we observed the opposite effect---drought conditions increased the probability of flowering two years later.
-While this could reflect bet-hedging in response to stress [@nihadRelationshipStressFlowering2018], this does not appear to be the case, as growth or survival do not appear to decrease following reproduction (see also [@horvitzDemographicCostReproduction1988]. In fact, flowering in one year is associated with increased reproduction and growth in the next <!--# this may change once individual-level random effects are incorporated -->.
+The first is that the physiological processes underlying vital rates might be initiated long before they are demographically apparent [@eversLaggedDormantSeason2021], and hence be shaped by climatic events at any point in that physiological window. For example, the flowering shoots of *Heliconia chartacea* begin to develop 6--10 months prior to the appearance of inflorescences [@crileyYearProductionHigh1994]. Adverse conditions during the 6 months following initiation, rather than the months when inflorescences are starting to expand, leads to the aborted production of flowering shoots. Interestingly, we observed the opposite effect---drought conditions increased the probability of flowering two years later. While this could reflect bet-hedging in response to stress [@nihadRelationshipStressFlowering2018], this does not appear to be the case, as growth or survival do not appear to decrease following reproduction (see also [@horvitzDemographicCostReproduction1988]. In fact, flowering in one year is associated with increased reproduction and growth in the next.
 
 Demographic responses will also be delayed if abiotic stress causes plants to invest in belowground rhizomes [*sensu* @pumisutapon2012].
 The carbohydrates stored in rhizomes allow *Heliconia* to regenerate aboveground biomass following damage [@rundelStructuralPhysiologicalAdaptation1998] and protect the buds that give rise to new shoots from stressful conditions [@klimesovaBelowgroundPlantFunctional2018].

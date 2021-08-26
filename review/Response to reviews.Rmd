@@ -9,6 +9,17 @@ output:
 bibliography: references.bib
 ---
 
+Cascading effects of increasing `k`:
+
+-   Changed shape of crossbasis functions (edf changes, now not always more complex in fragments)
+
+-   Changes in which lags are significant
+
+-   Individual-level random effects impossible to fit due to computational limitations.
+    Using a sub-sample, checked with and without invididual-level random effects.
+    Changes r2, but very minimal changes to shape of smooths, edfs, and significance of smooths.
+    Dropped from flowering model.
+
 # Reviewer 1
 
 **General comments**
