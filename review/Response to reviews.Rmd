@@ -239,13 +239,14 @@ We have added Table 1 that shows the model intercepts ± 84% confidence interval
 
 > Delayed effects: Since the authors fit separate models for plants in fragments and in continuous forest to allow for the crossbasis function to differ between habitats we don't know if any of the small differences reported in Fig 4c, 5c and 6c are statistically significant.
 > Hence, I would recommend interpreting the results concerning the difference between fragments and CF with caution.
-> I would like to see at least a justification for why representing the difference figures are meaningful.
 
 Because we were not able to test for a significant interaction between habitat and lagged SPEI, we did not intend to suggest that our results implied statistically significant differences in the shape of the crossbasis functions between fragments and continuous forest.
 We have made changes throughout the manuscript that clarify this and remove some of the stronger declarative language about differences in the effects of SPEI between continuous forest and forest fragments.
-<!--# still need to do this -->
 
-##  {#R2-8}
+> I would like to see at least a justification for why representing the difference figures are meaningful.
+
+We believe the difference figures (panel c in figure 4,5, and 6) are helpful in showing combinations of SPEI and lag time where the marginal effects on vital rates are most divergent between continuous forest and fragments.
+For example, at a lag of 0, wet conditions have a positive effect on survival in continuous forest and a negative effect on survival in fragments, leading to a large predicted difference in survival between habitats under those conditions.
 
 > Line 301-301: This is somewhat misleading because as you describe later SPEI at time lags 15-20 and 32-36 are significant also.
 > I wonder if it might be better to describe the entire Fig 4b and then the entire Fig 4a.
@@ -281,7 +282,7 @@ We think the confusion may have come from the axis scale and label ("P(survived)
 
 > Lines 383 ff: see comment 7
 
-<!--# although we didn't test for a significant interaction, they have different areas of significance and different ranges of fitted values. Not sure what else to say about this--> See also our response to \@ref(R2-7).
+See our response to \@ref(R2-7).
 
 ##  {#R2-13}
 
@@ -294,9 +295,7 @@ We think the confusion may have come from the axis scale and label ("P(survived)
 
 > 424-427: I think this is exaggerating since the differences between habitat types is not significant.
 
-<!--# the magnitude *was* greater, interaction not tested -->
-
-...see also our response to \@ref(R2-7)
+See our response to \@ref(R2-7).
 
 ##  {#R2-15}
 
@@ -345,7 +344,7 @@ see our response to \@ref(R1-8).
 
 > Lines 484-486: I don't think this study strongly support that plants do worse in fragments than CF.
 
-see also our response to \@ref(R2-7).
+See our response to \@ref(R2-7).
 
 ##  {#R2-23}
 

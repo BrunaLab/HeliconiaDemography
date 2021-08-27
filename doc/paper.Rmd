@@ -416,8 +416,8 @@ Finally, with the exception of the model for survival in 1-ha fragments, the ran
 
 Understanding how landscape structure and abiotic conditions act to influence population dynamics is central to many conceptual frameworks for studying and conserving fragmented landscapes [@didhamRethinkingConceptualFoundations2012; @driscollConceptualDomainMatrix2013].
 Our results support the emerging consensus that the effects of climatic extremes on demographic vital rates can be delayed for months or even years [@tenhumbergTimelaggedEffectsWeather2018; @tellerLinkingDemographyDrivers2016; @eversLaggedDormantSeason2021].
-We also found that the delayed responses of populations in fragments can differ substantially in magnitude, direction, and lag time from those of populations in continuous forest.
-This suggests that the hypothesized synergies between climate and fragmentation on population dynamics [@opdamClimateChangeMeets2004; @selwoodEffectsClimateChange2015; @laurancePositiveFeedbacksForest2001] are likely to be pervasive, but also far more complex than previously thought.
+We also found different magnitudes, directions, and lag times of climate effects in fragments and continuous forests.
+This suggests that the hypothesized synergies between climate and fragmentation on population dynamics [@opdamClimateChangeMeets2004; @selwoodEffectsClimateChange2015; @laurancePositiveFeedbacksForest2001] may be important in this system in a way far more complex than previously thought.
 
 ## Temporal variation in demographic responses to forest fragmentation
 
@@ -429,7 +429,7 @@ Similarly, conclusions regarding the effects of fragmentation on flowering---whi
 This could lead to erroneous extrapolations regarding the effects of fragmentation on reproductive mutualists or population genetic structure [@uriarteEffectsForestFragmentation2010; @uriarteDisentanglingDriversReduced2011; @cortesLowPlantDensity2013].
 Conclusions based on short-term observations of temporally variable vital rates could lead to conservation and management practices that are ineffective or even counterproductive, especially when when failing to consider how the consequences of this variation might be modulated by organismal life history [@morrisLongevityCanBuffer2008].
 
-It is important to emphasize, however, that the overall effects of SPEI on survival and growth are more severe in fragments than continuous forest (Figures \@ref(fig:surv-spei), \@ref(fig:growth-spei)). Furthermore, the magnitude of plant responses to climatic extremes is also greater in habitat fragments---extreme drought in dry seasons and extreme precipitation in during rainy seasons are most detrimental to growth and survival in fragments. While intact forest and its canopy buffer populations from climatic extremes, populations in fragments---especially near edges with high contrast matrix---likely lack this protection [@didhamEdgeStructureDetermines1999; @ewersFragmentationImpairsMicroclimate2013]. We suggest it is these climate extremes, rather than trends in average temperature, precipitation, or SPEI [@lauranceApparentEnvironmentalSynergism2014], that that are the causal mechanism underlying reduced plant growth and survival in forest fragments.
+It is important to emphasize, however, that the range of the estimated response to SPEI for survival and growth was greater in fragments compared with continuous forest (Figures \@ref(fig:surv-spei), \@ref(fig:growth-spei)). This suggests that extremes in SPEI may be more detrimental in forest fragments compared with continuous forest. While intact forest and its canopy buffer populations from climatic extremes, populations in fragments---especially near edges with high contrast matrix---likely lack this protection [@didhamEdgeStructureDetermines1999; @ewersFragmentationImpairsMicroclimate2013]. We suggest it is these climate extremes, rather than trends in average temperature, precipitation, or SPEI [@lauranceApparentEnvironmentalSynergism2014], that that are the causal mechanism underlying the observed reduced plant growth and survival in forest fragments.
 
 ## Delayed effects of climate on demographic vital rates
 
@@ -443,11 +443,10 @@ To address this, researchers have begun to use a number of statistical methods t
 Our expansion of this approach, which offers an unbiased way of identifying these delayed effects without overfitting (but see @pierreCriticalWindowsMethod2020 and @ogleQuantifyingEcologicalMemory2015 for alternative methods) yielded results consistent with this emerging literature---that the effects of precipitation extremes on the demography of *Heliconia acuminata* could be delayed for up to 3 growing seasons.
 
 While it appears that delayed effects of climate on demographic vital rates may be ubiquitous [@eversLaggedDormantSeason2021], the extent to which they vary spatially or with habitat remains an open question.
-Our results clearly indicate that they can, with habitat-specific differences in how environmental conditions influenced future vital rates.
-For example, extreme values of SPEI---both positive (unusually high precipitation) and negative (drought conditions)---led to declines in the probability of individual survival in both habitat types.
-However, the magnitude of these declines was far greater in forest fragments.
-Similarly, the detrimental effects of extremes in SPEI on growth rates were also more pronounced in fragments.
-In contrast, variation in SPEI had far stronger effects on the probability of flowering in continuous forest than fragments.
+Our results suggest that they may, with habitat-specific differences in how environmental conditions influenced future vital rates.
+For example, extreme values of SPEI---both positive (unusually high precipitation) and negative (drought conditions)---led to declines in the probability of individual survival in forest fragments while extreme wet conditions significantly increased survival in continuous forest.
+Similarly, the marginal effects of SPEI on plant size were greater in fragments, suggesting a more pronounced effect of extreme climates in fragments.
+In contrast, variation in SPEI corresponded to a greater range of flowering probabilities in continuous forest than fragments.
 These results should be interpreted with some caution, however, as the relatively low number of plants in fragments that are above the threshold-size for flowering could limit the power to detect delayed effects.
 
 There are several, non-mutually-exclusive explanations for delayed effects of SPEI on demography.
@@ -488,7 +487,8 @@ The ability to identify size-specific lagged responses may be especially complic
 Recent research, including our own presented here, shows that lagged effects of climate drivers on demography may be the norm [@eversLaggedDormantSeason2021].
 As such, we suggest that all demographers investigate the possibility of lagged environmental effects, ideally using methods that do not require an *a priori* choice of lag times such as DLNMs, automated algorithms for choosing critical weather windows[@vandepolIdentifyingBestClimatic2016], or Bayesian methods that incorporate "ecological memory" [@ogleQuantifyingEcologicalMemory2015].
 
-Finally, any analytical approach for assessing lagged effects on demography requires long-term data and/or data collected from many sites with independent weather (but similar climate and site conditions) [@tenhumbergTimelaggedEffectsWeather2018; @eversLaggedDormantSeason2021] <!--# add citation to Aldo's ESA talk -->. <!--# possibly good place to mention limitations of interactions -->Unfortunately, long-term data monitoring the entire life-cycle of tropical taxa are rare, and those doing so in fragmented landscapes are virtually nonexistent [@brunaCompensatoryResponsesUnderstory2005].
+Finally, any analytical approach for assessing lagged effects on demography requires long-term data and/or data collected from many sites with independent weather (but similar climate and site conditions) [@tenhumbergTimelaggedEffectsWeather2018; @eversLaggedDormantSeason2021] <!--# add citation to Aldo's ESA talk -->.
+<!--# possibly good place to mention limitations of interactions -->Unfortunately, long-term data monitoring the entire life-cycle of tropical taxa are rare, and those doing so in fragmented landscapes are virtually nonexistent [@brunaCompensatoryResponsesUnderstory2005].
 Without investing in collecting such data, generalizations regarding the demographic consequences of climate change in these species rich and increasingly fragmented habitats will continue to prove elusive.
 More generally, however, researchers need to consider how delayed responses to climate could influence the interpretation of data in studies where the organisms lifespan exceeds the study's duration.
 
