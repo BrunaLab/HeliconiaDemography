@@ -74,18 +74,24 @@ make_results <- function(cf_model, ff_model) {
   cf_r2 <- cf$r.sq
   
   ff_table <- bind_rows(
-    ff_param %>% as_tibble(rownames = "term") %>% rename(`(e)df` = df),
-    ff_smooth %>% as_tibble(rownames = "term") %>%  select(- Ref.df) %>% rename(`(e)df` = edf)
-  ) 
-  ff_table <- bind_rows(tibble(R2 = ff_r2), ff_table)
+    ff_param %>% as_tibble(rownames = "term") %>% 
+      rename(`(e)df` = df),
+    ff_smooth %>% as_tibble(rownames = "term") %>%
+      dplyr::select(- Ref.df) %>% 
+      rename(`(e)df` = edf)
+  ) %>% 
+    add_column(R2 = ff_r2, .before = "term")
 
   
   cf_table <- bind_rows(
-    cf_param %>% as_tibble(rownames = "term") %>% rename(`(e)df` = df),
-    cf_smooth %>% as_tibble(rownames = "term") %>%  select(- Ref.df) %>% rename(`(e)df` = edf)
-  ) 
-  cf_table <- bind_rows(tibble(R2 = cf_r2), cf_table)
-  
+    cf_param %>% as_tibble(rownames = "term") %>%
+      rename(`(e)df` = df),
+    cf_smooth %>% as_tibble(rownames = "term") %>% 
+      dplyr::select(- Ref.df) %>%
+      rename(`(e)df` = edf)
+  ) %>% 
+    add_column(R2 = cf_r2, .before = "term")
+
   df <- 
     bind_rows("CF" = cf_table, "1 ha" = ff_table, .id = "habitat") %>% 
     mutate(`p-value` = scales::pvalue(`p-value`)) %>% 
@@ -104,12 +110,9 @@ make_results_df <- function(s_cf, s_1ha, g_cf, g_1ha, f_cf, f_1ha) {
   cf_list <- list(s_cf, g_cf, f_cf)
   ff_list <- list(s_1ha, g_1ha, f_1ha)
   
-  df_list <- 
-    purrr::map2(cf_list, ff_list, ~make_results(.x, .y))
-  
-  vrates <- list("survival", "size_next", "flowering")
-  
- map2_df(vrates, df_list, ~bind_rows(tibble(`vital rate` = .x), .y))
+  purrr::map2(cf_list, ff_list, ~make_results(.x, .y)) %>% 
+    set_names(c("survival", "size_next", "flowering")) %>% 
+    bind_rows(.id = "vital rate")
 }
 
 

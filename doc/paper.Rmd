@@ -542,16 +542,16 @@ result_cap <- 'Marginal hypothesis tests for models of survival probability, siz
 
 ```{r label="results-table"}
 flextable(results_df) %>% 
-  merge_v(j = c(2)) %>% 
-  valign(j = c(2), valign = "top") %>% 
+  merge_v(j = c(1,2,3)) %>% 
+  valign(j = c(1,2,3), valign = "top") %>% 
   align(j = c(5, 7), align = "right", part = "all") %>%
   colformat_double(j = c(3,6), digits = 2) %>% 
   fix_border_issues() %>% 
   flextable::compose(j = 3, part = "header",
-                     value = as_paragraph("R", as_sup("2"))) %>% 
-  flextable::compose(j = 4, i = c(4,9,15,20,26,31),
+                     value = as_paragraph("model R", as_sup("2"))) %>% 
+  flextable::compose(j = 4, i = c(2,6,10,14,18,22),
                      value = as_paragraph("s(log(size", as_sub("t"), "))")) %>%
-  flextable::compose(j = 1, i = 12, 
+  flextable::compose(j = 1, i = 9, 
                      value = as_paragraph("log(size", as_sub("t+1"), ")")) %>% 
   autofit() %>% 
   set_caption(result_cap, style = "Image Caption")
