@@ -20,6 +20,14 @@ Cascading effects of increasing `k`:
     Changes r2, but very minimal changes to shape of smooths, edfs, and significance of smooths.
     Dropped from flowering model.
 
+For coverletter:
+
+we identified \_\_\_ main suggestions
+
+1.  more in depth explanation of model (both technical and for broad audience)
+2.  something about changing declaritive statements about habitat:SPEI,Lag interaction. Added caveats about limitations of DLNM approach. Expanded on this in future directions to draw attention to the importance of including interactions for demography.
+3.  R\_ suggested increasing k, important suggestion. While it didn't alter the conclusions, it did require considerable work and further evaluation of results. new appendix, review rewrite
+
 # Reviewer 1
 
 **General comments**
@@ -90,7 +98,7 @@ Displaying raw data on the heatmaps was too messy and not informative in a 2d pl
 
 > In some ways it seems like the analysis is adding more precision (by using monthly climate data) than the plants perceive and that would be measured in a yearly census.
 
-On the contrary, averaging weather conditions over an entire year likely obscures ways plants perceive environmental variation.
+Counter-intuitively, averaging weather conditions over an entire year may obscure ways plants perceive environmental variation.
 For example, a drought in the wet season may have a different effect than a drought in the dry season.
 This differential response to season- or month-level climate data is observable in yearly plant census.
 Collapsing finer temporal scale environmental drivers to yearly averages (or a few means of arbitrarily chosen climate windows) is exactly what we avoid with this method.
@@ -141,7 +149,7 @@ We edited this sentence to read: "SPEI had less of an effect on flowering probab
 > Fig 2 -- This was only cited in the discussion as far as I can tell.
 > Bring it back into the results?
 
-... see also response to \@ref(R3-8).
+We have added a sentence about this figure in the results.
 
 > Fig 3A -- The results mention something about survival approaching 1 -- I wasn't sure if that was supposed to be visible here.
 
@@ -233,7 +241,9 @@ We have added Table 1 that shows the model intercepts ± 84% confidence interval
 > Hence, I would recommend interpreting the results concerning the difference between fragments and CF with caution.
 > I would like to see at least a justification for why representing the difference figures are meaningful.
 
-<!--# We *could* add outlines to the difference plots indicating areas significantly different from 0, I think?  Gratia has a difference smooth plot--could look into that. -->
+Because we were not able to test for a significant interaction between habitat and lagged SPEI, we did not intend to suggest that our results implied statistically significant differences in the shape of the crossbasis functions between fragments and continuous forest.
+We have made changes throughout the manuscript that clarify this and remove some of the stronger declarative language about differences in the effects of SPEI between continuous forest and forest fragments.
+<!--# still need to do this -->
 
 ##  {#R2-8}
 
@@ -246,6 +256,9 @@ We have added Table 1 that shows the model intercepts ± 84% confidence interval
 ##  {#R2-9}
 
 > Line 323-325: I don't know why the growth of plants in fragments would affect the size of plant in CF.
+
+This sentence meant to describe the difference between CF and fragments, not the absolute size in fragments.
+It has been re-worded to clarify.
 
 ##  {#R2-10}
 
@@ -268,7 +281,7 @@ We think the confusion may have come from the axis scale and label ("P(survived)
 
 > Lines 383 ff: see comment 7
 
-<!--# although we didn't test for a significant interaction, they have different areas of significance and different ranges of fitted values. Not sure what else to say about this-->
+<!--# although we didn't test for a significant interaction, they have different areas of significance and different ranges of fitted values. Not sure what else to say about this--> See also our response to \@ref(R2-7).
 
 ##  {#R2-13}
 
@@ -283,7 +296,7 @@ We think the confusion may have come from the axis scale and label ("P(survived)
 
 <!--# the magnitude *was* greater, interaction not tested -->
 
-...see also our response to \@ref(R2-10)
+...see also our response to \@ref(R2-7)
 
 ##  {#R2-15}
 
@@ -332,13 +345,15 @@ see our response to \@ref(R1-8).
 
 > Lines 484-486: I don't think this study strongly support that plants do worse in fragments than CF.
 
+see also our response to \@ref(R2-7).
+
 ##  {#R2-23}
 
 > Line 499: This is confusing.
 > If you measure size every year than you calculate growth as the change in size from one year to the next, don't you?
 
 That's correct.
-This line meant to point out that size is usually measured in yearly censuses while weather data can be more easily collected at monthly or daily timescales.
+This sentence meant to point out that size is usually measured in yearly censuses while weather data can be more easily collected at monthly or daily timescales.
 We've edited this sentence to read: "The ability to identify size-specific lagged responses may be especially complicated given size is rarely measured at the same time scale (e.g. monthly) as climate drivers."
 
 # Reviewer 3
@@ -460,7 +475,7 @@ We clarified the reference to the figure: "...was preceded by a drop in average 
 > Figure 2 isn't referenced in this section, not used until discussion.
 > Maybe move to supplement or add a sentence in results?
 
-...see also our response to \@ref(R1-figs)
+See our response to \@ref(R1-figs).
 
 ##  {#R3-9}
 

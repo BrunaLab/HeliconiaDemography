@@ -328,6 +328,7 @@ spei_2005
 *Survival:* Across all plots, the proportion of plants surviving was lowest in the 2003--2004 transition year (93% survival in both continuous forest and forest fragments).
 This coincided with droughts in both the 2003 and 2004 rainy seasons (Figure \@ref(fig:eda)b,d) and was preceded by a drop in average plant size in the 2002--2003 transition year (i.e. negative growth in Figure \@ref(fig:eda)a).
 There was no significant difference in survival between continuous forest and 1 ha fragments (Table \@ref(tab:intercept-table)).
+Although differences in survival probability are small and not statistically significant, these slight differences can be seen to compound over time in the survivorship of plants labeled in the first year of the surveys (Figure \@ref(fig:surv-curve)).
 Survival in both habitats was significantly affected by size in the previous year (Table \@ref(tab:results-table)) with larger plants having much greater survival probabilities (Figure \@ref(fig:size-plot)b).
 The survival probability of large plants approached 1 in both habitat types, but the smallest plants had higher survival in 1 ha fragments (although 95% confidence intervals overlap at all sizes).
 
@@ -394,7 +395,7 @@ Finally, plants in both habitat types showed an increase in survival probability
 It should be noted, however, that only the first transition year of census data (1998--1999) met these conditions.
 We compared the effects of SPEI history in continuous forest and fragments by subtracting the fitted values in Figure \@ref(fig:surv-spei)b from Figure \@ref(fig:surv-spei)a to produce Figure \@ref(fig:surv-spei)c.
 This shows that in average conditions (SPEI = 0), there is little difference in survival probability between continuous forest and forest fragments (Figure \@ref(fig:surv-spei)c).
-However, under extreme conditions, survival probability is higher in continuous forest by up to 0.042.
+However, under extreme conditions, survival probability is higher in continuous forest compared to fragments by up to 0.042.
 
 *Size:* The effects of drought history on trends in plant size were generally similar for continuous forest and fragments.
 Under all conditions, plant size is greater in continuous forest (Figure \@ref(fig:growth-spei)c).
