@@ -57,8 +57,7 @@ make_size_plot <- function(s, g, f, model_data) {
     s /
     f & 
     theme(axis.title.x = element_blank(),
-          axis.text.x = element_blank(),
-          axis.ticks.x = element_blank())
+          axis.text.x = element_blank())
   
   top /
     d +
