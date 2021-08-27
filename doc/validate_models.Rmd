@@ -21,11 +21,6 @@ library(arm)
 source(here::here("R", "utils.R"))
 ```
 
-**TODO**
-
-- check that # of knots are adequate
-- check diagnostics for individual-level random effects.  Doesn't look good, but not sure how to interpret or what to do. 
-
 
 # Survival
 
@@ -57,33 +52,12 @@ binnedplot(fitted(s_1ha), residuals(s_1ha, type = "response"))
 k.check(s_1ha)
 ```
 
-Basis dimension checking with `gam.check()` doesn't appear to work for `dlnm` crossbasis smooths. Instead I'll use a method described in the help file `?choose.k` to check for adequate knots.  Unfortunately, `bs = "cs"` doesn't work with `dlnm`, so I'll use `select = TRUE` instead to reduce chance of overfitting.
+`k` is adequate for `log_size_prev`. Unfortunately `k.check()` doesn't work for data with matrices, so I'll use an alternative approach detailed in `?mgcv::choose.k` for the crossbasis smooth.  Briefly, it involves looking for pattern in residuals by extracting residuals and fitting a GAM to them with the smooth of interest with an increased value for `k`.  If there is no unexplained pattern in residuals, that smooth should have an edf near zero.
 
 ```{r eval=TRUE}
 check_res_edf(s_1ha)
 ```
-
-The crossbasis smooth possibly needs more knots.
-
-```{r}
-# plot_lag_slice(s_1ha, "spei_history", lag =  0) + labs(title = "surv, 1ha")
-```
-
-Here you can see how the CIs hardly overlap 0, but it could be an artifact of the line not being allowed to be wiggly enough.
-
-### Summary
-
-```{r eval=TRUE}
-summary(s_1ha)
-```
-
-
-```{r eval=TRUE}
-draw(s_1ha)
-```
-
-
-
+Adequate k for crossbasis.
 
 ## Continuous Forest
 
@@ -103,41 +77,33 @@ binnedplot(fitted(s_cf), residuals(s_cf, type = "response"))
 
 ### Basis dimensions
 
-
 ```{r}
 k.check(s_cf)
 ```
 
+Adequate knots for `log_size_prev`
+
 ```{r}
-# looking for near zero edf
 check_res_edf(s_cf)
 ```
-
-### Summary 
-
-```{r}
-summary(s_cf)
-```
-
-```{r}
-draw(s_cf)
-```
+Adequate knots for crossbasis smooth.
 
 ## Effect of sample size
 
-Here I use a random sub-sample to check that differences between continuous forest and fragments are not purely due to sample size differences, particularly differences in the complexity of the crossbasis smooth.
+Here I use a random sub-sample to check that differences between continuous forest and fragments are not purely due to sample size differences, particularly differences in the complexity and shape of the crossbasis smooth.
 
 ```{r}
-summary(s_1ha)$edf[3]
-summary(s_cf)$edf[3]
-summary(s_cf_sub)$edf[3]
+summary(s_1ha)$edf[2]
+summary(s_cf)$edf[2]
+summary(s_cf_sub)$edf[2]
 ```
 
+The crossbasis is much smoother
 
 ```{r}
-draw(s_cf_sub)
+draw(s_cf, select = "s(spei_history,L)", n_contour = 5)
+draw(s_cf_sub, select = "s(spei_history,L)", n_contour = 5)
 ```
-Surface still looks different in a similar way though.
 
 ```{r echo=FALSE}
 rm(s_1ha, s_cf, s_cf_sub)
@@ -165,19 +131,13 @@ appraise(g_1ha)
 k.check(g_1ha)
 ```
 
+Adequate k for `log_size_prev`.
+
 ```{r}
 check_res_edf(g_1ha)
 ```
 
-### Summary
-
-```{r}
-summary(g_1ha)
-```
-
-```{r}
-draw(g_1ha)
-```
+Adequate k for crossbasis.
 
 ## Continuous Forest
 
@@ -193,41 +153,32 @@ gratia::appraise(g_cf)
 k.check(g_cf)
 ```
 
+Adequate k for `log_size_prev`
+
 ```{r}
 check_res_edf(g_cf)
 ```
 
-```{r}
-# plot_lag_slice(g_1ha, "spei_history", lag = 33)
-```
+Adequate k for crossbasis smooth.
 
-hmm... CIs are **super** narrow here, but effect size is **tiny**
-
-### Summary
-
-```{r}
-summary(g_cf)
-```
-
-```{r}
-draw(g_cf)
-```
-
-## Continuous Forest subsample
+## Effect of sample size
 
 To check that differences are not purely due to sample size differences, particularly that lower edf in continuous forests is due to higher sample size.
 
 ```{r}
-summary(g_1ha)$edf[3]
-summary(g_cf)$edf[3]
-summary(g_cf_sub)$edf[3]
+summary(g_1ha)$edf[2]
+summary(g_cf)$edf[2]
+summary(g_cf_sub)$edf[2]
 ```
-edf of subsample is similar to full dataset, despite differences in sample size.
+
+edf is similar for the sub-sample
 
 ```{r}
-draw(g_cf_sub)
+draw(g_cf, select = "s(spei_history,L)", n_contour = 5)
+draw(g_cf_sub, select = "s(spei_history,L)", n_contour = 5)
 ```
-Crossbasis surface looks nearly identical.
+
+The shape of the smooth is also similar.
 
 ```{r echo=FALSE}
 rm(g_1ha, g_cf, g_cf_sub)
@@ -262,21 +213,14 @@ binnedplot(fitted(f_1ha), residuals(f_1ha, type = "response"))
 k.check(f_1ha)
 ```
 
+Adequate k for `log_size_prev`
+
 ```{r}
 # looking for near zero edf
 check_res_edf(f_1ha)
 ```
 
-### Summary
-
-```{r}
-summary(f_1ha)
-```
-
-```{r}
-draw(f_1ha)
-```
-
+Adequate k for crossbasis smooth.
 
 ## Continuous Forest
 
@@ -299,36 +243,33 @@ binnedplot(fitted(f_cf), residuals(f_cf, type = "response"))
 k.check(f_cf)
 ```
 
+Adequate k for `log_size_prev`
+
 ```{r}
 # looking for near zero edf
 check_res_edf(f_cf)
 ```
+Adequate k for crossbasis.
 
-### Summary
+## Effect of sample size
 
-```{r}
-summary(f_cf)
-```
-
-```{r}
-draw(f_cf)
-```
-
-## Continuous Forest subsample
-
-To check that differences are not purely due to sample size differences, particularly that lower edf in continuous forests is due to higher sample size.  For flowering, edf is actually slightly higher in CF with a larger sample size.  With subsample, edf are more similar.
+To check that differences are not purely due to sample size differences, particularly that lower edf in continuous forests is due to higher sample size.
 
 ```{r}
-summary(f_1ha)$edf[3]
-summary(f_cf)$edf[3]
-summary(f_cf_sub)$edf[3]
+summary(f_1ha)$edf[2]
+summary(f_cf)$edf[2]
+summary(f_cf_sub)$edf[2]
 ```
+
+Similar edf for sub-sample
 
 ```{r}
-draw(f_cf_sub)
+draw(f_cf, select = "s(spei_history,L)", n_contour = 5)
+draw(f_cf_sub, select = "s(spei_history,L)", n_contour = 5)
 ```
-Crossbasis surface looks extremely similar.
 
+
+Similar, but essentially linear in SPEI dimension.
 
 # Reproducibility
 
