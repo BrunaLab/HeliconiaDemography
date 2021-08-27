@@ -84,9 +84,9 @@ Displaying raw data on the heatmaps was too messy and not informative in a 2d pl
 
 <!--# The following isn't in the main text yet.  Just ideas. -->
 
-The main limitation for detecting lagged effects with any method is data, and the specifics of data limitations have not yet been systematically explored.
-@tellerLinkingDemographyDrivers2016 used simulations to show that 20--25 years of data were required to detect lagged effects using their method, but this cutoff depends on the effect size and the number of climate extremes in the dataset.
-Additionally, there is some evidence that appropriate spatial replication could drastically reduce the number of years of data required, but this is unpublished currently <!--# cite Aldo Compagnoni's ESA talk -->.
+(Something I'm considering adding to the discussion):
+
+"The main limitation for detecting lagged effects with any method is data, and the specifics of data limitations have not yet been systematically explored. @tellerLinkingDemographyDrivers2016 used simulations to show that 20--25 years of data were required to detect lagged effects using their method, but this cutoff depends on the effect size and the number of climate extremes in the dataset. Additionally, there is some evidence that appropriate spatial replication could drastically reduce the number of years of data required (Aldo Compagnoni's ESA talk)."
 
 > In some ways it seems like the analysis is adding more precision (by using monthly climate data) than the plants perceive and that would be measured in a yearly census.
 
@@ -140,6 +140,8 @@ We edited this sentence to read: "SPEI had less of an effect on flowering probab
 
 > Fig 2 -- This was only cited in the discussion as far as I can tell.
 > Bring it back into the results?
+
+... see also response to \@ref(R3-8).
 
 > Fig 3A -- The results mention something about survival approaching 1 -- I wasn't sure if that was supposed to be visible here.
 
@@ -220,7 +222,9 @@ We have edited this line to read "Although plants were significantly larger in c
 > While this statement is true, there are also years where flowering is lower in CF (e.g., 2002 similar values as following the drought in 2003 in fragments).
 > I feel that the reporting of the results is a bit biased towards concluding that plants do worse in fragments compared to CF, especially since none of the result reported so far are significant.
 
-<!--# need to double-check and revise --> The difference in flowering probability between cointinuous forests and fragments is in fact significant.
+<!--# need to double-check and revise -->
+
+The difference in flowering probability between cointinuous forests and fragments is in fact significant.
 We have added Table 1 that shows the model intercepts ± 84% confidence intervals, which is comparable to testing a main effect of habitat if we were able to include both habitats in the same model.
 
 ##  {#R2-7}
@@ -277,7 +281,9 @@ We think the confusion may have come from the axis scale and label ("P(survived)
 
 > 424-427: I think this is exaggerating since the differences between habitat types is not significant.
 
-<!--# the magnitude *was* greater, interaction not tested -->...see also our response to \@ref(R2-10)
+<!--# the magnitude *was* greater, interaction not tested -->
+
+...see also our response to \@ref(R2-10)
 
 ##  {#R2-15}
 

@@ -30,6 +30,7 @@
 *.pdf
 !doc/templates/template.docx
 !doc/paper.docx
+!review/*.docx
 *.nb.html
 _targets/
 .DS_Store
