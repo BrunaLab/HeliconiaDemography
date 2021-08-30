@@ -14,13 +14,14 @@ options(
 
 ## Load your packages, e.g. library(targets).
 source("./packages.R")
+source("./conflicts.R")
 
 ## Load your R files
 lapply(list.files("./R", full.names = TRUE), source) 
 
 ## Set options
 options(tidyverse.quiet = TRUE)
-# tar_option_set(deployment = "main") #run targets locally by default
+tar_option_set()
 
 ## tar_plan supports drake-style targets and also tar_target()
 tar_plan(
@@ -28,7 +29,7 @@ tar_plan(
   maxlag = 36,
   tar_target(xa_file, here("data", "xavier_daily_0.25x0.25.csv"), format = "file"),
   xa_raw  = read_csv(xa_file),
-  xa_spei = calc_spei_xa(xa_raw),
+  xa_spei = calc_spei_xa(xa_raw, scale = 3),
   xa_lag  = lag_spei(xa_spei, maxlag),
   
   # Prep demographic data
@@ -45,7 +46,7 @@ tar_plan(
   tar_render(validate_data, "doc/validate_data.Rmd", deployment = "main"),
   
   # Select number of knots for GAMs
-  tar_render(knot_choice, "doc/knot_choice.Rmd", deployment = "main"),
+  # tar_render(knot_choice, "doc/knot_choice.Rmd", deployment = "main"),
   
   # Fit demographic models
   tar_target(s_cf,  fit_surv(model_data_cf, k = c(10,15,15))),
