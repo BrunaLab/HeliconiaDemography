@@ -112,11 +112,7 @@ The complex delayed effects of climate and habitat fragmentation in our study po
 
 # Introduction
 
-The expansion of agriculture and other human activities is a primary driver of deforestation in the tropics [@haddadHabitatFragmentationIts2015; @alroy2017].
-It also results in landscapes where the remaining forest can be highly fragmented, with patches of different sizes embedded in a matrix of often contrasting habitat [@taubert2018; @bianchi2013].
-This fragmentation is associated with myriad ecological changes, including the local and regional extinction of plant species [@laurance2006; @dasilva2000].
-Although the demographic mechanisms responsible these extinctions are poorly understood [@brunaHabitatFragmentationPlant2009], it is often hypothesized that the dramatically altered environmental conditions in tropical forest fragments [@ewersFragmentationImpairsMicroclimate2013; @didhamEdgeStructureDetermines1999; @arroyo-rodriguezDoesForestFragmentation2017] drive declines in plant reproduction, recruitment, or survivorship [@brunaSeedGerminationRainforest1999; @zartmanDroughtImpactsSurvivorship2015; @lauranceRainForestFragmentation1998].
-Despite the prevalence of this hypothesis [@lauranceEffectsStrongDrought2001; @didhamEdgeStructureDetermines1999; @bettsExtinctionFiltersMediate2019], efforts to link population-level demographic responses with altered environmental conditions in fragments remains scarce.
+The expansion of agriculture and other human activities is a primary driver of deforestation in the tropics [@haddadHabitatFragmentationIts2015; @alroy2017]. It also results in landscapes where the remaining forest can be highly fragmented, with patches of different sizes embedded in a matrix of often contrasting habitat [@taubert2018; @bianchi2013]. This fragmentation is associated with myriad ecological changes, including the local and regional extinction of plant species [@laurance2006; @dasilva2000]. It is often hypothesized that the dramatically altered environmental conditions in tropical forest fragments [@ewersFragmentationImpairsMicroclimate2013; @didhamEdgeStructureDetermines1999; @arroyo-rodriguezDoesForestFragmentation2017] drive declines in plant reproduction, recruitment, or survivorship [@brunaSeedGerminationRainforest1999; @zartmanDroughtImpactsSurvivorship2015; @lauranceRainForestFragmentation1998], although the demographic mechanisms responsible for these extinctions are poorly understood [@brunaHabitatFragmentationPlant2009]. Despite the prevalence of this hypothesis [@lauranceEffectsStrongDrought2001; @didhamEdgeStructureDetermines1999; @bettsExtinctionFiltersMediate2019], efforts to link population-level demographic responses with altered environmental conditions in fragments remains scarce.
 
 Studies in temperate systems have shown that the demography of species can also be altered by climate change [@doak2010; @sletvold2005; @selwoodEffectsClimateChange2015; @williams2015], and that the effects of climate change could be more pronounced when habitat is fragmented [@oliver2015; @holyoak2016].
 <!--# explain why R1.2 --> While the demographic consequences of climate change for tropical species are expected to be similarly severe [@brodieClimateChangeTropical2012; @scheffersExtremeThermalHeterogeneity2017], surprisingly little is known about the responses of these species to climatic variability [@paniw2021].
@@ -364,7 +360,10 @@ The proportion of plants flowering was 31% higher in continuous forest than 1-ha
 The intercepts for the continuous forest and 1 ha fragment models were significantly different, indicating a main effect of habitat on flowering probability (Table \@ref(tab:intercept-table)).
 The observed disparity in proportion of flowering plants was largely due to the fact that flowering is also significantly size-dependent (Table \@ref(tab:results-table)), with the probability of flowering increasing dramatically once plants reached the threshold size of about 148 (i.e., log(size) \> 5 in Figure \@ref(fig:size-plot)c).
 Despite the flowering probability of the largest plants being greater in fragments than continuous forest, populations in fragments had proportionately fewer plants above the reproductive size threshold (Figure \@ref(fig:size-plot)d).
-The most striking difference between habitat types coincided with a severe drought in 2003, when the percentage of flowering reproductive-sized plants was 28% in continuous forest vs. 17% in 1-ha fragments (Figure \@ref(fig:eda)c).
+The most striking differences between habitat types coincided with relatively extreme weather conditions.
+In 2003, during the onset of a severe drought, the percentage of flowering reproductive-sized plants was 28% in continuous forest vs. 17% in 1 ha fragments.
+In 2006, following a wet spring and winter (SPEI \> 1), the trend was reversed when only 14% of reproductive-sized plants flowered in continuous forest and 26% flowered in 1 ha fragments (Figure \@ref(fig:eda)c).
+It is important to keep in mind that 1 ha fragment plots have a lower density of plants on average and fewer reproductive-sized plants compared to continuous forest plots, so total numbers of flowering plants was always lower in fragments.
 
 ```{r include=FALSE}
 repro_size <- model_data %>%
@@ -373,9 +372,10 @@ repro_size <- model_data %>%
   quantile(.1, na.rm = TRUE)
 
 model_data %>%
-  filter(size >= repro_size) %>% 
+  # filter(size >= repro_size) %>% 
   group_by(habitat, year) %>%
-  summarize(prop_flwr = sum(flwr, na.rm = TRUE)/n()) %>% 
+  summarize(total_flwr = sum(flwr, na.rm = TRUE),
+            prop_flwr = sum(flwr, na.rm = TRUE)/n()) %>% 
     arrange(year) %>% 
   pivot_wider(names_from = habitat, values_from = prop_flwr) %>% 
   mutate(diff = `1-ha` - CF) %>% 
@@ -389,9 +389,10 @@ Comparing the respective crossbasis surfaces, however, reveals that the specific
 
 *Survival:* For 1-ha fragments, there was a significant effect on survival of SPEI in the preceding 0--16 months.
 The highest survival was near SPEI of 0, with mortality increasing as conditions became either drier or wetter (i.e., as SPEI values became increasingly negative or positive, respectively; Figure \@ref(fig:surv-spei)b).
-In contrast, only recent conditions (0--4 month delay) has a significant effect on survival in continuous forest (Figure \@ref(fig:surv-spei)a).
+Additionally, a positive, lagged effect of high SPEI at 32--36 months lag reached statistical significance.
+There was less of a delayed effect of SPEI on survival in continuous forest with only the preceding 0--4 months and 32--36 months reaching statistical significance (Figure \@ref(fig:surv-spei)a).
 The short-term effects of SPEI on survival in continuous forest were also unidirectional---the probability of survival was highest in wet conditions and declined, albeit only slightly, with increasingly negative values of SPEI (i.e., as droughts became more severe; Figure \@ref(fig:surv-spei)a).
-Finally, plants in both habitat types showed an increase in survival probability with very high SPEI values (i.e., extremely high precipitation) at a lag time of 32--36 months.
+Plants in both habitat types showed an increase in survival probability with very high SPEI values (i.e., extremely high precipitation) at a lag time of 32--36 months.
 It should be noted, however, that only the first transition year of census data (1998--1999) met these conditions.
 We compared the effects of SPEI history in continuous forest and fragments by subtracting the fitted values in Figure \@ref(fig:surv-spei)b from Figure \@ref(fig:surv-spei)a to produce Figure \@ref(fig:surv-spei)c.
 This shows that in average conditions (SPEI = 0), there is little difference in survival probability between continuous forest and forest fragments (Figure \@ref(fig:surv-spei)c).

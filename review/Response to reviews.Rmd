@@ -198,8 +198,8 @@ Now the sentence to which the reviewer refers reads: *"We used distributed lag n
 > What specific demographic mechanisms are you referring to?
 > Do you mean that high mortality rate lead to extinction and we don't know what causes high mortality rates?
 
-@brunaHabitatFragmentationPlant2009 discusses the lack of knowledge of what demographic vital rates (e.g. survival, reproduction, recruitment) contribute most to population declines in fragments.
-We have edited this line to clarify: " <!--# edit abstract? -->
+The reference, @brunaHabitatFragmentationPlant2009, discusses the lack of knowledge of what demographic vital rates (e.g. survival, reproduction, recruitment) in which life stages (e.g. small or large individuals) contribute most to population declines in fragments.
+We have re-ordered this sentence to emphasize the hypothesis that fragmentation alters survival, growth, or reproduction with the caveat that few studies have determined which of these vital rate changes are driving extinctions.
 
 ##  {#R2-3}
 
@@ -228,12 +228,17 @@ We have edited this line to read "Although plants were significantly larger in c
 
 > Lines 287-289.
 > While this statement is true, there are also years where flowering is lower in CF (e.g., 2002 similar values as following the drought in 2003 in fragments).
+
+We thank the reviewer for pointing this out.
+In fact, with updated data, 2006 actually shows the largest disparity in proportion of large plants flowering with a greater proportion flowering in 1 ha fragments.
+However, the total number of flowering plants in fragments was always lower due to 1) lower plant density in fragments and 2) fewer large reproductive-sized plants in fragments.
+We have clarified this in the revisions.
+
 > I feel that the reporting of the results is a bit biased towards concluding that plants do worse in fragments compared to CF, especially since none of the result reported so far are significant.
 
-<!--# need to double-check and revise -->
-
-The difference in flowering probability between cointinuous forests and fragments is in fact significant.
-We have added Table 1 that shows the model intercepts ± 84% confidence intervals, which is comparable to testing a main effect of habitat if we were able to include both habitats in the same model.
+We have added Table 1 to clarify what statistically significant results we found between habitats.
+The table shows the model intercepts ± 84% confidence intervals, which is comparable to testing a main effect of habitat.
+The difference in flowering probability between continuous forests and fragments is in fact significant, although the difference is slight.
 
 ##  {#R2-7}
 
@@ -253,6 +258,8 @@ For example, at a lag of 0, wet conditions have a positive effect on survival in
 > What springs to my mind is that the area that is significant is much larger in in fragments compared to CF.
 > It seems that in CF only a few months are significant.
 > Surprisingly they fall not consistently in the dry or wet season.
+
+We see how this could be confusing and have taken the reviewers suggestion to include the 32--36 month lag when describing lags that are significant for each habitat.
 
 ##  {#R2-9}
 
@@ -405,6 +412,12 @@ Some of the missing values in the data do represent *Heliconia* plants that lost
 
 > Line 166 - given the shallow roots, why not use 1 month SPEI and let the model do the smoothing over longer time frames?
 > You describe why not using longer smooths, but not shorter.
+
+<!--# Emilio: I feel like I don't have a great response to this one.  Is there some edit to the manuscript that would clarify? I don't think "let the model do the smoothing" accurately explains what would happen if we switched to SPEI_1 -->\
+\
+The choice of scale for the SPEI calculation is indeed difficult, and contributes to the definition of drought (i.e. is drought defined as dry conditions over the previous 1, 2, 3 or more months?)
+. A thorough comparison of the ability for different SPEI scales to explain variation in survival, size, and flowering is beyond the scope of this paper
+.
 
 ##  {#R3-3}
 
