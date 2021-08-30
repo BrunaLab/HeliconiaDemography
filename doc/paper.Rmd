@@ -458,11 +458,8 @@ In contrast, variation in SPEI corresponded to a greater range of flowering prob
 These results should be interpreted with some caution, however, as the relatively low number of plants in fragments that are above the threshold-size for flowering could limit the power to detect delayed effects.
 
 There are several, non-mutually-exclusive explanations for delayed effects of SPEI on demography.
-The first is that the physiological processes underlying vital rates might be initiated long before they are demographically apparent [@eversLaggedDormantSeason2021], and hence be shaped by climatic events at any point in that physiological window.
-For example, the flowering shoots of *Heliconia chartacea* begin to develop 6--10 months prior to the appearance of inflorescences [@crileyYearProductionHigh1994].
-Adverse conditions during the 6 months following initiation, rather than the months when inflorescences are starting to expand, leads to the aborted production of flowering shoots.
-Interestingly, we observed the opposite effect---drought conditions increased the probability of flowering two years later.
-While this could reflect bet-hedging in response to stress [@nihadRelationshipStressFlowering2018], this does not appear to be the case, as growth or survival do not appear to decrease following reproduction (see also [@horvitzDemographicCostReproduction1988]. In fact, flowering in one year is associated with increased reproduction and growth in the next.
+The first is that the physiological processes underlying vital rates might be initiated long before they are demographically apparent [@eversLaggedDormantSeason2021], and hence be shaped by climatic events at any point in that physiological window. For example, the flowering shoots of *Heliconia chartacea* begin to develop 6--10 months prior to the appearance of inflorescences [@crileyYearProductionHigh1994]. Adverse conditions during the 6 months following initiation, rather than the months when inflorescences are starting to expand, leads to the aborted production of flowering shoots. Our results showed delayed increases in flowering probability after drought. Drought conditions could be favorable for *H. accuminata* flowering due to increased temperatures or decreased cloudiness associated with droughts[@pauCloudsTemperatureDrive2013], and the effects could be delayed due to the development time of inflorescences.
+A better understanding of the developmental effects of climate on *Heliconia* is needed to determine if this is the best explanation for lagged effects of drought on flowering.
 
 Demographic responses will also be delayed if abiotic stress causes plants to invest in belowground rhizomes [*sensu* @pumisutapon2012].
 The carbohydrates stored in rhizomes allow *Heliconia* to regenerate aboveground biomass following damage [@rundelStructuralPhysiologicalAdaptation1998] and protect the buds that give rise to new shoots from stressful conditions [@klimesovaBelowgroundPlantFunctional2018].
@@ -475,11 +472,13 @@ When they finally do, the resulting leaf drop [@janssenDroughtEffectsLeaf2021] a
 Similar delayed changes in the local environment could also influence the foraging behavior of a plant's pollinators [@brunaHeliconiaAcuminataReproductive2004; @stouffer1996], seed dispersers [@uriarteDisentanglingDriversReduced2011], or herbivores [@scottDifferingNonlinearLagged2021].
 While more work is needed to explain why the (delayed) effects of SPEI on *H. acuminata* survival and growth are greater in fragments than forest interiors, one hypothesis, motivated by recent intriguing results from other systems [@sapsfordChickenEggWhich2017], is that the greater litterfall on edges [@vasconcelos2004] may be altering the abundance of pathogens or mycorrhizae.
 
-Finally, demographic delays could be an artifact of the timing of responses in relation to the census date.
-If extreme drought in the dry season before the census increased plant mortality during that season, for example, this would nevertheless appear in models as a delayed effect (e.g. in Figure \@ref(fig:surv-spei)b).
-In our case, this potential explanation for delayed effects applies only to plant size and survival, as plots were surveyed regularly throughout the reproductive season to identify flowering plants.
+Finally, demographic delays could be be demographic only, rather than due to physiological delays or indirect effects.
+For example, if a severe month-long drought 6 months prior to a census caused increased mortality, it would appear in our models as a delayed effect, even if plants died immediately within that month, because mortality was only captured once per year.
+In our case, this potential explanation for delayed effects applies only to plant size and survival, as the flowering season coincided with the yearly census.
+It also only applies to lags of up to 12 months since mortality, size, and flowering are recorded yearly.
 This possibility is not unique to our study, rather it is a consequence of conducting demographic censuses on an annual scale while the climate is quantified monthly or seasonally.
-While the very slow growth and extremely low mortality rates of *H. acuminata* mean this effect is unlikely to be acting in our system, it may be that for some species it will be important to conduct demographic surveys at the same temporal scale at which climate is aggregated.
+While the very slow growth and extremely low mortality rates of *H. acuminata* mean this effect is unlikely to be acting in our system, it may be that for some species it will be important to conduct demographic surveys at the same temporal scale at which climate is aggregated to better understand delayed effects of climate.
+<!--# might need some other edits here to address why it doesn't matter for demography which of these explanations is true.  Might be a better sentence than the previous sentence -->
 
 ## Conclusions & Future Directions
 

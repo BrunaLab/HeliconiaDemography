@@ -146,6 +146,8 @@ We edited this sentence to read: "SPEI had less of an effect on flowering probab
 > L442-443 -- What is a mechanism for why plants might flower more after drought?
 > (the discussion talks about the opposite) The next paragraph kind of goes there, but the link could be tighter.
 
+We are a little hesitant to speculate too much here, as not much is known about the optimal microclimate conditions for flowering in *H. acuminata*, but we have revised this paragraph (see also our response to @ref(R2-17). It now includes the following possible explanation: *"Drought conditions could be favorable for H. accuminata flowering due to increased temperatures or decreased cloudiness associated with droughts[@pauCloudsTemperatureDrive2013],* *and the effects could be delayed due to the development time of inflorescences."*
+
 ## Figures: {#R1-figs}
 
 > Fig 2 -- This was only cited in the discussion as far as I can tell.
@@ -322,7 +324,10 @@ We have made this correction.
 
 > Line 440: Can you explain a bit more in detail why drought increasing flowering probability two years in the future would be a bet hedging response?
 
-see our response to \@ref(R1-8).
+We intended this paragraph to focus on one possible explanation for delayed effects---delays due to development times.
+We believe that the bet-hedging argument was confusing for two reasons: 1) it assumed that drought (as we measured it with SPEI) is detrimental to *H. accuminata*, which is not consistently reflected in our results, and 2) it did not address longer lags than the development time of a flowering shoot.
+We have therefore revised the example in this paragraph to focus on literature that shows positive effects of temperature and negative effects of cloudiness on flowering in tropical plants---weather conditions both associated with droughts.
+See also our response to \@ref(R1-8).
 
 ##  {#R2-18}
 
@@ -339,7 +344,11 @@ see our response to \@ref(R1-8).
 > It doesn't really matter when exactly a plant dies during a growing season, all that matters for population dynamics is how many plants die from one growing season to the next.
 > Distributed Lag Non-Linear Models account for the exact timing of the weather events.
 
-<!--# not sure how to respond.  I think there must be some underlying confusion.  Other reviewers like this explanation -->
+We agree with the reviewer that the exact timing of mortality within a season doesn't matter for population dynamics.
+This is likely obvious to demographers who are used to working with yearly census data and finer scale climate data.
+However, we think this paragraph is appropriate to follow up with the three before it---a delayed effect indicated by a DLNM plot like those in Figures 4, 5 and 6 could be due to 1) developmental delays, 2) buffering by below-ground storage tissues, 3) indirect effects, or 4) **none of the above.** We want to be sure to point out that in the case of survival especially, a "delayed effect" of SPEI 5 months in the past could simply mean that a plant died *during* a drought 5 months in the past (no actual delay between adverse conditions and death).
+Importantly, this does not apply to flowering in our system, since flowering happens at a specific time of year (during the census), unlike mortality.
+We have revised this paragraph to emphasize the above points.
 
 ##  {#R2-21}
 
@@ -415,7 +424,9 @@ Some of the missing values in the data do represent *Heliconia* plants that lost
 > Line 166 - given the shallow roots, why not use 1 month SPEI and let the model do the smoothing over longer time frames?
 > You describe why not using longer smooths, but not shorter.
 
-<!--# Emilio: I feel like I don't have a great response to this one.  Is there some edit to the manuscript that would clarify? I don't think "let the model do the smoothing" accurately explains what would happen if we switched to SPEI_1 -->\
+<!--# Emilio: I feel like I don't have a great response to this one.  Is there some edit to the manuscript that would clarify? I don't think "let the model do the smoothing" accurately explains what would happen if we switched to SPEI_1 -->
+
+\
 \
 The choice of scale for the SPEI calculation is indeed difficult, and contributes to the definition of drought (i.e. is drought defined as dry conditions over the previous 1, 2, 3 or more months?)
 . A thorough comparison of the ability for different SPEI scales to explain variation in survival, size, and flowering is beyond the scope of this paper
@@ -520,3 +531,6 @@ We believe these two things make it easier to see the outlines around significan
 > Line 471 -- this demographic delay left me a bit confused for a while until I stopped looking at figure 4b and started looking at 4a.
 > Then it made a lot of sense.
 > However, wouldn't it be that the demographic effect takes place AFTER the census for an echo to appear at previous lags?
+
+We We have revised this paragraph to clarify.
+See our response to \@ref(R2-20).
