@@ -54,6 +54,8 @@ We edited a sentence in the introduction that cites @estebanOtherSideDroughts202
 > I wondered if the authors thought this was too obvious (edge effects, etc), but I think it'd be helpful to spell this out more clearly.
 > L466 -- 467 offer a new hypothesis, but briefly revisiting the 'old' evidence/hypotheses also seems important.
 
+At the reviewer's suggestion, we have added a short paragraph to the introduction explaining why the pressures of habitat fragmentation and climate change might interact (i.e. be more than additive).
+
 ##  {#R1-3}
 
 > One challenge of using a new modeling approach is making the methods of the paper understandable and to stand alone.
