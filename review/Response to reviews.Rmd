@@ -92,11 +92,8 @@ Displaying raw data on the heatmaps was too messy and not informative in a 2d pl
 
 > I suggest that a little more about the limitations of this modeling approach in the discussion would help set the context for interpreting the results and make the paper more robust.
 
-<!--# The following isn't in the main text yet.  Just ideas. -->
-
-(Something I'm considering adding to the discussion):
-
-"The main limitation for detecting lagged effects with any method is data, and the specifics of data limitations have not yet been systematically explored. @tellerLinkingDemographyDrivers2016 used simulations to show that 20--25 years of data were required to detect lagged effects using their method, but this cutoff depends on the effect size and the number of climate extremes in the dataset. Additionally, there is some evidence that appropriate spatial replication could drastically reduce the number of years of data required (Aldo Compagnoni's ESA talk)."
+The main limitations of this method are of data (see also reviewer 2's comment \@ref(R2-15)).
+We have added some text to the discussion describing limitations found in previous simulation studies, and new unpublished evidence that spatial replication may be more valuable than long time series for detecting demographic effects of the environment.
 
 > In some ways it seems like the analysis is adding more precision (by using monthly climate data) than the plants perceive and that would be measured in a yearly census.
 
@@ -128,13 +125,13 @@ We simply felt doing all of this (describing and interpreting DLNMs, modeling re
 > I thought this was about growth?
 
 Models which predict size in year t+1 as a function of size in year t, such as ours, are often described as growth functions because they can be used to project change in size (i.e. growth).
-However, we agree that it would be more clear for this section heading to be "size" rather than "growth"
+However, we agree that it would be more clear for this section heading to be "size" rather than "growth".
 
 > L277--278---How does this show the effect of size on growth is greatest for mid-size plants?
 > More generally, I got a little confused with the flipping back and forth between growth & plant size in the results and discussion.
 > More precise language would help.
 
-We have edited the text to omit "growth", and hopefully clarify: "...the impact of plant size on size in the following year was greatest for mid-sized plants in continuous forest." <!--# are there other edits we can make to clarify?  A sentence introducing the concept that size t+1 ~ size t *is* growth? -->
+We have edited the text to omit "growth", and hopefully clarify: "...the impact of plant size on size in the following year was greatest for mid-sized plants in continuous forest."
 
 > L331--332---How can you see in this figure that the response is 'more muted as indicated by the shape of the crossbasis function'?
 
@@ -146,7 +143,7 @@ We edited this sentence to read: "SPEI had less of an effect on flowering probab
 > L442-443 -- What is a mechanism for why plants might flower more after drought?
 > (the discussion talks about the opposite) The next paragraph kind of goes there, but the link could be tighter.
 
-We are a little hesitant to speculate too much here, as not much is known about the optimal microclimate conditions for flowering in *H. acuminata*, but we have revised this paragraph (see also our response to @ref(R2-17). It now includes the following possible explanation: *"Drought conditions could be favorable for H. accuminata flowering due to increased temperatures or decreased cloudiness associated with droughts[@pauCloudsTemperatureDrive2013],* *and the effects could be delayed due to the development time of inflorescences."*
+We are a little hesitant to speculate too much here, as not much is known about the optimal microclimate conditions for flowering in *H. acuminata*, but we have revised this paragraph (see also our response to @ref(R2-17). It now includes the following possible explanation: *"Drought conditions could be favorable for H. accuminata flowering due to increased temperatures or decreased cloudiness associated with droughts*[@pauCloudsTemperatureDrive2013]*,* *and the effects could be delayed due to the development time of inflorescences."*
 
 ## Figures: {#R1-figs}
 
@@ -299,8 +296,8 @@ See our response to \@ref(R2-7).
 
 > Line 412: I think it would be very informative if you were to expand on this and explain how exactly your method differs from what others have used to detect delayed effects.
 
-...see also our response to \@ref(R1-5).
-<!--# R1-5 is asking for more discussion on limitations of DLNMs -->
+As reviewer 3 pointed out (\@ref(R3-11)), our extension to previous approaches is the use of a 2-dimensional spline to allow for fitting non-linear responses to the environment.
+We have edited this sentence accordingly
 
 ##  {#R2-14}
 
@@ -312,7 +309,8 @@ See our response to \@ref(R2-7).
 
 > You may also consider arguing that an 11-year long time series is not sufficient to detect delayed effects (see Tenhumberg et al. 2018)
 
-...see also our response to \@ref(R1-5) and \@ref(R2-13).
+We have added additional discussion on the limitations of DLNMs for detecting delayed effects to the discussion.
+See our responses to \@ref(R1-5).
 
 ##  {#R2-16}
 
@@ -333,10 +331,14 @@ See also our response to \@ref(R1-8).
 
 > Line 448: Alternatively, drought may reduce nutrient availability such that after covering maintenance costs there is nothing left to allocate.
 
+<!--# wouldn't this reduce growth?  Not what we saw in our results, so not sure how this is relevant? -->
+
 ##  {#R2-19}
 
 > Lines 451-453: I think herbivory is this is very different from drought.
 > Drought reduced nutrient availability while herbivory removes some plant biomass triggering compensatory growth.
+
+<!--# but we just said drought also removes tissue in the previous sentence.  Am I missing something? -->
 
 ##  {#R2-20}
 
@@ -358,10 +360,13 @@ We have revised this paragraph to emphasize the above points.
 > Why is there an effect of SPEI during the dry season (18-20 months in the past but during the wet season 32-36 months in the past? Why do plants in fragments have a decrease survival when precipitation is high during dry and wet periods (1-18 months time lag)?
 > Etc.
 
+While we believe we did discuss *Heliconia*-specific mechanisms for delayed responses of flowering (L 434--438, now <!--# new line -->) and delayed effects on growth (L 445--450, now <!--# new line -->), the reviewer is correct that we had not previously discussed mechanisms behind mortality.
+
 ##  {#R2-22}
 
 > Lines 484-486: I don't think this study strongly support that plants do worse in fragments than CF.
 
+Although the differences in plant size and flowering are relatively small, they are statistically significant (see Table 1 in revised manuscript), and we believe they are demographically significant over long time periods.
 See our response to \@ref(R2-7).
 
 ##  {#R2-23}
@@ -453,7 +458,8 @@ We moved the explanation of covariates and random effects earlier as suggested.
 
 > Line 205 - I'm not sure "bimodal" is correct here -- a cubic function can have 2 local extrema, is that what you mean?
 
-<!--# yes, but might change number of knots, so might require more work revising this -->
+This is what we meant, and is no longer relevant as we have increased the number of knots.
+See response to \@ref(R3-5).
 
 ##  {#R3-5}
 
@@ -465,8 +471,7 @@ We had thought that by limiting k to 3, we were simply limiting the complexity o
 However, after taking the reviewer's suggestions we realized that there were other unexpected consequences.
 We increased *k* for the SPEI dimension for all models and for other smooths for some models.
 This resulted in some changes in the the shape of the crossbasis smooth and which areas of it were statistically significant.
-We have updated the methods and results sections accordingly.
-<!--# TODO: update results section! -->\
+We have updated the methods and results sections accordingly.\
 \
 We have also now included a supplemental document with model validation, including checks that *k* is adequately large
 .
@@ -508,7 +513,8 @@ See our response to \@ref(R1-figs).
 > I think a table based on the summary of the two fitted models discussed here (and elsewhere too) should be added.
 > And report the variance of the random effect.
 
-...see also our response to \@ref(R1-3)
+We have now included these in Table 1.
+See also our response to \@ref(R1-3).
 
 ##  {#R3-10}
 
@@ -525,6 +531,10 @@ We believe these two things make it easier to see the outlines around significan
 > Line 413 -- "our expansion of this approach ..." I'm not sure that the expansion is the penalty that prevents over fitting -- both Teller et al and Tenhumberg et al used the penalized spline function in mgcv.
 > What IS an expansion is the non-linear cross basis function.
 > Both Teller et al and Tenhumberg et al used (essentially) linear cross basis functions, so using dlnm is super-cool and interesting.
+
+We thank the reviewer for the positive comment.
+This is correct---our expansion was not the fitting of lagged effects with a spline, but the use of a 2 dimensional spline to *also* fit non-linear reaction norms.
+We have edited this sentence accordingly.
 
 ##  {#R3-12}
 
