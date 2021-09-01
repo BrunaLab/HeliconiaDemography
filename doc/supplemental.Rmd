@@ -10,7 +10,7 @@ output:
       linenumbers: yes
       number_sections: no
       fig_caption: yes
-      # reference_docx: "template.docx" # Insert path for the DOCX file
+      reference_docx: "templates/template.docx" # Insert path for the DOCX file
 linkcolor: blue
 bibliography: references.bib
 csl: "templates/global-change-biology.csl" # Insert path for the bib-style
@@ -36,6 +36,8 @@ library(latex2exp)
 library(colorspace)
 library(glue)
 library(performance)
+library(gratia)
+library(ggpointdensity)
 source(here::here("R", "utils.R"))
 ```
 
@@ -272,6 +274,113 @@ compare_performance(m_ht, m_shts, m_size, metrics = "common", rank = TRUE) %>%
   flextable() %>% 
   set_table_properties(layout = "autofit") 
 ```
+
+\pagebreak
+
+# Size plots with raw data
+
+```{r}
+withr::with_dir(here::here(), {
+  tar_load(c(
+    s_cf,
+    s_1ha,
+    g_cf,
+    g_1ha,
+    f_cf,
+    f_1ha
+  ))
+})
+```
+
+```{r}
+surv_curves <-
+  map_df(list(CF = s_cf, "1-ha" = s_1ha), ~{
+    smooth_estimates(.x, smooth = "s(log_size_prev)", unconditional = TRUE, overal_uncertainty = TRUE) %>% add_confint() %>%
+      add_column(intercept = coef(.x)[1]) %>%
+      mutate(across(c(est, lower_ci, upper_ci), ~plogis(.x + intercept)))
+  },
+  .id = "habitat")
+
+raw_df <- bind_rows("1-ha" = model.frame(s_1ha), "CF" = model.frame(s_cf), .id = "habitat")
+
+s <-
+  ggplot(surv_curves, aes(x = log_size_prev, y = est)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.4) +
+  geom_violin(data = filter(raw_df, surv == 1),
+              aes(y = 1.05),
+              draw_quantiles = c(0.5),
+              width = 0.1) +
+  geom_violin(data = filter(raw_df, surv == 0),
+              aes(y = -0.05),
+              draw_quantiles = c(0.5),
+              width = 0.1) +
+  scale_y_continuous(breaks = seq(0, 1, 0.2)) +
+  facet_wrap(~habitat) +
+  theme_bw() +
+  labs(y = "P(survival)", x = "log(size_t)")
+```
+
+```{r}
+flwr_curves <-
+  map_df(list(CF = f_cf, "1-ha" = f_1ha), ~{
+    smooth_estimates(.x, smooth = "s(log_size_prev)", unconditional = TRUE, overal_uncertainty = TRUE) %>% add_confint() %>%
+      add_column(intercept = coef(.x)[1]) %>%
+      mutate(across(c(est, lower_ci, upper_ci), ~plogis(.x + intercept)))
+  },
+  .id = "habitat")
+
+raw_df <- bind_rows("1-ha" = model.frame(f_1ha), "CF" = model.frame(f_cf), .id = "habitat")
+
+f <-
+  ggplot(flwr_curves, aes(x = log_size_prev, y = est)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.4) +
+  geom_violin(data = filter(raw_df, flwr == 1),
+              aes(y = 1.05),
+              draw_quantiles = c(0.5),
+              width = 0.1) +
+  geom_violin(data = filter(raw_df, flwr == 0),
+              aes(y = -0.05),
+              draw_quantiles = c(0.5),
+              width = 0.1) +
+  scale_y_continuous(breaks = seq(0, 1, 0.2)) +
+  facet_wrap(~habitat) +
+  theme_bw() +
+  labs(y = "P(flowering)", x = "log(size_t)")
+```
+
+```{r}
+size_curves <-
+  map_df(list(CF = g_cf, "1-ha" = g_1ha), ~{
+    smooth_estimates(.x, smooth = "s(log_size_prev)", unconditional = TRUE, overal_uncertainty = TRUE) %>% add_confint() %>%
+      add_column(intercept = coef(.x)[1]) %>%
+      mutate(across(c(est, lower_ci, upper_ci), ~.x + intercept))
+  },
+  .id = "habitat")
+
+raw_df <- bind_rows("1-ha" = model.frame(g_1ha), "CF" = model.frame(g_cf), .id = "habitat")
+
+g <-
+  ggplot(size_curves, aes(x = log_size_prev, y = est)) +
+  geom_pointdensity(data = raw_df, aes(y = log_size), method="kde2d") +
+  scale_color_viridis_c() +
+  geom_line() +
+  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.6) +
+  facet_wrap(~habitat) +
+  theme_bw() +
+  labs(y = "log(size_t+1)", x = "log(size_t)", color = "point density")
+```
+
+
+```{r fig.width=7, fig.height=7}
+(g + theme(axis.title.x = element_blank()))/
+(s + theme(axis.title.x = element_blank()))/
+(f) + plot_annotation(tag_levels = "a")
+```
+
+Figure S3.
+The curves and confidence intervals plotted here are the same as those in Figure 3a–c but separated by habitat (1-ha fragments in left panel, continuous forest plots in right panel) and with raw data superimposed.  For size (a), raw data are plotted as points with color representing point density to assist in visualizing overplotted data.  For survival (b) and flowering (c), raw data (survived or flowered = 1, died or didn't flower = 0) are shown using violin plots with the median marked by a vertical line.
 
 \pagebreak
 

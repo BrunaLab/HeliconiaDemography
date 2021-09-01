@@ -2,233 +2,276 @@
 title: "Model validation plots"
 author: "Eric R. Scott"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: html_document
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 ## target knits Rmds in their own session, so load libraries here.
 library(targets)
 library(statmod)
 library(tidyverse)
 library(gratia)
+library(mgcv)
+library(dlnm)
+library(arm)
+source(here::here("R", "utils.R"))
 ```
 
-# Analysis
 
-## Survival
+# Survival
 
-Quantile residuals are more appropriate for binomial models.
-### Fragments
-```{r}
+```{r, echo=FALSE, eval=TRUE}
 withr::with_dir(here::here(),{
   tar_load(c(s_1ha, s_cf, s_cf_sub))
 })
 ```
 
-```{r}
 
-summary(s_1ha)
-```
+## Forest Fragments
 
-```{r}
-draw(s_1ha)
-```
+### Diagnostics
 
-```{r echo=TRUE}
+```{r echo=TRUE, eval=TRUE}
+s_1ha_qres <- qresid(s_1ha)
 par(mfrow = c(2,2))
 #histogram
-plot(density(qresid(s_1ha)))
+plot(density(s_1ha_qres))
 #QQ plot
-qqnorm(qresid(s_1ha)); qqline(qresid(s_1ha))
-#Fitted vs. residuals
-scatter.smooth(predict(s_1ha, type = "response"), qresid(s_1ha), col = "grey")
+qqnorm(s_1ha_qres); qqline(s_1ha_qres)
+#Fitted vs. residuals--binned residuals plot
+binnedplot(fitted(s_1ha), residuals(s_1ha, type = "response"))
 ```
 
-### Continuous Forest
+### Basis dimensions
 
-```{r}
-summary(s_cf)
+```{r eval=TRUE}
+k.check(s_1ha)
 ```
 
-```{r}
-draw(s_cf)
+`k` is adequate for `log_size_prev`. Unfortunately `k.check()` doesn't work for data with matrices, so I'll use an alternative approach detailed in `?mgcv::choose.k` for the crossbasis smooth.  Briefly, it involves looking for pattern in residuals by extracting residuals and fitting a GAM to them with the smooth of interest with an increased value for `k`.  If there is no unexplained pattern in residuals, that smooth should have an edf near zero.
+
+```{r eval=TRUE}
+# Function sourced from R/utils.R
+check_res_edf(s_1ha)
 ```
+
+Adequate k for crossbasis.
+
+## Continuous Forest
+
+### Diagnostics
 
 ```{r echo=TRUE}
+s_cf_qres <- qresid(s_cf)
 par(mfrow = c(2,2))
 #histogram
-plot(density(qresid(s_cf)))
+plot(density(s_cf_qres))
 #QQ plot
-qqnorm(qresid(s_cf)); qqline(qresid(s_cf))
-#Fitted vs. residuals
-scatter.smooth(predict(s_cf, type = "response"), qresid(s_cf), col = "grey")
-```
-
-### Continuous forest subsample
-
-To check that differences are not purely due to sample size differences, particularly that lower edf in continuous forests is due to higher sample size.  For survival, edf is actually higher in CF with a larger sample size.  With subsample, edf are more similar.
-
-```{r}
-summary(s_1ha)$edf[3]
-summary(s_cf)$edf[3]
-summary(s_cf_sub)$edf[3]
+qqnorm(s_cf_qres); qqline(s_cf_qres)
+#Fitted vs. residuals--binned residuals plot
+binnedplot(fitted(s_cf), residuals(s_cf, type = "response"))
 ```
 
 
+### Basis dimensions
+
 ```{r}
-draw(s_cf_sub)
+k.check(s_cf)
 ```
-Surface still looks different in a similar way though.
+
+Adequate knots for `log_size_prev`
+
 ```{r}
+check_res_edf(s_cf)
+```
+Adequate knots for crossbasis smooth.
+
+## Effect of sample size
+
+Here I use a random sub-sample to check that differences between continuous forest and fragments are not purely due to sample size differences, particularly differences in the complexity and shape of the crossbasis smooth.
+
+```{r}
+summary(s_1ha)$edf[2]
+summary(s_cf)$edf[2]
+summary(s_cf_sub)$edf[2]
+```
+
+The crossbasis is smoother, but shows a similar pattern.
+
+```{r}
+draw(s_cf, select = "s(spei_history,L)", n_contour = 5)
+draw(s_cf_sub, select = "s(spei_history,L)", n_contour = 5)
+```
+
+```{r echo=FALSE}
 rm(s_1ha, s_cf, s_cf_sub)
 ```
 
-## Growth
+# Growth
 
-```{r}
+```{r echo=FALSE}
 withr::with_dir(here::here(),{
   tar_load(c(g_1ha, g_cf, g_cf_sub))
 })
 ```
 
-### Fragments
+## Fragments
 
-```{r}
-summary(g_1ha)
-```
-
-```{r}
-draw(g_1ha)
-```
+### Diagnostics
 
 ```{r}
 appraise(g_1ha)
 ```
 
-### Continuous Forest
+### Basis dimensions
 
 ```{r}
-summary(g_cf)
+k.check(g_1ha)
 ```
 
+Adequate k for `log_size_prev`.
+
 ```{r}
-draw(g_cf)
+check_res_edf(g_1ha)
 ```
+
+Adequate k for crossbasis.
+
+## Continuous Forest
+
+### Diagnostics
 
 ```{r}
 gratia::appraise(g_cf)
 ```
-### Continuous Forest subsample
+
+### Basis dimensions
+
+```{r}
+k.check(g_cf)
+```
+
+Adequate k for `log_size_prev`
+
+```{r}
+check_res_edf(g_cf)
+```
+
+Adequate k for crossbasis smooth.
+
+## Effect of sample size
 
 To check that differences are not purely due to sample size differences, particularly that lower edf in continuous forests is due to higher sample size.
 
 ```{r}
-summary(g_1ha)$edf[3]
-summary(g_cf)$edf[3]
-summary(g_cf_sub)$edf[3]
+summary(g_1ha)$edf[2]
+summary(g_cf)$edf[2]
+summary(g_cf_sub)$edf[2]
 ```
-edf of subsample is similar to full dataset, despite differences in sample size.
+
+edf is similar for the sub-sample
 
 ```{r}
-draw(g_cf_sub)
+draw(g_cf, select = "s(spei_history,L)", n_contour = 5)
+draw(g_cf_sub, select = "s(spei_history,L)", n_contour = 5)
 ```
-Crossbasis surface looks nearly identical.
 
-```{r}
+The shape of the smooth is also similar.
+
+```{r echo=FALSE}
 rm(g_1ha, g_cf, g_cf_sub)
 ```
 
-## Flowering
+# Flowering
 
-Quantile residuals are more appropriate for binomial models.
-
-```{r}
+```{r echo=FALSE}
 withr::with_dir(here::here(),{
   tar_load(c(f_1ha, f_cf, f_cf_sub))
 })
 ```
 
-### Fragments
+## Fragments
+
+### Diagnostics
 
 ```{r}
-summary(f_1ha)
-```
-
-```{r}
-draw(f_1ha)
-```
-
-```{r}
+f_1ha_qres <- qresid(f_1ha)
 par(mfrow = c(2,2))
 #histogram
-plot(density(qresid(f_1ha)))
+plot(density(f_1ha_qres))
 #QQ plot
-qqnorm(qresid(f_1ha)); qqline(qresid(f_1ha))
-#Fitted vs. residuals
-scatter.smooth(predict(f_1ha, type = "response"), qresid(f_1ha), col = "grey")
-```
-### Continuous Forest
-
-```{r}
-summary(f_cf)
+qqnorm(f_1ha_qres); qqline(f_1ha_qres)
+#Fitted vs. residuals--binned residuals plot
+binnedplot(fitted(f_1ha), residuals(f_1ha, type = "response"))
 ```
 
-```{r}
-draw(f_cf)
-```
+### Basis dimensions
 
 ```{r}
+k.check(f_1ha)
+```
+
+Adequate k for `log_size_prev`
+
+```{r}
+# looking for near zero edf
+check_res_edf(f_1ha)
+```
+
+Adequate k for crossbasis smooth.
+
+## Continuous Forest
+
+### Diagnostics
+
+```{r}
+f_cf_qres <- qresid(f_cf)
 par(mfrow = c(2,2))
 #histogram
-plot(density(qresid(f_cf)))
+plot(density(f_cf_qres))
 #QQ plot
-qqnorm(qresid(f_cf)); qqline(qresid(f_cf))
-#Fitted vs. residuals
-scatter.smooth(predict(f_cf, type = "response"), qresid(f_cf), col = "grey")
+qqnorm(f_cf_qres); qqline(f_cf_qres)
+#Fitted vs. residuals--binned residuals plot
+binnedplot(fitted(f_cf), residuals(f_cf, type = "response"))
 ```
 
-### Continuous Forest subsample
-To check that differences are not purely due to sample size differences, particularly that lower edf in continuous forests is due to higher sample size.  For flowering, edf is actually slightly higher in CF with a larger sample size.  With subsample, edf are more similar.
+### Basis dimensions
 
 ```{r}
-summary(f_1ha)$edf[3]
-summary(f_cf)$edf[3]
-summary(f_cf_sub)$edf[3]
+k.check(f_cf)
 ```
+
+Adequate k for `log_size_prev`
 
 ```{r}
-draw(f_cf_sub)
+# looking for near zero edf
+check_res_edf(f_cf)
 ```
-Crossbasis surface looks extremely similar.
+Adequate k for crossbasis.
 
-### Flowering prob of largest plants
+## Effect of sample size
 
-Figure out flowering probability of largest quartile of plants in each habitat
+To check that differences are not purely due to sample size differences, particularly that lower edf in continuous forests is due to higher sample size.
 
 ```{r}
-newdf_cf <-
-  f_cf$model %>% #use model data frame
-  mutate(quartiles = ntile(log_size_prev, 4)) %>% 
-  filter(quartiles == 4)
-
-newdf_1ha <-
-  f_1ha$model %>% 
-  mutate(quartiles = ntile(log_size_prev, 4)) %>% 
-  filter(quartiles == 4)
+summary(f_1ha)$edf[2]
+summary(f_cf)$edf[2]
+summary(f_cf_sub)$edf[2]
 ```
 
+Similar edf for sub-sample
 
 ```{r}
-#equivalent to flowering once every __ years
-1/predict(f_cf, newdata = newdf_cf) %>% mean() %>% plogis()
-1/predict(f_1ha, newdata = newdf_1ha) %>% mean() %>% plogis()
+draw(f_cf, select = "s(spei_history,L)", n_contour = 5)
+draw(f_cf_sub, select = "s(spei_history,L)", n_contour = 5)
 ```
 
 
-```{r}
-rm(f_1ha, f_cf, f_cf_sub)
-```
+Similar, but essentially linear in SPEI dimension.
 
 # Reproducibility
 

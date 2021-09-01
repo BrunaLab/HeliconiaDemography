@@ -3,12 +3,12 @@
 #' The range is the first date of the survey minus the maximum lag for the
 #' models to the last date of the survey data.
 #'
-#' @param demog_post 
+#' @param data 
 #' @param maxlag 
 #'
-get_plot_daterange <- function(demog_post, maxlag) {
+get_plot_daterange <- function(data, maxlag) {
   dates <-
-    range(demog_post$year) %>%
+    range(data$year) %>%
     paste0(., "-02-01") %>%
     ymd()
   dates[1] <- dates[1] - months(maxlag)
@@ -31,7 +31,7 @@ plot_eda_spei <- function(xa, date_lims) {
   spei <-
     xa %>%
     select(latlon, yearmonth, spei) %>%
-    filter(!is.na(spei)) %>% 
+    dplyr::filter(!is.na(spei)) %>% 
     ggplot(aes(x = yearmonth, y = spei)) + 
     geom_line(aes(group = latlon), alpha = 0.2) +
     stat_summary(geom = "line", fun = "mean") +
@@ -45,18 +45,6 @@ plot_eda_spei <- function(xa, date_lims) {
   
 }
 
-#' Create data frame for plotting demographic data
-#'
-#' @param demog_post demography data filtered to only have post-seedlings
-#'
-eda_plot_df <- function(demog_post) {
-  demog_plotdf <-  
-    demog_post %>% 
-    filter(habitat !="10-ha") %>% 
-    mutate(date = paste(year, "-02-01") %>% ymd(),
-           yearmonth = yearmonth(date))
-  demog_plotdf
-}
 
 #' Survival time series plot
 #' 
@@ -65,33 +53,34 @@ eda_plot_df <- function(demog_post) {
 #' @param demog_post demography data
 #' @param dates_lims x-axis limits
 #'
-plot_eda_surv_ts <- function(demog_post, date_lims) {
+plot_eda_surv_ts <- function(data, date_lims) {
   
   date_breaks <- seq(date_lims[1], date_lims[2], by = "year")
   
-  demog_plotdf <- eda_plot_df(demog_post)
-  
-  survival <-
-    demog_plotdf %>%  
-    # filter(shts_prev >= 4) %>%
-    ggplot(aes(x = yearmonth, y = surv, color = habitat, linetype = habitat)) +
-    stat_summary(geom = "line", fun = "mean", fun.args = list(na.rm = TRUE)) +
-    # stat_summary(geom = "pointrange", fatten = 1) + #not sure plot-level SD makes sense
+  survival_df <-
+    data %>% 
+    dplyr::mutate(date = paste(year, "-02-01") %>%
+                    lubridate::ymd(),
+                  yearmonth = tsibble::yearmonth(date)) %>% 
+    group_by(habitat, yearmonth) %>%
+    dplyr::summarize(p_surv = sum(surv, na.rm = TRUE) / n() * 100)
+    
+  ggplot(survival_df,
+         aes(x = yearmonth, y = p_surv, color = habitat, linetype = habitat)) +
+    geom_line() +
     scale_x_yearmonth(
       limits = date_lims,
       breaks = date_breaks,
       date_minor_breaks = "1 month",
       expand = expansion(mult = 0.02)
     ) +
-    scale_y_continuous("P(survived)") +
+    scale_y_continuous("% surviving") +
     theme_classic() +
     theme(
       axis.text.x = element_blank(),
       axis.title.x = element_blank(),
-      axis.ticks.x = element_blank(),
       legend.position = "none"
     )
-  survival
 }
 
 #' Survival curves plots
@@ -105,18 +94,18 @@ plot_eda_surv_cohort <- function(demog) {
   
   cohort <-
     demog %>% 
-    filter(year == 1998) %>% 
+    dplyr::filter(year == 1998) %>% 
     pull(ha_id_number) %>% 
     unique()
   
   surv_curve_df <-
     demog %>% 
-    filter(ha_id_number %in% cohort) %>% 
-    filter(surv == 1, habitat != "10-ha") %>% 
+    dplyr::filter(ha_id_number %in% cohort) %>% 
+    dplyr::filter(surv == 1, habitat != "10-ha") %>% 
     group_by(year, habitat) %>% 
-    summarize(n = n()) %>%
+    dplyr::summarize(n = n()) %>%
     group_by(habitat) %>% 
-    mutate(p_surv = n/first(n),
+    mutate(p_surv = n/first(n)*100,
            date = ymd(paste0(year, "-02-01")),
            yearmonth = yearmonth(date))
   
@@ -130,7 +119,7 @@ plot_eda_surv_cohort <- function(demog) {
       date_minor_breaks = "1 month",
       expand = expansion(mult = 0.04)
     ) +
-    scale_y_continuous("P(survived)") +
+    scale_y_continuous("% surviving") +
     scale_color_manual(values = c("#E66101", "#5E3C99"),
                         aesthetics = c("color", "fill")) +
     guides(col = guide_legend(title = "Habitat"),
@@ -140,13 +129,16 @@ plot_eda_surv_cohort <- function(demog) {
   surv_curve
 }
 
-plot_eda_size_foldchange <- function(demog_post, date_lims) {
+plot_eda_size_foldchange <- function(data, date_lims) {
   date_breaks <- seq(date_lims[1], date_lims[2], by = "year")
-  demog_plotdf <- eda_plot_df(demog_post) %>% mutate(log2_growth = log(size / size_prev, 2))
-  
-  size <-
-    demog_plotdf %>% 
-    ggplot(aes(x = yearmonth, y = log2_growth, color = habitat, linetype = habitat)) +
+  demog_plotdf <- 
+    data %>% 
+    mutate(date = paste(year, "-02-01") %>% ymd(),
+           yearmonth = yearmonth(date)) %>% 
+    mutate(log2_growth = log(size / size_prev, 2))
+    
+    ggplot(demog_plotdf,
+           aes(x = yearmonth, y = log2_growth, color = habitat, linetype = habitat)) +
     geom_hline(yintercept = 0, color = "grey50") +
     stat_summary(
       geom = "line",
@@ -173,10 +165,8 @@ plot_eda_size_foldchange <- function(demog_post, date_lims) {
     theme(
       axis.text.x = element_blank(),
       axis.title.x = element_blank(),
-      axis.ticks.x = element_blank(),
       legend.position = "none"
     )
-  size
 }
 
 #' Mean size timeseries plot
@@ -184,13 +174,15 @@ plot_eda_size_foldchange <- function(demog_post, date_lims) {
 #' @param demog_post demography data
 #' @param date_lims x-axis limits
 #'
-plot_eda_size <- function(demog_post, date_lims) {
+plot_eda_size <- function(data, date_lims) {
   date_breaks <- seq(date_lims[1], date_lims[2], by = "year")
-  demog_plotdf <- eda_plot_df(demog_post)
-
-  size <-
-    demog_plotdf %>% 
-    ggplot(aes(x = yearmonth, y = log(size), color = habitat, linetype = habitat)) +
+  demog_plotdf <- 
+    model_data %>%
+    mutate(date = paste(year, "-02-01") %>% ymd(),
+           yearmonth = yearmonth(date))
+  
+  ggplot(demog_plotdf,
+         aes(x = yearmonth, y = log(size), color = habitat, linetype = habitat)) +
     stat_summary(
       geom = "line",
       fun = "mean",
@@ -201,7 +193,7 @@ plot_eda_size <- function(demog_post, date_lims) {
     stat_summary(
       geom = "pointrange",
       fatten = 1,
-      fun.data = "mean_sdl",
+      fun.data = "mean_sdl", #change to SEM?
       fun.args = list(mult = 1),
       position = position_dodge(width = 100)
     ) +
@@ -216,10 +208,8 @@ plot_eda_size <- function(demog_post, date_lims) {
     theme(
       axis.text.x = element_blank(),
       axis.title.x = element_blank(),
-      axis.ticks.x = element_blank(),
       legend.position = "none"
     )
-  size
 }
 
 #' Flowering rate plot
@@ -229,22 +219,23 @@ plot_eda_size <- function(demog_post, date_lims) {
 #' @param data demography data
 #' @param date_lims x-axis limits
 #' @param repro_size a size cutoff for plants that are considered reproductive.
-#'  The default, 168, corresponds to the upper 90th percentile of the size of
+#'  The default, 165, corresponds to the upper 90th percentile of the size of
 #'  all flowering plants in the dataset.
 #'  
-plot_eda_flwr <- function(data, date_lims, repro_size = 168) {
-  demog_plotdf <- eda_plot_df(data)
+plot_eda_flwr <- function(data, date_lims, repro_size = 165) {
   date_breaks <- seq(date_lims[1], date_lims[2], by = "year")
   
-   flowering_df <-
-    demog_plotdf %>% 
-    filter(size >= repro_size) %>% 
+  flowering_df <-
+    data %>% 
+    mutate(date = paste(year, "-02-01") %>% ymd(),
+           yearmonth = yearmonth(date)) %>% 
+    dplyr::filter(size >= repro_size) %>% 
     group_by(yearmonth, habitat) %>% 
-    summarize(n = n(), flwr = sum(flwr == 1, na.rm = TRUE)) %>% 
-    mutate(prop_flwr = flwr/n)
+    dplyr::summarize(n = n(), flwr = sum(flwr == 1, na.rm = TRUE)) %>% 
+    mutate(p_flwr = flwr/n * 100)
   
-  flowering <-
-    ggplot(flowering_df, aes(x = yearmonth, y = prop_flwr, color = habitat, linetype = habitat)) + 
+  ggplot(flowering_df,
+         aes(x = yearmonth, y = p_flwr, color = habitat, linetype = habitat)) + 
     geom_line() +
     scale_x_yearmonth(
       limits = date_lims,
@@ -252,14 +243,12 @@ plot_eda_flwr <- function(data, date_lims, repro_size = 168) {
       date_minor_breaks = "1 month",
       expand = expansion(mult = 0.04)
     ) +
-    scale_y_continuous("P(flowering)") +
+    scale_y_continuous("% flowering") +
     theme_classic() +
     theme(
       axis.text.x = element_blank(),
-      axis.title.x = element_blank(),
-      axis.ticks.x = element_blank()
+      axis.title.x = element_blank()
     )
-  flowering
 }
 
 #' Combine exploratory data analysis plots
