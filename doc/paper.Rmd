@@ -618,7 +618,7 @@ tar_read(surv_curve) + theme(text = element_text(size = 10))
 ```
 
 ```{r}
-size_cap <- "Marginal effect of plant size in the previous census on (a) survival, (b) log(size), and (c) flowering probability. Plots a--c were created by evaluating the smooth functions of $log(size_t)$ at observed values, adding the model intercepts, and back-transforming (when appropriate) to the response scale (e.g. probability for a and c). The bands depicting the 95% confidence interval include uncertainty in the intercept and uncertainty due to smoothness selection; the smooths for 1-ha fragments and continuous forest are fit in separate models. (d) Plant size distribution by habitat type (solid line = 1-ha fragments, dashed line = Continuous Forest)."
+size_cap <- "Marginal effect of plant size in the previous census on (a) survival, (b) log(size), and (c) flowering probability. Plots a--c were created by evaluating the smooth functions of $log(size_t)$ at observed values, adding the model intercepts, and back-transforming (when appropriate) to the response scale (e.g. probability for a and c). The bands depicting the 95% confidence interval include uncertainty in the intercept and uncertainty due to smoothness selection; the smooths for 1-ha fragments and continuous forest are fit in separate models. (d) Plant size distribution by habitat type (solid line = 1-ha fragments, dashed line = Continuous Forest). The curves in a–c are shown with raw data superimposed in Figure S3."
 ```
 
 ```{r size-plot, fig.cap=size_cap, fig.width=7, fig.height=7}

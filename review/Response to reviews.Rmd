@@ -79,6 +79,7 @@ Rather than comparing the fit of multiple models with different predictors, we t
 Therefore we cannot show something like a dAIC table.
 However, we have now included a table with R^2^ values for each model indicating fit as well as estimated degrees of freedom and p-values for each term (Table 2).
 We have replaced many of the parenthetical p-values reported in the results section with references to this table.
+Additionally, we have added supplemental Figure S3 which shows the curves as separate panels for continuous forest and fragments with raw data superimposed.
 
 ##  {#R1-4}
 
