@@ -36,6 +36,8 @@ library(latex2exp)
 library(colorspace)
 library(glue)
 library(performance)
+library(gratia)
+library(ggpointdensity)
 source(here::here("R", "utils.R"))
 ```
 
@@ -279,29 +281,29 @@ compare_performance(m_ht, m_shts, m_size, metrics = "common", rank = TRUE) %>%
 
 ```{r}
 withr::with_dir(here::here(), {
-  targets::tar_load(c(
+  tar_load(c(
     s_cf,
     s_1ha,
     g_cf,
     g_1ha,
     f_cf,
-    f_1ha,
+    f_1ha
   ))
 })
 ```
 
 ```{r}
-surv_curves <- 
+surv_curves <-
   map_df(list(CF = s_cf, "1-ha" = s_1ha), ~{
-    smooth_estimates(.x, smooth = "s(log_size_prev)", unconditional = TRUE, overal_uncertainty = TRUE) %>% add_confint() %>% 
-      add_column(intercept = coef(.x)[1]) %>% 
+    smooth_estimates(.x, smooth = "s(log_size_prev)", unconditional = TRUE, overal_uncertainty = TRUE) %>% add_confint() %>%
+      add_column(intercept = coef(.x)[1]) %>%
       mutate(across(c(est, lower_ci, upper_ci), ~plogis(.x + intercept)))
   },
   .id = "habitat")
 
 raw_df <- bind_rows("1-ha" = model.frame(s_1ha), "CF" = model.frame(s_cf), .id = "habitat")
 
-s <- 
+s <-
   ggplot(surv_curves, aes(x = log_size_prev, y = est)) +
   geom_line() +
   geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.4) +
@@ -320,17 +322,17 @@ s <-
 ```
 
 ```{r}
-flwr_curves <- 
+flwr_curves <-
   map_df(list(CF = f_cf, "1-ha" = f_1ha), ~{
-    smooth_estimates(.x, smooth = "s(log_size_prev)", unconditional = TRUE, overal_uncertainty = TRUE) %>% add_confint() %>% 
-      add_column(intercept = coef(.x)[1]) %>% 
+    smooth_estimates(.x, smooth = "s(log_size_prev)", unconditional = TRUE, overal_uncertainty = TRUE) %>% add_confint() %>%
+      add_column(intercept = coef(.x)[1]) %>%
       mutate(across(c(est, lower_ci, upper_ci), ~plogis(.x + intercept)))
   },
   .id = "habitat")
 
 raw_df <- bind_rows("1-ha" = model.frame(f_1ha), "CF" = model.frame(f_cf), .id = "habitat")
 
-f <- 
+f <-
   ggplot(flwr_curves, aes(x = log_size_prev, y = est)) +
   geom_line() +
   geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.4) +
@@ -349,18 +351,17 @@ f <-
 ```
 
 ```{r}
-library(ggpointdensity)
-size_curves <- 
+size_curves <-
   map_df(list(CF = g_cf, "1-ha" = g_1ha), ~{
-    smooth_estimates(.x, smooth = "s(log_size_prev)", unconditional = TRUE, overal_uncertainty = TRUE) %>% add_confint() %>% 
-      add_column(intercept = coef(.x)[1]) %>% 
+    smooth_estimates(.x, smooth = "s(log_size_prev)", unconditional = TRUE, overal_uncertainty = TRUE) %>% add_confint() %>%
+      add_column(intercept = coef(.x)[1]) %>%
       mutate(across(c(est, lower_ci, upper_ci), ~.x + intercept))
   },
   .id = "habitat")
 
 raw_df <- bind_rows("1-ha" = model.frame(g_1ha), "CF" = model.frame(g_cf), .id = "habitat")
 
-g <- 
+g <-
   ggplot(size_curves, aes(x = log_size_prev, y = est)) +
   geom_pointdensity(data = raw_df, aes(y = log_size), method="kde2d") +
   scale_color_viridis_c() +
@@ -371,16 +372,15 @@ g <-
   labs(y = "log(size_t+1)", x = "log(size_t)", color = "point density")
 ```
 
-Figure S3.
-The curves and confidence intervals plotted here are the same as those in Figure 3a–c but separated by habitat (1-ha fragments in left panel, continuous forest plots in right panel) and with raw data superimposed.  For size (a), raw data are plotted as points with color representing point density to assist in visualizing overplotted data.  For survival (b) and flowering (c), raw data (survived or flowered = 1, died or didn't flower = 0) are shown using violin plots with the median marked by a vertical line.
 
 ```{r fig.width=7, fig.height=7}
-library(patchwork)
 (g + theme(axis.title.x = element_blank()))/
 (s + theme(axis.title.x = element_blank()))/
 (f) + plot_annotation(tag_levels = "a")
 ```
 
+Figure S3.
+The curves and confidence intervals plotted here are the same as those in Figure 3a–c but separated by habitat (1-ha fragments in left panel, continuous forest plots in right panel) and with raw data superimposed.  For size (a), raw data are plotted as points with color representing point density to assist in visualizing overplotted data.  For survival (b) and flowering (c), raw data (survived or flowered = 1, died or didn't flower = 0) are shown using violin plots with the median marked by a vertical line.
 
 \pagebreak
 

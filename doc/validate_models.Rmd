@@ -55,8 +55,10 @@ k.check(s_1ha)
 `k` is adequate for `log_size_prev`. Unfortunately `k.check()` doesn't work for data with matrices, so I'll use an alternative approach detailed in `?mgcv::choose.k` for the crossbasis smooth.  Briefly, it involves looking for pattern in residuals by extracting residuals and fitting a GAM to them with the smooth of interest with an increased value for `k`.  If there is no unexplained pattern in residuals, that smooth should have an edf near zero.
 
 ```{r eval=TRUE}
+# Function sourced from R/utils.R
 check_res_edf(s_1ha)
 ```
+
 Adequate k for crossbasis.
 
 ## Continuous Forest
@@ -98,7 +100,7 @@ summary(s_cf)$edf[2]
 summary(s_cf_sub)$edf[2]
 ```
 
-The crossbasis is much smoother
+The crossbasis is smoother, but shows a similar pattern.
 
 ```{r}
 draw(s_cf, select = "s(spei_history,L)", n_contour = 5)
