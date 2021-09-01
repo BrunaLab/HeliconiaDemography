@@ -485,6 +485,18 @@
       "Repository": "CRAN",
       "Hash": "d7566c471c7b17e095dd023b9ef155ad"
     },
+    "ggpointdensity": {
+      "Package": "ggpointdensity",
+      "Version": "0.1.0",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "LKremer",
+      "RemoteRepo": "ggpointdensity",
+      "RemoteRef": "master",
+      "RemoteSha": "02f3ab24eb22e3e34294baeca23a8998db43be70",
+      "Hash": "95e82b3beffc224c4dff6d72b8079721"
+    },
     "git2r": {
       "Package": "git2r",
       "Version": "0.28.0",
@@ -832,6 +844,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "f4dbc5a47fd93d3415249884d31d6791"
+    },
+    "pander": {
+      "Package": "pander",
+      "Version": "0.6.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "0eae8a954e0c51bd356f8c6f0e00e805"
     },
     "patchwork": {
       "Package": "patchwork",
