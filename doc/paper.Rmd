@@ -508,7 +508,10 @@ The ability to identify size-specific lagged responses may be especially complic
 Recent research, including our own presented here, shows that lagged effects of climate drivers on demography may be the norm [@eversLaggedDormantSeason2021].
 As such, we suggest that all demographers investigate the possibility of lagged environmental effects, ideally using methods that do not require an *a priori* choice of lag times such as DLNMs, automated algorithms for choosing critical weather windows[@vandepolIdentifyingBestClimatic2016], or Bayesian methods that incorporate "ecological memory" [@ogleQuantifyingEcologicalMemory2015].
 
-Finally, any analytical approach for assessing lagged effects on demography requires long-term data and/or data collected from many sites with independent weather (but similar climate and site conditions) [@tenhumbergTimelaggedEffectsWeather2018; @eversLaggedDormantSeason2021]. @tellerLinkingDemographyDrivers2016 used a simulation study to show that detecting lagged effects required 20--25 years of data, although this depended on effect size and the range of climate extremes in the data. @compagnoni2021 showed that spatial replication can alleviate this requirement, and in fact in our study we were able to detects significant lagged effects with only 10 years of data, but multiple plots experiencing slightly different weather. Unfortunately, long-term data monitoring the entire life-cycle of tropical taxa are rare, and those doing so in fragmented landscapes are virtually nonexistent [@brunaCompensatoryResponsesUnderstory2005].
+Finally, any analytical approach for assessing lagged effects on demography requires long-term data and/or data collected from many sites with independent weather (but similar climate and site conditions) [@tenhumbergTimelaggedEffectsWeather2018; @eversLaggedDormantSeason2021].
+@tellerLinkingDemographyDrivers2016 used a simulation study to show that detecting lagged effects required 20--25 years of data, although this depended on effect size and the range of climate extremes in the data.
+@compagnoni2021 showed that spatial replication can alleviate this requirement, and in fact in our study we were able to detects significant lagged effects with only 10 years of data, but multiple plots experiencing slightly different weather.
+Unfortunately, long-term data monitoring the entire life-cycle of tropical taxa are rare, and those doing so in fragmented landscapes are virtually nonexistent [@brunaCompensatoryResponsesUnderstory2005].
 Without investing in collecting such data, generalizations regarding the demographic consequences of climate change in these species rich and increasingly fragmented habitats will continue to prove elusive.
 More generally, however, researchers need to consider how delayed responses to climate could influence the interpretation of data in studies where the organisms lifespan exceeds the study's duration.
 
@@ -523,7 +526,7 @@ The authors delcare no conflicts of interest.
 
 # Data Availability Statement
 
-Data used in this study are available at the Dryad Digital Repository; R code for analyses and visualizations are archived at Zenodo [links included upon acceptance].
+Data used in this study are available at the Dryad Digital Repository [links included upon acceptance]; R code for analyses and visualizations are archived with Zenodo at <https://doi.org/10.5281/zenodo.5364591>.
 
 \pagebreak
 

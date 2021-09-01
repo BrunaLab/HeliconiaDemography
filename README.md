@@ -7,6 +7,7 @@
 
 [![Run
 Tests](https://github.com/BrunaLab/HeliconiaDemography/actions/workflows/run-testthat.yaml/badge.svg)](https://github.com/BrunaLab/HeliconiaDemography/actions/workflows/run-testthat.yaml)
+[![DOI](https://zenodo.org/badge/289078614.svg)](https://zenodo.org/badge/latestdoi/289078614)
 
 <!-- badges: end -->
 
