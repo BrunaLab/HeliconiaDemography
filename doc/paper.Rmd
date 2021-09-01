@@ -699,56 +699,6 @@ tar_read(f_spei_plot) & theme(text = element_text(size = 10))
 
 <!-- \newpage -->
 
-<!-- # Left-over text -->
-
-<!-- -   populations persisting in fragments may be more demographically resilient to drought than those in primary forest if the individuals susceptible to desiccation died quickly after fragment isolation [@bettsExtinctionFiltersMediate2019]. -->
-
-<!-- -   While the alteration of microclimate near forest edges is one of the fundamental results to have emerged from the study of fragmented landscapes [@didhamEdgeStructureDetermines1999; @ewersFragmentationImpairsMicroclimate2013], little is known regarding how variable it is. It We hypothesize that the microclimate in continuous forest plots is more stable than that in 1 ha fragments, and that this stability will demographically buffers populations in forest interiors [@brunaExperimentalAssessmentHeliconia2002]. -->
-
-<!-- -   There can be cascading effects on other species (hispine beetles that depend on Heliconia flowers/fruits, hummingbirds and seed dispersers ( @stilesEcologyFloweringPhenology1975 -->
-
-<!-- -   eg. gene flow and genetic structure among and between plots already shaped by fragmentation ( @cortesLowPlantDensity2013, there can also be drought effects eg @sifresGeneticStructureLycopersicon2007) -->
-
-<!-- -   [@janssenDroughtEffectsLeaf2021] Used machine learning to combine remote sensing and ground surveys of literfall from published datasets. Estimates green-up, literfall, growth, etc. for central and southern America including the Amazon. Drought results in anomalously high leaf flushing at start of drought followed by increased litterfall during the drought. Dry season droughts result in green-up, but not wet season droughts. During drought, old leaves are shed and new leaves are maintained. 2-5 months for newly flushed leaves to fully expand -->
-
-<!-- # Citations / information could allocate to appropriate paragraphs -->
-
-<!-- -   @dowdInvestigatingSynergisticEffects2020 (unpublished thesis, could write MB and ask for update): precipitation and fragmentation influenced fruit/seed production (conditional on flowering) by *Heliconia* (one step past flowering, so might be worth citing to say that there are other ways reprod. can be affected -->
-
-<!-- -   Effects of precip extremes on understory plants can be also be indirect: -->
-
-<!--     -   high precip = lots of clouds, less photosynthesis, less or slower growth -->
-
-<!--     -   low precip = trees lose leaves or die, more light gets through or gaps open. -->
-
-<!--         This can be positive (more light = more growth) but not always ( @westerbandInteractionsPlantSize2015) there is a threshold that can lead to photoinhibition ( @hePhotoinhibitionHeliconiaNatural1996, @mulkeyComparativeLifeHistory1991). -->
-
-<!--         Drought and herbivory effects can be additive, at least in seedlings ( @bartonAdditiveNonadditiveResponses2020 -->
-
-<!-- -   @mulkeyInfluenceSeasonalDrought1996 and @bonalResponseTropicalRainforests2016 will have goods stuff; haven't looked them over yet -->
-
-<!-- -   @wrightSeasonalNinoLonger2006: Increase in flower and seed production after El Niño events for trees and lianas. -->
-
-<!--     Might be due to increases solar irradiance. -->
-
-<!--     Maybe evidence of lagged effects? -->
-
-<!--     Table 2 is inconsistent with text, so not sure... -->
-
-<!-- -   [@estebanOtherSideDroughts2021] negative effects of large positive SPEI -->
-
-<!-- -   In Manaus, the canopy is as green or greener in the dry season compared to the wet season [@guanPhotosyntheticSeasonalityGlobal2015], so dry season drought may result in relatively large increases in light penetration to the understory. -->
-
-<!-- -   @leitoldNinoDroughtIncreased2018 increased canopy turnover during drought. -->
-
-<!--     Similar increase in continuous and (large) fragments. -->
-
-<!--     Increase in turnover more variable in fragments. -->
-
-<!--     Coarse woody debris increased 62% during drought. -->
-
-<!-- \newpage -->
-
 <!-- ### Colophon -->
 
 <!-- This report was generated on `r Sys.time()` using the following computational environment and dependencies: -->
