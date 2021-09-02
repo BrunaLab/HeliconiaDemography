@@ -449,6 +449,7 @@ The choice of scale for the SPEI calculation is indeed difficult, and is related
 We are not certain that the reviewer's suggestion to allow the GAM to "do the smoothing" would have the same effect as changing the scale parameter when calculating SPEI.
 SPEI is calculated using a sliding window, while GAMs use penalization to achieve smoothing.
 We believe a thorough comparison of the ability for different SPEI scales to explain variation in survival, size, and flowering is beyond the scope of this paper.
+Additionally, the paper originally describing SPI recommends 3-month scale for droughts defined as depletion of soil moisture (McKee et al. 1993).
 
 ##  {#R3-3}
 
