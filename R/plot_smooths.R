@@ -39,7 +39,8 @@ plot_covar_smooth <- function(cf_model, frag_model, covar) {
       alpha = 0.4,
       key_glyph = "path"
     )+
-    theme_classic()
+    theme_classic() +
+    scale_x_continuous(breaks = 0:8)
   p
 }
 
@@ -48,9 +49,10 @@ make_size_plot <- function(s, g, f, model_data) {
   d <-
     ggplot(model_data, aes(x = log_size_prev, fill = habitat, color = habitat, linetype = habitat)) +
     geom_density(alpha = 0.4, key_glyph = "path") +
-    labs(y = "Density", x = TeX("$log(size_t)$")) +
     theme_classic() +
-    theme(legend.position = "none")
+    theme(legend.position = "none") +
+    scale_x_continuous(breaks = 0:8) +
+    labs(y = "Density", x = TeX("$log(size_t)$"))
   
   top <-
     g /
