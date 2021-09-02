@@ -9,25 +9,6 @@ output:
 bibliography: references.bib
 ---
 
-Cascading effects of increasing `k`:
-
--   Changed shape of crossbasis functions (edf changes, now not always more complex in fragments)
-
--   Changes in which lags are significant
-
--   Individual-level random effects impossible to fit due to computational limitations.
-    Using a sub-sample, checked with and without invididual-level random effects.
-    Changes r2, but very minimal changes to shape of smooths, edfs, and significance of smooths.
-    Dropped from flowering model.
-
-For coverletter:
-
-we identified \_\_\_ main suggestions
-
-1.  more in depth explanation of model (both technical and for broad audience)
-2.  something about changing declaritive statements about habitat:SPEI,Lag interaction. Added caveats about limitations of DLNM approach. Expanded on this in future directions to draw attention to the importance of including interactions for demography.
-3.  R\_ suggested increasing k, important suggestion. While it didn't alter the conclusions, it did require considerable work and further evaluation of results. new appendix, review rewrite
-
 # Reviewer 1
 
 **General comments**
@@ -65,8 +46,8 @@ At the reviewer's suggestion, we have added a short paragraph to the introductio
 > As written in the methods and results, I found the implementation very difficult to follow.
 > A slightly longer summary of the methods would help.
 
-We have added an additional paragraph to the methods describing how the crossbasis smooth was fit using the `mgcv` and `dlnm` packages.
-<!--# add line reference before submiting! --> We are not entirely sure if this is the type of description the reviewer was looking for.
+We have added an additional paragraph to the methods describing how the crossbasis smooth was fit using the `mgcv` and `dlnm` packages (L229--239).
+We are not entirely sure if this is the type of description the reviewer was looking for.
 If the reviewer(s) or editor see this as too detailed for the main text, we are happy to remove it, move it to a supplement, or simply replace it with a reference to the (now available) archived code for the analysis.
 See also our response to \@ref(R3-3).
 
@@ -110,8 +91,7 @@ The caveat to this is that without finer scale demographic data, one may not be 
 
 > While the authors mention this, what about adding something short about when using this type of analysis is critical and when it might not be (should all demographers adopt this approach? Why or why not?)
 
-We have added additional detail to the conclusions recommending that all demographers consider lagged effects when possible in light of recent research (including this study).
-<!--# insert line ref -->
+We have added additional detail to the conclusions recommending that all demographers consider lagged effects when possible in light of recent research (including this study) (L536--541).
 
 ##  {#R1-6}
 
@@ -374,7 +354,7 @@ We have revised this paragraph to emphasize the above points.
 > Why is there an effect of SPEI during the dry season (18-20 months in the past but during the wet season 32-36 months in the past? Why do plants in fragments have a decrease survival when precipitation is high during dry and wet periods (1-18 months time lag)?
 > Etc.
 
-While we believe we did discuss *Heliconia*-specific mechanisms for delayed responses of flowering (L 434--438, now <!--# new line -->) and delayed effects on growth (L 445--450, now <!--# new line -->), the reviewer is correct that we had not previously discussed mechanisms behind mortality or why wet conditions might be detrimental.
+While we believe we did discuss *Heliconia*-specific mechanisms for delayed responses of flowering (L 434--438, now L465--469) and delayed effects on growth (L 445--450, now L475--480), the reviewer is correct that we had not previously discussed mechanisms behind mortality or why wet conditions might be detrimental.
 We have added a paragraph to the discussion regarding effects of wet conditions on tropical plants.
 
 ##  {#R2-22}
@@ -501,8 +481,6 @@ For figures 4, 5, and 6 we have added the model intercepts to evaluated smooths 
 These plots, therefore, do not include the additive effects of other smooths, parametric covariates, or random effects.
 We think that this is an intuitive way to display the results.
 We added a paragraph to the methods explaining our strategy for visualizing the GAM results.
-
-<!--# see also response to comments where we decide to backtransform univariate smooths -->
 
 We apologize for not including a link to the code for the project.
 All analysis code can be found here: [\<https://github.com/BrunaLab/HeliconiaDemography\>](https://github.com/BrunaLab/HeliconiaDemography){.uri}.
