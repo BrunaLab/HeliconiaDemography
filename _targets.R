@@ -61,7 +61,7 @@ tar_plan(
   tar_target(g_cf_sub, fit_growth(model_data_cf_sub, k = c(25,5,15))),
   tar_target(f_cf_sub, fit_flwr(model_data_cf_sub, k = c(10,15,15))),
   tar_target(s_cf_sub, fit_surv(model_data_cf_sub, k = c(10,15,15))),
-  tar_render(validate_models, "doc/validate_models.Rmd", deployment = "main"),
+  tar_render(validate_models, "doc/appendix_A_model_validation.Rmd", deployment = "main"),
 
   # Descriptive / Exploratory Data Analysis Figures
   normals = normals_data(),
@@ -141,6 +141,6 @@ tar_plan(
   tar_target(la_file, here("data", "HA-la-stems-ht.xlsx"), format = "file"),
   la_data = read_tidy_la(la_file),
 
-  tar_render(supplemental, "doc/supplemental.Rmd", deployment = "main")
+  tar_render(supplemental, "doc/appendix_B_supplemental_figs.Rmd", deployment = "main")
 
 )
