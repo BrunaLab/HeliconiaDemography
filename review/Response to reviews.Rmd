@@ -30,7 +30,8 @@ Our responses to specific suggestions follow.
 > Since drought is well covered, adding background and hypotheses for why extreme wet would have a negative effect on vital rates would help.
 
 We edited a sentence in the introduction that cites Esteban et al. (2021) to clarify that both extreme dry and wet conditions reduce growth and survival of trees in the Amazon.
-*"...recent results suggest increases in the frequency and severity of extreme precipitation events **(both drought and extreme wet)** reduce survival and reproduction...".* Additionally, we added a sentence describing forecasted changes in precipitation in the Amazon.
+*"...recent results suggest increases in the frequency and severity of extreme precipitation events **(both drought and extreme wet)** reduce survival and reproduction..."* (L67--69).
+Additionally, we added a sentence describing forecasted changes in precipitation in the Amazon (L64).
 
 ##  {#R1-2}
 
@@ -38,7 +39,7 @@ We edited a sentence in the introduction that cites Esteban et al. (2021) to cla
 > I wondered if the authors thought this was too obvious (edge effects, etc), but I think it'd be helpful to spell this out more clearly.
 > L466 -- 467 offer a new hypothesis, but briefly revisiting the 'old' evidence/hypotheses also seems important.
 
-At the reviewer's suggestion, we have added a short paragraph to the introduction explaining why the pressures of habitat fragmentation and climate change might interact (i.e. be more than additive).
+At the reviewer's suggestion, we have added a short paragraph (starting on L74) to the introduction explaining why the pressures of habitat fragmentation and climate change might interact (i.e. be more than additive).
 
 ##  {#R1-3}
 
@@ -79,7 +80,7 @@ Displaying raw data on the heatmaps was too messy and not informative in a 2d pl
 > I suggest that a little more about the limitations of this modeling approach in the discussion would help set the context for interpreting the results and make the paper more robust.
 
 The main limitations of this method are of data (see also reviewer 2's comment \@ref(R2-15)).
-We have added some text to the discussion describing limitations found in previous simulation studies, and new unpublished evidence that spatial replication may be more valuable than long time series for detecting demographic effects of the environment.
+We have added some text to the discussion describing limitations found in previous simulation studies, and new unpublished evidence that spatial replication may be more valuable than long time series for detecting demographic effects of the environment (L542--550).
 
 > In some ways it seems like the analysis is adding more precision (by using monthly climate data) than the plants perceive and that would be measured in a yearly census.
 
@@ -117,7 +118,8 @@ However, we agree that it would be more clear for this section heading to be "si
 > More generally, I got a little confused with the flipping back and forth between growth & plant size in the results and discussion.
 > More precise language would help.
 
-We have edited the text to omit "growth", and hopefully clarify: "...the impact of plant size on size in the following year was greatest for mid-sized plants in continuous forest."
+We have replaced this sentence.
+See our response to \@ref(R2-5).
 
 > L331--332---How can you see in this figure that the response is 'more muted as indicated by the shape of the crossbasis function'?
 
@@ -130,7 +132,7 @@ We edited this sentence to read: "SPEI had less of an effect on flowering probab
 > (the discussion talks about the opposite) The next paragraph kind of goes there, but the link could be tighter.
 
 We are a little hesitant to speculate too much here, as not much is known about the optimal microclimate conditions for flowering in *H. acuminata*, but we have revised this paragraph (see also our response to \@ref(R2-17)).
-It now includes the following possible explanation: *"Drought conditions could be favorable for H. accuminata flowering due to increased temperatures or decreased cloudiness associated with droughts (Pau et al. 2013),* *and the effects could be delayed due to the development time of inflorescences."*
+It now includes the following possible explanation: *"Drought conditions could be favorable for* H. accuminata *flowering due to increased temperatures or decreased cloudiness associated with droughts (Pau et al. 2013),* *and the effects could be delayed due to the development time of inflorescences."*(L470-473).
 
 ## Figures: {#R1-figs}
 
@@ -180,7 +182,7 @@ We address specific concerns and suggestions below.
 > The results are all about the effect of SPEI on plant vital rates, but the abstract implies that the manuscript presents the effect of temperature and precipitation on vital rates separately.
 
 We have edited the abstract.
-Now the sentence to which the reviewer refers reads: *"We used distributed lag non-linear models to understand the delayed effects of standardized precipitation evapotranspiration index (SPEI) on survival, growth, and flowering."*
+Now the sentence to which the reviewer refers reads: *"We used distributed lag non-linear models to understand the delayed effects of climate (measured as standardized precipitation evapotranspiration index, SPEI) on survival, growth, and flowering."* (L33).
 
 ##  {#R2-2}
 
@@ -190,7 +192,7 @@ Now the sentence to which the reviewer refers reads: *"We used distributed lag n
 > Do you mean that high mortality rate lead to extinction and we don't know what causes high mortality rates?
 
 The reference, Bruna et al. (2009), discusses the lack of knowledge of what demographic vital rates (e.g. survival, reproduction, recruitment) in which life stages (e.g. small or large individuals) contribute most to population declines in fragments.
-We have re-ordered this sentence to emphasize the hypothesis that fragmentation alters survival, growth, or reproduction with the caveat that few studies have determined which of these vital rate changes are driving extinctions.
+We have re-ordered this sentence (now L50) to emphasize the hypothesis that fragmentation alters survival, growth, or reproduction with the caveat that few studies have determined which of these vital rate changes are driving extinctions.
 
 ##  {#R2-3}
 
@@ -200,13 +202,13 @@ We have re-ordered this sentence to emphasize the hypothesis that fragmentation 
 
 This is just the height of the plant from the ground to the tallest leaf leaf tip, not the tip of the youngest leaf.
 The reviewer is correct that the height of a plant growing more horizontally (for example if it was knocked over by a branchfall) could be shorter than the length from the base to the end of the tallest leaf.
-We edited the description to read: "...the height of each plant (i.e. distance from the ground to the tallest leaf tip)"
+We edited the description to read: *"...the height of each plant (i.e. distance from the ground to the tallest leaf tip)"* (L152)
 
 ##  {#R2-4}
 
 > Lines 251ff: I don't see a reference of Fig 2 in the result section.
 
-We have added a sentence to the results that refers to this figure.
+We have added a sentence to the results that refers to this figure (L284).
 
 ##  {#R2-5}
 
@@ -215,7 +217,8 @@ We have added a sentence to the results that refers to this figure.
 > Perhaps you can say that there is a tendency of small plants having a larger growth in fragments while large plants grow slightly more in CF.
 
 We thank the reviewer for pointing out this mistake.
-We have edited this line to read "Although plants were significantly larger in continuous forest compared to fragments, the effect of size in year t on size in year t+1 is nearly identical in the two habitats." See also our response to \@ref(R1-figs).
+We have edited this line to read "*Although plants were significantly larger in continuous forest compared to fragments, the effect of size in year t on size in year t+1 is nearly identical in the two habitats.*" (L303).
+See also our response to \@ref(R1-figs).
 
 ##  {#R2-6}
 
@@ -259,14 +262,14 @@ We see how this could be confusing and have taken the reviewers suggestion to in
 > Line 323-325: I don't know why the growth of plants in fragments would affect the size of plant in CF.
 
 This sentence meant to describe the difference between CF and fragments, not the absolute size in fragments.
-It has been re-worded to clarify.
+It has been re-worded to clarify (L348).
 
 ##  {#R2-10}
 
 > Lines 355-359: The analysis did not consider testing a statistical difference between habitat type (see comment 7), so I think this sentence is misleading (overinterpreting the results).
 
 While we could not test for an interaction between habitat and lagged SPEI (i.e. whether the shape of the crossbasis smooth was *significantly* different between habitats), we did test for a main effect of habitat by looking for overlap in 84% confidence intervals of model intercepts (see also response to \@ref(R2-6)).
-However, to reduce confusion here, we have changed "significantly" to "substantially" so as not to imply statistical significance for all of "magnitude, direction and lag time".
+However, to reduce confusion here, we have removed "significantly" so as not to imply statistical significance for all of "magnitude, directions and lag times" (L. 377).
 See also our response to \@ref(R2-7).
 
 ##  {#R2-11}
@@ -289,7 +292,7 @@ See our response to \@ref(R2-7).
 > Line 412: I think it would be very informative if you were to expand on this and explain how exactly your method differs from what others have used to detect delayed effects.
 
 As reviewer 3 pointed out (\@ref(R3-11)), our extension to previous approaches is the use of a 2-dimensional spline to allow for fitting non-linear responses to the environment.
-We have edited this sentence accordingly.
+We have edited this sentence accordingly (L436).
 
 ##  {#R2-14}
 
@@ -316,7 +319,7 @@ We have made this correction.
 
 We intended this paragraph to focus on one possible explanation for delayed effects---delays due to development times.
 We believe that the bet-hedging argument was confusing for two reasons: 1) it assumed that drought (as we measured it with SPEI) is detrimental to *H. accuminata* survival, which is not consistently reflected in our results, and 2) it did not address longer lags than the development time of a flowering shoot.
-We have therefore revised the example in this paragraph to focus on literature that shows positive effects of temperature and negative effects of cloudiness on flowering in tropical plants---weather conditions both associated with droughts.
+We have therefore revised the example in this paragraph (starting on L462) to focus on literature that shows positive effects of temperature and negative effects of cloudiness on flowering in tropical plants---weather conditions both associated with droughts.
 See also our response to \@ref(R1-8).
 
 ##  {#R2-18}
@@ -332,7 +335,7 @@ We are unaware of literature investigating the belowground effects of drought on
 > Lines 451-453: I think herbivory is this is very different from drought.
 > Drought reduced nutrient availability while herbivory removes some plant biomass triggering compensatory growth.
 
-We agree with the reviewer and have replaced this sentence with a more in-depth explanation of Bruna et al. 2002.
+We agree with the reviewer and have replaced this sentence with a more in-depth explanation of Bruna et al. 2002 (L480).
 
 ##  {#R2-20}
 
@@ -344,7 +347,7 @@ We agree with the reviewer that the exact timing of mortality within a season do
 This is likely obvious to demographers who are used to working with yearly census data and finer scale climate data.
 However, we think this paragraph is appropriate to follow up with the three before it---a delayed effect indicated by a DLNM plot like those in Figures 4, 5 and 6 could be due to 1) developmental delays, 2) buffering by below-ground storage tissues, 3) indirect effects, or 4) **none of the above.** We want to be sure to point out that in the case of survival especially, a "delayed effect" of SPEI 5 months in the past could simply mean that a plant died *during* a drought 5 months in the past (no actual delay between adverse conditions and death).
 Importantly, this does not apply to flowering in our system, since flowering happens at a specific time of year (during the census), unlike mortality.
-We have revised this paragraph to emphasize the above points.
+We have revised this paragraph (starting on L498) to emphasize the above points.
 
 ##  {#R2-21}
 
@@ -355,7 +358,7 @@ We have revised this paragraph to emphasize the above points.
 > Etc.
 
 While we believe we did discuss *Heliconia*-specific mechanisms for delayed responses of flowering (L 434--438, now L465--469) and delayed effects on growth (L 445--450, now L475--480), the reviewer is correct that we had not previously discussed mechanisms behind mortality or why wet conditions might be detrimental.
-We have added a paragraph to the discussion regarding effects of wet conditions on tropical plants.
+We have added a paragraph (L542) to the discussion regarding effects of wet conditions on tropical plants.
 
 ##  {#R2-22}
 
@@ -371,7 +374,7 @@ See our response to \@ref(R2-7).
 
 That's correct.
 This sentence meant to point out that size is usually measured in yearly censuses while weather data can be more easily collected at monthly or daily timescales.
-We've edited this sentence to read: "The ability to identify size-specific lagged responses may be especially complicated given size is rarely measured at the same time scale (e.g. monthly) as climate drivers."
+We've edited this sentence to read: "*The ability to identify size-specific lagged responses may be especially complicated given size is rarely measured at the same time scale (e.g. monthly) as climate drivers.*" (L533).
 
 # Reviewer 3
 
@@ -415,7 +418,7 @@ yrs_missing <-
 quantile(yrs_missing, c(0.25, 0.5, 0.75, 0.95, 0.99))
 ```
 
-We have edited to clarify: *"After the initial census year, between 80% and 97% of marked plants were found. Of plants that had missing values for some years, but were found again in a subsequent year, 95% had 2 or fewer years of missing values. Therefore, plants that were not found for three consecutive surveys, and no subsequent survey, were considered to have died in the transition year after their last observation."*
+We have edited to clarify: *"After the initial census year, between 80% and 97% of marked plants were found. Of plants that had missing values for some years, but were found again in a subsequent year, 95% had 2 or fewer years of missing values. Therefore, plants that were not found for three consecutive surveys, and no subsequent survey, were considered to have died in the transition year after their last observation."* (L159--164).
 
 Some of the missing values in the data do represent *Heliconia* plants that lost all above-ground tissue but re-sprouted in successive years, but other missing values may simply be imperfect "recapture".
 
@@ -440,7 +443,7 @@ Additionally, the paper originally describing SPI recommends 3-month scale for d
 
 We thank the reviewer for the very helpful comments on our model equation.
 We have changed $y_i$ to $y_{ij}$ and added an explanation of the indexing as suggested.
-We have also corrected the error in the random effect equation so that only one variance is estimated.
+We have also corrected the error in the random effect equation so that only one variance is included.
 $d_{it}$ is intended to indicate that each plant observation is associated with a measure of SPEI for the past 36 months.
 The SPEI history varies among plants spatially (there are three grid cells in the weather data within BDFFP, so different plots experience different climate) and temporally (observations from all years are pooled).
 
@@ -480,7 +483,7 @@ What we show in the figures are not predictions (i.e. results of `predict()` in 
 For figures 4, 5, and 6 we have added the model intercepts to evaluated smooths and back-transformed (when applicable) the estimates.
 These plots, therefore, do not include the additive effects of other smooths, parametric covariates, or random effects.
 We think that this is an intuitive way to display the results.
-We added a paragraph to the methods explaining our strategy for visualizing the GAM results.
+We added a paragraph to the methods (L260) explaining our strategy for visualizing the GAM results.
 
 We apologize for not including a link to the code for the project.
 All analysis code can be found here: [\<https://github.com/BrunaLab/HeliconiaDemography\>](https://github.com/BrunaLab/HeliconiaDemography){.uri}.
@@ -526,7 +529,7 @@ We believe these two things make it easier to see the outlines around significan
 
 We thank the reviewer for the positive comment.
 This is correct---our expansion was not the fitting of lagged effects with a spline, but the use of a 2 dimensional spline to *also* fit non-linear reaction norms.
-We have edited this sentence accordingly.
+We have edited this sentence accordingly (L436--438).
 
 ##  {#R3-12}
 
@@ -534,5 +537,5 @@ We have edited this sentence accordingly.
 > Then it made a lot of sense.
 > However, wouldn't it be that the demographic effect takes place AFTER the census for an echo to appear at previous lags?
 
-We We have revised this paragraph to clarify.
+We We have revised this paragraph to clarify (L498).
 See our response to \@ref(R2-20).
