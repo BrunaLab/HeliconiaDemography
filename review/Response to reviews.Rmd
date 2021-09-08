@@ -9,6 +9,34 @@ output:
 bibliography: references.bib
 ---
 
+Dear Editor,
+
+Thank you for the opportunity to submit a revised version of our manuscript "Delayed effects of climate on vital rates lead to demographic divergence in Amazonian forest fragments" to Global Change Biology The feedback we received from the referees was clear, fair, and very helpful, for which we would like to extend our thanks.
+
+Overall the referees were pleased with the submission, but they also had several excellent suggestions for improving the analyses, interpretation, and clarity of our presentation.
+We have carefully gone through the manuscript to incorporate their suggestions.
+We identified three main themes in the reviews:
+
+1) A need for a more in-depth explanation of distributed lag non-linear models, both for a technical audience (for replicability) and for a general ecology audience (for interpretabillity).
+We have expanded and revised the statistical modeling subsection to improve on this area.
+
+2) A need for more discussion of the caveats and limitations of our modeling.
+For example, since we were not able to test for a statistical interaction between habitat and lagged SPEI, we have revised the results to be more clear about which conclusions are strongly supported by statistical results.
+
+3) Finally, reviewer 3's comments made us re-evaluate our approach to limiting the number of "knots" (or maximum basis complexity) in our models.
+This (along with an updated version of the data with some duplicate plants corrected) lead to some cascading changes in our methods, results, and discussion, although the general conclusion that there are lagged effects of SPEI that differ among vital rates and habitats remains unchanged.
+Increasing $k$, the maximum basis complexity, resulted in changes to the shape of the crossbasis smooths, and have ensured that increasing \$k\$ further yet does not result in further changes to the shape of the smooths (see model validation supplement).
+The change in crossbasis shape changed the statistical significance of some lag times for some models.
+This increase in $k$ increased the computational time for models in a way that scales multiplicatively with random effects terms such that it was no longer feasible to include individual-level random effects.
+We ensured that removing these individual-level random effects did not bias the results using some data subsets (now mentioned in the updated methods).
+
+The suggestions from all reviewers really improved the manuscript, and we are very thankful for such thorough and thoughtful reviewers.
+We have addressed all suggestions and comments in detail in our response to reviewer comments below.
+
+Sincerely,
+
+Eric Scott
+
 # Reviewer 1
 
 **General comments**
