@@ -364,15 +364,14 @@ model_data %>%
 summary_stats
 ```
 
-*Flowering:* The overall proportion of plants that flowered was very low.
-The proportion of plants flowering was 31% higher in continuous forest than 1-ha fragments (`r summary_stats$flwr_mean[2]*100`% vs. `r summary_stats$flwr_mean[1]*100`%, respectively).
+*Flowering:* The overall proportion of plants that flowered was very low, but the proportion of plants flowering was 31% higher in continuous forest than 1-ha fragments (`r summary_stats$flwr_mean[2]*100`% vs. `r summary_stats$flwr_mean[1]*100`%, respectively).
 The intercepts for the continuous forest and 1 ha fragment models were significantly different, indicating a main effect of habitat on flowering probability (Table \@ref(tab:intercept-table)).
 The observed disparity in proportion of flowering plants was largely due to the fact that flowering is also significantly size-dependent (Table \@ref(tab:results-table)), with the probability of flowering increasing dramatically once plants reached the threshold size of about 148 (i.e., log(size) \> 5 in Figure \@ref(fig:size-plot)c).
 Despite the flowering probability of the largest plants being greater in fragments than continuous forest, populations in fragments had proportionately fewer plants above the reproductive size threshold (Figure \@ref(fig:size-plot)d).
 The most striking differences between habitat types coincided with relatively extreme weather conditions.
-In 2003, during the onset of a severe drought, the percentage of flowering reproductive-sized plants was 28% in continuous forest vs. 17% in 1 ha fragments.
-In 2006, following a wet spring and winter (SPEI \> 1), the trend was reversed when only 14% of reproductive-sized plants flowered in continuous forest and 26% flowered in 1 ha fragments (Figure \@ref(fig:eda)c).
-It is important to keep in mind that 1 ha fragment plots have a lower density of plants on average and fewer reproductive-sized plants compared to continuous forest plots, so total numbers of flowering plants was always lower in fragments.
+In 2003, during the onset of a severe drought, the proportion of potentially reproductive plants (i.e. plants above the size-threshold for reproduction) that actually flowered was 28% in continuous forest vs. 17% in 1-ha fragments.
+In 2006, following a wet spring and winter (SPEI \> 1), the trend was reversed: only 14% of these plants flowered in continuous forest vs. 26% in 1-ha fragments (Figure \@ref(fig:eda)c).
+Note that plots in 1-ha fragments generally have fewer and smaller plants than those in continuous forest, so total numbers of flowering plants was always lower in fragments.
 
 ```{r include=FALSE}
 repro_size <- model_data %>%
@@ -405,7 +404,7 @@ Plants in both habitat types showed an increase in survival probability with ver
 It should be noted, however, that only the first transition year of census data (1998--1999) met these conditions.
 We compared the effects of SPEI history in continuous forest and fragments by subtracting the fitted values in Figure \@ref(fig:surv-spei)b from Figure \@ref(fig:surv-spei)a to produce Figure \@ref(fig:surv-spei)c.
 This shows that in average conditions (SPEI = 0), there is little difference in survival probability between continuous forest and forest fragments (Figure \@ref(fig:surv-spei)c).
-However, under extreme conditions, survival probability is higher in continuous forest compared to fragments by up to 0.042.
+However, under extreme conditions, survival probability is up to 0.042 higher in continuous forest than fragments.
 
 *Size:* The effects of drought history on trends in plant size were generally similar for continuous forest and fragments.
 Under all conditions, plant size is greater in continuous forest (Figure \@ref(fig:growth-spei)c).
@@ -461,9 +460,9 @@ In contrast, variation in SPEI corresponded to a greater range of flowering prob
 These results should be interpreted with some caution, however, as the relatively low number of plants in fragments that are above the threshold-size for flowering could limit the power to detect delayed effects.
 
 Interestingly, we found significant detrimental effects of unusually wet conditions at some lag times for all vital rates except survival in continuous forest and flowering probability in 1-ha fragments.
-Although the literature focuses primarily on the effects of droughts in the tropics, some research shows that unusually wet conditions can also be detrimental to tropical plants [@estebanOtherSideDroughts2021].
-Wet conditions could be associated with increased cloud cover which could reduce photosynthetic activity and decrease growth, or with wind storms which could increase tree- and branch-fall---a source of mortality for understory plants.
-Waterlogged soils can also decrease growth and increase mortality [@parentOverviewPlantResponses2008].
+While most studies investigating how precipitation extremes influence tropical plants have focused on droughts [@lewis2010AmazonDrought2011; @phillips2009; @williamsonAmazonianTreeMortality2000], more recent work has shown that unusually wet conditions can also be detrimental [@estebanOtherSideDroughts2021].
+For instance, the increased cloud cover associated with elevated precipitation could lead to reduced photosynthetic activity and growth; plants in the resulting saturated soils could also have lower growth and elevated mortality [@parentOverviewPlantResponses2008].
+The wind storms accompanying extreme precipitation events [@espirito-santoStormIntensityOldgrowth2010; @negron-juarezVulnerabilityAmazonForests2018] could increase the likelihood of tree-, branch-, and litter-fall, all of which are sources of mortality for understory plants [@scariotSeedlingMortalityLitterfall2000; @ssali2019].
 Finally, cool temperatures associated with unusually wet conditions may decrease flowering [@pauCloudsTemperatureDrive2013].
 
 There are several, non-mutually-exclusive explanations for delayed effects of SPEI on demography.
