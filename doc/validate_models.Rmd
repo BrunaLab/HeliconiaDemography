@@ -1,11 +1,18 @@
 ---
-title: "Model validation plots"
-author: "Eric R. Scott"
+title: "Appendix A: Model Validation"
+subtitle: "Supplement to 'Delayed effects of climate on vital rates lead to demographic divergence in Amazonian forest fragments'"
+author: 
+  - Eric R. Scott
+  - María Uriarte
+  - Emilio M. Bruna
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: 
+output:
+  pdf_document:
+    toc: yes
   html_document:
     toc: yes
     toc_float: yes
+linkcolor: blue
 ---
 
 ```{r setup, include=FALSE}
