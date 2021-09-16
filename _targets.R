@@ -33,6 +33,9 @@ tar_plan(
   xa_lag  = lag_spei(xa_spei, maxlag),
 
   # Prep demographic data
+  # no GitHub release for this version of the data, but this is the commit it's from: 
+  # https://github.com/embruna/HeliconiaDataPaper/commit/bd41aee12f228bf2d741441d2242262ae44f6783
+  #
   tar_target(demog_file, here("data", "Ha_survey_with_Zombies.csv"), format = "file"),
   demog_raw  = read_fix_demog(demog_file),
   ## filter_dupes() removes some duplicate HA id numbers.  Will eventually be fixed in raw data
