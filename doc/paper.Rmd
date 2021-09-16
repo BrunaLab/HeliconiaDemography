@@ -63,7 +63,7 @@ Running title: `r rmarkdown::metadata$shorttitle`
 knitr::opts_chunk$set(
 	echo = FALSE,
 	fig.path = "figures/",
-	dev = "png",
+	dev = "ragg_png",
 	dpi = 300,
 	message = FALSE,
 	warning = FALSE,
@@ -78,6 +78,7 @@ library(knitr)
 library(here)
 library(patchwork)
 library(pander)
+library(ragg)
 ```
 
 ```{r load-targets}
@@ -298,7 +299,8 @@ Figures were created with the aid of the `gratia`, `ggplot2`, and `patchwork` pa
 # Results
 
 The meteorological droughts in our focal region indicated by SPEI are generally consistent with those reported in the literature (Table S1).
-For example, the drought associated with the 1997 El Niño Southern Oscillation (ENSO) event was one of the most severe on record for the Amazon [@williamsonAmazonianTreeMortality2000]; correspondingly, 1997 has the lowest SPEI values in our timeseries (Figure \@ref(fig:eda)d). The 2005 dry season (June--October) was also reported as an exceptionally dry year, although this drought mostly affected the southwestern Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008].
+For example, the drought associated with the 1997 El Niño Southern Oscillation (ENSO) event was one of the most severe on record for the Amazon [@williamsonAmazonianTreeMortality2000]; correspondingly, 1997 has the lowest SPEI values in our timeseries (Figure \@ref(fig:eda)d).
+The 2005 dry season (June--October) was also reported as an exceptionally dry year, although this drought mostly affected the southwestern Amazon [@zengCausesImpacts20052008; @marengoDroughtAmazonia20052008].
 Our SPEI data show the 2005 dry season to be a moderate drought (-1 \> SPEI \> -1.5).
 
 ## Survival, size, and flowering in continuous forest vs. fragments
@@ -432,13 +434,17 @@ This suggests that the hypothesized synergies between climate and fragmentation 
 
 Many studies investigating the biological consequences of habitat fragmentation on plant growth, survival, and reproduction comprise short-term ([\<]{.ul}3 year) experiments and observations.
 Our results underscore the difficulty in extrapolating long-term trends from such short-term studies, particularly when studying long-lived organisms or when the responses of interest can vary with size or age.
-For instance, one would have reached a very different conclusion regarding the effect of fragmentation on annual survival if the study windows were 1999--2002 (i.e., higher survival in continuous forest), 2002--2005 (i.e., higher survival in fragments), or 2004--2007 (i.e, no clear effect of fragmentation) (Figure \@ref(fig:eda)b). It is only when evaluating over longer time windows that it becomes apparent mortality is elevated in fragments relative to continuous forest (Figure \@ref(fig:surv-curve)), and that the observed interannual variation is largely driven by dynamic patterns of recruitment [@brunaEffectsForestFragmentation2002] coupled with low mortality for plants beyond the smallest size classes [@brunaArePlantPopulations2003].
+For instance, one would have reached a very different conclusion regarding the effect of fragmentation on annual survival if the study windows were 1999--2002 (i.e., higher survival in continuous forest), 2002--2005 (i.e., higher survival in fragments), or 2004--2007 (i.e, no clear effect of fragmentation) (Figure \@ref(fig:eda)b).
+It is only when evaluating over longer time windows that it becomes apparent mortality is elevated in fragments relative to continuous forest (Figure \@ref(fig:surv-curve)), and that the observed interannual variation is largely driven by dynamic patterns of recruitment [@brunaEffectsForestFragmentation2002] coupled with low mortality for plants beyond the smallest size classes [@brunaArePlantPopulations2003].
 
 Similarly, conclusions regarding the effects of fragmentation on flowering---which is also both rare and size-dependent [@brooksStatisticalModelingPatterns2019]---would also differ based on the year in which they were investigated.
 This could lead to erroneous extrapolations regarding the effects of fragmentation on reproductive mutualists or population genetic structure [@uriarteEffectsForestFragmentation2010; @uriarteDisentanglingDriversReduced2011; @cortesLowPlantDensity2013].
 Conclusions based on short-term observations of temporally variable vital rates could lead to conservation and management practices that are ineffective or even counterproductive, especially when when failing to consider how the consequences of this variation might be modulated by organismal life history [@morrisLongevityCanBuffer2008].
 
-It is important to emphasize, however, that the range of the estimated response to SPEI for survival and growth was greater in fragments compared with continuous forest (Figures \@ref(fig:surv-spei), \@ref(fig:growth-spei)). This suggests that extremes in SPEI may be more detrimental in forest fragments compared with continuous forest. While intact forest and its canopy buffer populations from climatic extremes, populations in fragments---especially near edges with high contrast matrix---likely lack this protection [@didhamEdgeStructureDetermines1999; @ewersFragmentationImpairsMicroclimate2013]. We suggest it is these climate extremes, rather than trends in average temperature, precipitation, or SPEI [@lauranceApparentEnvironmentalSynergism2014], that that are the causal mechanism underlying the observed reduced plant survival and size in forest fragments.
+It is important to emphasize, however, that the range of the estimated response to SPEI for survival and growth was greater in fragments compared with continuous forest (Figures \@ref(fig:surv-spei), \@ref(fig:growth-spei)).
+This suggests that extremes in SPEI may be more detrimental in forest fragments compared with continuous forest.
+While intact forest and its canopy buffer populations from climatic extremes, populations in fragments---especially near edges with high contrast matrix---likely lack this protection [@didhamEdgeStructureDetermines1999; @ewersFragmentationImpairsMicroclimate2013].
+We suggest it is these climate extremes, rather than trends in average temperature, precipitation, or SPEI [@lauranceApparentEnvironmentalSynergism2014], that that are the causal mechanism underlying the observed reduced plant survival and size in forest fragments.
 
 ## Delayed effects of climate on demographic vital rates
 
@@ -594,8 +600,11 @@ tar_read(eda_plot) & theme(text = element_text(size = 10))
 
 <!-- high res version -->
 
-```{r eda_hires, fig.height=7, fig.width=7, dev='tiff', include=FALSE, dpi=600}
+```{r eda_hires, include=FALSE}
+agg_tiff(here::here("doc", "figures", "eda_hires.tiff"),
+        width = 7, height = 7, units = "in", res = 300)
 tar_read(eda_plot) & theme(text = element_text(size = 10))
+invisible(dev.off())
 ```
 
 ```{r eda_vect, fig.height=7, fig.width=7, dev='pdf', include=FALSE}
@@ -612,11 +621,7 @@ tar_read(surv_curve) + theme(text = element_text(size = 10))
 
 <!-- high res version -->
 
-```{r surv-curve_hires, fig.height=3.5, fig.width=7, dev="tiff", dpi=600, include=FALSE}
-tar_read(surv_curve) + theme(text = element_text(size = 10))
-```
-
-```{r surv-curve_vect, fig.height=3.5, fig.width=7, dev="pdf", include=FALSE}
+```{r surv-curve_vect, fig.height=3.5, fig.width=7, dev="postscript", include=FALSE}
 tar_read(surv_curve) + theme(text = element_text(size = 10))
 ```
 
@@ -630,8 +635,11 @@ tar_read(size_plot) & theme(text = element_text(size = 10))
 
 <!-- high res version -->
 
-```{r size-plot_hires, fig.width=7, fig.height=7, dev='tiff', dpi=600, include=FALSE}
+```{r size-plot_hires, include=FALSE}
+agg_tiff(here::here("doc", "figures", "size-plot_hires.tiff"),
+        width = 7, height = 7, units = "in", res = 300)
 tar_read(size_plot) & theme(text = element_text(size = 10))
+invisible(dev.off())
 ```
 
 ```{r size-plot_vect, fig.width=7, fig.height=7, dev='pdf', include=FALSE}
@@ -649,8 +657,11 @@ tar_read(s_spei_plot) & theme(text = element_text(size = 10))
 
 <!-- high res version-->
 
-```{r surv-spei_hires, fig.height=7.5, fig.width=7, dev='tiff', dpi=600, include=FALSE}
+```{r surv-spei_hires, include=FALSE}
+agg_tiff(here::here("doc", "figures", "surv-spei_hires.tiff"),
+        width = 7, height = 7.5, units = "in", res = 300)
 tar_read(s_spei_plot) & theme(text = element_text(size = 10))
+invisible(dev.off())
 ```
 
 ```{r surv-spei_vect, fig.height=7.5, fig.width=7, dev='pdf', include=FALSE}
@@ -667,8 +678,11 @@ tar_read(g_spei_plot) & theme(text = element_text(size = 10))
 
 <!-- high res version -->
 
-```{r growth-spei_hires, fig.height=7.5, fig.width=7, dev='tiff', dpi=600, include=FALSE}
+```{r growth-spei_hires, include=FALSE}
+agg_tiff(here::here("doc", "figures", "growth-spei_hires.tiff"),
+        width = 7, height = 7.5, units = "in", res = 300)
 tar_read(g_spei_plot) & theme(text = element_text(size = 10))
+invisible(dev.off())
 ```
 
 ```{r growth-spei_vect, fig.height=7.5, fig.width=7, dev='pdf', include=FALSE}
@@ -685,8 +699,11 @@ tar_read(f_spei_plot) & theme(text = element_text(size = 10))
 
 <!-- high res version-->
 
-```{r flwr-spei_hires, fig.height=7.5, fig.width=7, dev='tiff', dpi=600, include=FALSE}
+```{r flwr-spei_hires, fig.height=7.5, fig.width=7, dev='agg_tiff', fig.ext='tiff', dpi=300, include=FALSE}
+agg_tiff(here::here("doc", "figures", "flwr-spei_hires.tiff"),
+        width = 7, height = 7.5, units = "in", res = 300)
 tar_read(f_spei_plot) & theme(text = element_text(size = 10))
+invisible(dev.off())
 ```
 
 ```{r flwr-spei_vect, fig.height=7.5, fig.width=7, dev='pdf', include=FALSE}
