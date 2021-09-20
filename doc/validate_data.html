@@ -200,20 +200,20 @@ withr::with_dir(here(), {
 <li><code>code_notes</code> (character): possible values include: “plant missing” meaning the plant could not be found in this survey; “dead” meaning the plant is confirmed dead in this survey; “ULY” meaning________; and “tag missing” meaning the plant was missing a tag and given a new one (this does not affect the <code>ha_id_number</code> as these take into account plants given new tags)</li>
 </ul>
 <pre class="r"><code>model_data</code></pre>
-<pre><code>## # A tibble: 46,328 x 23
-##    ranch     bdffp_reserve_no plot  habitat ha_id_number  year    ht  shts  size
-##    &lt;fct&gt;     &lt;fct&gt;            &lt;fct&gt; &lt;fct&gt;   &lt;fct&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
-##  1 Dimona    2107             2107  1-ha    1             1998    20     2    40
-##  2 Dimona    2107             2107  1-ha    10            1998    47     2    94
-##  3 Dimona    2107             2107  1-ha    100           1998    24     1    24
-##  4 Esteio-C… 1501             5750  CF      1000          1998    32     2    64
-##  5 Esteio-C… 1501             5750  CF      1001          1998    20     3    60
-##  6 Esteio-C… 1501             5750  CF      1002          1998    24     1    24
-##  7 Esteio-C… 1501             5750  CF      1003          1998    50     2   100
-##  8 Esteio-C… 1501             5750  CF      1004          1998     9     1     9
-##  9 Esteio-C… 1501             5750  CF      1005          1998    52     3   156
-## 10 Esteio-C… 1501             5750  CF      1006          1998    45     3   135
-## # … with 46,318 more rows, and 14 more variables: log_size &lt;dbl&gt;, infl &lt;int&gt;,
+<pre><code>## # A tibble: 46,468 x 23
+##    ranch  bdffp_reserve_no plot  habitat ha_id_number  year    ht  shts  size
+##    &lt;fct&gt;  &lt;fct&gt;            &lt;fct&gt; &lt;fct&gt;   &lt;fct&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+##  1 Dimona 2107             2107  1-ha    1             1998    20     2    40
+##  2 Dimona 2107             2107  1-ha    2             1998    24     1    24
+##  3 Dimona 2107             2107  1-ha    3             1998    31     3    93
+##  4 Dimona 2107             2107  1-ha    4             1998    15     2    30
+##  5 Dimona 2107             2107  1-ha    5             1998    19     1    19
+##  6 Dimona 2107             2107  1-ha    6             1998    18     3    54
+##  7 Dimona 2107             2107  1-ha    7             1998    25     5   125
+##  8 Dimona 2107             2107  1-ha    8             1998    10     2    20
+##  9 Dimona 2107             2107  1-ha    9             1998    29     3    87
+## 10 Dimona 2107             2107  1-ha    10            1998    47     2    94
+## # … with 46,458 more rows, and 14 more variables: log_size &lt;dbl&gt;, infl &lt;int&gt;,
 ## #   flwr &lt;int&gt;, surv &lt;int&gt;, code_notes &lt;chr&gt;, flwr_prev &lt;int&gt;, infl_prev &lt;int&gt;,
 ## #   ht_prev &lt;dbl&gt;, shts_prev &lt;int&gt;, size_prev &lt;dbl&gt;, log_size_prev &lt;dbl&gt;,
 ## #   spei &lt;dbl&gt;, spei_history &lt;dbl[,37]&gt;, L &lt;int[,37]&gt;</code></pre>
@@ -611,7 +611,7 @@ html {
       <th colspan="14" class="gt_heading gt_title gt_font_normal" style="color: #444444; font-size: 28px; text-align: left; font-weight: 500;">Pointblank Validation</th>
     </tr>
     <tr>
-      <th colspan="14" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style="font-size: 12px; text-align: left;"><span style="text-decoration-style:solid;text-decoration-color:#ADD8E6;text-decoration-line:underline;text-underline-position:under;color:#333333;font-variant-numeric:tabular-nums;padding-left:4px;margin-right:5px;padding-right:2px;">[2021-08-04|15:43:12]</span></p>
+      <th colspan="14" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style="font-size: 12px; text-align: left;"><span style="text-decoration-style:solid;text-decoration-color:#ADD8E6;text-decoration-line:underline;text-underline-position:under;color:#333333;font-variant-numeric:tabular-nums;padding-left:4px;margin-right:5px;padding-right:2px;">[2021-09-20|11:48:36]</span></p>
 <div style="height:25px;"><span style="background-color:#F1D35A;color:#222222;padding:0.5em 0.5em;position:inherit;text-transform:uppercase;margin:5px 0px 5px 5px;font-weight:bold;border:solid 1px #F1D35A;padding:2px 15px 2px 15px;font-size:smaller;">tibble</span>
 <span style="background-color:none;color:#222222;padding:0.5em 0.5em;position:inherit;margin:5px 10px 5px -4px;font-weight:bold;border:solid 1px #F1D35A;padding:2px 15px 2px 15px;font-size:smaller;">model_data</span><span style="background-color:#E5AB00;color:white;padding:0.5em 0.5em;position:inherit;text-transform:uppercase;margin:5px 0px 5px 5px;font-weight:bold;border:solid 1px #E5AB00;padding:2px 15px 2px 15px;font-size:smaller;">WARN</span>
 <span style="background-color:none;color:#333333;padding:0.5em 0.5em;position:inherit;margin:5px 0px 5px -4px;font-weight:bold;border:solid 1px #E5AB00;padding:2px 15px 2px 15px;font-size:smaller;">1</span>
@@ -1518,9 +1518,9 @@ html {
   </tbody>
   <tfoot class="gt_sourcenotes">
     <tr>
-      <td class="gt_sourcenote" colspan="14"><span style="background-color:#FFF;color:#444;padding:0.5em 0.5em;position:inherit;text-transform:uppercase;margin-left:10px;border:solid 1px #999999;font-variant-numeric:tabular-nums;border-radius:0;padding:2px 10px 2px 10px;padding:2px 10px 2px 10px;">2021-08-04 15:43:12 EDT</span>
-<span style="background-color:#FFF;color:#444;padding:0.5em 0.5em;position:inherit;margin:5px 1px 5px 0;border:solid 1px #999999;font-variant-numeric:tabular-nums;border-radius:0;padding:2px 10px 2px 10px;">2.5 s</span>
-<span style="background-color:#FFF;color:#444;padding:0.5em 0.5em;position:inherit;text-transform:uppercase;margin:5px 1px 5px -1px;border:solid 1px #999999;font-variant-numeric:tabular-nums;border-radius:0;padding:2px 10px 2px 10px;">2021-08-04 15:43:15 EDT</span></td>
+      <td class="gt_sourcenote" colspan="14"><span style="background-color:#FFF;color:#444;padding:0.5em 0.5em;position:inherit;text-transform:uppercase;margin-left:10px;border:solid 1px #999999;font-variant-numeric:tabular-nums;border-radius:0;padding:2px 10px 2px 10px;padding:2px 10px 2px 10px;">2021-09-20 11:48:36 EDT</span>
+<span style="background-color:#FFF;color:#444;padding:0.5em 0.5em;position:inherit;margin:5px 1px 5px 0;border:solid 1px #999999;font-variant-numeric:tabular-nums;border-radius:0;padding:2px 10px 2px 10px;">2.8 s</span>
+<span style="background-color:#FFF;color:#444;padding:0.5em 0.5em;position:inherit;text-transform:uppercase;margin:5px 1px 5px -1px;border:solid 1px #999999;font-variant-numeric:tabular-nums;border-radius:0;padding:2px 10px 2px 10px;">2021-09-20 11:48:39 EDT</span></td>
     </tr>
   </tfoot>
   

@@ -1,26 +1,40 @@
-#' Read in demography data and fix entry errors
-#'
-#' @param path location of file
-#'
-read_fix_demog <- function(path) {
-  demog <- 
-    read_csv(path, col_names = TRUE,
-             cols(plot = col_character(),
-                  bdffp_reserve_no = col_character(),
-                  shts = col_integer(),
-                  year = col_integer(),
-                  infl = col_integer(),
-                  tag_number = col_character(),
-                  HA_ID_Number = col_character())) %>% 
-    clean_names() 
-  
-  #If ht is between 0 and 1, round up to 1 cm. All other data is recorded to the
-  #nearest cm, so these values should be as well.
-  demog <-
-    demog %>% 
-    mutate(ht = if_else(ht < 1 & ht > 0, 1, ht))
 
-  return(demog)
+#' Convert demographic survey data into binary survival
+#' 
+#' This function might only make sense to use if you continue surveying for
+#' plants long after you plan to count them as dead.  It is convenient if you
+#' have many NA entries after a plant has died (or is assumed dead) and you want
+#' to know which years it was alive and which it was dead.  You want to ignore
+#' NAs that are not trailing and you want to ignore trailing NAs < n
+#'
+#' @param x any ordered numeric vector such as height, size, or number of shoots, that is collected every observation unless plants are not detected.
+#' @param n number of successive, trailing missing survey points required to consider an organism dead.
+#'
+#' @return a binary vector with 1 = alive and 0 = assumed dead
+#' @examples
+#' #Assume plants dead with after not detected for 2 years
+#' dead  <- c(1, 3, NA, NA, 1, 2, 1, NA, NA)
+#' alive <- c(1, 3, NA, NA, 1, 2, 1, 3, NA)
+#' as_living(dead)
+#' as_living(alive)
+as_living <- function(x, n = 2) {
+  
+  #if at least last 2 values are NA
+  trail <- (length(x) - n + 1):length(x)
+  #exclude negative indexes
+  trail <- trail[trail >= 0]
+  
+  if(all(is.na(x))){
+    alive <- rep(NA_integer_, length(x))
+  } else if (all(is.na(x[trail]))) {
+    #find the last non-NA value
+    y <- cumsum(!is.na(x))
+    last_real <- which.max(y == max(y))
+    alive <- c(rep(1L, last_real), rep(0L, length(x) - last_real))
+  } else {
+    alive <- rep(1L, length(x))
+  }
+  return(alive)
 }
 
 
@@ -59,8 +73,6 @@ wrangle_demog <- function(data, n_years = 3) {
     )
   
   data_surv_size %>% 
-    #only use 1ha fragments and continuous forest
-    filter(habitat %in% c("CF", "1-ha")) %>% 
     #add binary column for flowering
     mutate(infl = if_else(is.na(infl) & (!is.na(shts) | !is.na(ht)), 0L, infl)) %>% 
     mutate(flwr = if_else(infl > 0, 1L, 0L), .after = infl) %>% 
@@ -72,7 +84,6 @@ wrangle_demog <- function(data, n_years = 3) {
     mutate(year_fac = as.factor(year)) %>% 
     # arrange columns
     select(ranch, bdffp_reserve_no, plot, habitat, #site level
-           row, column,
            ha_id_number, #plot level
            year,
            ht, shts, 
@@ -88,21 +99,3 @@ wrangle_demog <- function(data, n_years = 3) {
     ungroup()
 }
 
-#' Remove duplicated HA ID numbers
-#' 
-#' removes all HA ID numbers with more than one observation per year in any year.
-#'
-#' @param data demographic data
-#' 
-filter_dupes <- function(data) {
-  
-  dupes <- 
-    data %>%
-    group_by(year, ha_id_number) %>% 
-    count() %>%
-    filter(n>1) %>% 
-    pull(ha_id_number) %>% 
-    unique()
-  
-  data %>% filter(!ha_id_number %in% dupes)
-}

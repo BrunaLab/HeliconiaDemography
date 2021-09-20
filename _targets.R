@@ -33,13 +33,17 @@ tar_plan(
   xa_lag  = lag_spei(xa_spei, maxlag),
 
   # Prep demographic data
-  # no GitHub release for this version of the data, but this is the commit it's from: 
-  # https://github.com/embruna/HeliconiaDataPaper/commit/bd41aee12f228bf2d741441d2242262ae44f6783
-  #
-  tar_target(demog_file, here("data", "Ha_survey_with_Zombies.csv"), format = "file"),
-  demog_raw  = read_fix_demog(demog_file),
-  ## filter_dupes() removes some duplicate HA id numbers.  Will eventually be fixed in raw data
-  demog_done = demog_raw %>% filter_dupes() %>% wrangle_demog(),
+  tar_target(demog_file, here("data", "ha_bdffp_demog.csv"), format = "file"),
+  demog_raw         = read_csv(demog_file,
+                               col_names = TRUE,
+                               cols(plot = col_character(),
+                                    bdffp_reserve_no = col_character(),
+                                    shts = col_integer(),
+                                    year = col_integer(),
+                                    infl = col_integer(),
+                                    tag_number = col_character(),
+                                    HA_ID_Number = col_character())),
+  demog_done        = wrangle_demog(demog_raw),
   model_data        = join_filter_demog_spei(demog_done, xa_lag),
   model_data_cf     = dplyr::filter(model_data, habitat == "CF"),
   model_data_1ha    = dplyr::filter(model_data, habitat == "1-ha"),
