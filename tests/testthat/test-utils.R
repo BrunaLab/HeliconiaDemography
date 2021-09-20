@@ -1,6 +1,6 @@
 library(here)
 source(here("packages.R"))
-lapply(list.files("./R", full.names = TRUE), source) 
+lapply(list.files(here("R"), full.names = TRUE), source) 
 
 test_that("as_living() util works", {
   alive <- c(1,2,NA,3,5,NA)
