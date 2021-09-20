@@ -522,12 +522,12 @@ We thank Collin Edwards, Andrew Mercadante, Ellie McDaniel and 3 anonymous revie
 We also thank the technicians and students who helped conduct the *Heliconia* censuses and the BDFFP and INPA for logistical support.
 Financial support was provided by the U.S.
 National Science Foundation (awards DEB-0614339, DEB-0614149, INT 98-06351, and DEB-1948607).
-This is publication No. \_\_\_ in the BDFFP Technical Series.
+This is publication No. 824 in the BDFFP Technical Series.
 The authors delcare no conflicts of interest.
 
 # Data Availability Statement
 
-Data used in this study are available at the Dryad Digital Repository [links included upon acceptance]; R code for analyses and visualizations are archived with Zenodo at <https://doi.org/10.5281/zenodo.5364591>.
+All data and code for analyses and visualizations are archived with Zenodo at <https://doi.org/10.5281/zenodo.5364591>.
 
 \pagebreak
 
